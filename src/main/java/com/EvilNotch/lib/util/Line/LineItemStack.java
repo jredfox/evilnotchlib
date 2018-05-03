@@ -2,7 +2,7 @@ package com.EvilNotch.lib.util.Line;
 
 import com.EvilNotch.lib.util.JavaUtil;
 
-public class LineItemStack extends LineItemStackBase{
+public class LineItemStack extends LineItemStackBase implements IHead{
 
 	public int head = -1;
 	public float fhead = -1.0F;
@@ -13,7 +13,7 @@ public class LineItemStack extends LineItemStackBase{
 	public long lhead = -1;
 	public String strhead = null;
 	
-	public boolean hashead = false;
+	public boolean hasihead = false;
 	public boolean hasfhead = false;
 	public boolean hasdhead = false;
 	public boolean hasbhead = false;
@@ -107,7 +107,7 @@ public class LineItemStack extends LineItemStackBase{
 			}
 			else if(this.idNum == 'i'){
 				this.head = Integer.parseInt(num);
-				this.hashead = true;
+				this.hasihead = true;
 			}
 			else if(this.idNum == 'f'){
 				this.fhead = Float.parseFloat(num);
@@ -158,7 +158,9 @@ public class LineItemStack extends LineItemStackBase{
 	@Override
 	public Object getHead()
 	{
-		if(this.hashead)
+		if(this.haslhead)
+			return this.lhead;
+		if(this.hasihead)
 			return this.head;
 		if(this.hasdhead)
 			return this.dhead;
@@ -172,8 +174,6 @@ public class LineItemStack extends LineItemStackBase{
 			return this.bytehead;
 		if(this.hasshorthead)
 			return this.shorthead;
-		if(this.haslhead)
-			return this.lhead;
 		return null;
 	}
 	public String getDisplayHead(boolean comparible)
@@ -185,6 +185,38 @@ public class LineItemStack extends LineItemStackBase{
 		if(comparible)
 			q = "";
 		return  q + head + LineBase.toWhiteSpaced("" + this.idNum) + q;
+	}
+	@Override
+	public int getInt(){
+		return JavaUtil.getInt((Number)this.getHead());
+	}
+	@Override
+	public short getShort(){
+		return JavaUtil.getShort((Number)this.getHead());
+	}
+	@Override
+	public long getLong(){
+		return JavaUtil.getLong((Number)this.getHead());
+	}
+	@Override
+	public byte getByte(){
+		return JavaUtil.getByte((Number)this.getHead());
+	}
+	@Override
+	public float getFloat(){
+		return JavaUtil.getFloat((Number)this.getHead());
+	}
+	@Override
+	public double getDouble(){
+		return JavaUtil.getDouble((Number)this.getHead());
+	}
+	@Override
+	public String getStringHead() {
+		return (String)this.getHead();
+	}
+	@Override
+	public boolean getBoolean() {
+		return (Boolean)this.getHead();
 	}
 
 }

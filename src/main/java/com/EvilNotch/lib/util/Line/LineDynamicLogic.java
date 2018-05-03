@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.EvilNotch.lib.util.ICopy;
+import com.EvilNotch.lib.util.JavaUtil;
 
 import net.minecraft.util.ResourceLocation;
 
@@ -16,8 +17,9 @@ public class LineDynamicLogic implements ILine{
     protected char lbracket;
     protected char rbracket;
     protected String orLogic = "||";
-    public boolean fancyLines = false;
-    public static final ArrayList<String> nbts = new ArrayList<>();//bracket registry prevents detection and parsing issues
+    protected boolean fancyLines = false;
+    @SuppressWarnings("unchecked")
+	public static final ArrayList<String> nbts = JavaUtil.asArray(new String[]{"{}","[]","()","<>"});//bracket registry prevents detection and parsing issues
     
     public LineDynamicLogic(String s)
     {
@@ -46,21 +48,8 @@ public class LineDynamicLogic implements ILine{
         this.rbracket = rbracket;
         this.fancyLines = fancyLine;
         this.orLogic = orLogic;
-        init();//before first parsing is all that matters
         parse(s,sep,q,lbracket,rbracket,fancyLine,invalid);
     }
-	/**
-	 * Internal do not call/override unless you know what you are doing and know what this is
-	 */
-	protected void init(){
-		if(init)
-			return;
-		nbts.add("{}");
-		nbts.add("[]");
-		nbts.add("()");
-		nbts.add("<>");
-		init = true;
-	}
     @Override
     public void parse(String str, char sep, char q,char...invalid){
     	parse(str,sep,q,'[',']',false,invalid);
@@ -68,7 +57,8 @@ public class LineDynamicLogic implements ILine{
     /**
      * doesn't check for \\|\\| symbol you have to watch which strings you import into LineDynamicLogic yourself as it's unoptimized to do otherwise
      */
-	public void parse(String str, char sep, char q,char lbracket, char rbracket,boolean fancyLine, char...invalid) {
+	public void parse(String str, char sep, char q,char lbracket, char rbracket,boolean fancyLine, char...invalid) 
+	{
         if(str.contains(this.orLogic))
         {
             String[] parts = LineBase.split(str, this.orLogic);
@@ -83,13 +73,14 @@ public class LineDynamicLogic implements ILine{
            populateLines(str,0,sep,q,lbracket,rbracket,fancyLine,invalid);
 	}
 
-    protected void populateLines(String s, int index,char sep, char q,char lbracket,char rbracket, boolean fancyLine, char...invalid) {
+    protected void populateLines(String s, int index,char sep, char q,char lbracket,char rbracket, boolean fancyLine, char...invalid) 
+    {
         String[] subs = getSubs(s);
         ArrayList<ILine> lines = new ArrayList();
         for(String sub : subs)
         {
             if(!LineBase.toWhiteSpaced(sub).equals(""))
-                lines.add(getLine(sub,sep,q,lbracket,rbracket,fancyLine,invalid));
+                lines.add(getLine(sub.trim(),sep,q,lbracket,rbracket,fancyLine,invalid));
         }
         this.lineLogic.put(index,lines);
 	}
@@ -113,10 +104,12 @@ public class LineDynamicLogic implements ILine{
     				char lbracket = s.charAt(0);
     				if(ch.indexOf(lbracket) == -1)
     					continue;
-    				int rindex = getIndexRBracket(i, line,lbracket,s.charAt(1));
+    				
+    				int rindex = getIndexRBracket(i, line,lbracket,s.charAt(1),this.quote);
     				String nbt = line.substring(i, rindex+1);
     				str += nbt;
     				i += nbt.length();//skip rbracket that's why it's index+1 and if i is too high it will stop iterating
+    				break;
     			}
     			i--;//index is already the right one so continue will force an i++ so I do an i-- to keep it right
     			continue;
@@ -149,9 +142,17 @@ public class LineDynamicLogic implements ILine{
     	
     	LineEnhanced line = new LineEnhanced(s,sep,q,lbracket,rbracket,fancy,invalid);
     	if(line.heads.size() > 1)
+    	{
     		return line;
+    	}
     	else if(line.hasHead())
-        	return new LineItemStack(line);
+    	{
+    		//patch for static array update
+    		if(line.heads.get(0) instanceof ArrEntry)
+    			return line;
+    		else
+    			return new LineItemStack(line);
+    	}
         
     	LineItemStackBase stack = new LineItemStackBase(line);
         boolean meta = stack.hasMeta || stack.hasStrMeta;
@@ -194,7 +195,9 @@ public class LineDynamicLogic implements ILine{
     }
     public static boolean isPosibleDynamicLogic(String strline, char sep, char q)
     {
-    	String w = removeNBT(LineBase.toWhiteSpaced(strline));
+    	String w = removeNBT(LineBase.toWhiteSpaced(strline),q);
+    	if(w.endsWith("="))
+    		w = w.substring(0, w.length()-1);
         boolean isLine = w.contains("" + sep) || w.contains("" + q);
         boolean init = isLine && strline.contains("\\|\\|") || isLine && strline.contains("||");
     	if(init)
@@ -217,7 +220,7 @@ public class LineDynamicLogic implements ILine{
 		}
 		return false;
 	}
-	public static String removeNBT(String line) {
+	public static String removeNBT(String line,char q) {
 		if(!containsNBT(line))
 			return line;
 		
@@ -228,7 +231,7 @@ public class LineDynamicLogic implements ILine{
 			int lindex = line.indexOf(c);
 			if(lindex == -1)
 				continue;
-			int rindex = getIndexRBracket(lindex,line,c,s.charAt(1));
+			int rindex = getIndexRBracket(lindex,line,c,s.charAt(1),q);
 			String nbt = line.substring(lindex, rindex+1);
 			line = line.replace(nbt, "");
 		}
@@ -236,18 +239,24 @@ public class LineDynamicLogic implements ILine{
 	}
     public static boolean containsNBT(String line) {
     	for(String s : nbts)
+    	{
     		if(line.indexOf(s.charAt(0)) != -1)
     			return true;
+    	}
 		return false;
 	}
-	protected static int getIndexRBracket(int lindex,String str,char lbracket,char rbracket) {
+	public static int getIndexRBracket(int lindex,String str,char lbracket,char rbracket,char q) {
     	int lb = 0;
+		boolean indsideQuote = false;
     	for(int i=lindex;i<str.length();i++)
     	{
     		String ch = str.substring(i, i+1);
-    		if(ch.equals("" + lbracket))
+			if(ch.equals("" + q))
+    			indsideQuote = !indsideQuote;
+			
+    		if(ch.equals("" + lbracket) && !indsideQuote)
     			lb++;
-    		else if(ch.equals("" + rbracket))
+    		else if(ch.equals("" + rbracket) && !indsideQuote)
     			lb--;
     		str += ch;
     		if(lb == 0)
@@ -381,6 +390,20 @@ public class LineDynamicLogic implements ILine{
 		}
 		return list;
 	}
+	
+	public void setFancyLines(boolean b)
+	{
+		this.fancyLines = b;
+		for(int i=0;i<this.lineLogic.size();i++)
+		{
+			for(ILine line : this.lineLogic.get(i))
+			{
+				if(line instanceof LineEnhanced)
+					((LineEnhanced)line).fancy = b;
+			}
+		}
+	}
+	
 	@Override
 	public ICopy copy() {
 		return new LineDynamicLogic(this.getString(),this.seperator,this.quote,this.lbracket,this.rbracket,this.orLogic,this.fancyLines,this.invalid);

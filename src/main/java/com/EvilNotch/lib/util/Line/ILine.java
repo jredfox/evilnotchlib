@@ -5,7 +5,7 @@ import com.EvilNotch.lib.util.IObject;
 import net.minecraft.util.ResourceLocation;
 
 public interface ILine extends IObject{
-	public static final String lineLibraryVersion = "1.2.3";
+	public static final String lineLibraryVersion = "1.2.4.01";
 	public boolean equals(Object obj, boolean compareHead);
 	public String getString();
 	public String getComparible();//gets the string without the quotes for comparison

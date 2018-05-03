@@ -167,26 +167,33 @@ public class LineBase implements ILine
 	 */
 	public static boolean isCharNum(String s) 
 	{
-		if(s.equals("0") || s.equals("1") || s.equals("2") || s.equals("3") || s.equals("4")|| s.equals("5")|| s.equals("6")|| s.equals("7")|| s.equals("8")|| s.equals("9"))
-			return true;
-		return false;
+		if(s.indexOf('-') == 0)
+			s = s.substring(1);
+		String valid = "0123456789";
+		return valid.contains(s);
 	}
 	public static boolean isStringNum(String s)
 	{
-		String valid = "1234567890.";
+		String valid = "1234567890.-";
 		String valid_endings = "bslfdi";//byte,short,long,float,double,int
+		String check = ".-";
 		int indexdot = 0;
-		if(s.indexOf(".") == 0 || s.indexOf(".") == s.length() - 1)
+		int indexn = 0;
+		if(s.indexOf('.') == 0 || s.indexOf('.') == s.length() - 1)
 			return false;
 		for(int i=0;i<s.length();i++)
 		{
 			String character = s.substring(i, i+1);
 			boolean lastindex = i == s.length() -1;
-			if(character.equals("."))
+			if(check.contains(character))
 			{
-				if(indexdot >= 1)
+				if(character.equals("."))
+					indexdot++;
+				else
+					indexn++;
+				
+				if(indexdot > 1 || indexn > 1)
 					return false;
-				indexdot++;
 			}
 			if(!valid.contains(character))
 			{

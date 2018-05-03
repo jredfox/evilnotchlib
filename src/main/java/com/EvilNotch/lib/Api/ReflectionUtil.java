@@ -1,5 +1,10 @@
 package com.EvilNotch.lib.Api;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ReflectionUtil {
@@ -16,6 +21,35 @@ public class ReflectionUtil {
 		try{
 			ReflectionHelper.findField(clazz, str).set(instance,toset);
 		}catch(Exception e){e.printStackTrace();}
+	}
+	/**
+	 * Warning use at your own risk this is getting dangerous make sure you know what you are doing
+	 */
+	public static void setFinalObject(Object instance,Object toset,Class clazz,String strfeild)
+	{
+		try{
+		Field field = ReflectionHelper.findField(clazz,strfeild);
+		field.setAccessible(true);
+
+	    Field modifiersField = Field.class.getDeclaredField("modifiers");
+	    modifiersField.setAccessible(true);
+	    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+	    field.set(instance, toset);
+		}catch(Throwable t){t.printStackTrace();}
+	}
+
+	public static void invokeMethod(Object instance, Class<? extends GuiScreen> clazz, String mName,Object[] parameterobjs,Class[] param) 
+	{
+		try
+		{
+			Method m = clazz.getMethod(mName, param);
+			m.invoke(instance, parameterobjs);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
+		
 	}
 
 }

@@ -3,6 +3,7 @@ package com.EvilNotch.lib.util.Line;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,6 +95,11 @@ public class ConfigBase {
         if(!exsists)
         {
             try {
+            	//hotfix dir has to exist
+            	File parent = file.getParentFile();
+            	if(!parent.exists())
+            		parent.mkdirs();
+            	
                 file.createNewFile();
             } catch (IOException e) {e.printStackTrace();}
             this.first_launch = true;
@@ -106,21 +112,25 @@ public class ConfigBase {
     {
         try {
             //header and init
-            FileWriter out = new FileWriter(this.cfgfile);
+            ArrayList<String> toWrite = new ArrayList();
             for(Comment c : this.init)
-                out.write("" + c.start + c.comment + "\r\n");
+            	toWrite.add("" + c.start + c.comment);
+            
             if(this.init.size() > 0)
-                out.write("\r\n");//create new line if has header
+            	toWrite.add("");//create new line if has header
             if(!this.header.equals("")) 
-                out.write(this.getWrapper(true) + "\r\n\r\n");
+            	toWrite.add(this.getWrapper(true) + "\r\n");
             
             for(String s : list)
-                out.write(s + "\r\n");
+            	toWrite.add(s);//lines
             
             //end of header
             if(!this.header.equals(""))
-                out.write("\r\n" + this.getWrapper(false) + "\r\n");
-            out.close();
+            	toWrite.add("\r\n" + this.getWrapper(false));
+            
+            //enforce unicode regardless of jvm-args
+           JavaUtil.saveFileLines(toWrite, this.cfgfile, true);
+            
         } catch (Exception e) {e.printStackTrace();}
         
         //sync changes to before this call
@@ -135,14 +145,14 @@ public class ConfigBase {
         this.comments = new ArrayList();
         
         try {
-            List<String> filelist = Files.readAllLines(this.cfgfile.toPath());
+            List<String> filelist = JavaUtil.getFileLines(this.cfgfile,true);
+            removeBOM(filelist);
             String wrapperHead = getWrapper(true);
             String wrapperTail = getWrapper(false);
             int index = 0;
-            int cindex = 0;
             int actualIndex = 0;
             boolean initPassed = false;
-            
+           
             int headerIndex = -1;
             
             //scan for header
@@ -159,6 +169,7 @@ public class ConfigBase {
                 	break;//if is line stop trying to parse the header index
                 count++;
             }
+            
             for(String strline : filelist)
             {
                 String whitespaced = LineBase.toWhiteSpaced(strline);
@@ -166,7 +177,6 @@ public class ConfigBase {
                 actualIndex++;//since only used for boolean at beginging no need to copy ten other places
                 if(whitespaced.equals(""))
                 	continue;//optimization
-               
                 if(!isStringPossibleLine(strline,"" + this.commentStart,wrapperHead,wrapperTail,this.lineSeperator,this.lineQuote) )
                 {
                     //comment handling
@@ -180,7 +190,6 @@ public class ConfigBase {
                         	if(!this.hasHeaderComment(initcomment))
                         		this.init.add(initcomment);
                         }
-                        cindex++;
                     }
                     
                     continue;
@@ -199,6 +208,8 @@ public class ConfigBase {
                 index++;
             }
         } catch (Exception e) {e.printStackTrace();}
+        
+        
         this.lineChecker = getStringLines();
         if(this.enableComments)
         {
@@ -211,7 +222,23 @@ public class ConfigBase {
         	this.commentChecker = new ArrayList();
         }
     }
-    protected boolean isStringPossibleLine(String strline, String comment, String wrapperH, String wrapperT,char sep, char q) {
+    /**
+     * Removes UTF-8 Byte Order Marks
+     */
+    public void removeBOM(List<String> list) 
+    {
+		for(int i=0;i<list.size();i++)
+		{
+			String s = list.get(i);
+			if(s.length() > 0)
+			{
+				if((int)s.charAt(0) == 65279)
+					s = s.substring(1, s.length());
+				list.set(i, s);
+			}
+		}
+	}
+	protected boolean isStringPossibleLine(String strline, String comment, String wrapperH, String wrapperT,char sep, char q) {
 		return LineDynamicLogic.isStringPossibleLine(strline, comment, wrapperH, wrapperT, sep, q);
 	}
 	protected boolean isStringPossibleLine(String strline, String comment, char sep, char q) {
@@ -371,14 +398,39 @@ public class ConfigBase {
         for(ILine line : list)
             this.appendLine(line,index++);
     }
+    public void setLine(ILine line)
+    {
+    	setLine(line,true);
+    }
     /**
+     * replace line if already exists else add it
+     */
+    public void setLine(ILine line,boolean compareBase)
+    {
+    	int index = getLineIndex(compareBase ? line.getLineBase() : line);
+    	if(index != -1)
+    		setLine(line,index);
+    	else
+    		this.lines.add(line);
+    }
+    public int getLineIndex(ILine line) {
+    	int index = 0;
+    	for(ILine compare : this.lines)
+    	{
+    		if(this.isLineEqual(line, compare, false))
+    			return index;
+    		index++;
+    	}
+		return -1;
+	}
+	/**
      * Sets line to index
      * @param line
      * @param index
      */
     public void setLine(ILine line, int index)
     {
-        this.lines.set(index,line);
+    	this.lines.set(index, line);
     }
     /**
      * Take line objects and convert set them to the file
@@ -456,6 +508,24 @@ public class ConfigBase {
                 return true;//makes it compare the equals at the base level
     	}
         return false;
+    }
+    
+    public ILine getUpdatedLine(ILine print){
+    	return getUpdatedLine(print,true);
+    }
+    
+    public ILine getUpdatedLine(ILine print,boolean compareBase){
+    	if(compareBase)
+    		print = print.getLineBase();
+    	for(ILine compare : this.lines)
+    	{
+    		if(compareBase)
+    			compare = compare.getLineBase();
+    		//let both lines have a rejection because line base isn't going to check for additions of lineitemstackbase etc...
+    		if(isLineEqual(print,compare,false))
+                return compare;//makes it compare the equals at the base level
+    	}
+        return print;
     }
     /**
      * Does this config contain this line?
@@ -575,8 +645,11 @@ public class ConfigBase {
 	protected void updateCommentLines() {
         for(Comment c : this.comments)
         {
-           c.nearestLine = this.lines.get(c.lineIndex);
-           c.lineIndex = -1;
+           if(this.lines.size() != 0)
+           {
+        	   c.nearestLine = this.lines.get(c.lineIndex);
+           	   c.lineIndex = -1;
+           }
         }
     }
 

@@ -1,18 +1,27 @@
 package com.EvilNotch.lib.util;
 
+import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -20,14 +29,91 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.apache.commons.io.IOUtils;
 
+import org.apache.commons.io.IOUtils;
 
 import com.EvilNotch.lib.util.Line.LineBase;
 import com.EvilNotch.lib.util.Line.LineItemStackBase;
 
 public class JavaUtil {
 	public static final String SPECIALCHARS = "~!@#$%^&*()_+`'-=/,.<>?\"{}[]:;|" + "\\";
+	
+	public static int getInt(Number obj){
+		return obj.intValue();
+	}
+	public static short getShort(Number obj){
+		return obj.shortValue();
+	}
+	public static byte getByte(Number obj){
+		return obj.byteValue();
+	}
+	public static Long getLong(Number obj){
+		return obj.longValue();
+	}
+	public static double getDouble(Number obj){
+		return obj.doubleValue();
+	}
+	public static float getFloat(Number obj){
+		return obj.floatValue();
+	}
+	
+	public static void getAllFilesFromDir(File directory, ArrayList<File> files,String extension) {
+
+	    // get all the files from a directory
+	    File[] fList = directory.listFiles();
+	    for (File file : fList) {
+	        if (file.isFile() && !files.contains(file) && file.getName().endsWith(extension)) {
+	            files.add(file);
+	        } else if (file.isDirectory()) {
+	        	getAllFilesFromDir(file, files,extension);
+	        }
+	    }
+	}
+	public static void getAllFilesFromDir(File directory, ArrayList<File> files) {
+
+	    // get all the files from a directory
+	    File[] fList = directory.listFiles();
+	    for (File file : fList) {
+	        if (file.isFile() && !files.contains(file)) {
+	            files.add(file);
+	        } else if (file.isDirectory()) {
+	        	getAllFilesFromDir(file, files);
+	        }
+	    }
+	}
+	
+	public static Color getColorFromMsAcess(int p_78258_4_)
+	{
+		
+		int red = (int)(p_78258_4_ >> 16 & 255);
+        int green = (int)(p_78258_4_ >> 8 & 255);
+        int blue = (int)(p_78258_4_ & 255);
+        int alpha = (int)(p_78258_4_ >> 24 & 255);
+         return new Color(red,green,blue,alpha);
+	}
+	
+	public static int gethex(int r, int g, int b, int a) {
+        return a << 24 | r << 16 | g << 8 | b;
+    }
+	
+	public static int getMs(int ms, double[] mul) 
+	{
+		Color c = getColorFromMsAcess(ms);
+		double rmul = mul[0];
+		double gmul = mul[1];
+		double bmul = mul[2];
+		int r = (int)(c.getRed() * rmul);
+		int g = (int)(c.getGreen() * gmul);
+		int b = (int)(c.getBlue() * bmul);
+		if(r >= 255)
+			r = 255;
+		if(g >= 255)
+			g = 255;
+		if(b >= 255)
+			b = 255;//If it's greater then white return white
+
+		return gethex(r, g, b, 0);
+	}
 
 	public static boolean isSpecialChar(char c){
 		return SPECIALCHARS.contains("" + c);
@@ -83,6 +169,19 @@ public class JavaUtil {
 	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 	    Transferable transferable = new StringSelection(s);
 	    clipboard.setContents(transferable, owner);
+	}
+	
+	public static Object[] toStaticArray(List list){
+		Object[] li = new Object[list.size()];
+		for(int i=0;i<list.size();i++)
+			li[i] = list.get(i);
+		return li;
+	}
+	public static String[] toStaticStringArray(List list){
+		String[] li = new String[list.size()];
+		for(int i=0;i<list.size();i++)
+			li[i] = list.get(i).toString();
+		return li;
 	}
 	
 	public static String getStaticArrayStringWithLiteral(int[] list)
@@ -537,18 +636,160 @@ public class JavaUtil {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static void removeKeyMemoryLoc(HashMap map, Object obj) {
+	public static void removeKeyMemoryLoc(HashMap map, Object key) {
 		Iterator it = map.keySet().iterator();
 		while(it.hasNext())
 		{
 			Object obj2 = it.next();
-			if(obj == obj2)
+			if(key == obj2)
 				it.remove();
 		}
+	}
+	@SuppressWarnings("rawtypes")
+	public static Object getMemoryLocKey(HashMap map, Object value) {
+		Iterator it = map.entrySet().iterator();
+		while(it.hasNext())
+		{
+			Map.Entry entry = (Map.Entry) it.next();
+			if(entry.getValue() == value)
+				return entry.getKey();
+		}
+		return null;
 	}
 
 	public static char toUpperCaseChar(char c) {
 		return ("" + c).toUpperCase().charAt(0);
+	}
+	public static String getIntsAsString(int[] ints) {
+		String str = "";
+		for(int i : ints)
+			str += "" + i + ",";
+		return str.substring(0, str.length()-1);
+	}
+	public static List asList(Set set) {
+		if(set == null)
+			return null;
+		List list = new ArrayList();
+		for(Object obj : set)
+			list.add(obj);
+		return list;
+	}
+	/**
+	 * returns name from first index till it disovers a dot
+	 * @param file
+	 * @return
+	 */
+	public static String getFileTrueDisplayName(File file) {
+		return file.getName().split("\\.")[0];
+	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static ArrayList asArray(Object[] staticArr) {
+		ArrayList list = new ArrayList();
+		for(int i=0;i<staticArr.length;i++)
+			list.add(staticArr[i]);
+		return list;
+	}
+	public static boolean isStringNullOrEmpty(String string) {
+		if(string == null || string.isEmpty())
+			return true;
+		return false;
+	}
+	/**
+	 * Equivalent to Files.readAllLines() but, works way faster
+	 */
+	public static List<String> getFileLines(File f,boolean utf8)
+	{
+		BufferedReader reader = null;
+		List<String> list = null;
+		try
+		{
+			if(!utf8)
+			{
+				reader = new BufferedReader(new FileReader(f));//says it's utf-8 but, the jvm actually specifies it even though the lang settings in a game might be different
+			}
+			else
+			{
+				reader = new BufferedReader(new InputStreamReader(new FileInputStream(f),StandardCharsets.UTF_8) );
+			}
+			
+			list = new ArrayList();
+			String s = reader.readLine();
+			
+			if(s != null)
+			{
+				list.add(s);
+			}
+			
+			while(s != null)
+			{
+				s = reader.readLine();
+				if(s != null)
+				{
+					list.add(s);
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			if(reader != null)
+			{
+				try 
+				{
+					reader.close();
+				} catch (IOException e) 
+				{
+					System.out.println("Unable to Close InputStream this is bad");
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * Overwrites entire file default behavior no per line modification removal/addition
+	 */
+	public static void saveFileLines(List<String> list,File f,boolean utf8)
+	{
+		BufferedWriter writer = null;
+		try
+		{
+			if(!utf8)
+			{
+				writer = new BufferedWriter(new FileWriter(f));
+			}
+			else
+			{
+				writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f),StandardCharsets.UTF_8 ) );
+			}
+			
+			for(String s : list)
+			{
+				writer.write(s + "\r\n");
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			if(writer != null)
+			{
+				try
+				{
+					writer.close();
+				}
+				catch(Exception e)
+				{
+					System.out.println("Unable to Close OutputStream this is bad");
+				}
+			}
+		}
 	}
 
 }
