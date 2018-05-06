@@ -2,26 +2,27 @@ package com.EvilNotch.lib.minecraft;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
 import org.apache.logging.log4j.Level;
 
+import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.main.events.LibEvents;
-import com.EvilNotch.lib.main.events.TickHandler;
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.Line.LineBase;
-import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
+import com.EvilNotch.lib.main.eventhandlers.LibEvents;
+import com.EvilNotch.lib.main.eventhandlers.TickHandler;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
+import com.EvilNotch.lib.util.JavaUtil;
+import com.EvilNotch.lib.util.PointId;
+import com.EvilNotch.lib.util.Line.LineBase;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -36,6 +37,7 @@ import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityAmbientCreature;
@@ -44,20 +46,31 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.SPacketEntityEffect;
+import net.minecraft.network.play.server.SPacketPlayerAbilities;
+import net.minecraft.network.play.server.SPacketPlayerPosLook;
+import net.minecraft.network.play.server.SPacketRespawn;
+import net.minecraft.network.play.server.SPacketSetExperience;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProviderEnd;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraft.world.end.DragonFightManager;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry.EntityRegistration;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityUtil {
 	
@@ -346,41 +359,65 @@ public class EntityUtil {
 	{
 		if(uuid)
 		{
-			return new File(LibEvents.playerDataDir,player.getUniqueID().toString() + ".dat");
+			File file = new File(LibEvents.playerDataDir,player.getUniqueID().toString() + ".dat");
+			if(!file.exists())
+			{
+				NBTTagCompound nbt = EntityUtil.getEntityNBT(player);
+				updatePlayerFile(file,nbt);
+			}
+			return file;
 		}
 		else
-			return new File(LibEvents.playerDataNames,player.getName() + ".dat");
+		{
+			File file = new File(LibEvents.playerDataNames,player.getName() + ".dat");
+			if(!file.exists())
+			{
+				NBTTagCompound nbt = new NBTTagCompound();
+				nbt.setString("uuid", player.getUniqueID().toString() );
+				updatePlayerFile(file,nbt);
+			}
+			return file;
+		}
 	}
 	/**
 	 * Update Player file
 	 */
 	public static void updatePlayerFile(File file, NBTTagCompound nbt) 
 	{
-		if(!file.exists())
-		{
-			try {
-				file.createNewFile();
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
-		NBTUtil.updateNBTFile(file,nbt);
+		NBTUtil.updateNBTFileSafley(file,nbt);
 	}
 	/**
-	 * Gets cached playerdata from name needs instantiated world or will cause exceptions every time
-	 * @param display
-	 * @return
+	 * Gets cached playerdata from filename don't call unless you have the exact string
 	 */
-	public static NBTTagCompound getPlayerFileNBT(String display,boolean uuid) 
+	public static NBTTagCompound getPlayerFileNBT(String display,boolean uuidDir) 
 	{
-		try{
-			FileInputStream stream = null;
-			stream = !uuid ? new FileInputStream(new File(LibEvents.playerDataNames,display + ".dat")) : new FileInputStream(new File(LibEvents.playerDataDir,display + ".dat"));
-			NBTTagCompound nbt = CompressedStreamTools.readCompressed(stream);
-			stream.close();
-			return nbt;
-		}catch(Exception e){e.printStackTrace();}
-		return null;
+		FileInputStream stream = null;
+		NBTTagCompound nbt = null;
+		try
+		{
+			stream = !uuidDir ? new FileInputStream(new File(LibEvents.playerDataNames,display + ".dat")) : new FileInputStream(new File(LibEvents.playerDataDir,display + ".dat"));
+			nbt = CompressedStreamTools.readCompressed(stream);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			nbt = null;
+		}
+		finally
+		{
+			if(stream != null)
+			{
+				try
+				{
+					stream.close();
+				}
+				catch (IOException e)
+				{
+					System.out.println("unable to close input stream for player:" + display + ".dat");
+				}
+			}
+		}
+		return nbt;
 	}
 	
 	//Returns true for survival mode unless debug mode is on
@@ -787,6 +824,178 @@ public class EntityUtil {
 		{
 			ents_worldneedy.add(loc);
 		}
+	}
+	
+	/**
+	 * first parameter is player to teleport
+	 * Doesn't use the vanilla teleport system so set xyz's of player before hand of the new world in the portal as well as yaw pitch and maybe head
+	 */
+	public static void telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim)
+	{
+        int prevDim = e.dimension;
+    	
+        if(traveldim != prevDim)
+        {
+        	teleportEntityInterdimentional(e,server,prevDim,traveldim,x,y,z,e.rotationYaw,e.rotationPitch);
+        	World newWorld = e.world;
+        }
+        if(e.posX != x || e.posY != y || e.posZ != z)
+        {
+        	doTeleport(e, x, y, z);
+        }
+	}
+    /**
+     * This is the black magic responsible for teleporting players between dimensions!
+     */
+    public static EntityPlayer teleportPlayerInterdimentional(EntityPlayerMP player, MinecraftServer server, int sourceDim, int targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) 
+    {
+        WorldServer sourceWorld = server.getWorld(sourceDim);
+        WorldServer targetWorld = server.getWorld(targetDim);
+        PlayerList playerList = server.getPlayerList();
+
+        player.dimension = targetDim;
+        player.connection.sendPacket(new SPacketRespawn(player.dimension, targetWorld.getDifficulty(), targetWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
+        playerList.updatePermissionLevel(player);
+        sourceWorld.removeEntityDangerously(player);
+        player.isDead = false;
+
+        //region Transfer to world
+        player.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
+        player.connection.setPlayerLocation(xCoord, yCoord, zCoord, yaw, pitch);
+        targetWorld.spawnEntity(player);
+        targetWorld.updateEntityWithOptionalForce(player, false);
+        player.setWorld(targetWorld);
+
+        playerList.preparePlayer(player, sourceWorld);
+        player.connection.setPlayerLocation(xCoord, yCoord, zCoord, yaw, pitch);
+        player.interactionManager.setWorld(targetWorld);
+        player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
+        
+        //additions to brandon's core
+        player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
+//        player.connection.sendPacket(new Packet);//health update for mods that don't sync dimension change to start displaying weird
+        
+        playerList.updateTimeAndWeatherForPlayer(player, targetWorld);
+        playerList.syncPlayerInventory(player);
+
+        for (PotionEffect potioneffect : player.getActivePotionEffects()) {
+            player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
+        }
+        net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, sourceDim, targetDim);
+        player.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
+        
+    	if(sourceDim == 1)
+    		removeDragonBars(sourceWorld);//vanilla bug fix 1.9+
+        
+        return player;
+    }
+    public static Entity teleportEntityInterdimentional(Entity entity, MinecraftServer server, int sourceDim, int targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) 
+    {
+        if (entity == null || entity.isDead || entity.world == null || entity.world.isRemote) 
+        {
+            return null;
+        }
+        
+        if(entity instanceof EntityPlayerMP)
+        {
+        	return teleportPlayerInterdimentional((EntityPlayerMP)entity,server,sourceDim,targetDim,xCoord,yCoord,zCoord,yaw,pitch);
+        }
+        
+        WorldServer sourceWorld = server.getWorld(sourceDim);
+        WorldServer targetWorld = server.getWorld(targetDim);
+
+        //Set the entity dead before calling changeDimension. Still need to call changeDimension for things like minecarts which will drop their contents otherwise.
+        if (!entity.isDead && entity instanceof EntityMinecart) 
+        {
+            entity.isDead = true;
+            entity.changeDimension(targetDim);
+            entity.isDead = false;
+        }
+
+        entity.dimension = targetDim;
+
+        sourceWorld.removeEntity(entity);
+        entity.isDead = false;
+        entity.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
+        sourceWorld.updateEntityWithOptionalForce(entity, false);
+
+        Entity newEntity = EntityList.newEntity(entity.getClass(), targetWorld);
+        if (newEntity != null) 
+        {
+        	try
+        	{
+        		FieldAcess.methodEnt_copyDataFromOld.invoke(newEntity, entity);
+        		newEntity.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
+        		boolean flag = newEntity.forceSpawn;
+        		newEntity.forceSpawn = true;
+        		targetWorld.spawnEntity(newEntity);
+        		newEntity.forceSpawn = flag;
+        		targetWorld.updateEntityWithOptionalForce(newEntity, false);
+        	}
+        	catch(Throwable t)
+        	{
+        		t.printStackTrace();
+        		return null;
+        	}
+        }
+
+        entity.isDead = true;
+        sourceWorld.resetUpdateEntityTick();
+        targetWorld.resetUpdateEntityTick();
+
+        return newEntity;
+    }
+    /**
+     * Call this after player is removed from the world
+     */
+    public static void removeDragonBars(World end) 
+    {
+    	try
+    	{
+    		DragonFightManager fightManager = ((WorldProviderEnd)end.provider).getDragonFightManager();
+    		if(fightManager != null)
+    		{
+    			FieldAcess.method_dragonManager.invoke(fightManager);
+    		}
+    	}
+    	catch(Throwable t)
+    	{
+    		t.printStackTrace();
+    	}
+     }
+	/**
+     * Perform the actual teleport from xyz to xyz doesn't handle cross dimensions
+     */
+    public static void doTeleport(Entity e, double x, double y, double z)
+    {
+        if (e instanceof EntityPlayerMP)
+        {
+            Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
+            e.dismountRidingEntity();
+            if(e.posX != x || e.posY != y || e.posZ != z)
+            {
+            	e.setLocationAndAngles(x, y, z, e.rotationYaw, e.rotationPitch);
+            	((EntityPlayerMP)e).connection.setPlayerLocation(x, y, z, e.rotationYaw, e.rotationPitch, set);
+            }
+        }
+        else
+        {
+            float f2 = (float)MathHelper.wrapDegrees(e.rotationYaw);
+            float f3 = (float)MathHelper.wrapDegrees(e.rotationPitch);
+            f3 = MathHelper.clamp(f3, -90.0F, 90.0F);
+            e.setLocationAndAngles(x, y, z, f2, f3);
+        }
+
+        if (!(e instanceof EntityLivingBase) || !((EntityLivingBase)e).isElytraFlying())
+        {
+            e.motionY = 0.0D;
+            e.onGround = true;
+        }
+    }
+
+	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
+	{
+		TickHandler.kicker.put(p.connection, new PointId(0,ticks,msg) );
 	}
 
 }

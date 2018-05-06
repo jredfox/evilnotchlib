@@ -10,7 +10,7 @@ import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.main.events.ClientEvents;
+import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.EvilNotch.lib.minecraft.content.client.models.BasicModel;

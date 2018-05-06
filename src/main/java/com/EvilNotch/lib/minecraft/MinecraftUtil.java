@@ -1,5 +1,7 @@
 package com.EvilNotch.lib.minecraft;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameRules.ValueType;
 
@@ -11,5 +13,12 @@ public class MinecraftUtil {
 	    	else
 	    		g.addGameRule(pos, "" + g.getBoolean(pos), type);
 	}
+	 
+	 public static SoundEvent getSoundEvent(ResourceLocation soundEventIN) {
+		 return SoundEvent.REGISTRY.getObject(soundEventIN);
+	}
+	 public static ResourceLocation getSoundLoc(SoundEvent sound){
+		 return SoundEvent.REGISTRY.getNameForObject(sound);
+	 }
 
 }

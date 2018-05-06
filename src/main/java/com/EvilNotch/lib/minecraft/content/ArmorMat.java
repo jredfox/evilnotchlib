@@ -3,7 +3,7 @@ package com.EvilNotch.lib.minecraft.content;
 import java.util.HashMap;
 
 import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.minecraft.Util;
+import com.EvilNotch.lib.minecraft.MinecraftUtil;
 import com.EvilNotch.lib.util.IEnumContainer;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.ArrEntry;
@@ -61,7 +61,7 @@ public class ArmorMat implements IEnumContainer{
     }
 	public ArmorMat(ResourceLocation enumName,ResourceLocation nameIn, int maxDamageFactorIn, int[] damageReductionAmountArrayIn, int enchantabilityIn, ResourceLocation soundEventIN, float toughnessIn)
     {
-         this(enumName,nameIn,maxDamageFactorIn,damageReductionAmountArrayIn, enchantabilityIn, Util.getSoundEvent(soundEventIN), toughnessIn);
+         this(enumName,nameIn,maxDamageFactorIn,damageReductionAmountArrayIn, enchantabilityIn, MinecraftUtil.getSoundEvent(soundEventIN), toughnessIn);
     }
 	public ArmorMat(LineEnhanced line)
 	{
@@ -78,7 +78,7 @@ public class ArmorMat implements IEnumContainer{
 		this.damageReductionAmountArray = damageReduce;
 		
 		this.enchantability = line.getInt(3);
-		this.soundEvent = Util.getSoundEvent(new ResourceLocation((String) line.heads.get(4)));
+		this.soundEvent = MinecraftUtil.getSoundEvent(new ResourceLocation((String) line.heads.get(4)));
 		this.toughness = line.getFloat(5);
 	}
 	 

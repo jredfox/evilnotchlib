@@ -3,6 +3,7 @@ package com.EvilNotch.lib.Api;
 import java.lang.reflect.Method;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.translation.I18n;
@@ -29,6 +30,7 @@ public class FieldAcess {
 	
 	//methods
 	public static Method method_dragonManager = null;
+	public static Method methodEnt_copyDataFromOld = null;
 	
 	public static boolean cached = false;
 	
@@ -54,6 +56,9 @@ public class FieldAcess {
 		{
 			method_dragonManager = DragonFightManager.class.getDeclaredMethod(MCPMappings.getMethod(DragonFightManager.class, "updateplayers"));
 			method_dragonManager.setAccessible(true);
+			
+			methodEnt_copyDataFromOld = Entity.class.getDeclaredMethod(MCPMappings.getMethod(Entity.class,"copyDataFromOld"), Entity.class);
+			methodEnt_copyDataFromOld.setAccessible(true);
 		}
 		catch (Throwable t)
 		{
