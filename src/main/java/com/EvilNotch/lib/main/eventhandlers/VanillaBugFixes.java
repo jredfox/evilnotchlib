@@ -1,8 +1,6 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMonsterPlacer;
@@ -15,11 +13,19 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class VanillaBugFixes {
+	
+	@SubscribeEvent
+	public void onRespawn(PlayerRespawnEvent e)
+	{
+		if(e.player.world.isRemote)
+			return;
+		e.player.extinguish();
+	}
 	
 	/**
      * This fixes the vanilla ItemMonsterSpawner Bugs

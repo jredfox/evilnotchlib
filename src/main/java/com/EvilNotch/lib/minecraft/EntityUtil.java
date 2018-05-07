@@ -68,6 +68,7 @@ import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.end.DragonFightManager;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry.EntityRegistration;
@@ -924,6 +925,7 @@ public class EntityUtil {
         {
         	try
         	{
+        		FieldAcess.methodEnt_copyDataFromOld.setAccessible(true);
         		FieldAcess.methodEnt_copyDataFromOld.invoke(newEntity, entity);
         		newEntity.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
         		boolean flag = newEntity.forceSpawn;
@@ -955,6 +957,7 @@ public class EntityUtil {
     		DragonFightManager fightManager = ((WorldProviderEnd)end.provider).getDragonFightManager();
     		if(fightManager != null)
     		{
+    			FieldAcess.method_dragonManager.setAccessible(true);
     			FieldAcess.method_dragonManager.invoke(fightManager);
     		}
     	}
@@ -996,6 +999,34 @@ public class EntityUtil {
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
 	{
 		TickHandler.kicker.put(p.connection, new PointId(0,ticks,msg) );
+	}
+
+	/**
+	 * call remove player 1 if your checking this during player logout event since it doesn't get removed from the world as of yet
+	 * unused as I now use isPlayerOwner leaving the server and is client
+	 */
+	public static boolean isWorldsEmptyPlayers(World w,boolean removePlayer1) 
+	{
+		int size = w.playerEntities.size();
+		if(removePlayer1)
+			size--;
+		
+		if(size == 0)
+		{
+			for(World world : DimensionManager.getWorlds())
+			{
+				if(world.playerEntities.size() > 0 && w.provider.getDimension() != world.provider.getDimension())
+					return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isPlayerOwner(EntityPlayerMP player) {
+		if(!MainJava.isClient)
+			return false;
+		return player.getName().equals(player.getServer().getServerOwner());
 	}
 
 }

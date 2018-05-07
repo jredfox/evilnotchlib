@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.EnumChatFormatting;
 import com.EvilNotch.lib.minecraft.NBTUtil;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -159,12 +161,10 @@ public class TickHandler {
 		isKickerIterating = false;
 		
 		for(PointId p : kicker.values())
-		{
 			p.setLocation(p.getX() + 1,p.getY());
-		}
 	}
 	@SubscribeEvent
-	public void logout(PlayerLoggedInEvent e)
+	public void login(PlayerLoggedInEvent e)
 	{
 		if(e.player.world.isRemote)
 			return;
@@ -179,6 +179,9 @@ public class TickHandler {
 			players.remove(pname);
 			if(!isKickerIterating)
 				kicker.remove( ((EntityPlayerMP)e.player).connection);
+			
+			if(EntityUtil.isPlayerOwner((EntityPlayerMP)e.player) )
+				count = 0;//reset variable if integrated server owner decides to quit or view the main menu doesn't happen on dedicated
 		}
 	}
 }
