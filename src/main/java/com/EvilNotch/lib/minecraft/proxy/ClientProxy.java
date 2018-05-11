@@ -25,14 +25,19 @@ import com.EvilNotch.lib.util.Line.ILine;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,10 +49,15 @@ public class ClientProxy extends ServerProxy{
 	public static IBakedModel default_block = null;
 	
 	@Override
+	public void proxypreinit()
+	{
+		MainJava.isClient = true;
+	}
+	
+	@Override
 	public void preinit() 
 	{
 		super.preinit();
-		MainJava.isClient = true;
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		FieldAcessClient.cacheFields();
@@ -156,6 +166,12 @@ public class ClientProxy extends ServerProxy{
 		return CustomResourcePack.getCurrentLang();
 	}
 
-
+	/**
+	 * must be called from the owner or exceptions will be thrown
+	 */
+	public static void quitGame(EntityPlayerMP player, TextComponentString msg) 
+	{
+//		Minecraft.getMinecraft().player.displayGui(new Gui);
+	}
 
 }

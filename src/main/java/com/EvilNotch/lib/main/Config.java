@@ -88,6 +88,7 @@ public class Config {
 		prop.set(loc.toString());
 		currentMenuIndex = loc;
 		config.save();
+		System.out.println("herezzzzzzzzzzzzzzzzzzzzzzzzzz");
 		JavaUtil.printTime(stamp, "Saved Current Menu:");
 	}
 

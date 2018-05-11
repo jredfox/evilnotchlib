@@ -5,20 +5,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.EnumChatFormatting;
 import com.EvilNotch.lib.minecraft.NBTUtil;
+import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
 import com.EvilNotch.lib.util.PointId;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
@@ -71,9 +76,9 @@ public class TickHandler {
 	 * stop vanilla/forge bug of playerdata being randomly wiped
 	 */
 	@SubscribeEvent
-	public void inventoryFixer(TickEvent.PlayerTickEvent e)
+	public void inventoryFixer(TickEvent.ServerTickEvent e)
 	{
-		if(e.phase != Phase.END || e.player.world.isRemote || !Config.inventoryFixer)
+		if(e.phase != Phase.END || !Config.inventoryFixer)
 			return;
 
 		if(count < maxTick)
@@ -83,54 +88,93 @@ public class TickHandler {
 		else
 			count = 0;
 		
-		EntityPlayerMP p = (EntityPlayerMP) e.player;
-		try
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		if(server == null)
+			return;
+		
+		for(EntityPlayerMP p : server.getPlayerList().getPlayers() )
 		{
-			String pname = p.getName();
-			if(!players.containsKey(pname))
+			try
 			{
-				File file = EntityUtil.getPlayerFile(p, false);
-				NBTTagCompound nbt = EntityUtil.getPlayerFileNBT(pname,false);
-				players.put(pname, "" + nbt.getString("uuid") );
-			}
+				String pname = p.getName();
 			
-			String compare = p.getUniqueID().toString();
-			String cached = players.get(pname);
+				String compare = p.getUniqueID().toString();
+				String cached = players.get(pname);
 			
-			if(!compare.equals(cached))
-			{
-				System.out.println("UUID Change Detected Patching Player:\"" + pname + "\"");
-				File toUpdate = EntityUtil.getPlayerFile(p, true);
+				if(!compare.equals(cached))
+				{
+					System.out.println("UUID Change Detected Patching Player:\"" + pname + "\"");
+//					File toUpdate = EntityUtil.getPlayerFile(p, true);
 				
-				NBTTagCompound proper = EntityUtil.getPlayerFileNBT(cached.toString(),true);
-				proper.setLong("UUIDLeast", p.getUniqueID().getLeastSignificantBits() );//reformat uuids to match current one
-				proper.setLong("UUIDMost", p.getUniqueID().getMostSignificantBits() );
-				EntityUtil.updatePlayerFile(toUpdate, proper);//find actual uuid then update it
+					NBTTagCompound proper = EntityUtil.getPlayerFileNBT(cached,true);
+					proper.setLong("UUIDLeast", p.getUniqueID().getLeastSignificantBits() );//reformat uuids to match current one
+					proper.setLong("UUIDMost", p.getUniqueID().getMostSignificantBits() );
+//					EntityUtil.updatePlayerFile(toUpdate, proper);//find actual uuid then update it
 
-				int traveldim = proper.getInteger("Dimension");
-				NBTTagList list = proper.getTagList("Pos", 6);
+					int traveldim = proper.getInteger("Dimension");
+					NBTTagList list = proper.getTagList("Pos", 6);
 				
-				//supports cross dimensional teleporting
-				p.dismountRidingEntity();
-				EntityUtil.telePortEntity(p, p.getServer(), list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2), NBTUtil.getRotationYaw(proper), NBTUtil.getRotationPitch(proper), traveldim);
-				p.readFromNBT(proper);//force update everything
+					//supports cross dimensional teleporting
+					p.dismountRidingEntity();
+					EntityUtil.telePortEntity(p, p.getServer(), list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2), NBTUtil.getRotationYaw(proper), NBTUtil.getRotationPitch(proper), traveldim);
+					p.readFromNBT(proper);//force update everything
 				
-				//update playername file so it doesn't constantly update it the first time it changes
-				File name = EntityUtil.getPlayerFile(p, false);
-				NBTTagCompound nbt = new NBTTagCompound();
-				nbt.setString("uuid", p.getUniqueID().toString());
-				EntityUtil.updatePlayerFile(name,nbt);
-				players.put(pname, p.getUniqueID().toString());//update hashmap
+					//update playername file so it doesn't constantly update it the first time it changes
+					File name = EntityUtil.getPlayerFile(p, false);
+					NBTTagCompound nbt = new NBTTagCompound();
+					nbt.setString("uuid", compare);
+					EntityUtil.updatePlayerFile(name,nbt);
+					players.put(pname, compare);//update hashmap
 				
-				EntityUtil.printChat(p, EnumChatFormatting.GOLD, EnumChatFormatting.DARK_RED, "UUID Change Dedected For Player Disconnecting");
-                EntityUtil.kickPlayer(p,40,EnumChatFormatting.AQUA + "UUID Change Detected Relog For Syncing " + EnumChatFormatting.YELLOW + "Forge Capabilities");
+					MainJava.logger.log(Level.INFO, "[UUIDFIX] copying over stats");
+					File oldStats = new File(LibEvents.playerStatsDir,cached + ".json");
+//					p.mcServer.getPlayerList().getPlayerAdvancements(p_192054_1_)
+				
+					MainJava.logger.log(Level.INFO, "[UUIDFIX] copying over advancedments");
+					File oldAch = new File(LibEvents.playerAdvancedmentsDir,cached + ".json");
+				
+					PlayerDataFixEvent event = new PlayerDataFixEvent(p,cached,compare);
+					MinecraftForge.EVENT_BUS.post(event);//fire fix event so other mods can sync when playerdata uuidfixer detects uuid has changed
+				
+					EntityUtil.printChat(p, EnumChatFormatting.GOLD, EnumChatFormatting.DARK_RED, "UUID Change Dedected For Player Disconnecting");
+					EntityUtil.kickPlayer(p,40,EnumChatFormatting.AQUA + "UUID Change Detected Relog For Syncing " + EnumChatFormatting.YELLOW + "Forge Capabilities");
+				}
 			}
-		}
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
+			catch(Exception ex)
+			{
+				ex.printStackTrace();
+			}
 		}
 	}
+	
+	@SubscribeEvent
+	public void login(PlayerLoggedInEvent e)
+	{
+		if(e.player.world.isRemote)
+			return;
+		
+		File file = EntityUtil.getPlayerFileSafley(e.player, false);//updates player file synced to uuid on login
+		String pname = e.player.getName();
+		NBTTagCompound nbt = EntityUtil.getPlayerFileNBT(pname,false);
+		players.put(pname, "" + nbt.getString("uuid") );
+	}
+	
+	@SubscribeEvent
+	public void logout(PlayerLoggedOutEvent e)
+	{
+		if(e.player instanceof EntityPlayerMP)
+		{
+			String pname = e.player.getName();
+			players.remove(pname);
+			if(!isKickerIterating)
+				kicker.remove( ((EntityPlayerMP)e.player).connection);
+			
+			if(EntityUtil.isPlayerOwner((EntityPlayerMP)e.player) )
+				count = 0;//reset variable if integrated server owner decides to quit or view the main menu doesn't happen on dedicated
+		}
+	}
+	
+	
 	/**
 	 * entity player connection to point id(ticks existed, max tick count,String msg)
 	 * the connection is kept even on respawn so there is no glitching this kicker
@@ -155,33 +199,12 @@ public class TickHandler {
 			if(point.getX() >= point.getY())
 			{
 				it.remove();
-				connection.disconnect(new TextComponentString(point.id));
+				EntityUtil.disconnectPlayer(connection.player,new TextComponentString(point.id));
 			}
 		}
 		isKickerIterating = false;
 		
 		for(PointId p : kicker.values())
 			p.setLocation(p.getX() + 1,p.getY());
-	}
-	@SubscribeEvent
-	public void login(PlayerLoggedInEvent e)
-	{
-		if(e.player.world.isRemote)
-			return;
-		File file = EntityUtil.getPlayerFile(e.player, false);//updates player file synced to uuid on login
-	}
-	@SubscribeEvent
-	public void logout(PlayerLoggedOutEvent e)
-	{
-		if(e.player instanceof EntityPlayerMP)
-		{
-			String pname = e.player.getName();
-			players.remove(pname);
-			if(!isKickerIterating)
-				kicker.remove( ((EntityPlayerMP)e.player).connection);
-			
-			if(EntityUtil.isPlayerOwner((EntityPlayerMP)e.player) )
-				count = 0;//reset variable if integrated server owner decides to quit or view the main menu doesn't happen on dedicated
-		}
 	}
 }

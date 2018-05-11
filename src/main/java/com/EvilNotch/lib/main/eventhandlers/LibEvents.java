@@ -17,6 +17,8 @@ public class LibEvents {
 	public static File worlDir = null;
 	public static File playerDataNames = null;
 	public static File playerDataDir = null;
+	public static File playerStatsDir = null;
+	public static File playerAdvancedmentsDir = null;
 	
 	/**
 	 * Attempt to re-instantiate the entity caches for broken entities when the world is no longer fake
@@ -33,6 +35,8 @@ public class LibEvents {
 		 playerDataNames = new File(worlDir,"playerdata/names");
 		 playerDataNames.mkdirs();
 		 playerDataDir = playerDataNames.getParentFile();
+		 playerStatsDir = new File(playerDataDir.getParentFile(),"stats");
+		 playerAdvancedmentsDir = new File(playerDataDir.getParentFile(),"advancements");
 		 
 		 if(cachedEnts)
 			 return;

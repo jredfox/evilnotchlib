@@ -19,14 +19,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class VanillaBugFixes {
 	
-	@SubscribeEvent
-	public void onRespawn(PlayerRespawnEvent e)
-	{
-		if(e.player.world.isRemote)
-			return;
-		e.player.extinguish();
-	}
-	
 	/**
      * This fixes the vanilla ItemMonsterSpawner Bugs
      */

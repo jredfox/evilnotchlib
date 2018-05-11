@@ -16,6 +16,8 @@ import com.EvilNotch.lib.minecraft.content.FakeWorld;
 import com.EvilNotch.lib.minecraft.content.ToolSet;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
+import com.EvilNotch.lib.minecraft.content.commands.CMDKick;
+import com.EvilNotch.lib.minecraft.content.commands.CMDSeedGet;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.proxy.ServerProxy;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
@@ -74,6 +76,7 @@ public class MainJava {
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
 	{	
+		proxy.proxypreinit();
 		logger = e.getModLog();
 	  	
 		MCPMappings.cacheMCPApplicable(e.getModConfigurationDirectory());
@@ -94,6 +97,8 @@ public class MainJava {
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		GeneralRegistry.registerCommand(new CMDDim());
+		GeneralRegistry.registerCommand(new CMDSeedGet());
+		GeneralRegistry.registerCommand(new CMDKick());
 		
 //		BasicBlock.Properties props = new BasicBlock.Properties(new ResourceLocation(MODID + ":" + "spider"),Material.CACTUS,"pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
 //		BasicCreativeTab tab = new BasicCreativeTab("spiderTesting",new ItemStack(Items.CAKE),new LangEntry("Custom Shiny Tab","en_us"),new LangEntry("ÐŸÐ¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒÑ�ÐºÐ°Ñ� Ð±Ð»ÐµÑ�Ñ‚Ñ�Ñ‰Ð°Ñ� Ð²ÐºÐ»Ð°Ð´ÐºÐ°","ru_ru") );

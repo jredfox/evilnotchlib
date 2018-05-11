@@ -24,6 +24,8 @@ import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.PointId;
 import com.EvilNotch.lib.util.Line.LineBase;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityCreature;
@@ -350,17 +352,25 @@ public class EntityUtil {
 		return e.writeToNBT(new NBTTagCompound());
 	}
 	
+	public static File getPlayerFile(EntityPlayer player,boolean uuid)
+	{
+		if(uuid)
+			return new File(LibEvents.playerDataDir,player.getUniqueID().toString() + ".dat");
+		else
+			return new File(LibEvents.playerDataNames,player.getName() + ".dat");
+	}
+	
 	/**
 	 * Returns the uuidFile or cached file based on uuid boolean
 	 * @param player
 	 * @param uuid
 	 * @return player file
 	 */
-	public static File getPlayerFile(EntityPlayer player,boolean uuid)
+	public static File getPlayerFileSafley(EntityPlayer player,boolean uuid)
 	{
+		File file = getPlayerFile(player,uuid);
 		if(uuid)
 		{
-			File file = new File(LibEvents.playerDataDir,player.getUniqueID().toString() + ".dat");
 			if(!file.exists())
 			{
 				NBTTagCompound nbt = EntityUtil.getEntityNBT(player);
@@ -370,7 +380,6 @@ public class EntityUtil {
 		}
 		else
 		{
-			File file = new File(LibEvents.playerDataNames,player.getName() + ".dat");
 			if(!file.exists())
 			{
 				NBTTagCompound nbt = new NBTTagCompound();
@@ -1027,6 +1036,11 @@ public class EntityUtil {
 		if(!MainJava.isClient)
 			return false;
 		return player.getName().equals(player.getServer().getServerOwner());
+	}
+
+	public static void disconnectPlayer(EntityPlayerMP player,TextComponentString msg) 
+	{
+		player.connection.disconnect(msg);
 	}
 
 }

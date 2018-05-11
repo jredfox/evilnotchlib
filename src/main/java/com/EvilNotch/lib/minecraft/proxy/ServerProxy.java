@@ -130,4 +130,10 @@ public class ServerProxy {
 		}
 	}
 
+	/**
+	 * called before anything else
+	 */
+	public void proxypreinit() {
+	}
+
 }
