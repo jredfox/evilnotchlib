@@ -13,6 +13,10 @@ public class PlayerDataFixEvent extends Event{
 	public String uuidNew;
 	public UUIDFixer.Types type;
 	
+	/**
+	 * if fix type is UUIDFIX is patching vanilla bug from old file to new file
+	 * if fix type is UUIDLEVELDAT is a patch for when players swap worlds if mods work properly you should always just filter this out
+	 */
 	public PlayerDataFixEvent(EntityPlayerMP player,String uuidOld,String uuidNew, Types type)
 	{
 		this.player = player;

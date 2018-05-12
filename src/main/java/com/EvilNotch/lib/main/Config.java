@@ -26,7 +26,7 @@ public class Config {
 	public static boolean fancyPage = false;
 	public static boolean menuWhiteList = false;
 	public static ResourceLocation currentMenuIndex = null;
-	public static boolean inventoryFixer = true;
+	public static boolean playerOwnerAlwaysFix = true;
 	public static boolean playerDataFixOptimized = true;
 	
 	public static void loadConfig(File d){
@@ -39,9 +39,9 @@ public class Config {
 		isDev = config.get("general", "isDev", false).getBoolean();
 		fancyPage = config.get("menulib","FancyMenuPage",false).getBoolean();
 		menuWhiteList = config.get("menulib", "useWhiteList", false).getBoolean();
-		inventoryFixer = config.get("vanilla_fixer", "playerDataFixer", true).getBoolean();
 		playerDataFixOptimized = config.get("vanilla_fixer", "playerDataFixerOptimized", true).getBoolean();
-		
+		playerOwnerAlwaysFix = config.get("vanilla_fixer", "playerOwnerSwapAlwaysFix", true).getBoolean();
+				
 		String[] vars = config.getStringList("blacklistCMDNames", "entity", new String[]{"\"modid:mobname\""}, "Blacklist for command sender names so it always uses general when translating input with quotes \"modid:mobname\" ");
 		for(String s : vars)
 		{

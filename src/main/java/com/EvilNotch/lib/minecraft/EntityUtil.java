@@ -25,6 +25,7 @@ import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.PointId;
 import com.EvilNotch.lib.util.Line.LineBase;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -60,8 +61,12 @@ import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.DemoPlayerInteractionManager;
+import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.datafix.DataFixer;
+import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
@@ -72,6 +77,7 @@ import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.end.DragonFightManager;
+import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -385,7 +391,7 @@ public class EntityUtil {
 			if(!file.exists())
 			{
 				NBTTagCompound nbt = new NBTTagCompound();
-				nbt.setString("uuid", player.getUniqueID().toString() );
+				nbt.setString("uuid", EntityPlayer.getUUID(player.getGameProfile()).toString() );
 				updatePlayerFile(file,nbt);
 			}
 			return file;
@@ -398,10 +404,15 @@ public class EntityUtil {
 	{
 		NBTUtil.updateNBTFileSafley(file,nbt);
 	}
+	
+	public static NBTTagCompound getPlayerFileNBT(String display,EntityPlayerMP player,boolean uuidDir) 
+	{
+		return getPlayerFileNBT(display,player.mcServer.getPlayerList(),uuidDir);
+	}
 	/**
 	 * Gets cached playerdata from filename don't call unless you have the exact string
 	 */
-	public static NBTTagCompound getPlayerFileNBT(String display,boolean uuidDir) 
+	public static NBTTagCompound getPlayerFileNBT(String display,PlayerList playerlist,boolean uuidDir) 
 	{
 		FileInputStream stream = null;
 		NBTTagCompound nbt = null;
@@ -429,7 +440,28 @@ public class EntityUtil {
 				}
 			}
 		}
+		//fix player's nbt
+		if(nbt != null)
+		{
+			nbt = getFixedPlayerNBT(playerlist,nbt);
+		}
 		return nbt;
+	}
+	
+	private static NBTTagCompound getFixedPlayerNBT(PlayerList playerlist,NBTTagCompound nbt) {
+		SaveHandler handler = getPlayerDataManager(playerlist);
+		nbt = getDataFixer(handler).process(FixTypes.PLAYER, nbt);
+		return nbt;
+	}
+
+	public static SaveHandler getPlayerDataManager(PlayerList playerList) 
+	{
+		return (SaveHandler) ReflectionUtil.getObject(playerList, PlayerList.class, FieldAcess.playerDataManager);
+	}
+	
+	public static DataFixer getDataFixer(SaveHandler handler) 
+	{
+		return (DataFixer) ReflectionUtil.getObject(handler, SaveHandler.class, FieldAcess.dataFixer);
 	}
 	
 	//Returns true for survival mode unless debug mode is on
@@ -1052,6 +1084,31 @@ public class EntityUtil {
 		{
 			player.connection.disconnect(new TextComponentTranslation(msg.getText(),new Object[0]) );
 		}
+	}
+
+	public static NBTTagCompound getBlankPlayerData(EntityPlayerMP player) 
+	{
+		PlayerInteractionManager playerinteractionmanager;
+		if (player.mcServer.isDemo())
+        {
+            playerinteractionmanager = new DemoPlayerInteractionManager(player.mcServer.getWorld(0));
+        }
+        else
+        {
+            playerinteractionmanager = new PlayerInteractionManager(player.mcServer.getWorld(0));
+        }
+
+        EntityPlayerMP entityplayermp = new EntityPlayerMP(player.mcServer, player.mcServer.getWorld(0), new GameProfile(null,"forge_fake_player"), playerinteractionmanager);
+        
+        World playerWorld = player.mcServer.getWorld(0);
+        BlockPos spawnPoint = playerWorld.provider.getRandomizedSpawnPoint();
+        entityplayermp.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
+        
+        NBTTagCompound nbt = EntityUtil.getEntityNBT(entityplayermp);
+        if(nbt != null)
+        	nbt = EntityUtil.getFixedPlayerNBT(player.mcServer.getPlayerList(),nbt);
+        
+        return nbt;
 	}
 
 }

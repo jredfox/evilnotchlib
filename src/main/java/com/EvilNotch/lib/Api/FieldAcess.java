@@ -2,13 +2,17 @@ package com.EvilNotch.lib.Api;
 
 import java.lang.reflect.Method;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.end.DragonFightManager;
+import net.minecraft.world.storage.SaveHandler;
 
 public class FieldAcess {
 	
@@ -33,6 +37,8 @@ public class FieldAcess {
 	public static Method methodEnt_copyDataFromOld = null;
 	
 	public static boolean cached = false;
+	public static String playerDataManager = null;
+	public static String dataFixer = null;
 	
 	public static void cacheFields()
 	{
@@ -51,6 +57,8 @@ public class FieldAcess {
 		blockMaterialMapColor = MCPMappings.getField(Block.class, "blockMapColor");
 		commandsAllowed =  MCPMappings.getField(WorldSettings.class, "commandsAllowed");
 		lang_localizedName = MCPMappings.getField(I18n.class, "localizedName");
+		playerDataManager = MCPMappings.getField(PlayerList.class, "playerDataManager");
+		dataFixer = MCPMappings.getField(SaveHandler.class, "dataFixer");
 		
 		try 
 		{
@@ -64,7 +72,6 @@ public class FieldAcess {
 		{
 			t.printStackTrace();
 		}
-		
 		
 		cached = true;
 	}

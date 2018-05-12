@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
 
+import com.EvilNotch.lib.Api.FieldAcess;
+import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
@@ -15,12 +17,14 @@ import com.EvilNotch.lib.minecraft.EnumChatFormatting;
 import com.EvilNotch.lib.minecraft.NBTUtil;
 import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
 import com.EvilNotch.lib.util.PointId;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.TextComponentString;
@@ -48,36 +52,57 @@ public class UUIDFixer {
 	{
 		System.out.print("player is reading from file thread no sleep anymore zzzzzzzzzzzzzzzzzzzzzzzzz:\n");
 		EntityPlayerMP player = (EntityPlayerMP) e.getEntityPlayer();
-		
 		File file = EntityUtil.getPlayerFileSafley(player, false);//updates player file synced to uuid on login
-		String pname = player.getName();
-		NBTTagCompound nbt = EntityUtil.getPlayerFileNBT(pname,false);
-		String cached = nbt.getString("uuid");
 		
+		String pname = player.getName();
+		NBTTagCompound nbt = EntityUtil.getPlayerFileNBT(pname,player,false);
+		
+		String cached = nbt.getString("uuid");
 		String compare = player.getUniqueID().toString();
-		String compare2 = player.getGameProfile().getId().toString();
 		
 		players.put(pname,cached);//cache check for player tick
 		
-		if(!compare.equals(cached) || !compare2.equals(cached) )
+		if(!compare.equals(cached) )
 		{
-			patchPlayerData(player,cached,compare,false,UUIDFixer.Types.UUIDFIX,true);
+			patchPlayerData(player,cached,compare,false,true);
 			return;
 		}
 		
-		//player swap controll
+		//client world swapping world's to another player fix
 		NBTTagCompound lvl = player.getServer().worlds[0].getWorldInfo().getPlayerNBTTagCompound();
-		if(lvl != null && EntityUtil.isPlayerOwner(player) && !MainJava.isDeObfuscated)
+		if(lvl != null && EntityUtil.isPlayerOwner(player) )//&& !MainJava.isDeObfuscated)
 		{
-			String compare3 = new UUID(lvl.getLong("UUIDMost"),lvl.getLong("UUIDLeast")).toString();
-			if(!compare3.equals(cached))
+			String compare2 = new UUID(lvl.getLong("UUIDMost"),lvl.getLong("UUIDLeast")).toString();
+			
+			if(!compare2.equals(cached))
 			{
-				System.out.println("fired from level.dat but,is looking for another player");
-				patchPlayerData(player,cached,compare,false,UUIDFixer.Types.UUIDLEVELDAT,true);
+				System.out.println("fired from level.dat but,is looking for another player:\n" + cached + "\nlvl.dat:" + compare2);
+				
+				NBTTagCompound proper = null;
+				File tst = new File(LibEvents.playerDataDir,cached + ".dat");
+				
+				if(tst.exists())
+					proper = EntityUtil.getPlayerFileNBT(cached, player, true);
+				
+				if(proper == null)
+				{
+					System.out.println("unable to find playerdata file reading from blank playerdata:" + player.getName());
+					
+					// it's not intended for a player to always be swaping when transfering client world to new user
+					if(!Config.playerOwnerAlwaysFix)
+						return;//makes the original intended feature to be intended
+					proper = EntityUtil.getBlankPlayerData(player);
+				}
+				
+				player.readFromNBT(proper);//notice doesn't take out uuid vanilla hotfix
+				updateLevelDatPlayer(proper);//doesn't update regular player file since the nbt is equal to that
+				
+				PlayerDataFixEvent event = new PlayerDataFixEvent(player,cached,compare2,UUIDFixer.Types.UUIDLEVELDAT);
+				MinecraftForge.EVENT_BUS.post(event);//fire fix event so other mods can sync when playerdata uuidfixer detects uuid has changed
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void playerDataLogin(PlayerLoggedInEvent e)
 	{
@@ -86,16 +111,15 @@ public class UUIDFixer {
 		
 		System.out.println("loging inzzzzzzzzzzzzzzzzzzzzzzzzz:");
 		String compare = e.player.getUniqueID().toString();
-		String compare2 = e.player.getGameProfile().getId().toString();
 		String cached = players.get(e.player.getName() );
 		
-		if(!compare.equals(cached) || !compare2.equals(cached) )
+		if(!compare.equals(cached) )
 		{
-			patchPlayerData((EntityPlayerMP) e.player,cached,compare,true,UUIDFixer.Types.UUIDFIX,false);
+			patchPlayerData((EntityPlayerMP) e.player,cached,compare,true,false);
 		}
 	}
 	
-	public static void patchPlayerData(EntityPlayerMP p, String cached, String compare, boolean requiresRestart,UUIDFixer.Types type,boolean readFromFile) 
+	public static void patchPlayerData(EntityPlayerMP p, String cached, String compare, boolean requiresRestart,boolean readFromFile) 
 	{
 		//instantiate error checking here
 		File tst = new File(LibEvents.playerDataDir,compare + ".dat");
@@ -115,35 +139,23 @@ public class UUIDFixer {
 		System.out.print("UUID Change Detected Patching Player:\"" + pname + "\"\n");
 		File toUpdate = EntityUtil.getPlayerFile(p, true);
 	
-		NBTTagCompound proper = EntityUtil.getPlayerFileNBT(cached,true);
+		NBTTagCompound proper = EntityUtil.getPlayerFileNBT(cached,p,true);
 		proper.setLong("UUIDLeast", p.getUniqueID().getLeastSignificantBits() );//reformat uuids to match current one
 		proper.setLong("UUIDMost", p.getUniqueID().getMostSignificantBits() );
 		EntityUtil.updatePlayerFile(toUpdate, proper);//for when vanilla doesn't do it itself when exceptions are thrown and cuaght
 		
 		//update level.dat file just in case mc doesn't do it
-		if(type == UUIDFixer.Types.UUIDLEVELDAT)
+		if(EntityUtil.isPlayerOwner(p))
 		{
-			try
-			{
-				File f = new File(LibEvents.playerDataDir.getParentFile(),"level.dat");
-				NBTTagCompound lvldat = NBTUtil.getFileNBT(f);
-				NBTTagCompound toUpdateNBT = lvldat.getCompoundTag("Data");
-				toUpdateNBT.setTag("Player", proper);//override existing data
-			
-				NBTUtil.updateNBTFile(f, lvldat);
-			}
-			catch(Throwable t)
-			{
-				t.printStackTrace();
-			}
+			updateLevelDatPlayer(proper);
 		}
-		int traveldim = proper.getInteger("Dimension");
-		NBTTagList list = proper.getTagList("Pos", 6);
-	
+
 		//supports cross dimensional teleporting
-		p.dismountRidingEntity();
 		if(!readFromFile)
 		{
+			int traveldim = proper.getInteger("Dimension");
+			NBTTagList list = proper.getTagList("Pos", 6);
+			p.dismountRidingEntity();
 			EntityUtil.telePortEntity(p, p.getServer(), list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2), NBTUtil.getRotationYaw(proper), NBTUtil.getRotationPitch(proper), traveldim);
 		}
 		p.readFromNBT(proper);//force update everything
@@ -162,13 +174,30 @@ public class UUIDFixer {
 		MainJava.logger.log(Level.INFO, "[UUIDFIX] copying over advancedments");
 		File oldAch = new File(LibEvents.playerAdvancedmentsDir,cached + ".json");
 	
-		PlayerDataFixEvent event = new PlayerDataFixEvent(p,cached,compare,type);
+		PlayerDataFixEvent event = new PlayerDataFixEvent(p,cached,compare,UUIDFixer.Types.UUIDFIX);
 		MinecraftForge.EVENT_BUS.post(event);//fire fix event so other mods can sync when playerdata uuidfixer detects uuid has changed
 		
 		if(requiresRestart)
 		{
 			EntityUtil.printChat(p, EnumChatFormatting.GOLD, EnumChatFormatting.DARK_RED, "UUID Change Dedected For Player Disconnecting");
 			EntityUtil.kickPlayer(p,60,EnumChatFormatting.AQUA + "UUID Change Detected Relog For Syncing " + EnumChatFormatting.YELLOW + "Forge Capabilities");
+		}
+	}
+
+	public static void updateLevelDatPlayer(NBTTagCompound proper) 
+	{
+		try
+		{
+			File f = new File(LibEvents.playerDataDir.getParentFile(),"level.dat");
+			NBTTagCompound lvldat = NBTUtil.getFileNBT(f);
+			NBTTagCompound toUpdateNBT = lvldat.getCompoundTag("Data");
+			toUpdateNBT.setTag("Player", proper);//don't have to fix data since EntityUtil.getPlayerFileNBT() already does this and it's replacing the tag
+		
+			NBTUtil.updateNBTFile(f, lvldat);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
 		}
 	}
 
@@ -179,13 +208,14 @@ public class UUIDFixer {
 
 	public static int count = 0;
 	public static final int maxTick = 20*6;
+	public static boolean isFixerIterating = false;
 	/**
 	 * stop vanilla/forge bug of playerdata being randomly wiped
 	 */
 	@SubscribeEvent
 	public void inventoryFixer(TickEvent.ServerTickEvent e)
 	{
-		if(e.phase != Phase.END || !Config.inventoryFixer)
+		if(e.phase != Phase.END)
 			return;
 
 		if(count < maxTick)
@@ -201,10 +231,13 @@ public class UUIDFixer {
 			return;
 		PlayerList list = server.getPlayerList();
 		
-		for(String pname : players.keySet())
+		Iterator<String> it = players.keySet().iterator();
+		while(it.hasNext())
 		{
+			isFixerIterating = true;
 			try
 			{
+				String pname = it.next();
 				EntityPlayerMP p = list.getPlayerByUsername(pname);
 				if(p == null)
 					continue;
@@ -217,16 +250,17 @@ public class UUIDFixer {
 			
 				if(!compare.equals(cached))
 				{
-					patchPlayerData(p,cached,compare,true,UUIDFixer.Types.UUIDFIX,false);
+					patchPlayerData(p,cached,compare,true,false);
 				}
 				if(Config.playerDataFixOptimized)
-					players.remove(pname);
+					it.remove();
 			}
 			catch(Exception ex)
 			{
 				ex.printStackTrace();
 			}
 		}
+		isFixerIterating = false;
 	}
 	
 	@SubscribeEvent
@@ -235,7 +269,8 @@ public class UUIDFixer {
 		if(e.player instanceof EntityPlayerMP)
 		{
 			String pname = e.player.getName();
-			players.remove(pname);
+			if(!isFixerIterating)
+				players.remove(pname);
 			if(!isKickerIterating)
 				kicker.remove( ((EntityPlayerMP)e.player).connection);
 			
