@@ -1,27 +1,30 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
-import java.util.Map;
-
-import com.EvilNotch.lib.Api.FieldAcessClient;
-import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.client.gui.GuiFakeMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
-import com.EvilNotch.lib.minecraft.content.client.rp.CustomResourcePack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.resources.LanguageManager;
-import net.minecraft.client.resources.Locale;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public class ClientEvents {
+	
+	@SubscribeEvent
+	public void onGuiDisconnect(GuiOpenEvent e)
+	{
+		if(e.getGui() == null || !(e.getGui() instanceof GuiDisconnected) || EntityUtil.msgShutdown == null)
+			return;
+		GuiDisconnected old = (GuiDisconnected)e.getGui();
+		e.setGui(new GuiDisconnected(new GuiMainMenu(),"disconnect.lost", EntityUtil.msgShutdown) );
+		EntityUtil.msgShutdown = null;
+	}
 	
 	/**
 	 * set the gui to something mods are never going to be looking at

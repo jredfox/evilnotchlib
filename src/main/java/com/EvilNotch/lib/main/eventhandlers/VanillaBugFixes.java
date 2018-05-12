@@ -13,11 +13,26 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class VanillaBugFixes {
+	
+	/**
+	 * use to occur up till integrated server then easter egg stopped working
+	 */
+    @SubscribeEvent
+    public void notchFix(PlayerDropsEvent e)
+    {
+    	EntityPlayer player = e.getEntityPlayer();
+    	if(player == null || player.world.isRemote)
+    		return;
+    	if(player.getName().equals("Notch"))
+    	{
+    		e.getDrops().add(player.dropItem(new ItemStack(Items.APPLE, 1), true, false) );
+    	}
+    }
 	
 	/**
      * This fixes the vanilla ItemMonsterSpawner Bugs

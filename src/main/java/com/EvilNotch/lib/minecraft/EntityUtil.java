@@ -15,17 +15,18 @@ import java.util.Set;
 import org.apache.logging.log4j.Level;
 
 import com.EvilNotch.lib.Api.FieldAcess;
+import com.EvilNotch.lib.Api.MCPMappings;
+import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
-import com.EvilNotch.lib.main.eventhandlers.TickHandler;
+import com.EvilNotch.lib.main.eventhandlers.UUIDFixer;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.PointId;
 import com.EvilNotch.lib.util.Line.LineBase;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityCreature;
@@ -64,6 +65,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
@@ -1007,7 +1009,7 @@ public class EntityUtil {
 
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
 	{
-		TickHandler.kicker.put(p.connection, new PointId(0,ticks,msg) );
+		UUIDFixer.kicker.put(p.connection, new PointId(0,ticks,msg) );
 	}
 
 	/**
@@ -1038,9 +1040,18 @@ public class EntityUtil {
 		return player.getName().equals(player.getServer().getServerOwner());
 	}
 
+	public static TextComponentTranslation msgShutdown = null;
 	public static void disconnectPlayer(EntityPlayerMP player,TextComponentString msg) 
-	{
-		player.connection.disconnect(msg);
+	{	
+		if(isPlayerOwner(player))
+		{
+			player.mcServer.initiateShutdown();
+			msgShutdown = new TextComponentTranslation(msg.getText(),new Object[0]);
+		}
+		else
+		{
+			player.connection.disconnect(new TextComponentTranslation(msg.getText(),new Object[0]) );
+		}
 	}
 
 }

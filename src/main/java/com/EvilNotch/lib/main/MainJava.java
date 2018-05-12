@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
-import com.EvilNotch.lib.main.eventhandlers.TickHandler;
+import com.EvilNotch.lib.main.eventhandlers.UUIDFixer;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
@@ -91,7 +91,7 @@ public class MainJava {
 		cfgArmors = new ConfigEnhanced(new File(Config.cfg.getParent(),"config/armor.cfg"));
 		cfgBlockProps = new ConfigEnhanced(new File(Config.cfg.getParent(),"config/blockprops.cfg"));
 		
-		MinecraftForge.EVENT_BUS.register(new TickHandler());
+		MinecraftForge.EVENT_BUS.register(new UUIDFixer());
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
 		MinecraftForge.EVENT_BUS.register(this);

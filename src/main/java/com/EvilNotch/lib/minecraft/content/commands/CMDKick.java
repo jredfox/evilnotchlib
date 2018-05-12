@@ -39,10 +39,18 @@ public class CMDKick extends CommandBase {
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException 
 	{
 		Entity e = getEntity(server, sender, args[0]);	
+		String msg = "booted";
+		if(args.length >= 2)
+		{
+			msg = "";
+			for(int i = 1;i<args.length;i++)
+				msg += args[i] + " ";
+			msg = msg.trim();
+		}
 		if(e instanceof EntityPlayerMP)
 		{
 			EntityPlayerMP player = (EntityPlayerMP)e;
-			EntityUtil.kickPlayer(player, 40, "booted");
+			EntityUtil.disconnectPlayer(player,new TextComponentString(msg));
 		}
 	}
 	
