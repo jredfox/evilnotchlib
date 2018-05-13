@@ -15,7 +15,7 @@ public class PlayerDataFixEvent extends Event{
 	
 	/**
 	 * if fix type is UUIDFIX is patching vanilla bug from old file to new file
-	 * if fix type is UUIDLEVELDAT is a patch for when players swap worlds if mods work properly you should always just filter this out
+	 * if fix type is UUIDLEVELDAT is a patch for when players swap worlds but, you should still be syncing your external patches over as well regardless event only fires on SP
 	 */
 	public PlayerDataFixEvent(EntityPlayerMP player,String uuidOld,String uuidNew, Types type)
 	{

@@ -70,13 +70,13 @@ public class UUIDFixer {
 		
 		//client world swapping world's to another player fix
 		NBTTagCompound lvl = player.getServer().worlds[0].getWorldInfo().getPlayerNBTTagCompound();
-		if(lvl != null && EntityUtil.isPlayerOwner(player) )//&& !MainJava.isDeObfuscated)
+		if(lvl != null && EntityUtil.isPlayerOwner(player) && !MainJava.isDeObfuscated)
 		{
 			String compare2 = new UUID(lvl.getLong("UUIDMost"),lvl.getLong("UUIDLeast")).toString();
 			
 			if(!compare2.equals(cached))
 			{
-				System.out.println("fired from level.dat but,is looking for another player:\n" + cached + "\nlvl.dat:" + compare2);
+				System.out.println("fired from level.dat but,is looking for another player:\ncached:" + cached + "\nlvl.dat:" + compare2);
 				
 				NBTTagCompound proper = null;
 				File tst = new File(LibEvents.playerDataDir,cached + ".dat");
@@ -90,7 +90,7 @@ public class UUIDFixer {
 					
 					// it's not intended for a player to always be swaping when transfering client world to new user
 					if(!Config.playerOwnerAlwaysFix)
-						return;//makes the original intended feature to be intended
+						return;
 					proper = EntityUtil.getBlankPlayerData(player);
 				}
 				

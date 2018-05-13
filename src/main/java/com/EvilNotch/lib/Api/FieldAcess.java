@@ -39,6 +39,7 @@ public class FieldAcess {
 	public static boolean cached = false;
 	public static String playerDataManager = null;
 	public static String dataFixer = null;
+	public static String gameType = null;
 	
 	public static void cacheFields()
 	{
@@ -59,6 +60,7 @@ public class FieldAcess {
 		lang_localizedName = MCPMappings.getField(I18n.class, "localizedName");
 		playerDataManager = MCPMappings.getField(PlayerList.class, "playerDataManager");
 		dataFixer = MCPMappings.getField(SaveHandler.class, "dataFixer");
+		gameType =  MCPMappings.getField(PlayerList.class, "gameType");
 		
 		try 
 		{

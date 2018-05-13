@@ -2,6 +2,7 @@ package com.EvilNotch.lib.minecraft;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -25,6 +26,9 @@ import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.PointId;
 import com.EvilNotch.lib.util.Line.LineBase;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;
@@ -72,6 +76,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldServer;
@@ -79,6 +84,7 @@ import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry.EntityRegistration;
@@ -391,7 +397,7 @@ public class EntityUtil {
 			if(!file.exists())
 			{
 				NBTTagCompound nbt = new NBTTagCompound();
-				nbt.setString("uuid", EntityPlayer.getUUID(player.getGameProfile()).toString() );
+				nbt.setString("uuid", player.getUniqueID().toString() );
 				updatePlayerFile(file,nbt);
 			}
 			return file;
@@ -1086,29 +1092,63 @@ public class EntityUtil {
 		}
 	}
 
+	/**
+	 * gets a blank player data from your original player
+	 */
 	public static NBTTagCompound getBlankPlayerData(EntityPlayerMP player) 
 	{
+		int dim = 0;
+		
+    	//ps support get the initial dimension
+    	if(Loader.isModLoaded("perfectspawn"))
+    	{
+    		try 
+    		{
+    			Object psconfig = getPsConfig();
+				int psdim = getPsDim(psconfig);
+				dim = psdim;
+			}
+    		catch (Throwable e)
+    		{
+				e.printStackTrace();
+			}
+    	}
+    	
 		PlayerInteractionManager playerinteractionmanager;
 		if (player.mcServer.isDemo())
         {
-            playerinteractionmanager = new DemoPlayerInteractionManager(player.mcServer.getWorld(0));
+            playerinteractionmanager = new DemoPlayerInteractionManager(player.mcServer.getWorld(dim));
         }
         else
         {
-            playerinteractionmanager = new PlayerInteractionManager(player.mcServer.getWorld(0));
+            playerinteractionmanager = new PlayerInteractionManager(player.mcServer.getWorld(dim));
         }
 
-        EntityPlayerMP entityplayermp = new EntityPlayerMP(player.mcServer, player.mcServer.getWorld(0), new GameProfile(null,"forge_fake_player"), playerinteractionmanager);
-        
-        World playerWorld = player.mcServer.getWorld(0);
+        EntityPlayerMP entityplayermp = new EntityPlayerMP(player.mcServer, player.mcServer.getWorld(dim), new GameProfile(null,"forge_fake_player"), playerinteractionmanager);
+        entityplayermp.interactionManager.setGameType(player.world.getWorldInfo().getGameType());
+        World playerWorld = player.mcServer.getWorld(player.dimension);
         BlockPos spawnPoint = playerWorld.provider.getRandomizedSpawnPoint();
-        entityplayermp.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
-        
+        entityplayermp.setPosition(spawnPoint.getX() + 0.5D, spawnPoint.getY(), spawnPoint.getZ() + 0.5D);
         NBTTagCompound nbt = EntityUtil.getEntityNBT(entityplayermp);
-        if(nbt != null)
-        	nbt = EntityUtil.getFixedPlayerNBT(player.mcServer.getPlayerList(),nbt);
         
         return nbt;
+	}
+
+	@Deprecated
+	public static Object getPsConfig() throws Throwable
+	{
+		File worldDir = DimensionManager.getCurrentSaveRootDirectory();
+		Class psclazz = Class.forName("lumien.perfectspawn.PerfectSpawn");
+		Object instance = ReflectionUtil.getObject(null, psclazz, "INSTANCE");
+		Object configHandler = ReflectionUtil.getObject(instance, psclazz, "configHandler");
+		Object psconfig = ReflectionUtil.getObject(configHandler, Class.forName("lumien.perfectspawn.config.PSConfigHandler"), "activeConfig");
+		return psconfig;
+	}
+	@Deprecated
+	public static int getPsDim(Object psconfig) throws ClassNotFoundException,Exception
+	{
+		Integer psdim = (Integer) ReflectionUtil.getObject(psconfig, Class.forName("lumien.perfectspawn.config.PSConfig"), "initialSpawnDimension");
+		return psdim;
 	}
 
 }
