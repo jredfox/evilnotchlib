@@ -32,14 +32,15 @@ public class FieldAcess {
 	public static String commandsAllowed = null;//FakeWorld
 	public static String lang_localizedName = null;
 	
+	public static String playerDataManager = null;
+	public static String dataFixer = null;
+	
 	//methods
 	public static Method method_dragonManager = null;
 	public static Method methodEnt_copyDataFromOld = null;
 	
 	public static boolean cached = false;
-	public static String playerDataManager = null;
-	public static String dataFixer = null;
-	public static String gameType = null;
+	public static String bossInfo = null;
 	
 	public static void cacheFields()
 	{
@@ -60,7 +61,7 @@ public class FieldAcess {
 		lang_localizedName = MCPMappings.getField(I18n.class, "localizedName");
 		playerDataManager = MCPMappings.getField(PlayerList.class, "playerDataManager");
 		dataFixer = MCPMappings.getField(SaveHandler.class, "dataFixer");
-		gameType =  MCPMappings.getField(PlayerList.class, "gameType");
+		bossInfo = MCPMappings.getField(DragonFightManager.class, "bossInfo");
 		
 		try 
 		{

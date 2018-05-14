@@ -886,12 +886,12 @@ public class EntityUtil {
     	
         if(traveldim != prevDim)
         {
-        	teleportEntityInterdimentional(e,server,prevDim,traveldim,x,y,z,e.rotationYaw,e.rotationPitch);
+        	teleportEntityInterdimentional(e,server,prevDim,traveldim,x,y,z,yaw,pitch);
         	World newWorld = e.world;
         }
-        if(e.posX != x || e.posY != y || e.posZ != z)
+        if(e.posX != x || e.posY != y || e.posZ != z || yaw != e.rotationYaw || pitch != e.rotationPitch)
         {
-        	doTeleport(e, x, y, z);
+        	doTeleport(e, x, y, z,yaw,pitch);
         }
 	}
     /**
@@ -902,6 +902,10 @@ public class EntityUtil {
         WorldServer sourceWorld = server.getWorld(sourceDim);
         WorldServer targetWorld = server.getWorld(targetDim);
         PlayerList playerList = server.getPlayerList();
+        
+        sourceWorld.playerEntities.remove(player);
+    	if(sourceDim == 1)
+    		removeDragonBars(sourceWorld);//vanilla bug fix 1.9+
 
         player.dimension = targetDim;
         player.connection.sendPacket(new SPacketRespawn(player.dimension, targetWorld.getDifficulty(), targetWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
@@ -933,9 +937,6 @@ public class EntityUtil {
         }
         net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, sourceDim, targetDim);
         player.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
-        
-    	if(sourceDim == 1)
-    		removeDragonBars(sourceWorld);//vanilla bug fix 1.9+
         
         return player;
     }
@@ -1018,22 +1019,22 @@ public class EntityUtil {
 	/**
      * Perform the actual teleport from xyz to xyz doesn't handle cross dimensions
      */
-    public static void doTeleport(Entity e, double x, double y, double z)
+    public static void doTeleport(Entity e, double x, double y, double z,float yaw, float pitch)
     {
         if (e instanceof EntityPlayerMP)
         {
             Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
             e.dismountRidingEntity();
-            if(e.posX != x || e.posY != y || e.posZ != z)
+            if(e.posX != x || e.posY != y || e.posZ != z || e.rotationYaw != yaw || e.rotationPitch != pitch)
             {
             	e.setLocationAndAngles(x, y, z, e.rotationYaw, e.rotationPitch);
-            	((EntityPlayerMP)e).connection.setPlayerLocation(x, y, z, e.rotationYaw, e.rotationPitch, set);
+            	((EntityPlayerMP)e).connection.setPlayerLocation(x, y, z, yaw, pitch, set);
             }
         }
         else
         {
-            float f2 = (float)MathHelper.wrapDegrees(e.rotationYaw);
-            float f3 = (float)MathHelper.wrapDegrees(e.rotationPitch);
+            float f2 = (float)MathHelper.wrapDegrees(yaw);
+            float f3 = (float)MathHelper.wrapDegrees(pitch);
             f3 = MathHelper.clamp(f3, -90.0F, 90.0F);
             e.setLocationAndAngles(x, y, z, f2, f3);
         }

@@ -791,5 +791,14 @@ public class JavaUtil {
 			}
 		}
 	}
+	public static boolean isStringBoolean(String s) {
+		s = s.toLowerCase();
+		return s.equals("true") || s.equals("false");
+	}
+	public static boolean getBoolean(String str) {
+		if(!isStringBoolean(str))
+			return false;
+		return Boolean.parseBoolean(str);
+	}
 
 }
