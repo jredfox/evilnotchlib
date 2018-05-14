@@ -57,7 +57,7 @@ public class CMDDim extends CommandTeleport{
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         int index = 0;
-        if (args.length == 0)
+        if (args.length == 0 || args.length > 8)
         {
             throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
         }
