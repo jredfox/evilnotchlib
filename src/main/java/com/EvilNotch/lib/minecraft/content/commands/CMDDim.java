@@ -65,7 +65,12 @@ public class CMDDim extends CommandTeleport{
         {
     		if(!(sender instanceof Entity) && args.length == 1)
     			throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
-    		
+    		if(args.length == 3)
+    		{
+    			String last = args[args.length-1];
+    			if(last.startsWith("~") || LineBase.isStringNum(last))
+    				throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
+    		}
         	String arg = args[args.length-1];
         	boolean flag = LineBase.isStringNum(arg);
        		Entity fromPlayer = args.length == 1 ? (Entity)sender : getEntity(server, sender, args[index++]);
@@ -82,10 +87,19 @@ public class CMDDim extends CommandTeleport{
         }
         else if (args.length >= 4)
         {
-        	if(!(sender instanceof Entity) && args.length == 4)
-        		throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
-
-            Entity entity = args.length == 4 ? (Entity)sender : getEntity(server, sender, args[index++]);
+        	String ent = args[index];
+        	Entity entity = null;
+        	
+        	if(ent.startsWith("~") || LineBase.isStringNum(ent))
+        	{
+        		if(!(sender instanceof Entity))
+        			throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
+        		entity = (Entity)sender;
+        	}
+        	else
+        	{
+        		entity = getEntity(server, sender, args[index++]);
+        	}
 
             if (entity.world != null)
             {
@@ -101,6 +115,9 @@ public class CMDDim extends CommandTeleport{
                 double y = commandbase$coordinatearg1.getResult();
                 double z = commandbase$coordinatearg2.getResult();
 
+                if(index == args.length)
+                	throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
+                
                 String strdim = args[index++];
                 if(!LineBase.isStringNum(strdim))
                	 	throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
