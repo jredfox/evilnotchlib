@@ -61,16 +61,10 @@ public class CMDDim extends CommandTeleport{
         {
             throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
         }
-        else if (args.length >= 1 && args.length < 4)
+        else if (args.length >= 1 && args.length < 3)
         {
     		if(!(sender instanceof Entity) && args.length == 1)
     			throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
-    		if(args.length == 3)
-    		{
-    			String last = args[args.length-1];
-    			if(last.startsWith("~") || LineBase.isStringNum(last))
-    				throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
-    		}
         	String arg = args[args.length-1];
         	boolean flag = LineBase.isStringNum(arg);
        		Entity fromPlayer = args.length == 1 ? (Entity)sender : getEntity(server, sender, args[index++]);
@@ -84,6 +78,47 @@ public class CMDDim extends CommandTeleport{
        		EntityUtil.telePortEntity(fromPlayer, server, toPlayer.posX, toPlayer.posY, toPlayer.posZ,toPlayer.rotationYaw,toPlayer.rotationPitch, dim);        	
         	
        		notifyCommandListener(sender, this, "commands.teleport.success.coordinates", new Object[] {fromPlayer.getName(),  toPlayer.posX, toPlayer.posY, toPlayer.posZ,"Dim:" + toPlayer.dimension});
+        }
+        else if (args.length == 3)
+        {
+        	//tpdim @p int senderBoolean
+    		if(args.length == 3)
+    		{
+    			String last = args[args.length-1];
+    			if(last.startsWith("~") || LineBase.isStringNum(last))
+    				throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
+    		}
+    		Entity e = getEntity(server, sender, args[index++]);
+    		
+    		String dim = args[index++];
+    		String bool = args[index++];
+    		if(!LineBase.isStringNum(dim) || !JavaUtil.isStringBoolean(bool))
+    			throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
+    		
+    		int dimension = Integer.parseInt(dim);
+    		boolean senderCoords = Boolean.parseBoolean(bool);
+    		double x = e.posX;
+    		double y = e.posY;
+    		double z = e.posZ;
+    		
+    		if(senderCoords)
+    		{
+    			Vec3d vec3d = sender.getPositionVector();
+                x = vec3d.x;
+                y = vec3d.y;
+                z = vec3d.z;
+                if(sender instanceof Entity)
+                {
+                	Entity e2 = (Entity)sender;
+                	e.rotationYaw = e2.rotationYaw;
+                	e.rotationPitch = e2.rotationPitch;
+                	if(sender instanceof EntityLivingBase && e instanceof EntityLivingBase)
+                	{
+                		((EntityLivingBase)e).rotationYawHead = ((EntityLivingBase)e2).rotationYawHead;
+                	}
+                }
+    		}
+    		EntityUtil.telePortEntity(e, server, x, y, z, e.rotationYaw, e.rotationPitch, dimension);
         }
         else if (args.length >= 4)
         {
