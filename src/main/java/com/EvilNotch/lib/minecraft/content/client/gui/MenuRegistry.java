@@ -1,23 +1,17 @@
 package com.EvilNotch.lib.minecraft.content.client.gui;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
-import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.util.JavaUtil;
 
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
 
 public class MenuRegistry {
 	
@@ -71,6 +65,7 @@ public class MenuRegistry {
 		getCurrentMenu().onClose();	
 		indexMenu = getNext(indexMenu);
 		currentMenu = menus.get(indexMenu);
+		Minecraft.getMinecraft().getSoundHandler().stopSounds();
 		currentMenu.onOpen();
 	}
 	
@@ -79,6 +74,7 @@ public class MenuRegistry {
 		getCurrentMenu().onClose();
 		indexMenu = getPrevious(indexMenu);
 		currentMenu = menus.get(indexMenu);
+		Minecraft.getMinecraft().getSoundHandler().stopSounds();
 		currentMenu.onOpen();
 	}
 	

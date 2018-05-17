@@ -10,6 +10,7 @@ import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.MainJava;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Biomes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -100,6 +101,11 @@ public class FakeWorld extends World {
 		ReflectionUtil.setObject(settings,true,WorldSettings.class,FieldAcess.commandsAllowed);
 		return settings;
 	}
+    @Override
+    public boolean spawnEntity(Entity entityIn)
+    {
+    	return false;
+    }
 
 	@Override
     public DifficultyInstance getDifficultyForLocation(BlockPos pos)

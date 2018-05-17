@@ -40,7 +40,6 @@ public class FieldAcess {
 	public static Method methodEnt_copyDataFromOld = null;
 	
 	public static boolean cached = false;
-	public static String bossInfo = null;
 	
 	public static void cacheFields()
 	{
@@ -61,7 +60,6 @@ public class FieldAcess {
 		lang_localizedName = MCPMappings.getField(I18n.class, "localizedName");
 		playerDataManager = MCPMappings.getField(PlayerList.class, "playerDataManager");
 		dataFixer = MCPMappings.getField(SaveHandler.class, "dataFixer");
-		bossInfo = MCPMappings.getField(DragonFightManager.class, "bossInfo");
 		
 		try 
 		{

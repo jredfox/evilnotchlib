@@ -16,19 +16,35 @@ public class MCPMappings {
 	public static ArrayList<MCPEntry> methods = new ArrayList();
 	public static boolean isCached = false;
 	
+	/**
+	 * null proof as long as name isn't null
+	 */
 	public static String getField(Class clazz, String name)
 	{
 		if(MainJava.isDeObfuscated)
 			return name;
 		else
-			return getFieldOb(clazz,name);
+		{
+			String ob = getFieldOb(clazz,name);
+			if(ob == null)
+				return name;
+			return ob;
+		}
 	}
+	/**
+	 * null proof as long as name isnt' null
+	 */
 	public static String getMethod(Class clazz, String name)
 	{
 		if(MainJava.isDeObfuscated)
 			return name;
 		else
-			return getMethodOb(clazz,name);
+		{
+			String ob = getMethodOb(clazz,name);
+			if(ob == null)
+				return name;
+			return ob;
+		}
 	}
 	
 	public static String getFieldOb(Class clazz, String strname)

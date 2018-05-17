@@ -80,7 +80,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 			this.setHarvestLevel(props.harvestTool, props.harvestLvl);
 			
 			if(props.mat != null)
-				BlockApi.setMaterial(this, props.mat,true);
+				BlockApi.setMaterial(this, props.mat,true,props.harvestTool);
 			
 			if(props.sound != null)
 				this.setSoundType(props.sound);

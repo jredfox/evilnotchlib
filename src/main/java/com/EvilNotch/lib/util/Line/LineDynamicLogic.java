@@ -32,7 +32,7 @@ public class LineDynamicLogic implements ILine{
     
     public LineDynamicLogic(String s,char sep,char q,char lbracket, char rbracket,boolean fancyLine,char...invalid)
     {
-    	this(s,sep,q,lbracket,rbracket,"||",false,invalid);
+    	this(s,sep,q,lbracket,rbracket,"||",fancyLine,invalid);
     }
     /**
      * Breaks up string into separate lines and each index is one && || logic Doesn't need to extend line since it's an array of lines
@@ -137,7 +137,7 @@ public class LineDynamicLogic implements ILine{
      */
     public static ILine getLineFromString(String s,char sep,char q,char lbracket,char rbracket,String orLogic,boolean fancy, char...invalid) 
     {
-    	if(isPosibleDynamicLogic(s, sep, q))
+    	if(isPosibleDynamicLogic(s, sep, q,orLogic))
     		return new LineDynamicLogic(s,sep,q,lbracket,rbracket,orLogic,fancy,invalid);
     	
     	LineEnhanced line = new LineEnhanced(s,sep,q,lbracket,rbracket,fancy,invalid);
@@ -189,17 +189,17 @@ public class LineDynamicLogic implements ILine{
     {
         return isStringPossibleLine(strline,"#",':','"');
     }
-    public static boolean isPosibleDynamicLogic(String strline)
+    public static boolean isPosibleDynamicLogic(String strline,String orLogic)
     {
-    	return isPosibleDynamicLogic(strline,':','"');
+    	return isPosibleDynamicLogic(strline,':','"',orLogic);
     }
-    public static boolean isPosibleDynamicLogic(String strline, char sep, char q)
+    public static boolean isPosibleDynamicLogic(String strline, char sep, char q,String orLogic)
     {
     	String w = removeNBT(LineBase.toWhiteSpaced(strline),q);
     	if(w.endsWith("="))
     		w = w.substring(0, w.length()-1);
         boolean isLine = w.contains("" + sep) || w.contains("" + q);
-        boolean init = isLine && strline.contains("\\|\\|") || isLine && strline.contains("||");
+        boolean init = isLine && strline.contains("\\|\\|") && orLogic.equals("||") || isLine && strline.contains(orLogic);
     	if(init)
     		return true;
     	return containsMultipleLines(w,q) && isLine;
@@ -276,7 +276,7 @@ public class LineDynamicLogic implements ILine{
                 str += line.getString() + ", ";
             
             str = str.substring(0, str.length()-2);//get rid of last comment after parsing row
-            str += " || ";//add possible next row
+            str += " " + this.orLogic + " ";//add possible next row
         }
         return this.lineLogic.size() > 0 ? str = str.substring(0, str.length()-4) : str;
     }
@@ -292,7 +292,7 @@ public class LineDynamicLogic implements ILine{
             for(ILine line : list)
                     str += line.toString() + ", ";
             str = str.substring(0, str.length()-2);//get rid of last comment after parsing row
-            str += " || ";
+            str += " " + this.orLogic + " ";
         }
         return this.lineLogic.size() > 0 ? str = str.substring(0, str.length()-4) : str;
     }
@@ -423,7 +423,7 @@ public class LineDynamicLogic implements ILine{
 	              str += line.getComparible() + ", ";
 	            
 	         str = str.substring(0, str.length()-2);//get rid of last comment after parsing row
-	         str += " || ";//add possible next row
+	         str += " " + this.orLogic + " ";
 	    }
 	    return this.lineLogic.size() > 0 ? str = str.substring(0, str.length()-4) : str;
 	}

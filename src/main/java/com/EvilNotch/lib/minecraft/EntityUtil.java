@@ -2,7 +2,6 @@ package com.EvilNotch.lib.minecraft;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -10,13 +9,13 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.Level;
 
 import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
@@ -26,12 +25,8 @@ import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.PointId;
 import com.EvilNotch.lib.util.Line.LineBase;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityCreature;
@@ -45,7 +40,6 @@ import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityAmbientCreature;
@@ -55,6 +49,8 @@ import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -68,6 +64,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.DemoPlayerInteractionManager;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.ClassInheritanceMultiMap;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
@@ -76,11 +74,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.DimensionManager;
@@ -876,12 +874,21 @@ public class EntityUtil {
 		}
 	}
 	
+	public static void telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim)
+	{
+		telePortEntity(e,server,x,y,z,yaw,pitch, traveldim,true);
+	}
+	
 	/**
 	 * first parameter is player to teleport
 	 * Doesn't use the vanilla teleport system so set xyz's of player before hand of the new world in the portal as well as yaw pitch and maybe head
 	 */
-	public static void telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim)
+	public static void telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim,boolean dismountRiding)
 	{
+		if(e.isDead)
+			return;
+		if(dismountRiding)
+			e.dismountRidingEntity();
         int prevDim = e.dimension;
     	
         if(traveldim != prevDim)
@@ -927,7 +934,7 @@ public class EntityUtil {
         
         //additions to brandon's core
         player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
-//        player.connection.sendPacket(new Packet);//health update for mods that don't sync dimension change to start displaying weird
+//        player.setHealth(player.getHealth());
         
         playerList.updateTimeAndWeatherForPlayer(player, targetWorld);
         playerList.syncPlayerInventory(player);
@@ -955,12 +962,18 @@ public class EntityUtil {
         WorldServer sourceWorld = server.getWorld(sourceDim);
         WorldServer targetWorld = server.getWorld(targetDim);
 
-        //Set the entity dead before calling changeDimension. Still need to call changeDimension for things like minecarts which will drop their contents otherwise.
-        if (!entity.isDead && entity instanceof EntityMinecart) 
+        //hotfix for entities that don't handle onDeath() for what it's made for dropping actual items
+        List<ItemStack> stacks = new ArrayList();
+        System.out.println("fire here debuggers");
+        if (!entity.isDead && entity instanceof IInventory) 
         {
-            entity.isDead = true;
-            entity.changeDimension(targetDim);
-            entity.isDead = false;
+           IInventory inventory = (IInventory)entity;
+           for(int i=0;i<inventory.getSizeInventory();i++)
+           {
+        	   ItemStack stack = inventory.getStackInSlot(i);
+        	   stacks.add(stack);
+           }
+           inventory.clear();
         }
 
         entity.dimension = targetDim;
@@ -978,6 +991,18 @@ public class EntityUtil {
         		FieldAcess.methodEnt_copyDataFromOld.setAccessible(true);
         		FieldAcess.methodEnt_copyDataFromOld.invoke(newEntity, entity);
         		newEntity.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
+        		//hotfix for minecarts and anything else that breaks onDeath() method
+        		if(newEntity instanceof IInventory)
+        		{
+        			IInventory inventory = (IInventory)newEntity;
+        			int index = 0;
+        			for(ItemStack stack : stacks)
+        			{
+        				inventory.setInventorySlotContents(index,stack);
+        				index++;
+        			}
+        			inventory.markDirty();
+        		}
         		boolean flag = newEntity.forceSpawn;
         		newEntity.forceSpawn = true;
         		targetWorld.spawnEntity(newEntity);
@@ -1015,36 +1040,64 @@ public class EntityUtil {
     	{
     		t.printStackTrace();
     	}
-     }
+    }
 	/**
-     * Perform the actual teleport from xyz to xyz doesn't handle cross dimensions
+     *supports teleporting entities from location to location in the same dimension doesn't support actual cross dimensional teleport
      */
     public static void doTeleport(Entity e, double x, double y, double z,float yaw, float pitch)
     {
+        int chunkOldX = (int)e.posX >> 4;
+ 		int chunkOldZ = (int)e.posZ >> 4;
+        int chunkX = (int)x >> 4;
+		int chunkZ = (int)z >> 4;
+ 		//remove from old chunk
+        if(chunkOldX != chunkX || chunkOldZ != chunkZ)
+        {
+        	Chunk chunkOld = e.world.getChunkFromChunkCoords(chunkOldX,chunkOldZ);
+        	chunkOld.removeEntity(e);
+        }
+ 		
         if (e instanceof EntityPlayerMP)
         {
             Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
             e.dismountRidingEntity();
-            if(e.posX != x || e.posY != y || e.posZ != z || e.rotationYaw != yaw || e.rotationPitch != pitch)
-            {
-            	e.setLocationAndAngles(x, y, z, e.rotationYaw, e.rotationPitch);
-            	((EntityPlayerMP)e).connection.setPlayerLocation(x, y, z, yaw, pitch, set);
-            }
+            e.setLocationAndAngles(x, y, z, e.rotationYaw, e.rotationPitch);
+            ((EntityPlayerMP)e).connection.setPlayerLocation(x, y, z, yaw, pitch, set);
         }
         else
         {
             float f2 = (float)MathHelper.wrapDegrees(yaw);
             float f3 = (float)MathHelper.wrapDegrees(pitch);
             f3 = MathHelper.clamp(f3, -90.0F, 90.0F);
-            e.setLocationAndAngles(x, y, z, f2, f3);
+            e.setLocationAndAngles(x, y, z, f2, f3);    
         }
-
+        
         if (!(e instanceof EntityLivingBase) || !((EntityLivingBase)e).isElytraFlying())
         {
             e.motionY = 0.0D;
             e.onGround = true;
         }
+        //vanilla hotfix add entity to the new chunk if not already added
+        Chunk chunk = e.world.getChunkFromChunkCoords(chunkX,chunkZ);
+        if(!containsEntity(chunk.getEntityLists(),e))
+        	chunk.addEntity(e);
     }
+
+	public static boolean containsEntity(ClassInheritanceMultiMap<Entity>[] list,Entity e) 
+	{
+		for(int i=0;i<list.length;i++)
+		{
+			ClassInheritanceMultiMap map = list[i];
+			Iterator<Entity> it = map.iterator();
+			while(it.hasNext())
+			{
+				Entity e2 = it.next();
+				if(e == e2)
+					return true;
+			}
+		}
+		return false;
+	}
 
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
 	{
@@ -1150,6 +1203,15 @@ public class EntityUtil {
 	{
 		Integer psdim = (Integer) ReflectionUtil.getObject(psconfig, Class.forName("lumien.perfectspawn.config.PSConfig"), "initialSpawnDimension");
 		return psdim;
+	}
+
+	public static ItemStack getActiveItemStack(EntityPlayer p,EnumHand hand) 
+	{
+		return p.getHeldItem(hand);
+	}
+	public static BlockPos getPos(Entity e)
+	{
+	   return new BlockPos((int)e.posX,(int)e.posY,(int)e.posZ);
 	}
 
 }

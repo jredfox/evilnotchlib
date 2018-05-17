@@ -60,7 +60,7 @@ public class NBTUtil {
 			stream = new FileInputStream(file);
 			nbt = CompressedStreamTools.readCompressed(stream);
 		}
-		catch(Exception e)
+		catch(Throwable e)
 		{
 			e.printStackTrace();
 			nbt = null;
@@ -100,6 +100,10 @@ public class NBTUtil {
 		if(!file.exists())
 		{
 			try {
+				
+				File parent = file.getParentFile();
+				if(!parent.exists())
+					parent.mkdirs();
 				file.createNewFile();
 			} catch (Throwable e) {
 				e.printStackTrace();
@@ -107,6 +111,27 @@ public class NBTUtil {
 			}
 		}
 		updateNBTFile(file,nbt);
+	}
+	public static NBTTagCompound getFileNBTSafley(File file) 
+	{
+		if(!file.exists())
+		{
+			try
+			{
+				File parent = file.getParentFile();
+				if(!parent.exists())
+					parent.mkdirs();
+				file.createNewFile();
+				updateNBTFile(file, new NBTTagCompound());
+				return new NBTTagCompound();//optimized way
+			}
+			catch(Throwable t)
+			{
+				t.printStackTrace();
+				return null;
+			}
+		}
+		return getFileNBT(file);
 	}
 
 }

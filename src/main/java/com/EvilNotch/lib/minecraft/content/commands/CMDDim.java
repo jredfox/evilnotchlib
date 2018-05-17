@@ -1,6 +1,7 @@
 package com.EvilNotch.lib.minecraft.content.commands;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -141,7 +142,6 @@ public class CMDDim extends CommandTeleport{
             	boolean vecFlag = JavaUtil.getBoolean(args[args.length-1]);
             	
                 Vec3d vec3d =  vecFlag ? sender.getPositionVector() : entity.getPositionVector();
-                entity.dismountRidingEntity();
                 
                 CommandBase.CoordinateArg commandbase$coordinatearg = parseCoordinate(vec3d.x, args[index++], true);
                 CommandBase.CoordinateArg commandbase$coordinatearg1 = parseCoordinate(vec3d.y, args[index++], false);
@@ -168,8 +168,15 @@ public class CMDDim extends CommandTeleport{
                     yaw = (float)yawcoord.getResult();
                     pitch = (float)pitchcoord.getResult();
                 }
-
+                Collection<Entity> list = (Collection<Entity>) entity.getRecursivePassengers();
+                
                 EntityUtil.telePortEntity(entity, server, x, y, z,yaw,pitch, traveldim);
+                
+                for(Entity e : list)
+                {
+                	System.out.println(e.getName());
+                	EntityUtil.telePortEntity(e,server,x,y,z,yaw,pitch,traveldim,true);
+                }
                 
                 notifyCommandListener(sender, this, "commands.teleport.success.coordinates", new Object[] {entity.getName(), commandbase$coordinatearg.getResult(), commandbase$coordinatearg1.getResult(), commandbase$coordinatearg2.getResult(),"Dim:" + traveldim});
             }

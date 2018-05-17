@@ -65,19 +65,19 @@ public class ClientProxy extends ServerProxy{
 		MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
 		
 		//register user registered menus
-		File f = new File(Config.cfg.getParent(),"menulib.cfg");
+		File f = new File(Config.cfgmenu.getParent(),"menulib.cfg");
 		ArrayList<Comment> comments = (ArrayList<Comment>)JavaUtil.asArray(new Comment[]{new Comment("Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :("),new Comment("Format is modid:mainmenu = \"class full name\"")});
 		ConfigBase cfg = new ConfigBase(f,comments);
 		for(ILine line : cfg.lines)
 		{
+			IHead head = (IHead)line;
 			try
 			{
-				IHead head = (IHead)line;
 				MenuRegistry.registerGuiMenu((Class<? extends GuiScreen>) Class.forName(head.getStringHead()), line.getResourceLocation());
 			}
 			catch(Throwable t)
 			{
-				t.printStackTrace();
+				System.out.print("[MenuLib/ERR] Unable to Locate class skipping menu registration for:" + line.getString() + "\n");
 			}
 		}
 	}

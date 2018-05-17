@@ -28,8 +28,10 @@ public class Config {
 	public static ResourceLocation currentMenuIndex = null;
 	public static boolean playerOwnerAlwaysFix = true;
 	public static boolean playerDataFixOptimized = true;
+	public static File cfgmenu = null;
 	
-	public static void loadConfig(File d){
+	public static void loadConfig(File d)
+	{
 		if(cfg == null)
 			cfg = new File(d,MainJava.MODID + "/" + MainJava.MODID + ".cfg");
 		Configuration config = new Configuration(cfg);
@@ -37,8 +39,6 @@ public class Config {
 		debug = config.get("general", "Debug", false).getBoolean();
 		slimeInventorySize = config.get("entity", "slimeSizeInCache", 2).getInt();
 		isDev = config.get("general", "isDev", false).getBoolean();
-		fancyPage = config.get("menulib","FancyMenuPage",false).getBoolean();
-		menuWhiteList = config.get("menulib", "useWhiteList", false).getBoolean();
 		playerDataFixOptimized = config.get("vanilla_fixer", "playerDataFixerOptimized", true).getBoolean();
 		playerOwnerAlwaysFix = config.get("vanilla_fixer", "playerOwnerSwapAlwaysFix", true).getBoolean();
 				
@@ -48,8 +48,30 @@ public class Config {
 			if(!LineBase.toWhiteSpaced(s).equals(""))
 				cmdBlacklist.add((new LineBase(s)).getResourceLocation() );
 		}
+		
+		config.save();
+		
+		loadMenuLib(d);
+	}
+
+	/**
+	 * load all configurations for menu lib
+	 */
+	public static void loadMenuLib(File d) 
+	{
+		if(cfgmenu == null)
+			cfgmenu = new File(d,"menulib/config.cfg");
+		
+		Configuration config = new Configuration(cfgmenu);
+		
+		config.load();
+		
 		if(MainJava.isClient)
 		{
+			fancyPage = config.get("menulib","FancyMenuPage",false).getBoolean();
+			menuWhiteList = config.get("menulib", "useWhiteList", false).getBoolean();
+			currentMenuIndex = new ResourceLocation(config.get("menulib", "CurrentMenuIndex", "minecraft:mainmenu").getString());
+			
 			String[] order = config.get("menulib", "menu_order", new String[]{""},"Enable and use WhiteList for sizes less then this list").getStringList();
 			for(String s : order)
 			{
@@ -57,6 +79,7 @@ public class Config {
 					continue;
 					menusConfig.add(new LineBase(s).getResourceLocation());
 			}
+			
 			String[] wlist = config.get("menulib","menu_whitelist",new String[]{""}).getStringList();
 			for(String s : wlist)
 			{
@@ -64,14 +87,14 @@ public class Config {
 					continue;
 				whiteListConfig.add(new LineBase(s).getResourceLocation());
 			}
-			currentMenuIndex = new ResourceLocation(config.get("menulib", "CurrentMenuIndex", "minecraft:mainmenu").getString());
 		}
+		
 		config.save();
 	}
 
 	public static void saveMenus(List<ResourceLocation> locs) 
 	{
-		Configuration config = new Configuration(cfg);
+		Configuration config = new Configuration(cfgmenu);
 		config.load();
 		
 		String[] list = JavaUtil.toStaticStringArray(locs);
@@ -83,14 +106,13 @@ public class Config {
 
 	public static void saveMenuIndex() {
 		long stamp = System.currentTimeMillis();
-		Configuration config = new Configuration(cfg);
+		Configuration config = new Configuration(cfgmenu);
 		config.load();
 		Property prop = config.get("menulib", "CurrentMenuIndex", "minecraft:mainmenu");
 		ResourceLocation loc = MenuRegistry.getCurrentMenu().getId();
 		prop.set(loc.toString());
 		currentMenuIndex = loc;
 		config.save();
-		System.out.println("herezzzzzzzzzzzzzzzzzzzzzzzzzz");
 		JavaUtil.printTime(stamp, "Saved Current Menu:");
 	}
 

@@ -155,7 +155,6 @@ public class UUIDFixer {
 		{
 			int traveldim = proper.getInteger("Dimension");
 			NBTTagList list = proper.getTagList("Pos", 6);
-			p.dismountRidingEntity();
 			EntityUtil.telePortEntity(p, p.getServer(), list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2), NBTUtil.getRotationYaw(proper), NBTUtil.getRotationPitch(proper), traveldim);
 		}
 		p.readFromNBT(proper);//force update everything
@@ -261,22 +260,6 @@ public class UUIDFixer {
 			}
 		}
 		isFixerIterating = false;
-	}
-	
-	@SubscribeEvent
-	public void logout(PlayerLoggedOutEvent e)
-	{
-		if(e.player instanceof EntityPlayerMP)
-		{
-			String pname = e.player.getName();
-			if(!isFixerIterating)
-				players.remove(pname);
-			if(!isKickerIterating)
-				kicker.remove( ((EntityPlayerMP)e.player).connection);
-			
-			if(EntityUtil.isPlayerOwner((EntityPlayerMP)e.player) )
-				count = 0;//reset variable if integrated server owner decides to quit or view the main menu doesn't happen on dedicated
-		}
 	}
 	
 	/**

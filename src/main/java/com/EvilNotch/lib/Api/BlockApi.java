@@ -1,23 +1,26 @@
 package com.EvilNotch.lib.Api;
 
-import java.util.Iterator;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
-import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.minecraft.BlockUtil;
 import com.EvilNotch.lib.minecraft.ItemUtil;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
+import com.EvilNotch.lib.util.JavaUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 
 public class BlockApi {
+	
+	public static Set<ResourceLocation> blocksModified = new HashSet<ResourceLocation>();
 	
 	//getters
 	public static float getBlockHardness(Block b)
@@ -68,15 +71,22 @@ public class BlockApi {
 	{
 		ReflectionUtil.setObject(b, boole, Block.class, FieldAcess.isTileProvider);
 	}
-	public static void setMaterial(Block b, Material m)
+	public static void setMaterial(Block b, Material m,String toolclazz)
 	{
-		setMaterial(b,m,false);
+		setMaterial(b,m,false,toolclazz);
 	}
-	public static void setMaterial(Block b, Material m,boolean setMatColor)
+	public static void setMaterial(Block b, Material m,boolean setMatColor,String toolclazz)
 	{
 		ReflectionUtil.setObject(b, m, Block.class, FieldAcess.blockMaterial);
 		if(setMatColor)
 			ReflectionUtil.setObject(b, m.getMaterialMapColor(), Block.class, FieldAcess.blockMaterialMapColor);
+        java.util.Iterator<IBlockState> it = b.getBlockState().getValidStates().iterator();
+        while (it.hasNext())
+        {
+        	IBlockState state = it.next();
+        	setHarvestTool(b,b.getMetaFromState(state),toolclazz);
+        }
+        blocksModified.add(b.getRegistryName() );
 	}
 	public static void printBlock(Block b){
 		String tool = b.getHarvestTool(b.getDefaultState());

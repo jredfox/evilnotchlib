@@ -32,4 +32,19 @@ public class ItemUtil {
 		return str;
 	}
 
+	public static boolean hasToolClass(ItemStack stack,String blockclazz) {
+		String str = null;
+		Set<String> list = stack.getItem().getToolClasses(stack);
+		Iterator<String> it = list.iterator();
+		while (it.hasNext())
+		{
+			String tool = it.next();
+			if(tool == null)
+				continue;
+			if(tool.equals(blockclazz))
+				return true;
+		}
+		return false;
+	}
+
 }
