@@ -1,16 +1,11 @@
 package com.EvilNotch.lib.minecraft.content.commands;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.LineBase;
@@ -22,17 +17,11 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.command.server.CommandTeleport;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketPlayerPosLook;
+import net.minecraft.network.play.server.SPacketSetPassengers;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldProviderEnd;
-import net.minecraft.world.end.DragonFightManager;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CMDDim extends CommandTeleport{
 	
@@ -168,14 +157,22 @@ public class CMDDim extends CommandTeleport{
                     yaw = (float)yawcoord.getResult();
                     pitch = (float)pitchcoord.getResult();
                 }
-                Collection<Entity> list = (Collection<Entity>) entity.getRecursivePassengers();
                 
+                ArrayList<Entity> list = (ArrayList<Entity>) JavaUtil.staticToArray(entity.getRecursivePassengers());
+                ArrayList<Entity> rides = new ArrayList();
+                for(Entity e : list)
+                	rides.add(e.getRidingEntity());
                 EntityUtil.telePortEntity(entity, server, x, y, z,yaw,pitch, traveldim);
                 
-                for(Entity e : list)
+                for(int i=0;i<list.size();i++)
                 {
-                	System.out.println(e.getName());
+                	Entity e = list.get(i);
+                	Entity toRide = rides.get(i);
                 	EntityUtil.telePortEntity(e,server,x,y,z,yaw,pitch,traveldim,true);
+                	if(toRide != null)
+                		e.startRiding(toRide);
+                	if(e instanceof EntityPlayerMP)
+                		((EntityPlayerMP)e).connection.sendPacket(new SPacketSetPassengers(toRide));
                 }
                 
                 notifyCommandListener(sender, this, "commands.teleport.success.coordinates", new Object[] {entity.getName(), commandbase$coordinatearg.getResult(), commandbase$coordinatearg1.getResult(), commandbase$coordinatearg2.getResult(),"Dim:" + traveldim});
