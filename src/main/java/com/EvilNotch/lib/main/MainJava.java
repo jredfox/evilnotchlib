@@ -245,7 +245,7 @@ public class MainJava {
 			NBTTagCompound nbt = new NBTTagCompound();
 			CapabilityReg.save(player,nbt);
 			NBTUtil.updateNBTFileSafley(f, nbt);
-			System.out.print("saved player:" + name + " toFile:" + f + "\n");
+			System.out.print("saved player:" + name + " toFile:" + f.getName() + ".dat\n");
 			it.remove();
 		}
 		UUIDFixer.count = 0;

@@ -1,11 +1,13 @@
 package com.EvilNotch.lib.minecraft.content.commands;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.LineBase;
@@ -65,7 +67,7 @@ public class CMDDim extends CommandTeleport{
        		{
        			((EntityLivingBase)fromPlayer).rotationYawHead = ((EntityLivingBase)toPlayer).rotationYawHead;
        		}
-       		EntityUtil.telePortEntity(fromPlayer, server, toPlayer.posX, toPlayer.posY, toPlayer.posZ,toPlayer.rotationYaw,toPlayer.rotationPitch, dim);        	
+       		teleportEnt(fromPlayer, server, toPlayer.posX, toPlayer.posY, toPlayer.posZ,toPlayer.rotationYaw,toPlayer.rotationPitch, dim);        	
         	
        		notifyCommandListener(sender, this, "commands.teleport.success.coordinates", new Object[] {fromPlayer.getName(),  toPlayer.posX, toPlayer.posY, toPlayer.posZ,"Dim:" + toPlayer.dimension});
         }
@@ -108,7 +110,7 @@ public class CMDDim extends CommandTeleport{
                 	}
                 }
     		}
-    		EntityUtil.telePortEntity(e, server, x, y, z, e.rotationYaw, e.rotationPitch, dimension);
+    		teleportEnt(e, server, x, y, z, e.rotationYaw, e.rotationPitch, dimension);
         }
         else if (args.length >= 4)
         {
@@ -130,7 +132,7 @@ public class CMDDim extends CommandTeleport{
             {
             	boolean vecFlag = JavaUtil.getBoolean(args[args.length-1]);
             	
-                Vec3d vec3d =  vecFlag ? sender.getPositionVector() : entity.getPositionVector();
+                Vec3d vec3d =  vecFlag ? sender.getPositionVector() : entity.getLowestRidingEntity().getPositionVector();
                 
                 CommandBase.CoordinateArg commandbase$coordinatearg = parseCoordinate(vec3d.x, args[index++], true);
                 CommandBase.CoordinateArg commandbase$coordinatearg1 = parseCoordinate(vec3d.y, args[index++], false);
@@ -149,37 +151,54 @@ public class CMDDim extends CommandTeleport{
                 
                 float yaw = entity.rotationYaw;
                 float pitch = entity.rotationPitch;
-                
+                boolean hasFlags = false;
                 if(index+2 <= args.length)
                 {
                 	CommandBase.CoordinateArg yawcoord = parseCoordinate(vec3d.x, args[index++], true);
                     CommandBase.CoordinateArg pitchcoord = parseCoordinate(vec3d.y, args[index++], false);
                     yaw = (float)yawcoord.getResult();
                     pitch = (float)pitchcoord.getResult();
+                    hasFlags = true;
                 }
                 
-                ArrayList<Entity> list = (ArrayList<Entity>) JavaUtil.staticToArray(entity.getRecursivePassengers());
-                ArrayList<Entity> rides = new ArrayList();
-                for(Entity e : list)
-                	rides.add(e.getRidingEntity());
-                EntityUtil.telePortEntity(entity, server, x, y, z,yaw,pitch, traveldim);
+                if(this.dismountPassengers())
+                	entity.removePassengers();
                 
-                for(int i=0;i<list.size();i++)
-                {
-                	Entity e = list.get(i);
-                	Entity toRide = rides.get(i);
-                	EntityUtil.telePortEntity(e,server,x,y,z,yaw,pitch,traveldim,true);
-                	if(toRide != null)
-                		e.startRiding(toRide);
-                	if(e instanceof EntityPlayerMP)
-                		((EntityPlayerMP)e).connection.sendPacket(new SPacketSetPassengers(toRide));
-                }
+                teleportEnt(entity, server, x, y, z,yaw,pitch, traveldim);
                 
                 notifyCommandListener(sender, this, "commands.teleport.success.coordinates", new Object[] {entity.getName(), commandbase$coordinatearg.getResult(), commandbase$coordinatearg1.getResult(), commandbase$coordinatearg2.getResult(),"Dim:" + traveldim});
             }
         }
     }
     /**
+     * public method to determine how to teleport the entity since this command is extendible
+     */
+    public void teleportEnt(Entity entity,MinecraftServer server, double x, double y, double z, float yaw, float pitch, int traveldim)
+    {
+    	if(this.wholeStack())
+    	{
+    		EntityUtil.teleportStack(entity, server, x, y, z,yaw,pitch, traveldim);
+    	}
+    	else if(!this.dismountPassengers() )
+    	{
+    		EntityUtil.teleportStackAtIndex(entity, server, x, y, z,yaw,pitch, traveldim);
+    	}
+    	else
+    	{
+    		entity.removePassengers();
+    		EntityUtil.telePortEntity(entity, server, x, y, z,yaw,pitch, traveldim);
+    	}
+    }
+	public boolean wholeStack()
+    {
+    	return true;
+    }
+    public boolean dismountPassengers()
+    {
+    	return false;
+    }
+
+	/**
      * Get a list of options for when the user presses the TAB key
      */
     @Override

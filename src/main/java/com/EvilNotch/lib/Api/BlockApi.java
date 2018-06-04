@@ -80,12 +80,17 @@ public class BlockApi {
 		ReflectionUtil.setObject(b, m, Block.class, FieldAcess.blockMaterial);
 		if(setMatColor)
 			ReflectionUtil.setObject(b, m.getMaterialMapColor(), Block.class, FieldAcess.blockMaterialMapColor);
-        java.util.Iterator<IBlockState> it = b.getBlockState().getValidStates().iterator();
-        while (it.hasNext())
-        {
-        	IBlockState state = it.next();
-        	setHarvestTool(b,b.getMetaFromState(state),toolclazz);
-        }
+		
+		//if people want null tool classes they can use setHarvestLevel
+		if(toolclazz != null)
+		{
+			java.util.Iterator<IBlockState> it = b.getBlockState().getValidStates().iterator();
+			while (it.hasNext())
+			{
+				IBlockState state = it.next();
+				setHarvestTool(b,b.getMetaFromState(state),toolclazz);
+			}
+		}
         blocksModified.add(b.getRegistryName() );
 	}
 	public static void printBlock(Block b){

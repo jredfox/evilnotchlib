@@ -128,16 +128,19 @@ public class MenuRegistry {
 		
 		if(Config.menusConfig.size() == 0)
 		{
+			//error catch
 			System.out.print("[MenuLib/ERR] Returning Menu Size Configured List 0\nReturning And Repairing Config:\n");
 			Config.saveMenus(getIds());
 			return;
 		}
 		else if(menus.size() != Config.menusConfig.size()){
+			//error catch sizes must be the same
 			System.out.print("[MenuLib/ERR] Size Not Same As Codded Switch WhiteList on if your removing GUIS\nRepairing Config!\n");
 			Config.saveMenus(getIds());
 			return;
 		}
 		else{
+			//default ordering system from config
 			ArrayList newMenus = new ArrayList();
 			for(int i=0;i<menus.size();i++)
 			{

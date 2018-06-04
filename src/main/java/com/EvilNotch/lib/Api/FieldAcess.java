@@ -6,10 +6,12 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.storage.SaveHandler;
@@ -35,9 +37,19 @@ public class FieldAcess {
 	public static String playerDataManager = null;
 	public static String dataFixer = null;
 	
+	public static String lowestRiddenX = null;
+    public static String lowestRiddenY = null;
+    public static String lowestRiddenZ = null;
+    public static String lowestRiddenX1= null;
+    public static String lowestRiddenY1 = null;
+    public static String lowestRiddenZ1 = null;
+	public static String lowestRiddenEnt;
+	
 	//methods
 	public static Method method_dragonManager = null;
 	public static Method methodEnt_copyDataFromOld = null;
+    public static Method capture;
+    public static Method chunkLoaded = null;
 	
 	public static boolean cached = false;
 	
@@ -60,14 +72,26 @@ public class FieldAcess {
 		lang_localizedName = MCPMappings.getField(I18n.class, "localizedName");
 		playerDataManager = MCPMappings.getField(PlayerList.class, "playerDataManager");
 		dataFixer = MCPMappings.getField(SaveHandler.class, "dataFixer");
+		lowestRiddenEnt = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenEnt");
 		
 		try 
 		{
 			method_dragonManager = DragonFightManager.class.getDeclaredMethod(MCPMappings.getMethod(DragonFightManager.class, "updateplayers"));
-			method_dragonManager.setAccessible(true);
-			
 			methodEnt_copyDataFromOld = Entity.class.getDeclaredMethod(MCPMappings.getMethod(Entity.class,"copyDataFromOld"), Entity.class);
+			chunkLoaded = World.class.getDeclaredMethod(MCPMappings.getMethod(World.class, "isChunkLoaded"), int.class,int.class,boolean.class);
+			capture = NetHandlerPlayServer.class.getDeclaredMethod(MCPMappings.getMethod(NetHandlerPlayServer.class, "captureCurrentPosition"));	
+		    
+			lowestRiddenX = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenX");
+		    lowestRiddenY = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenY");
+		    lowestRiddenZ = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenZ");
+		    lowestRiddenX1 = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenX1");
+		    lowestRiddenY1 = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenY1");
+		    lowestRiddenZ1 = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenZ1");
+			
 			methodEnt_copyDataFromOld.setAccessible(true);
+			method_dragonManager.setAccessible(true);
+			capture.setAccessible(true);
+			chunkLoaded.setAccessible(true);
 		}
 		catch (Throwable t)
 		{

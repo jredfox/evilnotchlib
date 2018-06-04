@@ -272,7 +272,7 @@ public class UUIDFixer {
 	@SubscribeEvent
 	public void kick(TickEvent.ServerTickEvent e)
 	{
-		if(e.phase != Phase.END)
+		if(e.phase != Phase.END || kicker.isEmpty())
 			return;
 
 		Iterator<Map.Entry<NetHandlerPlayServer,PointId> > it = kicker.entrySet().iterator();

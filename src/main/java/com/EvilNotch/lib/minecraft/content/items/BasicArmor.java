@@ -61,10 +61,10 @@ public class BasicArmor extends ItemArmor implements IBasicItem{
 		super.onArmorTick(world, player, itemStack);
 		if(this.effect == null)
 			return;
-		ItemStack boots = player.inventory.armorItemInSlot(0);
-		ItemStack pants = player.inventory.armorItemInSlot(1);
-		ItemStack chest = player.inventory.armorItemInSlot(2);
-		ItemStack head = player.inventory.armorItemInSlot(3);
+		ItemStack boots = player.inventory.armorInventory.get(0);
+		ItemStack pants = player.inventory.armorInventory.get(1);
+		ItemStack chest = player.inventory.armorInventory.get(2);
+		ItemStack head = player.inventory.armorInventory.get(3);
 		if(boots == null || pants == null || chest == null || head == null)
 			return;
 		if(boots.isEmpty() || pants.isEmpty()|| chest.isEmpty() || head.isEmpty())

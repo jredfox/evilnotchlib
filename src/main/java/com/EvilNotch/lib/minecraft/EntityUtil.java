@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.apache.logging.log4j.Level;
 
 import com.EvilNotch.lib.Api.FieldAcess;
@@ -54,11 +56,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.server.SPacketEntityEffect;
 import net.minecraft.network.play.server.SPacketPlayerAbilities;
 import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.network.play.server.SPacketSetExperience;
+import net.minecraft.network.play.server.SPacketSetPassengers;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.DemoPlayerInteractionManager;
@@ -71,6 +75,7 @@ import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.translation.I18n;
@@ -873,33 +878,112 @@ public class EntityUtil {
 			ents_worldneedy.add(loc);
 		}
 	}
-	
-	public static void telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim)
+	/**
+	 * teleport entire stack
+	 */
+	public static void teleportStack(Entity index,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim)
 	{
-		telePortEntity(e,server,x,y,z,yaw,pitch, traveldim,true);
+		teleportStackAtIndex(index.getLowestRidingEntity(),server,x,y,z,yaw,pitch,traveldim);
+	}
+	
+	/**
+	 * used for /tpdim as requested by micah_laster to save all mounts above you
+	 */
+	public static void teleportStackAtIndex(Entity entity,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim)
+	{
+		//get all passengers and riding entities
+        ArrayList<Entity> list = (ArrayList<Entity>) JavaUtil.staticToArray(entity.getRecursivePassengers());
+        ArrayList<Entity> rides = new ArrayList();
+        
+        for(Entity e : list)
+        	rides.add(e.getRidingEntity());
+        
+        entity = EntityUtil.telePortEntity(entity, server, x, y, z,yaw,pitch, traveldim);
+        setEntity(entity,rides);//correct riding passenger
+        
+        for(int i=0;i<list.size();i++)
+        {
+        	Entity e = list.get(i);
+        	e = EntityUtil.telePortEntity(e,server,x,y,z,e.rotationYaw,e.rotationPitch,traveldim);//keep yaw/pitch so they all don't face the same way only the base mob
+        	setEntity(e,rides);//correct riding passengers
+        	
+        	Entity toRide = rides.get(i);
+        	if(toRide != null)
+        	{
+        		e.startRiding(toRide,true);
+        	}
+        	if(e instanceof EntityPlayerMP)
+        	{
+        		EntityPlayerMP player = (EntityPlayerMP)e;
+        		player.connection.sendPacket(new SPacketSetPassengers(toRide));
+        		EntityUtil.captureCoords(player);
+        	}
+        }
+	}
+    private static void setEntity(Entity changed, ArrayList<Entity> rides) {
+		for(int i=0;i<rides.size();i++)
+		{
+			Entity e = rides.get(i);
+			if(e.getUniqueID().toString().equals(changed.getUniqueID().toString()) && e != changed )
+			{
+				rides.set(i, changed);
+				System.out.println("changed:" + changed.getName());
+			}
+		}
+	}
+	
+	/**
+	 * work around for the shitty cheat detection system in vanilla
+	 */
+	public static void captureCoords(EntityPlayerMP player)
+	{
+		try
+		{
+			NetHandlerPlayServer connection = player.connection;
+			FieldAcess.capture.invoke(connection);
+			
+			Entity lowest = player.getLowestRidingEntity();
+			
+			if(lowest == null)
+				return;
+			
+			ReflectionUtil.setObject(connection, lowest, NetHandlerPlayServer.class, FieldAcess.lowestRiddenEnt);
+			
+			ReflectionUtil.setObject(connection, lowest.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX);
+			ReflectionUtil.setObject(connection, lowest.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY);
+			ReflectionUtil.setObject(connection, lowest.posZ, NetHandlerPlayServer.class, FieldAcess.lowestRiddenZ);
+			
+			ReflectionUtil.setObject(connection, lowest.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX1);
+			ReflectionUtil.setObject(connection, lowest.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY1);
+			ReflectionUtil.setObject(connection, lowest.posZ, NetHandlerPlayServer.class, FieldAcess.lowestRiddenZ1);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
 	}
 	
 	/**
 	 * first parameter is player to teleport
 	 * Doesn't use the vanilla teleport system so set xyz's of player before hand of the new world in the portal as well as yaw pitch and maybe head
 	 */
-	public static void telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim,boolean dismountRiding)
+	public static Entity telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim)
 	{
 		if(e.isDead)
-			return;
-		if(dismountRiding)
-			e.dismountRidingEntity();
+			return e;
+		
+		e.dismountRidingEntity();
         int prevDim = e.dimension;
     	
         if(traveldim != prevDim)
         {
-        	teleportEntityInterdimentional(e,server,prevDim,traveldim,x,y,z,yaw,pitch);
-        	World newWorld = e.world;
+        	return teleportEntityInterdimentional(e,server,prevDim,traveldim,x,y,z,yaw,pitch);
         }
         if(e.posX != x || e.posY != y || e.posZ != z || yaw != e.rotationYaw || pitch != e.rotationPitch)
         {
-        	doTeleport(e, x, y, z,yaw,pitch);
+        	return doTeleport(e, x, y, z,yaw,pitch);
         }
+        return e;
 	}
     /**
      * This is the black magic responsible for teleporting players between dimensions!
@@ -964,7 +1048,6 @@ public class EntityUtil {
 
         //hotfix for entities that don't handle onDeath() for what it's made for dropping actual items
         List<ItemStack> stacks = new ArrayList();
-        System.out.println("fire here debuggers");
         if (!entity.isDead && entity instanceof IInventory) 
         {
            IInventory inventory = (IInventory)entity;
@@ -1044,19 +1127,13 @@ public class EntityUtil {
 	/**
      *supports teleporting entities from location to location in the same dimension doesn't support actual cross dimensional teleport
      */
-    public static void doTeleport(Entity e, double x, double y, double z,float yaw, float pitch)
-    {
+    public static Entity doTeleport(Entity e, double x, double y, double z,float yaw, float pitch)
+    {	
         int chunkOldX = (int)e.posX >> 4;
  		int chunkOldZ = (int)e.posZ >> 4;
         int chunkX = (int)x >> 4;
 		int chunkZ = (int)z >> 4;
- 		//remove from old chunk
-        if(chunkOldX != chunkX || chunkOldZ != chunkZ)
-        {
-        	Chunk chunkOld = e.world.getChunkFromChunkCoords(chunkOldX,chunkOldZ);
-        	chunkOld.removeEntity(e);
-        }
- 		
+		
         if (e instanceof EntityPlayerMP)
         {
             Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
@@ -1066,10 +1143,7 @@ public class EntityUtil {
         }
         else
         {
-            float f2 = (float)MathHelper.wrapDegrees(yaw);
-            float f3 = (float)MathHelper.wrapDegrees(pitch);
-            f3 = MathHelper.clamp(f3, -90.0F, 90.0F);
-            e.setLocationAndAngles(x, y, z, f2, f3);    
+            e.setLocationAndAngles(x, y, z, yaw, pitch);    
         }
         
         if (!(e instanceof EntityLivingBase) || !((EntityLivingBase)e).isElytraFlying())
@@ -1077,10 +1151,26 @@ public class EntityUtil {
             e.motionY = 0.0D;
             e.onGround = true;
         }
-        //vanilla hotfix add entity to the new chunk if not already added
-        Chunk chunk = e.world.getChunkFromChunkCoords(chunkX,chunkZ);
-        if(!containsEntity(chunk.getEntityLists(),e))
-        	chunk.addEntity(e);
+        
+        //vanilla hotfix if entity isn't loaded and not added to the chunk do this don't check players because sometimes the world will randomly remove them causing chunks not to load from players
+        if(!MinecraftUtil.isChunkLoaded(e.world, chunkX, chunkZ, true) && !(e instanceof EntityPlayer) )
+        {
+     		//remove from old chunk
+            if(chunkOldX != chunkX || chunkOldZ != chunkZ)
+            {
+            	Chunk chunkOld = e.world.getChunkFromChunkCoords(chunkOldX,chunkOldZ);
+            	chunkOld.removeEntity(e);
+            }
+            
+        	Chunk chunk = e.world.getChunkFromChunkCoords(chunkX,chunkZ);
+        	if(!containsEntity(chunk.getEntityLists(),e))
+        	{
+        		System.out.println("here adding:" + e.getName() + " \"chunk not loaded\"");
+        		chunk.addEntity(e);
+        	}
+        }
+    	e.world.updateEntityWithOptionalForce(e, false);
+        return e;
     }
 
 	public static boolean containsEntity(ClassInheritanceMultiMap<Entity>[] list,Entity e) 

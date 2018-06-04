@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -34,6 +35,8 @@ import org.apache.commons.io.IOUtils;
 
 import com.EvilNotch.lib.util.Line.LineBase;
 import com.EvilNotch.lib.util.Line.LineItemStackBase;
+
+import net.minecraft.entity.Entity;
 
 public class JavaUtil {
 	public static final String SPECIALCHARS = "~!@#$%^&*()_+`'-=/,.<>?\"{}[]:;|" + "\\";
@@ -799,6 +802,12 @@ public class JavaUtil {
 		if(!isStringBoolean(str))
 			return false;
 		return Boolean.parseBoolean(str);
+	}
+	public static ArrayList staticToArray(Collection li) {
+		ArrayList list = new ArrayList();
+		for(Object obj : li)
+			list.add(obj);
+		return list;
 	}
 
 }
