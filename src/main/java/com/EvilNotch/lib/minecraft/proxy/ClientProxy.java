@@ -21,6 +21,8 @@ import com.EvilNotch.lib.util.Line.Comment;
 import com.EvilNotch.lib.util.Line.ConfigBase;
 import com.EvilNotch.lib.util.Line.IHead;
 import com.EvilNotch.lib.util.Line.ILine;
+import com.EvilNotch.lib.util.Line.LineEnhanced;
+import com.EvilNotch.lib.util.Line.LineItemStack;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -41,6 +43,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -66,8 +69,13 @@ public class ClientProxy extends ServerProxy{
 		
 		//register user registered menus
 		File f = new File(Config.cfgmenu.getParent(),"menulib.cfg");
-		ArrayList<Comment> comments = (ArrayList<Comment>)JavaUtil.asArray(new Comment[]{new Comment("Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :("),new Comment("Format is modid:mainmenu = \"class full name\"")});
+		ArrayList<Comment> comments = (ArrayList<Comment>)JavaUtil.asArray(new Comment[]{new Comment("Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :("),new Comment("Format is: \"modid:mainmenu\" = \"class.full.name\"")});
 		ConfigBase cfg = new ConfigBase(f,comments);
+		if(Loader.isModLoaded("thebetweenlands"))
+		{
+			cfg.addLine(new LineItemStack("\"thebetweenlands:mainmenu\" = \"thebetweenlands.client.gui.menu.GuiBLMainMenu\""));
+			cfg.updateConfig(false, false, true);
+		}
 		for(ILine line : cfg.lines)
 		{
 			IHead head = (IHead)line;

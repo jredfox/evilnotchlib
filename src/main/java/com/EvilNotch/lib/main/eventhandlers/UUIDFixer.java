@@ -31,6 +31,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
@@ -47,7 +48,7 @@ public class UUIDFixer {
 	/**
 	 * initial check for uuid fixer
 	 */
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerDataFix(PlayerEvent.LoadFromFile e)
 	{
 		System.out.print("player is reading from file thread no sleep anymore zzzzzzzzzzzzzzzzzzzzzzzzz:\n");

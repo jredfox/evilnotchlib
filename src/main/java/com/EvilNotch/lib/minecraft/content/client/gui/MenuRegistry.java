@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
+import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 
 public class MenuRegistry {
 	
@@ -65,15 +67,43 @@ public class MenuRegistry {
 		getCurrentMenu().onClose();	
 		indexMenu = getNext(indexMenu);
 		currentMenu = menus.get(indexMenu);
+		try
+		{
+			doModSupport();
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
 		Minecraft.getMinecraft().getSoundHandler().stopSounds();
 		currentMenu.onOpen();
 	}
 	
+	/**
+	 * yes I am fixing another broken mod since it just happens to be popular
+	 */
+	protected static void doModSupport() throws Throwable
+	{
+		if(Loader.isModLoaded("thebetweenlands"))
+		{
+			Class shitty = Class.forName("thebetweenlands.client.handler.MusicHandler");
+			Object instance = ReflectionUtil.getObject(null, shitty, "INSTANCE");
+			ReflectionUtil.setObject(instance, false, shitty, "hasBlMainMenu");//sets it to false to garentee it will not play till the next cik
+		}
+	}
 	public static void advancePreviousMenu()
 	{
 		getCurrentMenu().onClose();
 		indexMenu = getPrevious(indexMenu);
 		currentMenu = menus.get(indexMenu);
+		try
+		{
+			doModSupport();
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
 		Minecraft.getMinecraft().getSoundHandler().stopSounds();
 		currentMenu.onOpen();
 	}

@@ -15,15 +15,19 @@ public class CapabilityReg {
 	public static HashMap<String,CapabilityContainer> capabilities = new HashMap();
 	public static ArrayList<ICapabilityProvider> reg = new ArrayList();
 	
+	/**
+	 * call this in pre-init this is a registerer for all your capabilities
+	 */
 	public static void registerCapProvider(ICapabilityProvider toReg)
 	{
 		reg.add(toReg);
 	}
 	
-	public static void registerCapability(EntityPlayer p,ResourceLocation loc,ICapability cap)
+	public static void registerCapability(EntityPlayer p,ResourceLocation loc,ICapability cap,CapabilityContainer container)
 	{
-		CapabilityContainer container = capabilities.get(p.getName());
 		container.capabilities.put(loc, cap);
+		if(cap instanceof ITick)
+			container.ticks.add((ITick) cap);
 	}
 	/**
 	 * may return null
@@ -35,24 +39,26 @@ public class CapabilityReg {
 	
 	public static void read(EntityPlayer p, NBTTagCompound nbt) 
 	{
-		CapabilityContainer caps = capabilities.get(p.getName() );
+		CapabilityContainer caps = getCapabilityConatainer(p);
+		caps.preRead(nbt, p,caps);
 		Iterator<Map.Entry<ResourceLocation,ICapability> > it = caps.capabilities.entrySet().iterator();
 		while(it.hasNext())
 		{
-			it.next().getValue().readFromNBT(nbt);
+			it.next().getValue().readFromNBT(nbt,p,caps);
 		}
+		caps.postRead(nbt, p,caps);
 	}
 	
 	public static void save(EntityPlayer p, NBTTagCompound nbt) 
 	{
-		CapabilityContainer caps = capabilities.get(p.getName() );
-		if(caps == null)
-			return;
+		CapabilityContainer caps = getCapabilityConatainer(p);
+		caps.preSave(nbt, p,caps);
 		Iterator<Map.Entry<ResourceLocation,ICapability> > it = caps.capabilities.entrySet().iterator();
 		while(it.hasNext())
 		{
-			it.next().getValue().writeToNBT(nbt);
+			it.next().getValue().writeToNBT(nbt,p,caps);
 		}
+		caps.postSave(nbt, p,caps);
 	}
 	
 	public static void registerEntity(EntityPlayer p) 
@@ -61,7 +67,7 @@ public class CapabilityReg {
 			CapabilityReg.capabilities.put(p.getName(), new CapabilityContainer() );
 		for(ICapabilityProvider provider : reg)
 		{
-			provider.register(p);
+			provider.register(p,getCapabilityConatainer(p));
 		}
 	}
 

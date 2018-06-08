@@ -2,8 +2,7 @@ package com.EvilNotch.lib.minecraft.content.pcapabilites;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-public interface ICapabilityProvider {
+public interface ITick {
 	
-	public void register(EntityPlayer p,CapabilityContainer c);
-
+	public void tick(EntityPlayer player,CapabilityContainer container);
 }

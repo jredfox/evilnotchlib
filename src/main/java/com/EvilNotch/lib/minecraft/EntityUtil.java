@@ -943,11 +943,10 @@ public class EntityUtil {
 			FieldAcess.capture.invoke(connection);
 			
 			Entity lowest = player.getLowestRidingEntity();
+			ReflectionUtil.setObject(connection, lowest, NetHandlerPlayServer.class, FieldAcess.lowestRiddenEnt);
 			
 			if(lowest == null)
 				return;
-			
-			ReflectionUtil.setObject(connection, lowest, NetHandlerPlayServer.class, FieldAcess.lowestRiddenEnt);
 			
 			ReflectionUtil.setObject(connection, lowest.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX);
 			ReflectionUtil.setObject(connection, lowest.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY);
