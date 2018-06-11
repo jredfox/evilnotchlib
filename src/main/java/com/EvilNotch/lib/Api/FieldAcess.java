@@ -50,6 +50,7 @@ public class FieldAcess {
 	public static Method methodEnt_copyDataFromOld = null;
     public static Method capture;
     public static Method chunkLoaded = null;
+    public static Method setFlag;
 	
 	public static boolean cached = false;
 	
@@ -80,7 +81,8 @@ public class FieldAcess {
 			methodEnt_copyDataFromOld = Entity.class.getDeclaredMethod(MCPMappings.getMethod(Entity.class,"copyDataFromOld"), Entity.class);
 			chunkLoaded = World.class.getDeclaredMethod(MCPMappings.getMethod(World.class, "isChunkLoaded"), int.class,int.class,boolean.class);
 			capture = NetHandlerPlayServer.class.getDeclaredMethod(MCPMappings.getMethod(NetHandlerPlayServer.class, "captureCurrentPosition"));	
-		    
+			setFlag = Entity.class.getDeclaredMethod(MCPMappings.getMethod(Entity.class, "setFlag"), int.class,boolean.class);
+			
 			lowestRiddenX = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenX");
 		    lowestRiddenY = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenY");
 		    lowestRiddenZ = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenZ");
@@ -92,6 +94,7 @@ public class FieldAcess {
 			method_dragonManager.setAccessible(true);
 			capture.setAccessible(true);
 			chunkLoaded.setAccessible(true);
+			setFlag.setAccessible(true);
 		}
 		catch (Throwable t)
 		{

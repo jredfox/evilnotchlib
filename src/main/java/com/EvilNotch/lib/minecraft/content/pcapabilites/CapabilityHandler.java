@@ -66,6 +66,18 @@ public class CapabilityHandler {
 	 * used for capabilities that require on tick but, don't want to be unoptimized and grab the container every time
 	 */
 	@SubscribeEvent
+	public void tickCap(PlayerTickEvent e)
+	{
+		if(e.phase != Phase.END)
+			return;
+		CapabilityContainer c = CapabilityReg.getCapabilityConatainer(e.player);
+		if(c == null || c.ticks.size() == 0)
+			return;
+		
+		c.tick(e.player);
+	}
+	/*
+	@SubscribeEvent
 	public void tickCap(ServerTickEvent e)
 	{
 		if(e.phase != Phase.END)
@@ -82,7 +94,8 @@ public class CapabilityHandler {
 			EntityPlayerMP p = server.getPlayerList().getPlayerByUsername(n);
 			c.tick(p);
 		}
-	}
+	}*/
+	
 	/**
 	 * syncs over old capabilities from uuidchange
 	 */

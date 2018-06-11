@@ -803,7 +803,7 @@ public class JavaUtil {
 			return false;
 		return Boolean.parseBoolean(str);
 	}
-	public static ArrayList staticToArray(Collection li) {
+	public static ArrayList toArray(Collection li) {
 		ArrayList list = new ArrayList();
 		for(Object obj : li)
 			list.add(obj);

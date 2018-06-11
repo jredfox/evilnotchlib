@@ -191,7 +191,7 @@ public class CMDDim extends CommandTeleport{
     }
 	public boolean wholeStack()
     {
-    	return true;
+    	return false;
     }
     public boolean dismountPassengers()
     {

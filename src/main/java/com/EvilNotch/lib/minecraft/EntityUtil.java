@@ -892,7 +892,7 @@ public class EntityUtil {
 	public static void teleportStackAtIndex(Entity entity,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim)
 	{
 		//get all passengers and riding entities
-        ArrayList<Entity> list = (ArrayList<Entity>) JavaUtil.staticToArray(entity.getRecursivePassengers());
+        ArrayList<Entity> list = (ArrayList<Entity>) JavaUtil.toArray(entity.getRecursivePassengers());
         ArrayList<Entity> rides = new ArrayList();
         
         for(Entity e : list)
@@ -916,7 +916,6 @@ public class EntityUtil {
         	{
         		EntityPlayerMP player = (EntityPlayerMP)e;
         		player.connection.sendPacket(new SPacketSetPassengers(toRide));
-        		EntityUtil.captureCoords(player);
         	}
         }
 	}
@@ -943,7 +942,7 @@ public class EntityUtil {
 			FieldAcess.capture.invoke(connection);
 			
 			Entity lowest = player.getLowestRidingEntity();
-			ReflectionUtil.setObject(connection, lowest, NetHandlerPlayServer.class, FieldAcess.lowestRiddenEnt);
+			ReflectionUtil.setObject(connection, player, NetHandlerPlayServer.class, FieldAcess.lowestRiddenEnt);
 			
 			if(lowest == null)
 				return;
@@ -1136,9 +1135,8 @@ public class EntityUtil {
         if (e instanceof EntityPlayerMP)
         {
             Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
-            e.dismountRidingEntity();
-            e.setLocationAndAngles(x, y, z, e.rotationYaw, e.rotationPitch);
-            ((EntityPlayerMP)e).connection.setPlayerLocation(x, y, z, yaw, pitch, set);
+            EntityPlayerMP player = (EntityPlayerMP)e;
+            player.connection.setPlayerLocation(x, y, z, yaw, pitch, set);
         }
         else
         {
@@ -1150,25 +1148,28 @@ public class EntityUtil {
             e.motionY = 0.0D;
             e.onGround = true;
         }
-        
+
         //vanilla hotfix if entity isn't loaded and not added to the chunk do this don't check players because sometimes the world will randomly remove them causing chunks not to load from players
-        if(!MinecraftUtil.isChunkLoaded(e.world, chunkX, chunkZ, true) && !(e instanceof EntityPlayer) )
+        if(!(e instanceof EntityPlayer))
         {
-     		//remove from old chunk
-            if(chunkOldX != chunkX || chunkOldZ != chunkZ)
-            {
-            	Chunk chunkOld = e.world.getChunkFromChunkCoords(chunkOldX,chunkOldZ);
-            	chunkOld.removeEntity(e);
-            }
-            
-        	Chunk chunk = e.world.getChunkFromChunkCoords(chunkX,chunkZ);
-        	if(!containsEntity(chunk.getEntityLists(),e))
+        	if(!MinecraftUtil.isChunkLoaded(e.world, chunkX, chunkZ, true))
         	{
-        		System.out.println("here adding:" + e.getName() + " \"chunk not loaded\"");
-        		chunk.addEntity(e);
+        		//remove from old chunk
+        		if(chunkOldX != chunkX || chunkOldZ != chunkZ)
+        		{
+        			Chunk chunkOld = e.world.getChunkFromChunkCoords(chunkOldX,chunkOldZ);
+        			chunkOld.removeEntity(e);
+        		}
+        		Chunk chunk = e.world.getChunkFromChunkCoords(chunkX,chunkZ);
+        		if(!containsEntity(chunk.getEntityLists(),e))
+        		{
+        			System.out.println("here adding:" + e.getName() + " \"chunk not loaded\"");
+        			chunk.addEntity(e);
+        		}
         	}
+        	e.world.updateEntityWithOptionalForce(e, false);
         }
-    	e.world.updateEntityWithOptionalForce(e, false);
+    	
         return e;
     }
 
@@ -1298,9 +1299,18 @@ public class EntityUtil {
 	{
 		return p.getHeldItem(hand);
 	}
-	public static BlockPos getPos(Entity e)
+	public static void disableFire(Entity e)
 	{
-	   return new BlockPos((int)e.posX,(int)e.posY,(int)e.posZ);
+		e.extinguish();
+		try
+		{
+			FieldAcess.setFlag.setAccessible(true);
+			FieldAcess.setFlag.invoke(e, 0, false);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
 	}
 
 }

@@ -1,13 +1,23 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
+import java.util.ArrayList;
+
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.minecraft.BlockUtil;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.ItemUtil;
+import com.EvilNotch.lib.minecraft.MinecraftUtil;
+import com.EvilNotch.lib.minecraft.SkinUpdater;
+import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
+import com.EvilNotch.lib.util.JavaUtil;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
@@ -21,12 +31,35 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class VanillaBugFixes {
+	
+	@SubscribeEvent
+    public void skinFix(PlayerEvent.LoadFromFile e)
+    {
+		SkinUpdater.fireSkinEvent(e.getEntityPlayer(),false);
+    }
+
+	/**
+	 * set the name to the player to force a skin update if props are null
+	 */
+	@SubscribeEvent
+    public void skinFix(SkinFixEvent e)
+    {
+		EntityPlayerMP player = (EntityPlayerMP) e.getEntityPlayer();
+		PropertyMap map = player.getGameProfile().getProperties();
+		ArrayList<Property> props = JavaUtil.toArray(map.get("textures"));
+		
+		if(props.size() == 0 || props.get(0) == null || !props.get(0).hasSignature())
+		{
+			e.newSkin = player.getName();
+		}
+    }
 	
 	/**
 	 * if it's not the right tool set the break speed to 0

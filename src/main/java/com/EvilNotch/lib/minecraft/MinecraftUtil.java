@@ -1,9 +1,24 @@
 package com.EvilNotch.lib.minecraft;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.net.URL;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import com.EvilNotch.lib.Api.FieldAcess;
+import com.EvilNotch.lib.minecraft.content.SkinData;
+import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityContainer;
+import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
+import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.GameRules;
