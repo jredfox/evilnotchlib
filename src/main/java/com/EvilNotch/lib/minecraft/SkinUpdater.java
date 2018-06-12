@@ -15,6 +15,7 @@ import org.json.simple.parser.JSONParser;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.minecraft.content.SkinData;
 import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.realmsclient.dto.PlayerInfo;
@@ -46,11 +47,21 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 public class SkinUpdater {
 	
 	public static List<SkinData> data = new ArrayList<SkinData>();
-	private static ArrayList<UUID> hiddenPlayers = new ArrayList();
 	
 	public static void updateSkin(String username,EntityPlayerMP player,boolean packets) throws WrongUsageException
 	{
-		PropertyMap pm = player.getGameProfile().getProperties();
+		updateSkin(username,player.getGameProfile());
+		if(packets)
+		{
+			SkinUpdater.updateSkinPackets(player);
+		}
+	}
+	public static void updateSkin(String username,GameProfile profile) throws WrongUsageException
+	{
+		updateSkin(username,profile.getProperties());
+	}
+	public static void updateSkin(String username,PropertyMap pm) throws WrongUsageException
+	{
 		SkinData skin = getSkin(username);
 		boolean cache = skin != null;
 		String uuid = cache ? skin.uuid : getUUID(username);
@@ -59,7 +70,7 @@ public class SkinUpdater {
 			System.out.println("non mojang skin detected returning:" + username);
 			throw new WrongUsageException("non mojang skin detected:" + username,new Object[0]);
 		}
-		SkinData props = cache ? skin : new SkinData(uuid,getProperties(uuid),username);
+		SkinData props = cache ? skin : getDev(username,uuid);
 
 		if(props == null)
 		{
@@ -70,12 +81,15 @@ public class SkinUpdater {
 		pm.put("textures", new Property("textures", props.value,props.signature));
 		if(!cache)
 			data.add(props);
-		if(packets)
-		{
-			SkinUpdater.updateSkinPackets(player);
-		}
 	}
 
+	private static SkinData getDev(String username, String uuid) throws WrongUsageException 
+	{
+		String[] args = getProperties(uuid);
+		if(args == null || args.length != 2)
+			throw new WrongUsageException("couldn't lookup properties for:" + username,new Object[0]);
+		return new SkinData(uuid,args,username);
+	}
 	public static SkinData getSkin(String name) {
 		for(SkinData s : data)
 			if(s.username.equals(name))
@@ -151,7 +165,7 @@ public class SkinUpdater {
 	        if (pOnline.equals(p))
 	        {
 		       con.sendPacket(removeInfo);
-			   con.sendPacket(respawn);
+		       con.sendPacket(respawn);
 		       con.sendPacket(addInfo);
 			       
 	      	  //gamemode packet
@@ -186,7 +200,9 @@ public class SkinUpdater {
 	          p.interactionManager.setWorld(p.getServerWorld()); 
 	          
 	          con.sendPacket(new SPacketSpawnPosition(p.getPosition()));
-	          net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerRespawnEvent(p, true);
+	          boolean end = true;
+	          p.copyFrom(p, end);
+	          net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerRespawnEvent(p, end);
 	        }
 	        else 
 	        {

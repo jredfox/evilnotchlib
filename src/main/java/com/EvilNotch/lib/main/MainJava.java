@@ -17,6 +17,7 @@ import com.EvilNotch.lib.main.eventhandlers.UUIDFixer;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.NBTUtil;
+import com.EvilNotch.lib.minecraft.SkinUpdater;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
 import com.EvilNotch.lib.minecraft.content.FakeWorld;
 import com.EvilNotch.lib.minecraft.content.ToolSet;
@@ -33,11 +34,18 @@ import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.ConfigBase;
 import com.EvilNotch.lib.util.Line.ConfigEnhanced;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 
 import it.unimi.dsi.fastutil.floats.Float2ByteMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.command.ICommand;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -120,9 +128,21 @@ public class MainJava {
 		GeneralRegistry.registerCommand(new CMDSeedGet());
 		GeneralRegistry.registerCommand(new CMDKick());
 		
-		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
-		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
-		
+		try
+		{
+			long time = System.currentTimeMillis();
+			GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
+			SkinUpdater.updateSkin(profile.getName(), profile);//forces skin cache to cache username with signature
+			JavaUtil.printTime(time, "Done Caching Client's Skin:");
+		}
+		catch(Exception ee)
+		{
+			System.out.println("Unable to cache client's skin things are not going to work so smoothly! retrying when world is created");
+			ee.printStackTrace();
+		}
+//		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
+//		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
+
 //		BasicBlock.Properties props = new BasicBlock.Properties(new ResourceLocation(MODID + ":" + "spider"),Material.CACTUS,"pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
 //		BasicCreativeTab tab = new BasicCreativeTab("spiderTesting",new ItemStack(Items.CAKE),new LangEntry("Custom Shiny Tab","en_us"),new LangEntry("Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°","ru_ru") );
 //		BasicItem item = new BasicItem(new ResourceLocation(MODID + ":" + "stick"),tab,new LangEntry("Modded Stick","en_us"));
