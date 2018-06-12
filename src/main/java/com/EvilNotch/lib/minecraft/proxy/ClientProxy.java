@@ -11,6 +11,7 @@ import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
+import com.EvilNotch.lib.minecraft.SkinUpdater;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.EvilNotch.lib.minecraft.content.client.models.BasicModel;
@@ -23,6 +24,7 @@ import com.EvilNotch.lib.util.Line.IHead;
 import com.EvilNotch.lib.util.Line.ILine;
 import com.EvilNotch.lib.util.Line.LineEnhanced;
 import com.EvilNotch.lib.util.Line.LineItemStack;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -87,6 +89,19 @@ public class ClientProxy extends ServerProxy{
 			{
 				System.out.print("[MenuLib/ERR] Unable to Locate class skipping menu registration for:" + line.getString() + "\n");
 			}
+		}
+		//cache client's skin so when going to single player world hosting it don't take forever
+		try
+		{
+			long time = System.currentTimeMillis();
+			GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
+			SkinUpdater.updateSkin(profile.getName(), profile);//forces skin cache to cache username with signature
+			JavaUtil.printTime(time, "Done Caching Client's Skin:");
+		}
+		catch(Exception ee)
+		{
+			System.out.println("Unable to cache client's skin things are not going to work so smoothly! retrying when world is created");
+			ee.printStackTrace();
 		}
 	}
 	

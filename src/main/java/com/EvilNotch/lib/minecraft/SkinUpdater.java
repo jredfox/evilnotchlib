@@ -64,6 +64,7 @@ public class SkinUpdater {
 	{
 		SkinData skin = getSkin(username);
 		boolean cache = skin != null;
+		System.out.println("hasSkinCache:" + cache);
 		String uuid = cache ? skin.uuid : getUUID(username);
 		if(uuid == null)
 		{
@@ -87,7 +88,10 @@ public class SkinUpdater {
 	{
 		String[] args = getProperties(uuid);
 		if(args == null || args.length != 2)
-			throw new WrongUsageException("couldn't lookup properties for:" + username,new Object[0]);
+		{
+			System.out.println("couldn't lookup properties for:" + username);
+			return null;
+		}
 		return new SkinData(uuid,args,username);
 	}
 	public static SkinData getSkin(String name) {

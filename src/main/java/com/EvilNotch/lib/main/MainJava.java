@@ -128,18 +128,6 @@ public class MainJava {
 		GeneralRegistry.registerCommand(new CMDSeedGet());
 		GeneralRegistry.registerCommand(new CMDKick());
 		
-		try
-		{
-			long time = System.currentTimeMillis();
-			GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
-			SkinUpdater.updateSkin(profile.getName(), profile);//forces skin cache to cache username with signature
-			JavaUtil.printTime(time, "Done Caching Client's Skin:");
-		}
-		catch(Exception ee)
-		{
-			System.out.println("Unable to cache client's skin things are not going to work so smoothly! retrying when world is created");
-			ee.printStackTrace();
-		}
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
 
