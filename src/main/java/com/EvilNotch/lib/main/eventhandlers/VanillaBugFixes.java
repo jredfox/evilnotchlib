@@ -44,22 +44,6 @@ public class VanillaBugFixes {
     {
 		SkinUpdater.fireSkinEvent(e.getEntityPlayer(),false);
     }
-
-	/**
-	 * set the name to the player to force a skin update if props are null
-	 */
-	@SubscribeEvent
-    public void skinFix(SkinFixEvent e)
-    {
-		EntityPlayerMP player = (EntityPlayerMP) e.getEntityPlayer();
-		PropertyMap map = player.getGameProfile().getProperties();
-		ArrayList<Property> props = JavaUtil.toArray(map.get("textures"));
-		
-		if(props.size() == 0 || props.get(0) == null || !props.get(0).hasSignature())
-		{
-			e.newSkin = player.getName();
-		}
-    }
 	
 	/**
 	 * if it's not the right tool set the break speed to 0

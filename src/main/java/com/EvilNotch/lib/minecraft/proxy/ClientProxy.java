@@ -25,6 +25,7 @@ import com.EvilNotch.lib.util.Line.ILine;
 import com.EvilNotch.lib.util.Line.LineEnhanced;
 import com.EvilNotch.lib.util.Line.LineItemStack;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -95,8 +96,9 @@ public class ClientProxy extends ServerProxy{
 		{
 			long time = System.currentTimeMillis();
 			GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
-			SkinUpdater.updateSkin(profile.getName(), profile);//forces skin cache to cache username with signature
+			SkinUpdater.updateSkin(profile.getName(), new PropertyMap());//forces skin cache to cache username with signature
 			JavaUtil.printTime(time, "Done Caching Client's Skin:");
+			System.out.println(profile.getId().toString());
 		}
 		catch(Exception ee)
 		{

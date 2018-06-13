@@ -1,12 +1,23 @@
 package com.EvilNotch.lib.main;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.Api.FieldAcess;
@@ -127,6 +138,28 @@ public class MainJava {
 		GeneralRegistry.registerCommand(new CMDDim());
 		GeneralRegistry.registerCommand(new CMDSeedGet());
 		GeneralRegistry.registerCommand(new CMDKick());
+		
+		File dir = e.getModConfigurationDirectory().getParentFile();
+		File skinCache = new File(dir,"skinCache.json");
+		if(skinCache.exists())
+		{
+			try
+			{
+				JSONParser parser = new JSONParser();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(skinCache),StandardCharsets.UTF_8) );
+				JSONArray arr = (JSONArray) parser.parse(reader);
+				Iterator<JSONObject> it = arr.iterator();
+				while(it.hasNext())
+				{
+					JSONObject obj = it.next();
+					SkinUpdater.uuids.put((String)obj.get("name"), (String)obj.get("uuid"));
+				}
+			}
+			catch(Exception ee)
+			{
+				ee.printStackTrace();
+			}
+		}
 		
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
@@ -257,6 +290,35 @@ public class MainJava {
 			it.remove();
 		}
 		UUIDFixer.count = 0;
+		
+		//player premium uuid cache
+		File rootDir = Config.cfg.getParentFile().getParentFile().getParentFile();
+		Iterator<Map.Entry<String,String>> itSkin = SkinUpdater.uuids.entrySet().iterator();
+		JSONArray arr = new JSONArray();
+		while(itSkin.hasNext())
+		{
+			Map.Entry<String, String> pair = itSkin.next();
+			String username = pair.getKey();
+			String value = pair.getValue();
+			JSONObject json = new JSONObject();
+			json.put("name", username);
+			json.put("uuid", value);
+			arr.add(json);
+		}
+		File cache = new File(rootDir,"skinCache.json");
+		if(!cache.exists())
+		{
+			try 
+			{
+				cache.createNewFile();
+			} 
+			catch (Exception e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		System.out.println(cache);
+		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{arr.toJSONString()}), cache, true);
 	}
 	
 	@Mod.EventHandler

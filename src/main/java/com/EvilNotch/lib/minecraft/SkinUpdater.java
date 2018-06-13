@@ -3,9 +3,12 @@ package com.EvilNotch.lib.minecraft;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.json.simple.JSONArray;
@@ -15,11 +18,13 @@ import org.json.simple.parser.JSONParser;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.minecraft.content.SkinData;
 import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
+import com.EvilNotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.realmsclient.dto.PlayerInfo;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.EntityTrackerEntry;
@@ -36,7 +41,9 @@ import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.network.play.server.SPacketSpawnPlayer;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerChunkMap;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.IntHashMap;
@@ -47,6 +54,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 public class SkinUpdater {
 	
 	public static List<SkinData> data = new ArrayList<SkinData>();
+	public static HashMap<String,String> uuids = new HashMap();
 	
 	public static void updateSkin(String username,EntityPlayerMP player,boolean packets) throws WrongUsageException
 	{
@@ -64,7 +72,8 @@ public class SkinUpdater {
 	{
 		SkinData skin = getSkin(username);
 		boolean cache = skin != null;
-		System.out.println("hasSkinCache:" + cache);
+		for(int i=0;i<8;i++)
+			System.out.println("hasSkinCache:" + cache);
 		String uuid = cache ? skin.uuid : getUUID(username);
 		if(uuid == null)
 		{
@@ -80,6 +89,7 @@ public class SkinUpdater {
 		}
 		pm.removeAll("textures");
 		pm.put("textures", new Property("textures", props.value,props.signature));
+		System.out.println(props.value);
 		if(!cache)
 			data.add(props);
 	}
@@ -96,25 +106,29 @@ public class SkinUpdater {
 	}
 	public static SkinData getSkin(String name) {
 		for(SkinData s : data)
-			if(s.username.equals(name))
+			if(s.username.toLowerCase().equals(name))
 				return s;
 		return null;
 	}
 	public static String getUUID(String username)
 	{
-		try 
+		try
 		{
+			String cached = uuids.get(username);
+			if(cached != null)
+				return cached;
 			URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
 			InputStream urlStream = url.openStream();
 			JSONParser parser = new JSONParser();
 			InputStreamReader stream = new InputStreamReader(urlStream,"UTF-8");
 			JSONObject json = (JSONObject) parser.parse(stream);
 			String id = (String) json.get("id");
+			uuids.put(username,id);
 			stream.close();
 			urlStream.close();
 			return id;
 		}
-		catch (Exception e) 
+		catch (Exception e)
 		{
 			return null;
 		}
@@ -162,10 +176,10 @@ public class SkinUpdater {
 	      addInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.ADD_PLAYER,p);
 	      respawn = new SPacketRespawn(p.dimension, p.getServerWorld().getDifficulty(), p.getServerWorld().getWorldType(), p.getServer().getGameType());
 	      
-	      for (EntityPlayer pOnlines : p.mcServer.getPlayerList().getPlayers())
-	      {
-	    	  EntityPlayerMP pOnline = (EntityPlayerMP)pOnlines;
-	    	  NetHandlerPlayServer con = pOnline.connection;
+	     for (EntityPlayer pOnlines : p.mcServer.getPlayerList().getPlayers())
+	     {
+	        EntityPlayerMP pOnline = (EntityPlayerMP)pOnlines;
+	        NetHandlerPlayServer con = pOnline.connection;
 	        if (pOnline.equals(p))
 	        {
 		       con.sendPacket(removeInfo);
@@ -173,54 +187,54 @@ public class SkinUpdater {
 		       con.sendPacket(addInfo);
 			       
 	      	  //gamemode packet
-	      	  p.setGameType(p.interactionManager.getGameType());
-	      	  p.mcServer.getPlayerList().updatePermissionLevel(p);
-	      	  p.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(p, (WorldServer) p.world);
-	      	  p.world.updateAllPlayersSleepingFlag();
+	      	   p.setGameType(p.interactionManager.getGameType());
+	      	   p.mcServer.getPlayerList().updatePermissionLevel(p);
+	      	   p.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(p, (WorldServer) p.world);
+	      	   p.world.updateAllPlayersSleepingFlag();
 	      	  
-	          //prevent the moved too quickly message
-	      	  p.setRotationYawHead(p.rotationYawHead);
-	          p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, p.rotationYaw, p.rotationPitch);
-	          //trigger update exp
-	          p.connection.sendPacket(new SPacketSetExperience(p.experience, p.experienceTotal, p.experienceLevel));
+	           //prevent the moved too quickly message
+	      	   p.setRotationYawHead(p.rotationYawHead);
+	           p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, p.rotationYaw, p.rotationPitch);
+	           //trigger update exp
+	           p.connection.sendPacket(new SPacketSetExperience(p.experience, p.experienceTotal, p.experienceLevel));
 
-	          //triggers updateAbilities
-	          p.sendPlayerAbilities();
-	          //send the current inventory - otherwise player would have an empty inventory
-	          p.sendContainerToPlayer(p.inventoryContainer);
-	          p.setPlayerHealthUpdated();
-	          p.setPrimaryHand(p.getPrimaryHand());
-	          p.connection.sendPacket(new SPacketHeldItemChange(p.inventory.currentItem));
+	           //triggers updateAbilities
+	           p.sendPlayerAbilities();
+	           //send the current inventory - otherwise player would have an empty inventory
+	           p.sendContainerToPlayer(p.inventoryContainer);
+	           p.setPlayerHealthUpdated();
+	           p.setPrimaryHand(p.getPrimaryHand());
+	           p.connection.sendPacket(new SPacketHeldItemChange(p.inventory.currentItem));
 
-	          InventoryPlayer inventory = p.inventory;
-	          p.setHeldItem(EnumHand.MAIN_HAND, p.getHeldItemMainhand());
-	          p.setHeldItem(EnumHand.OFF_HAND, p.getHeldItemOffhand());
+	           InventoryPlayer inventory = p.inventory;
+	           p.setHeldItem(EnumHand.MAIN_HAND, p.getHeldItemMainhand());
+	           p.setHeldItem(EnumHand.OFF_HAND, p.getHeldItemOffhand());
 
-	          //health && food
-	          p.setHealth(p.getHealth());
-	          FoodStats fs = p.getFoodStats();
-	          fs.setFoodLevel(fs.getFoodLevel());
-	          fs.setFoodSaturationLevel(fs.getSaturationLevel());
-	          p.interactionManager.setWorld(p.getServerWorld()); 
+	           //health && food
+	           p.setHealth(p.getHealth());
+	           FoodStats fs = p.getFoodStats();
+	           fs.setFoodLevel(fs.getFoodLevel());
+	           fs.setFoodSaturationLevel(fs.getSaturationLevel());
+	           p.interactionManager.setWorld(p.getServerWorld()); 
 	          
-	          con.sendPacket(new SPacketSpawnPosition(p.getPosition()));
-	          boolean end = true;
-	          p.copyFrom(p, end);
-	          net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerRespawnEvent(p, end);
-	        }
-	        else 
-	        {
-	          con.sendPacket(removeEntity);
-	          con.sendPacket(removeInfo);
-	          con.sendPacket(addInfo);
-	          con.sendPacket(addNamed);
+	           con.sendPacket(new SPacketSpawnPosition(p.getPosition()));
+	           boolean end = true;
+	           p.copyFrom(p, end);
+	           net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerRespawnEvent(p, end);
+	         }
+	         else 
+	         {
+	           con.sendPacket(removeEntity);
+	           con.sendPacket(removeInfo);
+	           con.sendPacket(addInfo);
+	           con.sendPacket(addNamed);
 	          
-	          //hide player
-		      pOnline.getServerWorld().getEntityTracker().removePlayerFromTrackers(p);
-		      pOnline.getServerWorld().getEntityTracker().untrack(p);
-		      //show player
-		      pOnline.getServerWorld().getEntityTracker().track(p);
-	        }
+	           //hide player
+		       pOnline.getServerWorld().getEntityTracker().removePlayerFromTrackers(p);
+		       pOnline.getServerWorld().getEntityTracker().untrack(p);
+		       //show player
+		       pOnline.getServerWorld().getEntityTracker().track(p);
+	         }
 	      }
 	    }
 	    catch (Exception localException) {}
@@ -232,11 +246,19 @@ public class SkinUpdater {
 		MinecraftForge.EVENT_BUS.post(event);
 		if(event.newSkin != null)
 		{
-			try 
+			try
 			{
-				SkinUpdater.updateSkin(event.newSkin, (EntityPlayerMP) p, usePackets);
-			} 
-			catch (WrongUsageException e) 
+				EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
+				PropertyMap map = player.getGameProfile().getProperties();
+				ArrayList<Property> props = JavaUtil.toArray(map.get("textures"));
+				//only update if forceUpdate or names are not right
+				if(event.forceUpdate || props.size() == 0 || props.get(0) == null || !props.get(0).hasSignature() || !player.getName().equals(event.newSkin))
+				{
+					System.out.println("UPDATING SKIN:" + player.getName() + " > " + event.newSkin);
+					SkinUpdater.updateSkin(event.newSkin, (EntityPlayerMP) p, usePackets);
+				}
+			}
+			catch (Exception e)
 			{
 				e.printStackTrace();
 			}

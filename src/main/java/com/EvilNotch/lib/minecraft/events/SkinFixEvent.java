@@ -12,9 +12,14 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 public class SkinFixEvent extends PlayerEvent{
 	
 	public String newSkin = null;
+	/**
+	 * setting this to true will force update the skin regardless whether or not it detects a change
+	 */
+	public boolean forceUpdate = false;
 
 	public SkinFixEvent(EntityPlayer player) {
 		super(player);
+		this.newSkin = player.getName();
 	}
 
 }

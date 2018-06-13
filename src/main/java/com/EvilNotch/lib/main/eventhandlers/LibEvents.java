@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.EvilNotch.lib.minecraft.SkinUpdater;
+import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,6 +29,14 @@ public class LibEvents {
 	public static File playerDataDir = null;
 	public static File playerStatsDir = null;
 	public static File playerAdvancedmentsDir = null;
+	
+	 @SubscribeEvent
+	 public void playerData(PlayerDataFixEvent e)
+	 {
+		 if(e.type != UUIDFixer.Types.UUIDFIX)
+			 return;
+		 SkinUpdater.uuids.put(e.player.getName(), e.uuidNew);
+	 }
 	
 	/**
 	 * Attempt to re-instantiate the entity caches for broken entities when the world is no longer fake
