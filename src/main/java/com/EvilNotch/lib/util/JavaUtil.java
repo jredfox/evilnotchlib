@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +33,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.EvilNotch.lib.util.Line.LineBase;
 import com.EvilNotch.lib.util.Line.LineItemStackBase;
@@ -808,6 +812,34 @@ public class JavaUtil {
 		for(Object obj : li)
 			list.add(obj);
 		return list;
+	}
+	public static boolean isURL(String url) 
+	{
+		try 
+		{
+			URL tst = new URL(url);
+			return true;
+		} 
+		catch (Exception e)
+		{
+			
+		}
+		return false;
+	}
+	public static JSONObject toJsonFrom64(String base64) 
+	{
+		byte[] out = org.apache.commons.codec.binary.Base64.decodeBase64(base64.getBytes());
+		String str = new String(out,StandardCharsets.UTF_8);
+		JSONParser parser = new JSONParser();
+		try 
+		{
+			return (JSONObject)parser.parse(str);
+		} 
+		catch (ParseException e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

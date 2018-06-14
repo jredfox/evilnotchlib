@@ -10,13 +10,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.EvilNotch.lib.util.ICopy;
+
 /**
  * A JSON object. Key value pairs are unordered. JSONObject supports java.util.Map interface.
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
  */
-public class JSONObject extends HashMap implements Map, JSONAware, JSONStreamAware{
+public class JSONObject extends HashMap implements Map, JSONAware, JSONStreamAware,ICopy{
 	
+	public static final JSONParser parser = new JSONParser();
 	private static final long serialVersionUID = -503443796854799292L;
 	
 	
@@ -142,5 +148,18 @@ public class JSONObject extends HashMap implements Map, JSONAware, JSONStreamAwa
 	 */
 	public static String escape(String s){
 		return JSONValue.escape(s);
+	}
+
+	@Override
+	public ICopy copy() {
+		try 
+		{
+			return (JSONObject) parser.parse(this.toJSONString());
+		} 
+		catch (ParseException e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

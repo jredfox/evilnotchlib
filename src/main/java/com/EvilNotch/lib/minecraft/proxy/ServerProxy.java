@@ -133,7 +133,7 @@ public class ServerProxy {
 	/**
 	 * called before anything else
 	 */
-	public void proxypreinit() {
-	}
+	public void proxypreinit() {}
+	public void initMod() {}
 
 }

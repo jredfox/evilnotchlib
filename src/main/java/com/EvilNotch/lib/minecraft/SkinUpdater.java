@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
 import com.EvilNotch.lib.Api.ReflectionUtil;
+import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.SkinData;
+import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
+import com.EvilNotch.lib.minecraft.events.CapeFixEvent;
 import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
@@ -47,6 +50,7 @@ import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.IntHashMap;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -58,22 +62,67 @@ public class SkinUpdater {
 	
 	public static void updateSkin(String username,EntityPlayerMP player,boolean packets) throws WrongUsageException
 	{
-		updateSkin(username,player.getGameProfile());
+		updateSkin(username,player.getGameProfile(),player);
 		if(packets)
 		{
 			SkinUpdater.updateSkinPackets(player);
 		}
 	}
-	public static void updateSkin(String username,GameProfile profile) throws WrongUsageException
+	public static void updateSkin(String username,GameProfile profile,EntityPlayer sender) throws WrongUsageException
 	{
-		updateSkin(username,profile.getProperties());
+		updateSkin(username,profile.getProperties(),sender);
 	}
-	public static void updateSkin(String username,PropertyMap pm) throws WrongUsageException
+	public static void updateSkin(String username,PropertyMap pm,EntityPlayer sender) throws WrongUsageException
+	{
+		SkinData skin = getSkinData(username);
+		String value = skin.value;
+
+		//cape compatibility
+		JSONObject json = skin.getJSON();
+		JSONObject textures = (JSONObject) json.get("textures");
+		boolean recompile = false;
+		
+		if(sender != null)
+		{
+			CapeFixEvent cape = new CapeFixEvent(sender);
+			MinecraftForge.EVENT_BUS.post(cape);
+			
+			if(cape.overrideCape)
+			{
+				if(textures.containsKey("CAPE"))
+				{
+					textures.remove("CAPE");
+					recompile = true;
+				}
+			}
+			boolean noCape = !textures.containsKey("CAPE");
+			
+			if(noCape && !cape.url.equals(""))
+			{
+				JSONObject jcape = new JSONObject();
+				jcape.put("url", cape.url);
+				textures.put("CAPE", jcape);
+				recompile = true;
+			}
+		}
+		if(!json.containsKey("signatureRequired") || !((Boolean)json.get("signatureRequired")) )
+		{
+			json.put("signatureRequired", false);
+			recompile = true;
+		}
+		if(recompile)
+		{
+			value = Base64.encodeBase64String(json.toJSONString().getBytes());
+		}
+		pm.removeAll("textures");
+		pm.put("textures", new TestProps("textures", value,skin.signature));
+	}
+
+	public static SkinData getSkinData(String username) throws WrongUsageException 
 	{
 		SkinData skin = getSkin(username);
 		boolean cache = skin != null;
-		for(int i=0;i<8;i++)
-			System.out.println("hasSkinCache:" + cache);
+		long time = System.currentTimeMillis();
 		String uuid = cache ? skin.uuid : getUUID(username);
 		if(uuid == null)
 		{
@@ -87,13 +136,10 @@ public class SkinUpdater {
 			System.out.println("couldn't grab skin for:" + username);
 			throw new WrongUsageException("couldn't grab skin for:" + username,new Object[0]);
 		}
-		pm.removeAll("textures");
-		pm.put("textures", new Property("textures", props.value,props.signature));
-		System.out.println(props.value);
 		if(!cache)
 			data.add(props);
+		return props;
 	}
-
 	private static SkinData getDev(String username, String uuid) throws WrongUsageException 
 	{
 		String[] args = getProperties(uuid);
@@ -104,7 +150,7 @@ public class SkinUpdater {
 		}
 		return new SkinData(uuid,args,username);
 	}
-	public static SkinData getSkin(String name) {
+	private static SkinData getSkin(String name) {
 		for(SkinData s : data)
 			if(s.username.toLowerCase().equals(name))
 				return s;
@@ -239,6 +285,21 @@ public class SkinUpdater {
 	    }
 	    catch (Exception localException) {}
     }
+    
+	public static String getCapeURL(SkinData skin,String username) throws WrongUsageException 
+	{
+		if(skin == null)
+			throw new WrongUsageException("unable to fetch cape url for:" + username,new Object[0]);
+		JSONObject json = skin.getJSON();
+		if(!json.containsKey("textures"))
+			throw new WrongUsageException("unable to fetch cape url for:" + username,new Object[0]);
+		JSONObject textures = (JSONObject) json.get("textures");
+		if(!textures.containsKey("CAPE"))
+			throw new WrongUsageException("unable to fetch cape url for:" + username,new Object[0]);
+		JSONObject cape = (JSONObject) textures.get("CAPE");
+		String url = (String)cape.get("url");
+		return url;
+	}
 
 	public static void fireSkinEvent(EntityPlayer p,boolean usePackets) 
 	{
@@ -249,14 +310,12 @@ public class SkinUpdater {
 			try
 			{
 				EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
-				PropertyMap map = player.getGameProfile().getProperties();
-				ArrayList<Property> props = JavaUtil.toArray(map.get("textures"));
 				//only update if forceUpdate or names are not right
-				if(event.forceUpdate || props.size() == 0 || props.get(0) == null || !props.get(0).hasSignature() || !player.getName().equals(event.newSkin))
-				{
+//				if(forceUpdate || props.size() == 0 || props.get(0) == null || !props.get(0).hasSignature() || !player.getName().equals(event.newSkin) || capeFlag)
+//				{
 					System.out.println("UPDATING SKIN:" + player.getName() + " > " + event.newSkin);
 					SkinUpdater.updateSkin(event.newSkin, (EntityPlayerMP) p, usePackets);
-				}
+//				}
 			}
 			catch (Exception e)
 			{

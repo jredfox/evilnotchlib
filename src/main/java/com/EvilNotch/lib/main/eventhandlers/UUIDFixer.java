@@ -19,6 +19,7 @@ import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
 import com.EvilNotch.lib.util.PointId;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -156,7 +157,14 @@ public class UUIDFixer {
 		{
 			int traveldim = proper.getInteger("Dimension");
 			NBTTagList list = proper.getTagList("Pos", 6);
-			EntityUtil.telePortEntity(p, p.getServer(), list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2), NBTUtil.getRotationYaw(proper), NBTUtil.getRotationPitch(proper), traveldim);
+			try
+			{
+				EntityUtil.telePortEntity(p, p.getServer(), list.getDoubleAt(0), list.getDoubleAt(1), list.getDoubleAt(2), NBTUtil.getRotationYaw(proper), NBTUtil.getRotationPitch(proper), traveldim);
+			}
+			catch(WrongUsageException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		p.readFromNBT(proper);//force update everything
 	

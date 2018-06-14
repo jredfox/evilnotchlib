@@ -29,6 +29,7 @@ import com.EvilNotch.lib.util.PointId;
 import com.EvilNotch.lib.util.Line.LineBase;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityCreature;
@@ -78,6 +79,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
@@ -266,8 +268,14 @@ public class EntityUtil {
     
     public static void printChat(EntityPlayer player,String c_player, String c_msg, String messege)
 	{
-		player.sendMessage(new TextComponentString(c_player + player.getName() + " " + c_msg + messege));
+		player.sendMessage(new TextComponentString(c_player + player.getName() + " " + c_msg + messege) );
 	}
+    public static void sendURL(EntityPlayer p ,String messege,String url)
+    {
+    	TextComponentString str = new TextComponentString(EnumChatFormatting.AQUA + messege + " " + EnumChatFormatting.BLUE + EnumChatFormatting.UNDERLINE + url);
+    	str.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+    	p.sendMessage(str);
+    }
     /**
      * Spawn Entity by spawnlistentry from Scratch
      */
@@ -880,16 +888,18 @@ public class EntityUtil {
 	}
 	/**
 	 * teleport entire stack
+	 * @throws WrongUsageException 
 	 */
-	public static void teleportStack(Entity index,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim)
+	public static void teleportStack(Entity index,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim) throws WrongUsageException
 	{
 		teleportStackAtIndex(index.getLowestRidingEntity(),server,x,y,z,yaw,pitch,traveldim);
 	}
 	
 	/**
 	 * used for /tpdim as requested by micah_laster to save all mounts above you
+	 * @throws WrongUsageException 
 	 */
-	public static void teleportStackAtIndex(Entity entity,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim)
+	public static void teleportStackAtIndex(Entity entity,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim) throws WrongUsageException
 	{
 		//get all passengers and riding entities
         ArrayList<Entity> list = (ArrayList<Entity>) JavaUtil.toArray(entity.getRecursivePassengers());
@@ -964,8 +974,9 @@ public class EntityUtil {
 	/**
 	 * first parameter is player to teleport
 	 * Doesn't use the vanilla teleport system so set xyz's of player before hand of the new world in the portal as well as yaw pitch and maybe head
+	 * @throws WrongUsageException 
 	 */
-	public static Entity telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim)
+	public static Entity telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim) throws WrongUsageException
 	{
 		if(e.isDead)
 			return e;
@@ -1029,12 +1040,15 @@ public class EntityUtil {
         
         return player;
     }
-    public static Entity teleportEntityInterdimentional(Entity entity, MinecraftServer server, int sourceDim, int targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) 
+    public static Entity teleportEntityInterdimentional(Entity entity, MinecraftServer server, int sourceDim, int targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) throws WrongUsageException 
     {
         if (entity == null || entity.isDead || entity.world == null || entity.world.isRemote) 
         {
             return null;
         }
+        
+        if(DimensionManager.getWorld(targetDim) == null)
+        	throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
         
         if(entity instanceof EntityPlayerMP)
         {

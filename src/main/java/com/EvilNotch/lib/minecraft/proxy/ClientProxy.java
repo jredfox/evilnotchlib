@@ -91,14 +91,19 @@ public class ClientProxy extends ServerProxy{
 				System.out.print("[MenuLib/ERR] Unable to Locate class skipping menu registration for:" + line.getString() + "\n");
 			}
 		}
+	}
+	@Override
+	public void initMod()
+	{
+		super.initMod();
+		
 		//cache client's skin so when going to single player world hosting it don't take forever
 		try
 		{
 			long time = System.currentTimeMillis();
 			GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
-			SkinUpdater.updateSkin(profile.getName(), new PropertyMap());//forces skin cache to cache username with signature
+			SkinUpdater.getSkinData(profile.getName());
 			JavaUtil.printTime(time, "Done Caching Client's Skin:");
-			System.out.println(profile.getId().toString());
 		}
 		catch(Exception ee)
 		{

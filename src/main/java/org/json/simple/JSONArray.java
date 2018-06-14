@@ -10,13 +10,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.json.simple.parser.ParseException;
+
+import com.EvilNotch.lib.util.ICopy;
+
 
 /**
  * A JSON array. JSONObject supports java.util.List interface.
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
  */
-public class JSONArray extends ArrayList implements List, JSONAware, JSONStreamAware {
+public class JSONArray extends ArrayList implements List, JSONAware, JSONStreamAware,ICopy {
 	private static final long serialVersionUID = 3957988303675231981L;
 
     /**
@@ -100,6 +104,23 @@ public class JSONArray extends ArrayList implements List, JSONAware, JSONStreamA
 	
 	public String toString() {
 		return toJSONString();
+	}
+
+	/**
+	 * will return null if json isn't properly formed
+	 */
+	@Override
+	public ICopy copy() 
+	{
+		try 
+		{
+			return (ICopy) JSONObject.parser.parse(this.toJSONString());
+		} 
+		catch (ParseException e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	

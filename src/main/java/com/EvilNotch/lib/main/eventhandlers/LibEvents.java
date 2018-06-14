@@ -35,7 +35,7 @@ public class LibEvents {
 	 {
 		 if(e.type != UUIDFixer.Types.UUIDFIX)
 			 return;
-		 SkinUpdater.uuids.put(e.player.getName(), e.uuidNew);
+		 SkinUpdater.uuids.put(e.player.getName().toLowerCase(), e.uuidNew);
 	 }
 	
 	/**

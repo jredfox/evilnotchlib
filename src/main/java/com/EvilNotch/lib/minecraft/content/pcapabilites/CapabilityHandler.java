@@ -76,25 +76,6 @@ public class CapabilityHandler {
 		
 		c.tick(e.player);
 	}
-	/*
-	@SubscribeEvent
-	public void tickCap(ServerTickEvent e)
-	{
-		if(e.phase != Phase.END)
-			return;
-		Iterator<Map.Entry<String, CapabilityContainer>> it = CapabilityReg.capabilities.entrySet().iterator();
-		while(it.hasNext())
-		{
-			Map.Entry<String, CapabilityContainer> pair = it.next();
-			CapabilityContainer c = pair.getValue();
-			if(c.ticks.size() == 0)
-				continue;
-			String n = pair.getKey();
-			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-			EntityPlayerMP p = server.getPlayerList().getPlayerByUsername(n);
-			c.tick(p);
-		}
-	}*/
 	
 	/**
 	 * syncs over old capabilities from uuidchange
