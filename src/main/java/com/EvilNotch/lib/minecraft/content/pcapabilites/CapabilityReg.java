@@ -71,4 +71,8 @@ public class CapabilityReg {
 		}
 	}
 
+	public static CapabilityContainer getCapabilityConatainer(String username) {
+		return capabilities.get(username);
+	}
+
 }

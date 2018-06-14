@@ -102,7 +102,7 @@ public class ClientProxy extends ServerProxy{
 		{
 			long time = System.currentTimeMillis();
 			GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
-			SkinUpdater.getSkinData(profile.getName());
+			SkinUpdater.getSkinData(profile.getName().toLowerCase());
 			JavaUtil.printTime(time, "Done Caching Client's Skin:");
 		}
 		catch(Exception ee)

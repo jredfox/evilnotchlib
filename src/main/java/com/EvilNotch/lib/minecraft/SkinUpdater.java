@@ -3,6 +3,7 @@ package com.EvilNotch.lib.minecraft;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,12 +69,58 @@ public class SkinUpdater {
 			SkinUpdater.updateSkinPackets(player);
 		}
 	}
-	public static void updateSkin(String username,GameProfile profile,EntityPlayer sender) throws WrongUsageException
+	public static void updateSkin(String username,GameProfile profile,EntityPlayerMP sender) throws WrongUsageException
 	{
 		updateSkin(username,profile.getProperties(),sender);
 	}
-	public static void updateSkin(String username,PropertyMap pm,EntityPlayer sender) throws WrongUsageException
+	public static void updateSkin(String username,PropertyMap pm,EntityPlayerMP sender) throws WrongUsageException
 	{
+		String url = username;
+		if(JavaUtil.isURL(url))
+		{
+			String uuid = getUUID(username);
+			PropertyMap map = sender.getGameProfile().getProperties();
+			ArrayList<Property> props = JavaUtil.toArray(map.get("textures"));
+			String encoded = null;
+			if(props.size() == 0)
+			{
+				JSONObject json = new JSONObject();
+				json.put("timestamp", System.currentTimeMillis());
+				json.put("profileId", uuid == null ? sender.getUniqueID().toString() : uuid);
+				json.put("profileName", sender.getName());
+				json.put("signatureRequired", false);
+				
+				JSONObject textures = new JSONObject();
+				JSONObject jk = new JSONObject();
+				textures.put("SKIN", jk);
+				jk.put("url", url);
+				json.put("textures", textures);
+				updateCape(sender,textures);
+				
+				byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
+				encoded = new String(bytes,StandardCharsets.UTF_8);
+			}
+			for(Property p : props)
+			{
+				JSONObject json = (JSONObject) JavaUtil.toJsonFrom64(p.getValue());
+				JSONObject textures = (JSONObject) json.get("textures");
+				JSONObject s = (JSONObject) json.get("SKIN");
+				if(s == null)
+				{
+					s = new JSONObject();
+					textures.put("SKIN", s);
+				}
+				s.put("url", url);
+				updateCape(sender,textures);
+				json.put("signatureRequired", false);
+				byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
+				encoded = new String(bytes,StandardCharsets.UTF_8);
+			}
+			map.removeAll("textures");
+			map.put("textures", new TestProps("textures",encoded,""));
+			return;
+		}
+		username = username.toLowerCase();
 		SkinData skin = getSkinData(username);
 		String value = skin.value;
 
@@ -82,6 +129,26 @@ public class SkinUpdater {
 		JSONObject textures = (JSONObject) json.get("textures");
 		boolean recompile = false;
 		
+		if(sender != null)
+		{
+			recompile = updateCape(sender,textures);
+		}
+		if(!json.containsKey("signatureRequired") || !((Boolean)json.get("signatureRequired")) )
+		{
+			json.put("signatureRequired", false);
+			recompile = true;
+		}
+		if(recompile)
+		{
+			value = Base64.encodeBase64String(json.toJSONString().getBytes());
+		}
+		pm.removeAll("textures");
+		pm.put("textures", new TestProps("textures", value,skin.signature));
+	}
+
+	private static boolean updateCape(EntityPlayer sender,JSONObject textures) 
+	{
+		boolean recompile = false;
 		if(sender != null)
 		{
 			CapeFixEvent cape = new CapeFixEvent(sender);
@@ -105,19 +172,8 @@ public class SkinUpdater {
 				recompile = true;
 			}
 		}
-		if(!json.containsKey("signatureRequired") || !((Boolean)json.get("signatureRequired")) )
-		{
-			json.put("signatureRequired", false);
-			recompile = true;
-		}
-		if(recompile)
-		{
-			value = Base64.encodeBase64String(json.toJSONString().getBytes());
-		}
-		pm.removeAll("textures");
-		pm.put("textures", new TestProps("textures", value,skin.signature));
+		return recompile;
 	}
-
 	public static SkinData getSkinData(String username) throws WrongUsageException 
 	{
 		SkinData skin = getSkin(username);
@@ -152,7 +208,7 @@ public class SkinUpdater {
 	}
 	private static SkinData getSkin(String name) {
 		for(SkinData s : data)
-			if(s.username.toLowerCase().equals(name))
+			if(s.username.equals(name))
 				return s;
 		return null;
 	}
@@ -179,7 +235,13 @@ public class SkinUpdater {
 			return null;
 		}
 	}
-	
+	/**
+	 * add support for
+	 * for older versions for when and if they show up unkown if it's suppose to be uuid or username
+	   http://skins.minecraft.net/MinecraftSkins/
+	   http://skins.minecraft.net/MinecraftCloaks/
+	 */
+	@Deprecated
 	public static String[] getProperties(String uuid)
 	{
 		try
@@ -202,6 +264,43 @@ public class SkinUpdater {
 		catch(Throwable t)
 		{
 			t.printStackTrace();
+			/*
+			 *
+			else
+			{
+				System.out.println("using backup crafatar");
+				String site = "https://crafatar.com/skins/" + uuid;
+				
+				JSONObject json = new JSONObject();
+				json.put("timestamp", System.currentTimeMillis());
+				json.put("profileId", uuid);
+				json.put("profileName", sender);
+				json.put("signatureRequired", false);
+				
+				JSONObject textures = new JSONObject();
+				JSONObject jk = new JSONObject();
+				JSONObject jc = new JSONObject();
+				jk.put("url", site);
+				textures.put("SKIN", jk);
+				json.put("textures", textures);
+				try
+				{
+					URL cape = new URL("https://crafatar.com/capes/" + uuid);
+					URLConnection obj = cape.openConnection();
+					jc.put("url", "https://crafatar.com/capes/" + uuid);
+					textures.put("CAPE", jc);
+					updateCape(sender,uuid,textures);
+				}
+				catch(Exception e)
+				{
+					System.out.println("skin has no cape:" + "https://crafatar.com/capes/" + uuid);
+				}
+				
+				byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
+				String encoded = new String(bytes,StandardCharsets.UTF_8);
+				return new String[] {encoded,""};
+			}
+			 */
 		}
 		return null;
 	}
@@ -298,6 +397,24 @@ public class SkinUpdater {
 			throw new WrongUsageException("unable to fetch cape url for:" + username,new Object[0]);
 		JSONObject cape = (JSONObject) textures.get("CAPE");
 		String url = (String)cape.get("url");
+		if(url == null)
+			throw new WrongUsageException("unable to fetch cape url for:" + username,new Object[0]);
+		return url;
+	}
+	public static String getSkinURL(SkinData skin,String username) throws WrongUsageException 
+	{
+		if(skin == null)
+			throw new WrongUsageException("unable to fetch skin url for1: " + username,new Object[0]);
+		JSONObject json = skin.getJSON();
+		if(!json.containsKey("textures"))
+			throw new WrongUsageException("unable to fetch skin url for2: " + username,new Object[0]);
+		JSONObject textures = (JSONObject) json.get("textures");
+		if(!textures.containsKey("SKIN"))
+			throw new WrongUsageException("unable to fetch skin url for3: " + username,new Object[0]);
+		JSONObject jskin = (JSONObject) textures.get("SKIN");
+		String url = (String)jskin.get("url");
+		if(url == null)
+			throw new WrongUsageException("unable to fetch skin url for4: " + username,new Object[0]);
 		return url;
 	}
 
@@ -310,12 +427,8 @@ public class SkinUpdater {
 			try
 			{
 				EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
-				//only update if forceUpdate or names are not right
-//				if(forceUpdate || props.size() == 0 || props.get(0) == null || !props.get(0).hasSignature() || !player.getName().equals(event.newSkin) || capeFlag)
-//				{
-					System.out.println("UPDATING SKIN:" + player.getName() + " > " + event.newSkin);
-					SkinUpdater.updateSkin(event.newSkin, (EntityPlayerMP) p, usePackets);
-//				}
+				System.out.println("UPDATING SKIN:" + player.getName() + " > " + event.newSkin);
+				SkinUpdater.updateSkin(event.newSkin, (EntityPlayerMP) p, usePackets);
 			}
 			catch (Exception e)
 			{

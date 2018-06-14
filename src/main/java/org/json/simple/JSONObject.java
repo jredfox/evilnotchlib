@@ -22,7 +22,6 @@ import com.EvilNotch.lib.util.ICopy;
  */
 public class JSONObject extends HashMap implements Map, JSONAware, JSONStreamAware,ICopy{
 	
-	public static final JSONParser parser = new JSONParser();
 	private static final long serialVersionUID = -503443796854799292L;
 	
 	
@@ -154,6 +153,7 @@ public class JSONObject extends HashMap implements Map, JSONAware, JSONStreamAwa
 	public ICopy copy() {
 		try 
 		{
+			JSONParser parser = new JSONParser();
 			return (JSONObject) parser.parse(this.toJSONString());
 		} 
 		catch (ParseException e) 

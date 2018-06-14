@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.EvilNotch.lib.util.ICopy;
@@ -114,7 +115,8 @@ public class JSONArray extends ArrayList implements List, JSONAware, JSONStreamA
 	{
 		try 
 		{
-			return (ICopy) JSONObject.parser.parse(this.toJSONString());
+			JSONParser parser = new JSONParser();
+			return (ICopy) parser.parse(this.toJSONString());
 		} 
 		catch (ParseException e) 
 		{
