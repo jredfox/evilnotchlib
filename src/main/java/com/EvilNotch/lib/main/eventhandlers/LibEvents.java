@@ -35,7 +35,17 @@ public class LibEvents {
 	 {
 		 if(e.type != UUIDFixer.Types.UUIDFIX)
 			 return;
-		 SkinUpdater.uuids.put(e.player.getName().toLowerCase(), e.uuidNew);
+		 
+		 String name = e.player.getName().toLowerCase();
+		 SkinUpdater.uuids.remove(name);
+		 
+		 String newUUID = SkinUpdater.getUUID(name);
+		 if(newUUID == null)
+		 {
+			 System.out.println("unable to fetch uuid from mojang:");
+			 return;
+		 }
+		 SkinUpdater.uuids.put(name, newUUID);//strip the bars away from uuid to match mojangs api
 	 }
 	
 	/**

@@ -78,7 +78,6 @@ public class SkinUpdater {
 		String url = username;
 		if(JavaUtil.isURL(url))
 		{
-			String uuid = getUUID(username);
 			PropertyMap map = sender.getGameProfile().getProperties();
 			ArrayList<Property> props = JavaUtil.toArray(map.get("textures"));
 			String encoded = null;
@@ -86,7 +85,7 @@ public class SkinUpdater {
 			{
 				JSONObject json = new JSONObject();
 				json.put("timestamp", System.currentTimeMillis());
-				json.put("profileId", uuid == null ? sender.getUniqueID().toString() : uuid);
+				json.put("profileId", sender.getUniqueID().toString());//uuid of sender
 				json.put("profileName", sender.getName());
 				json.put("signatureRequired", false);
 				
@@ -185,6 +184,7 @@ public class SkinUpdater {
 			System.out.println("non mojang skin detected returning:" + username);
 			throw new WrongUsageException("non mojang skin detected:" + username,new Object[0]);
 		}
+		JavaUtil.printTime(time, "UUIDMS:");
 		SkinData props = cache ? skin : getDev(username,uuid);
 
 		if(props == null)
@@ -206,7 +206,7 @@ public class SkinUpdater {
 		}
 		return new SkinData(uuid,args,username);
 	}
-	private static SkinData getSkin(String name) {
+	public static SkinData getSkin(String name) {
 		for(SkinData s : data)
 			if(s.username.equals(name))
 				return s;

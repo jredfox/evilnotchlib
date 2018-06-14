@@ -72,7 +72,9 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -111,6 +113,7 @@ public class MainJava {
 	 * A valid world reference once the game starts could be any dim
 	 */
 	public static World worldServer = null;
+	public static File skinCache = null;
 
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
@@ -141,7 +144,7 @@ public class MainJava {
 		GeneralRegistry.registerCommand(new CMDKick());
 		
 		File dir = e.getModConfigurationDirectory().getParentFile();
-		File skinCache = new File(dir,"skinCache.json");
+		skinCache  = new File(dir,"skinCache.json");
 		if(skinCache.exists())
 		{
 			try
@@ -298,7 +301,11 @@ public class MainJava {
 		UUIDFixer.count = 0;
 		
 		//player premium uuid cache
-		File rootDir = Config.cfg.getParentFile().getParentFile().getParentFile();
+		saveUUIDCache();
+	}
+	
+	public static void saveUUIDCache() 
+	{
 		Iterator<Map.Entry<String,String>> itSkin = SkinUpdater.uuids.entrySet().iterator();
 		JSONArray arr = new JSONArray();
 		while(itSkin.hasNext())
@@ -311,21 +318,19 @@ public class MainJava {
 			json.put("uuid", value);
 			arr.add(json);
 		}
-		File cache = new File(rootDir,"skinCache.json");
-		if(!cache.exists())
+		if(!skinCache.exists())
 		{
 			try 
 			{
-				cache.createNewFile();
+				skinCache.createNewFile();
 			} 
 			catch (Exception e) 
 			{
 				e.printStackTrace();
 			}
 		}
-		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{arr.toJSONString()}), cache, true);
+		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{arr.toJSONString()}), skinCache, true);
 	}
-	
 	@Mod.EventHandler
 	public void commandRegister(FMLServerStartingEvent e)
 	{
