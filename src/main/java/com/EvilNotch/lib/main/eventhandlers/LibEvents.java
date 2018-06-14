@@ -37,7 +37,7 @@ public class LibEvents {
 			 return;
 		 
 		 String name = e.player.getName().toLowerCase();
-		 SkinUpdater.uuids.remove(name);
+		 SkinUpdater.removeUser(name);
 		 
 		 String newUUID = SkinUpdater.getUUID(name);
 		 if(newUUID == null)

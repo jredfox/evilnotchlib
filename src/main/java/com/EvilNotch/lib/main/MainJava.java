@@ -144,7 +144,7 @@ public class MainJava {
 		GeneralRegistry.registerCommand(new CMDKick());
 		
 		File dir = e.getModConfigurationDirectory().getParentFile();
-		skinCache  = new File(dir,"skinCache.json");
+		skinCache = new File(dir,"skinCache.json");
 		if(skinCache.exists())
 		{
 			try

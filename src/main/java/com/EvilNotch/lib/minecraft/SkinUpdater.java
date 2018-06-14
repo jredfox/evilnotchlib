@@ -94,7 +94,8 @@ public class SkinUpdater {
 				textures.put("SKIN", jk);
 				jk.put("url", url);
 				json.put("textures", textures);
-				updateCape(sender,textures);
+				updateCape(sender,textures,true);
+				System.out.println(textures);
 				
 				byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
 				encoded = new String(bytes,StandardCharsets.UTF_8);
@@ -110,7 +111,7 @@ public class SkinUpdater {
 					textures.put("SKIN", s);
 				}
 				s.put("url", url);
-				updateCape(sender,textures);
+				updateCape(sender,textures,true);
 				json.put("signatureRequired", false);
 				byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
 				encoded = new String(bytes,StandardCharsets.UTF_8);
@@ -130,7 +131,7 @@ public class SkinUpdater {
 		
 		if(sender != null)
 		{
-			recompile = updateCape(sender,textures);
+			recompile = updateCape(sender,textures,false);
 		}
 		if(!json.containsKey("signatureRequired") || !((Boolean)json.get("signatureRequired")) )
 		{
@@ -145,15 +146,18 @@ public class SkinUpdater {
 		pm.put("textures", new TestProps("textures", value,skin.signature));
 	}
 
-	private static boolean updateCape(EntityPlayer sender,JSONObject textures) 
+	/**
+	 * url is used as a boolean for !hasAccountName to detect if user has cape same with event force update
+	 */
+	public static boolean updateCape(EntityPlayer sender,JSONObject textures,boolean url) 
 	{
 		boolean recompile = false;
 		if(sender != null)
 		{
 			CapeFixEvent cape = new CapeFixEvent(sender);
 			MinecraftForge.EVENT_BUS.post(cape);
-			
-			if(cape.overrideCape)
+
+			if(url || cape.overrideCape)
 			{
 				if(textures.containsKey("CAPE"))
 				{
@@ -435,6 +439,20 @@ public class SkinUpdater {
 				e.printStackTrace();
 			}
 		}
+	}
+	public static void removeUser(String name) 
+	{
+		 SkinUpdater.uuids.remove(name);
+		 int index = 0;
+		 for(SkinData d : data)
+		 {
+			 if(d.username.equals(name))
+			 {
+				 data.remove(index);
+				 break;
+			 }
+			 index++;
+		 }
 	}
 
 }
