@@ -29,6 +29,7 @@ public class Config {
 	public static boolean playerOwnerAlwaysFix = true;
 	public static boolean playerDataFixOptimized = true;
 	public static File cfgmenu = null;
+	public static int maxSkinCache = 200000;
 	
 	public static void loadConfig(File d)
 	{
@@ -41,7 +42,7 @@ public class Config {
 		isDev = config.get("general", "isDev", false).getBoolean();
 		playerDataFixOptimized = config.get("vanilla_fixer", "playerDataFixerOptimized", true).getBoolean();
 		playerOwnerAlwaysFix = config.get("vanilla_fixer", "playerOwnerSwapAlwaysFix", true).getBoolean();
-				
+		maxSkinCache = config.get("vanilla_fixer", "SkinCacheMaxSize",maxSkinCache).getInt();
 		String[] vars = config.getStringList("blacklistCMDNames", "entity", new String[]{"\"modid:mobname\""}, "Blacklist for command sender names so it always uses general when translating input with quotes \"modid:mobname\" ");
 		for(String s : vars)
 		{

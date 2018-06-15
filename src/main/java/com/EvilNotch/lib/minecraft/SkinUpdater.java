@@ -17,6 +17,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import com.EvilNotch.lib.Api.ReflectionUtil;
+import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.SkinData;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
@@ -75,9 +76,14 @@ public class SkinUpdater {
 	}
 	public static void updateSkin(String username,PropertyMap pm,EntityPlayerMP sender) throws WrongUsageException
 	{
+		if(SkinUpdater.data.size() > Config.maxSkinCache)
+		{
+			SkinUpdater.data.clear();
+		}
 		String url = username;
 		if(JavaUtil.isURL(url))
 		{
+			System.out.println("url");
 			PropertyMap map = sender.getGameProfile().getProperties();
 			ArrayList<Property> props = JavaUtil.toArray(map.get("textures"));
 			String encoded = null;
@@ -133,7 +139,7 @@ public class SkinUpdater {
 		{
 			recompile = updateCape(sender,textures,false);
 		}
-		if(!json.containsKey("signatureRequired") || !((Boolean)json.get("signatureRequired")) )
+		if(!json.containsKey("signatureRequired") || !((Boolean)json.get("signatureRequired")))
 		{
 			json.put("signatureRequired", false);
 			recompile = true;

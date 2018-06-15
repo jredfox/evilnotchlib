@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -31,6 +32,7 @@ import com.EvilNotch.lib.minecraft.NBTUtil;
 import com.EvilNotch.lib.minecraft.SkinUpdater;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
 import com.EvilNotch.lib.minecraft.content.FakeWorld;
+import com.EvilNotch.lib.minecraft.content.SkinData;
 import com.EvilNotch.lib.minecraft.content.ToolSet;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
@@ -156,7 +158,17 @@ public class MainJava {
 				while(it.hasNext())
 				{
 					JSONObject obj = it.next();
-					SkinUpdater.uuids.put((String)obj.get("name"), (String)obj.get("uuid"));
+					String name = (String)obj.get("name");
+					String uuid = (String)obj.get("uuid");
+					String signature = "";
+					JSONObject valueJson = (JSONObject) obj.get("value");
+					valueJson.put("signatureRequired", false);
+					valueJson.put("timestamp", System.currentTimeMillis());
+					String value =  new String(Base64.encodeBase64(valueJson.toJSONString().getBytes()),StandardCharsets.UTF_8);
+					SkinData data = new SkinData(uuid,value,signature,name,valueJson);
+					
+					SkinUpdater.uuids.put(name,uuid);
+					SkinUpdater.data.add(data);
 				}
 			}
 			catch(Exception ee)
@@ -306,16 +318,19 @@ public class MainJava {
 	
 	public static void saveUUIDCache() 
 	{
-		Iterator<Map.Entry<String,String>> itSkin = SkinUpdater.uuids.entrySet().iterator();
-		JSONArray arr = new JSONArray();
-		while(itSkin.hasNext())
+		if(SkinUpdater.data.size() > Config.maxSkinCache)
 		{
-			Map.Entry<String, String> pair = itSkin.next();
-			String username = pair.getKey();
-			String value = pair.getValue();
+			SkinUpdater.data.clear();
+		}
+		JSONArray arr = new JSONArray();
+		for(SkinData d : SkinUpdater.data)
+		{
 			JSONObject json = new JSONObject();
-			json.put("name", username);
-			json.put("uuid", value);
+			json.put("name", d.username);
+			json.put("uuid", d.uuid);
+			JSONObject valueJson = d.getJSON();
+			valueJson.put("signatureRequired", false);
+			json.put("value", valueJson);
 			arr.add(json);
 		}
 		if(!skinCache.exists())

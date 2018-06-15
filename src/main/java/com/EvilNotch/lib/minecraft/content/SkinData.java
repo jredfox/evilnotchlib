@@ -13,10 +13,7 @@ public class SkinData {
 	public String signature;
 	public String username;
 	protected JSONObject valueJson;
-	/**
-	 * tells if it's currently using spoofed base64 data because mojangs cooldown on the account is too long especially since other sites acess it locking you out
-	 */
-	public boolean authenticated = true;
+	public boolean premium = true;
 	
 	/**
 	 * names are toLowerCase() as mojang player names on the api have to be toLowerCase()
@@ -36,6 +33,14 @@ public class SkinData {
 		this.signature = p[1];
 		this.username = n.toLowerCase();
 		decompile();
+	}
+	public SkinData(String u,String v, String s,String n, JSONObject d)
+	{
+		this.uuid = u;
+		this.value = v;
+		this.signature = s;
+		this.username = n.toLowerCase();
+		this.valueJson = d;
 	}
 	/**
 	 * set a base 64 string
