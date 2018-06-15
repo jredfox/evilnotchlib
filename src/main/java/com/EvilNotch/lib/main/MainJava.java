@@ -20,6 +20,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.EvilNotch.lanessentials.CfgLanEssentials;
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
@@ -50,6 +51,7 @@ import com.EvilNotch.lib.util.Line.ConfigEnhanced;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import it.unimi.dsi.fastutil.floats.Float2ByteMap;
 import net.minecraft.block.Block;
@@ -120,6 +122,7 @@ public class MainJava {
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
 	{	
+    	Class clazz = YggdrasilMinecraftSessionService.class;
 		proxy.proxypreinit();
 		logger = e.getModLog();
 	  	
@@ -128,6 +131,9 @@ public class MainJava {
 		FieldAcess.cacheFields();
 		fake_world = new FakeWorld();
 		Config.loadConfig(e.getModConfigurationDirectory());
+		File dir = e.getModConfigurationDirectory().getParentFile();
+		skinCache = new File(dir,"skinCache.json");
+		SkinUpdater.parseSkinCache();
 		proxy.preinit();
 		GeneralRegistry.load();
 		
@@ -145,10 +151,6 @@ public class MainJava {
 		GeneralRegistry.registerCommand(new CMDSeedGet());
 		GeneralRegistry.registerCommand(new CMDKick());
 		
-		File dir = e.getModConfigurationDirectory().getParentFile();
-		skinCache = new File(dir,"skinCache.json");
-		SkinUpdater.parseSkinCache();
-		
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
 
@@ -156,6 +158,11 @@ public class MainJava {
 //		BasicCreativeTab tab = new BasicCreativeTab("spiderTesting",new ItemStack(Items.CAKE),new LangEntry("Custom Shiny Tab","en_us"),new LangEntry("Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°","ru_ru") );
 //		BasicItem item = new BasicItem(new ResourceLocation(MODID + ":" + "stick"),tab,new LangEntry("Modded Stick","en_us"));
 //		BasicBlock b = new BasicBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "spider"),tab,props,new LangEntry("Spider Master","en_us"),new LangEntry("Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº","ru_ru"));
+		
+    	/*
+    	 * adds ability without ASM to have more domain urls for skins/capes
+    	 */
+        ReflectionUtil.setFinalObject(null, Config.skinDomains, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
 	}
 	@Mod.EventHandler
 	public void post(FMLInitializationEvent e)

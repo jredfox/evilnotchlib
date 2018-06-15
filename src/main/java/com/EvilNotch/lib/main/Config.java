@@ -30,6 +30,7 @@ public class Config {
 	public static boolean playerDataFixOptimized = true;
 	public static File cfgmenu = null;
 	public static int maxSkinCache = 200000;
+	public static String[] skinDomains = null;
 	
 	public static void loadConfig(File d)
 	{
@@ -49,6 +50,14 @@ public class Config {
 			if(!LineBase.toWhiteSpaced(s).equals(""))
 				cmdBlacklist.add((new LineBase(s)).getResourceLocation() );
 		}
+    	String[] myLists = {
+                ".minecraft.net",
+                ".mojang.com",
+                "crafatar.com",
+                ".cloudfront.net",
+                ".imgur.com"
+        };
+		skinDomains = config.getStringList("WHITELISTED_DOMAINS", "general", myLists, "white listed https:// domains urls for skins/capes string must end in the domain of the url to be valid");
 		
 		config.save();
 		

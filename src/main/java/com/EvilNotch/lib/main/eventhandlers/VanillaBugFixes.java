@@ -1,6 +1,10 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+import org.apache.commons.codec.binary.Base64;
+import org.json.simple.JSONObject;
 
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.minecraft.BlockUtil;
@@ -8,6 +12,8 @@ import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.ItemUtil;
 import com.EvilNotch.lib.minecraft.MinecraftUtil;
 import com.EvilNotch.lib.minecraft.SkinUpdater;
+import com.EvilNotch.lib.minecraft.TestProps;
+import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
 import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.mojang.authlib.properties.Property;
@@ -36,6 +42,7 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class VanillaBugFixes {
 	
@@ -44,7 +51,7 @@ public class VanillaBugFixes {
     {
 		SkinUpdater.fireSkinEvent(e.getEntityPlayer(),false);
     }
-	
+
 	/**
 	 * if it's not the right tool set the break speed to 0
 	 */

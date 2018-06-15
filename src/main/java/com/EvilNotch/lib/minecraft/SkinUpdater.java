@@ -103,15 +103,12 @@ public class SkinUpdater {
 				JSONObject textures = new JSONObject();
 				JSONObject jk = new JSONObject();
 				textures.put("SKIN", jk);
+				//no need for else statment since this json get's manually filled here
 				if(alexURL)
 				{
 					JSONObject meta = new JSONObject();
 					meta.put("model", "slim");
 					jk.put("metadata", meta);
-				}
-				else
-				{
-					jk.remove("metadata");
 				}
 				jk.put("url", url);
 				json.put("textures", textures);
@@ -124,7 +121,7 @@ public class SkinUpdater {
 			{
 				JSONObject json = (JSONObject) JavaUtil.toJsonFrom64(p.getValue());
 				JSONObject textures = (JSONObject) json.get("textures");
-				JSONObject s = (JSONObject) json.get("SKIN");
+				JSONObject s = (JSONObject) textures.get("SKIN");
 				if(s == null)
 				{
 					s = new JSONObject();
@@ -138,12 +135,19 @@ public class SkinUpdater {
 				}
 				else
 				{
-					s.remove("metadata");
+					JSONObject meta = (JSONObject) s.get("metadata");
+					if(meta != null)
+					{
+						meta.remove("model");
+						if(meta.isEmpty())
+						{
+							s.remove("metadata");
+						}
+					}
 				}
 				s.put("url", url);
 				updateCape(sender,textures,true);
 				json.put("signatureRequired", false);
-				System.out.println("json:" + json);
 				byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
 				encoded = new String(bytes,StandardCharsets.UTF_8);
 			}
@@ -468,29 +472,6 @@ public class SkinUpdater {
 			catch (Exception e)
 			{
 				e.printStackTrace();
-				
-				EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
-				if(player.getGameProfile().getProperties().get("textures").size() == 0)
-				{
-					System.out.println("attempting to patch default textures:{} to player");
-					PropertyMap map = player.getGameProfile().getProperties();
-					map.removeAll("textures");
-				
-					JSONObject json = new JSONObject();
-					json.put("timestamp", System.currentTimeMillis());
-					json.put("profileId", player.getUniqueID().toString());//uuid of sender
-					json.put("profileName", player.getName());
-					json.put("signatureRequired", false);
-				
-					JSONObject textures = new JSONObject();
-					json.put("textures", textures);
-					updateCape(player, textures, false);
-					byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
-					String encoded = new String(bytes,StandardCharsets.UTF_8);
-					map.put("textures", new TestProps("textures", encoded, "") );
-					if(usePackets)
-						SkinUpdater.updateSkinPackets(player);
-				}
 			}
 		}
 	}

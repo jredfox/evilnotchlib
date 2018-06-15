@@ -91,11 +91,6 @@ public class ClientProxy extends ServerProxy{
 				System.out.print("[MenuLib/ERR] Unable to Locate class skipping menu registration for:" + line.getString() + "\n");
 			}
 		}
-	}
-	@Override
-	public void initMod()
-	{
-		super.initMod();
 		
 		//cache client's skin so when going to single player world hosting it don't take forever
 		try
@@ -115,6 +110,11 @@ public class ClientProxy extends ServerProxy{
 			System.out.println("Unable to cache client's skin things are not going to work so smoothly! retrying when world is created");
 			ee.printStackTrace();
 		}
+	}
+	@Override
+	public void initMod()
+	{
+		super.initMod();
 	}
 	
 	@Override
