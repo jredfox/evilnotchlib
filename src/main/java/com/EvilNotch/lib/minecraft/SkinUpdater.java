@@ -1,5 +1,7 @@
 package com.EvilNotch.lib.minecraft;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -8,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -18,6 +21,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.SkinData;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
@@ -62,33 +66,34 @@ public class SkinUpdater {
 	public static List<SkinData> data = new ArrayList<SkinData>();
 	public static HashMap<String,String> uuids = new HashMap();
 	
-	public static void updateSkin(String username,EntityPlayerMP player,boolean packets) throws WrongUsageException
+	public static void updateSkin(String username,EntityPlayerMP player,boolean packets,boolean alexURL) throws WrongUsageException
 	{
-		updateSkin(username,player.getGameProfile(),player);
+		updateSkin(username,player.getGameProfile(),player,alexURL);
 		if(packets)
 		{
 			SkinUpdater.updateSkinPackets(player);
 		}
 	}
-	public static void updateSkin(String username,GameProfile profile,EntityPlayerMP sender) throws WrongUsageException
+	public static void updateSkin(String username,GameProfile profile,EntityPlayerMP sender,boolean alexURL) throws WrongUsageException
 	{
-		updateSkin(username,profile.getProperties(),sender);
+		updateSkin(username,profile.getProperties(),sender,alexURL);
 	}
-	public static void updateSkin(String username,PropertyMap pm,EntityPlayerMP sender) throws WrongUsageException
+	public static void updateSkin(String username,PropertyMap pm,EntityPlayerMP sender,boolean alexURL) throws WrongUsageException
 	{
 		if(SkinUpdater.data.size() > Config.maxSkinCache)
 		{
 			SkinUpdater.data.clear();
 		}
+		//direct skin to url support
 		String url = username;
 		if(JavaUtil.isURL(url))
 		{
-			System.out.println("url");
 			PropertyMap map = sender.getGameProfile().getProperties();
 			ArrayList<Property> props = JavaUtil.toArray(map.get("textures"));
 			String encoded = null;
 			if(props.size() == 0)
 			{
+				//if property not set create one from scratch
 				JSONObject json = new JSONObject();
 				json.put("timestamp", System.currentTimeMillis());
 				json.put("profileId", sender.getUniqueID().toString());//uuid of sender
@@ -98,10 +103,19 @@ public class SkinUpdater {
 				JSONObject textures = new JSONObject();
 				JSONObject jk = new JSONObject();
 				textures.put("SKIN", jk);
+				if(alexURL)
+				{
+					JSONObject meta = new JSONObject();
+					meta.put("model", "slim");
+					jk.put("metadata", meta);
+				}
+				else
+				{
+					jk.remove("metadata");
+				}
 				jk.put("url", url);
 				json.put("textures", textures);
 				updateCape(sender,textures,true);
-				System.out.println(textures);
 				
 				byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
 				encoded = new String(bytes,StandardCharsets.UTF_8);
@@ -116,9 +130,20 @@ public class SkinUpdater {
 					s = new JSONObject();
 					textures.put("SKIN", s);
 				}
+				if(alexURL)
+				{
+					JSONObject meta = new JSONObject();
+					meta.put("model", "slim");
+					s.put("metadata", meta);
+				}
+				else
+				{
+					s.remove("metadata");
+				}
 				s.put("url", url);
 				updateCape(sender,textures,true);
 				json.put("signatureRequired", false);
+				System.out.println("json:" + json);
 				byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
 				encoded = new String(bytes,StandardCharsets.UTF_8);
 			}
@@ -438,11 +463,34 @@ public class SkinUpdater {
 			{
 				EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
 				System.out.println("UPDATING SKIN:" + player.getName() + " > " + event.newSkin);
-				SkinUpdater.updateSkin(event.newSkin, (EntityPlayerMP) p, usePackets);
+				SkinUpdater.updateSkin(event.newSkin, (EntityPlayerMP) p, usePackets,event.isAlexURL);
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
+				
+				EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
+				if(player.getGameProfile().getProperties().get("textures").size() == 0)
+				{
+					System.out.println("attempting to patch default textures:{} to player");
+					PropertyMap map = player.getGameProfile().getProperties();
+					map.removeAll("textures");
+				
+					JSONObject json = new JSONObject();
+					json.put("timestamp", System.currentTimeMillis());
+					json.put("profileId", player.getUniqueID().toString());//uuid of sender
+					json.put("profileName", player.getName());
+					json.put("signatureRequired", false);
+				
+					JSONObject textures = new JSONObject();
+					json.put("textures", textures);
+					updateCape(player, textures, false);
+					byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
+					String encoded = new String(bytes,StandardCharsets.UTF_8);
+					map.put("textures", new TestProps("textures", encoded, "") );
+					if(usePackets)
+						SkinUpdater.updateSkinPackets(player);
+				}
 			}
 		}
 	}
@@ -459,6 +507,69 @@ public class SkinUpdater {
 			 }
 			 index++;
 		 }
+	}
+	public static void parseSkinCache() 
+	{
+		if(MainJava.skinCache.exists())
+		{
+			try
+			{
+				JSONParser parser = new JSONParser();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(MainJava.skinCache),StandardCharsets.UTF_8) );
+				JSONArray arr = (JSONArray) parser.parse(reader);
+				Iterator<JSONObject> it = arr.iterator();
+				while(it.hasNext())
+				{
+					JSONObject obj = it.next();
+					String name = (String)obj.get("name");
+					String uuid = (String)obj.get("uuid");
+					String signature = "";
+					JSONObject valueJson = (JSONObject) obj.get("value");
+					valueJson.put("signatureRequired", false);
+					valueJson.put("timestamp", System.currentTimeMillis());
+					String value =  new String(Base64.encodeBase64(valueJson.toJSONString().getBytes()),StandardCharsets.UTF_8);
+					SkinData data = new SkinData(uuid,value,signature,name,valueJson);
+					
+					SkinUpdater.uuids.put(name,uuid);
+					SkinUpdater.data.add(data);
+				}
+			}
+			catch(Exception ee)
+			{
+				ee.printStackTrace();
+			}
+		}
+	}
+	
+	public static void saveSkinCache() 
+	{
+		if(SkinUpdater.data.size() > Config.maxSkinCache)
+		{
+			SkinUpdater.data.clear();
+		}
+		JSONArray arr = new JSONArray();
+		for(SkinData d : SkinUpdater.data)
+		{
+			JSONObject json = new JSONObject();
+			json.put("name", d.username);
+			json.put("uuid", d.uuid);
+			JSONObject valueJson = d.getJSON();
+			valueJson.put("signatureRequired", false);
+			json.put("value", valueJson);
+			arr.add(json);
+		}
+		if(!MainJava.skinCache.exists())
+		{
+			try 
+			{
+				MainJava.skinCache.createNewFile();
+			} 
+			catch (Exception e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{arr.toJSONString()}), MainJava.skinCache, true);
 	}
 
 }

@@ -107,7 +107,7 @@ public class ClientProxy extends ServerProxy{
 	    	if(!MainJava.skinCache.exists() && !SkinUpdater.uuids.isEmpty())
 	    	{
 	    		System.out.println("Saving UUID Cache:");
-	    		MainJava.saveUUIDCache();
+	    		SkinUpdater.saveSkinCache();
 	    	}
 		}
 		catch(Exception ee)

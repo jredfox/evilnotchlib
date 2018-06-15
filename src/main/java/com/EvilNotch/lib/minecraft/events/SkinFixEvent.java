@@ -12,6 +12,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 public class SkinFixEvent extends PlayerEvent{
 	
 	public String newSkin = null;
+	public boolean isAlexURL = false;
 	/**
 	 * setting this to true will force update the skin regardless whether or not it detects a change
 	 */

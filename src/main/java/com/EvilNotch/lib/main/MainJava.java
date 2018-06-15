@@ -147,35 +147,7 @@ public class MainJava {
 		
 		File dir = e.getModConfigurationDirectory().getParentFile();
 		skinCache = new File(dir,"skinCache.json");
-		if(skinCache.exists())
-		{
-			try
-			{
-				JSONParser parser = new JSONParser();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(skinCache),StandardCharsets.UTF_8) );
-				JSONArray arr = (JSONArray) parser.parse(reader);
-				Iterator<JSONObject> it = arr.iterator();
-				while(it.hasNext())
-				{
-					JSONObject obj = it.next();
-					String name = (String)obj.get("name");
-					String uuid = (String)obj.get("uuid");
-					String signature = "";
-					JSONObject valueJson = (JSONObject) obj.get("value");
-					valueJson.put("signatureRequired", false);
-					valueJson.put("timestamp", System.currentTimeMillis());
-					String value =  new String(Base64.encodeBase64(valueJson.toJSONString().getBytes()),StandardCharsets.UTF_8);
-					SkinData data = new SkinData(uuid,value,signature,name,valueJson);
-					
-					SkinUpdater.uuids.put(name,uuid);
-					SkinUpdater.data.add(data);
-				}
-			}
-			catch(Exception ee)
-			{
-				ee.printStackTrace();
-			}
-		}
+		SkinUpdater.parseSkinCache();
 		
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
@@ -313,39 +285,9 @@ public class MainJava {
 		UUIDFixer.count = 0;
 		
 		//player premium uuid cache
-		saveUUIDCache();
+		SkinUpdater.saveSkinCache();
 	}
 	
-	public static void saveUUIDCache() 
-	{
-		if(SkinUpdater.data.size() > Config.maxSkinCache)
-		{
-			SkinUpdater.data.clear();
-		}
-		JSONArray arr = new JSONArray();
-		for(SkinData d : SkinUpdater.data)
-		{
-			JSONObject json = new JSONObject();
-			json.put("name", d.username);
-			json.put("uuid", d.uuid);
-			JSONObject valueJson = d.getJSON();
-			valueJson.put("signatureRequired", false);
-			json.put("value", valueJson);
-			arr.add(json);
-		}
-		if(!skinCache.exists())
-		{
-			try 
-			{
-				skinCache.createNewFile();
-			} 
-			catch (Exception e) 
-			{
-				e.printStackTrace();
-			}
-		}
-		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{arr.toJSONString()}), skinCache, true);
-	}
 	@Mod.EventHandler
 	public void commandRegister(FMLServerStartingEvent e)
 	{
