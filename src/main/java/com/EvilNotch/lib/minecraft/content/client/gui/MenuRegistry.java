@@ -80,7 +80,7 @@ public class MenuRegistry {
 	}
 	
 	/**
-	 * yes I am fixing another broken mod since it just happens to be popular
+	 * yes I am fixing mods music
 	 */
 	protected static void doModSupport() throws Throwable
 	{
