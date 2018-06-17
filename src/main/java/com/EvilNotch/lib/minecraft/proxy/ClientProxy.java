@@ -13,6 +13,7 @@ import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
 import com.EvilNotch.lib.minecraft.SkinUpdater;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
+import com.EvilNotch.lib.minecraft.content.client.gui.GuiMainMenuBase;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.EvilNotch.lib.minecraft.content.client.models.BasicModel;
 import com.EvilNotch.lib.minecraft.content.client.rp.CustomResourcePack;

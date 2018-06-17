@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -44,6 +46,31 @@ import net.minecraft.entity.Entity;
 
 public class JavaUtil {
 	public static final String SPECIALCHARS = "~!@#$%^&*()_+`'-=/,.<>?\"{}[]:;|" + "\\";
+	
+	public static boolean isOnline(String url)
+	{
+		try
+		{
+			if(url == null)
+				url = "www.google.com";
+			if(url.contains("https://")) {
+				url = url.replaceFirst("https://", "");
+			}
+			else if (url.contains("http://")){
+				url = url.replaceFirst("http://", "");
+			}
+			Socket soc = new Socket();
+			InetSocketAddress adress = new InetSocketAddress(url,80);
+			soc.setSoTimeout(3500);
+			soc.connect(adress);
+			soc.close();
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+	}
 	
 	public static int getInt(Number obj){
 		return obj.intValue();

@@ -1,26 +1,37 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
+import java.awt.Point;
 import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.SkinUpdater;
 import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
+import com.EvilNotch.lib.util.number.IntObj;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ClassInheritanceMultiMap;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class LibEvents {
 	public static boolean cachedEnts = false;
@@ -29,6 +40,44 @@ public class LibEvents {
 	public static File playerDataDir = null;
 	public static File playerStatsDir = null;
 	public static File playerAdvancedmentsDir = null;
+	
+	 /**
+	  * for when mojang servers don't respond quick enough try again in 32 seconds
+	  */
+	 public static HashMap<String,IntObj> noSkins = new HashMap();
+	 @SubscribeEvent
+	 public void skinTick(ServerTickEvent e)
+	 {
+		 if(e.phase != Phase.END || noSkins.isEmpty())
+			 return;
+		 Set<String> toRemove = new HashSet();
+		 Iterator<Map.Entry<String,IntObj>> it = noSkins.entrySet().iterator();
+		 while(it.hasNext())
+		 {
+			 Map.Entry<String,IntObj> pair = it.next();
+			 IntObj i = pair.getValue();
+			 if(i.integer == 32*20)
+			 {
+				 String name = pair.getKey();
+				 EntityPlayer player = EntityUtil.getPlayer(name);
+				 SkinUpdater.fireSkinEvent(player, true);
+				 //if not reset add to the remove list
+				 if(i.integer != 0)
+					 toRemove.add(name);
+			 }
+			 else
+				 i.integer++;
+		 }
+		 for(String n : toRemove)
+		 {
+			 noSkins.remove(n);
+		 }
+	 }
+	 @SubscribeEvent
+	 public void skinNo(PlayerLoggedOutEvent e)
+	 {
+		 noSkins.remove(e.player.getName());
+	 }
 	
 	 @SubscribeEvent
 	 public void playerData(PlayerDataFixEvent e)

@@ -90,7 +90,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 
-@Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION,acceptableRemoteVersions = "*")
+@Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION)
 public class MainJava {
 	//Automation
 	public static ArrayList<IBasicBlock> blocks = new ArrayList();
@@ -290,6 +290,7 @@ public class MainJava {
 			it.remove();
 		}
 		UUIDFixer.count = 0;
+		LibEvents.noSkins.clear();
 		
 		//player premium uuid cache
 		SkinUpdater.saveSkinCache();

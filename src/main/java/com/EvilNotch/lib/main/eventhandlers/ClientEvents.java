@@ -35,7 +35,7 @@ public class ClientEvents {
 		if(e.getGui() == null)
 			return;
 //		System.out.println(e.getGui().getClass());
-		if(!(e.getGui() instanceof GuiMainMenu))
+		if(!(e.getGui() instanceof GuiMainMenu) )
 		{
 			return;
 		}

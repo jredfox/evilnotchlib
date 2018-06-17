@@ -89,6 +89,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -1325,6 +1326,11 @@ public class EntityUtil {
 		{
 			t.printStackTrace();
 		}
+	}
+
+	public static EntityPlayer getPlayer(String key) {
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		return server.getPlayerList().getPlayerByUsername(key);
 	}
 
 }

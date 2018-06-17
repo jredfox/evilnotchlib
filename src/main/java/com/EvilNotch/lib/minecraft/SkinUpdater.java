@@ -1,5 +1,6 @@
 package com.EvilNotch.lib.minecraft;
 
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,12 +24,15 @@ import org.json.simple.parser.JSONParser;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
+import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.SkinData;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
 import com.EvilNotch.lib.minecraft.events.CapeFixEvent;
+import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
 import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
 import com.EvilNotch.lib.util.JavaUtil;
+import com.EvilNotch.lib.util.number.IntObj;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -59,7 +64,9 @@ import net.minecraft.util.IntHashMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class SkinUpdater {
 	
@@ -240,7 +247,6 @@ public class SkinUpdater {
 		String[] args = getProperties(uuid);
 		if(args == null || args.length != 2)
 		{
-			System.out.println("couldn't lookup properties for:" + username);
 			return null;
 		}
 		return new SkinData(uuid,args,username);
@@ -304,7 +310,6 @@ public class SkinUpdater {
 		{
 			t.printStackTrace();
 			/*
-			 *
 			else
 			{
 				System.out.println("using backup crafatar");
@@ -457,7 +462,10 @@ public class SkinUpdater {
 		return url;
 	}
 
-	public static void fireSkinEvent(EntityPlayer p,boolean usePackets) 
+	/**
+	 * returns whether or not it succeeded
+	 */
+	public static boolean fireSkinEvent(EntityPlayer p,boolean usePackets) 
 	{
 		SkinFixEvent event = new SkinFixEvent(p);
 		MinecraftForge.EVENT_BUS.post(event);
@@ -465,14 +473,44 @@ public class SkinUpdater {
 		{
 			try
 			{
-				EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
-				System.out.println("UPDATING SKIN:" + player.getName() + " > " + event.newSkin);
+				//only update if forceUpdate or names are not right
+				System.out.println("UPDATING SKIN:" + p.getName() + " > " + event.newSkin);
 				SkinUpdater.updateSkin(event.newSkin, (EntityPlayerMP) p, usePackets,event.isAlexURL);
+				return true;
 			}
-			catch (Exception e)
+			catch (WrongUsageException e)
 			{
 				e.printStackTrace();
+				boolean noSkin = e.getMessage().contains("couldn't grab skin for:");
+				if(noSkin)
+				{
+					addSkinDelay(p,event.newSkin);
+					if( ((EntityPlayerMP) p).connection != null) 
+						EntityUtil.printChat(p, EnumChatFormatting.RED, "", "Couldn't grab skin for:" + EnumChatFormatting.AQUA + event.newSkin);
+				}
 			}
+		}
+		return false;
+	}
+	/**
+	 * for when skin can't get fetched try again in 32 seconds
+	 */
+	public static void addSkinDelay(EntityPlayer p,String skin) 
+	{
+		if(!LibEvents.noSkins.containsKey(p.getName()) )//&& JavaUtil.isOnline(url))
+		{
+			//make sure user can connect before constantly trying to add it back
+			if(JavaUtil.isOnline("api.mojang.com"))
+				LibEvents.noSkins.put(p.getName(),new IntObj(0));
+			else
+				System.out.println("no internet on adding?");
+		}
+		else
+		{
+			if(JavaUtil.isOnline("api.mojang.com"))
+				LibEvents.noSkins.get(p.getName()).integer = 0;
+			else
+				System.out.println("no internet on setting?");
 		}
 	}
 	public static void removeUser(String name) 
