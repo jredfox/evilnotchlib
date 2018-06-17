@@ -80,15 +80,15 @@ public class MenuRegistry {
 	}
 	
 	/**
-	 * yes I am fixing another broken mod since it just happens to be popular
+	 * yes I am fixing mods music
 	 */
 	protected static void doModSupport() throws Throwable
 	{
 		if(Loader.isModLoaded("thebetweenlands"))
 		{
-			Class shitty = Class.forName("thebetweenlands.client.handler.MusicHandler");
-			Object instance = ReflectionUtil.getObject(null, shitty, "INSTANCE");
-			ReflectionUtil.setObject(instance, false, shitty, "hasBlMainMenu");//sets it to false to garentee it will not play till the next cik
+			Class s = Class.forName("thebetweenlands.client.handler.MusicHandler");
+			Object instance = ReflectionUtil.getObject(null, s, "INSTANCE");
+			ReflectionUtil.setObject(instance, false, s, "hasBlMainMenu");//sets it to false to garentee it will not play till the next cik
 		}
 	}
 	public static void advancePreviousMenu()
