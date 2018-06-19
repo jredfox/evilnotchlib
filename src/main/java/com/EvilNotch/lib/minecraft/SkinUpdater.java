@@ -16,10 +16,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.EvilNotch.lanessentials.Reference;
+import com.EvilNotch.lanessentials.capabilities.CapCape;
+import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.minecraft.content.SkinData;
+import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
 import com.EvilNotch.lib.minecraft.events.CapeFixEvent;
 import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
 import com.EvilNotch.lib.util.JavaUtil;
@@ -43,6 +47,7 @@ import net.minecraft.network.play.server.SPacketSpawnPlayer;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.FoodStats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameType;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -567,6 +572,55 @@ public class SkinUpdater {
 			}
 		}
 		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{arr.toJSONString()}), MainJava.skinCache, true);
+	}
+	public static void setCape(EntityPlayer player, String url,boolean packets) throws WrongUsageException 
+	{
+		ArrayList<Property> props = JavaUtil.toArray(player.getGameProfile().getProperties().get("textures"));
+		if(props.size() == 0)
+		{
+			System.out.println("patching player textures:{}");
+			PropertyMap map = player.getGameProfile().getProperties();
+			map.removeAll("textures");
+			
+			JSONObject json = new JSONObject();
+			json.put("timestamp", System.currentTimeMillis());
+			json.put("profileId", player.getUniqueID().toString());//uuid of sender
+			json.put("profileName", player.getName());
+			json.put("signatureRequired", false);
+			
+			JSONObject textures = new JSONObject();
+			json.put("textures", textures);
+			byte[] bytes = Base64.encodeBase64(json.toJSONString().getBytes());
+			String encoded = new String(bytes,StandardCharsets.UTF_8);
+			map.put("textures", new TestProps("textures", encoded, "") );
+			props = JavaUtil.toArray(player.getGameProfile().getProperties().get("textures"));
+		}
+		for(Property p : props)
+		{
+			String base64 = p.getValue();
+			JSONObject obj = JavaUtil.toJsonFrom64(base64);
+			if(!obj.containsKey("textures"))
+				throw new WrongUsageException("player skin not set! set skin before setting a cape",new Object[0]);
+			JSONObject obj2 = (JSONObject) obj.get("textures");
+			JSONObject json = (JSONObject)obj2.get("CAPE");
+			if(json == null)
+			{
+				json = new JSONObject();
+				obj2.put("CAPE", json);
+			}
+			if(url.equals(""))
+				obj2.remove("CAPE");//for when args == 0
+			
+			obj.put("signatureRequired", false);
+			json.put("url",url);
+			String str = obj.toJSONString();
+			byte[] bytes = org.apache.commons.codec.binary.Base64.encodeBase64(str.getBytes());
+			ReflectionUtil.setObject(p, new String(bytes,StandardCharsets.UTF_8), Property.class, "value");
+		}
+		CapCape cape = (CapCape) CapabilityReg.getCapabilityConatainer(player).getCapability(new ResourceLocation(Reference.MODID + ":" + "cape"));
+		cape.url = url;	
+		if(packets)
+			SkinUpdater.updateSkinPackets((EntityPlayerMP) player);
 	}
 
 }
