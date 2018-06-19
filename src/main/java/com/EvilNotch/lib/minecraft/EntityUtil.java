@@ -278,6 +278,12 @@ public class EntityUtil {
     	str.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
     	p.sendMessage(str);
     }
+    public static void sendClipBoard(String pc,String c,EntityPlayer p ,String messege,String url)
+    {
+    	TextComponentString str = new TextComponentString(pc + messege + " " + c + EnumChatFormatting.UNDERLINE + url);
+    	str.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
+    	p.sendMessage(str);
+    }
     /**
      * Spawn Entity by spawnlistentry from Scratch
      */

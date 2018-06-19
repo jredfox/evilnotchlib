@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Strings;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -73,6 +75,19 @@ public class CapabilityReg {
 
 	public static CapabilityContainer getCapabilityConatainer(String username) {
 		return capabilities.get(username);
+	}
+	/**
+	 * may return null get capability from player name and resoruce location
+	 */
+	public static ICapability getCapability(String username, ResourceLocation loc) 
+	{
+		if(Strings.isNullOrEmpty(username) || loc == null)
+			return null;
+		
+		CapabilityContainer container = getCapabilityConatainer(username);
+		if(container == null)
+			return null;
+		return container.getCapability(loc);
 	}
 
 }

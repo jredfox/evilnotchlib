@@ -432,11 +432,11 @@ public class SkinUpdater {
 			throw new WrongUsageException("unable to fetch skin url for2: " + username,new Object[0]);
 		JSONObject textures = (JSONObject) json.get("textures");
 		if(!textures.containsKey("SKIN"))
-			throw new WrongUsageException("unable to fetch skin url for3: " + username,new Object[0]);
+			throw new WrongUsageException("unable to fetch skin url as it is blank: " + username,new Object[0]);
 		JSONObject jskin = (JSONObject) textures.get("SKIN");
 		String url = (String)jskin.get("url");
 		if(url == null)
-			throw new WrongUsageException("unable to fetch skin url for4: " + username,new Object[0]);
+			throw new WrongUsageException("url is null report this to mod author scrwing up skin data: " + username,new Object[0]);
 		return url;
 	}
 

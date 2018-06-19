@@ -1,5 +1,8 @@
 package com.EvilNotch.lib.minecraft.content.commands;
 
+import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.EvilNotch.lib.minecraft.EnumChatFormatting;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -41,7 +44,7 @@ public class CMDSeedGet extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         World world = (World)(sender instanceof EntityPlayer ? ((EntityPlayer)sender).world : server.getWorld(0));
-        sender.sendMessage(new TextComponentTranslation("commands.seed.success", new Object[] {world.getSeed()}));
+        EntityUtil.sendClipBoard(EnumChatFormatting.WHITE,EnumChatFormatting.WHITE, (EntityPlayer)sender, "Seed:" , "" + world.getSeed());
     }
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
