@@ -81,6 +81,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldServer;
@@ -1048,7 +1049,7 @@ public class EntityUtil {
             return null;
         }
         
-        if(DimensionManager.getWorld(targetDim) == null)
+        if(!DimensionManager.isDimensionRegistered(targetDim))
         	throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
         
         if(entity instanceof EntityPlayerMP)
@@ -1331,6 +1332,15 @@ public class EntityUtil {
 	public static EntityPlayer getPlayer(String key) {
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		return server.getPlayerList().getPlayerByUsername(key);
+	}
+
+	public static void setGameTypeSafley(EntityPlayerMP p, GameType gameType) 
+	{
+		NBTTagCompound nbt = new NBTTagCompound();
+		p.capabilities.writeCapabilitiesToNBT(nbt);
+	    p.setGameType(gameType);
+	    p.capabilities.readCapabilitiesFromNBT(nbt);
+	    p.sendPlayerAbilities();
 	}
 
 }

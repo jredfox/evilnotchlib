@@ -90,7 +90,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 
-@Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION)
+@Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION,acceptableRemoteVersions = "*")
 public class MainJava {
 	//Automation
 	public static ArrayList<IBasicBlock> blocks = new ArrayList();

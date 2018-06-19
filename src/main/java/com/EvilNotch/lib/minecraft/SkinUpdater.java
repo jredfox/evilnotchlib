@@ -1,72 +1,51 @@
 package com.EvilNotch.lib.minecraft;
 
-import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import com.EvilNotch.lib.Api.ReflectionUtil;
+
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
-import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.SkinData;
-import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
 import com.EvilNotch.lib.minecraft.events.CapeFixEvent;
-import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
 import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.number.IntObj;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.realmsclient.dto.PlayerInfo;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.EntityTracker;
-import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.server.SPacketChangeGameState;
 import net.minecraft.network.play.server.SPacketDestroyEntities;
 import net.minecraft.network.play.server.SPacketHeldItemChange;
-import net.minecraft.network.play.server.SPacketPlayerAbilities;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.network.play.server.SPacketSpawnPlayer;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerChunkMap;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.FoodStats;
-import net.minecraft.util.IntHashMap;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.GameType;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class SkinUpdater {
 	
@@ -376,7 +355,7 @@ public class SkinUpdater {
 		       con.sendPacket(addInfo);
 			       
 	      	  //gamemode packet
-	      	   p.setGameType(p.interactionManager.getGameType());
+	      	   EntityUtil.setGameTypeSafley(p,p.interactionManager.getGameType());
 	      	   p.mcServer.getPlayerList().updatePermissionLevel(p);
 	      	   p.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(p, (WorldServer) p.world);
 	      	   p.world.updateAllPlayersSleepingFlag();
@@ -387,8 +366,6 @@ public class SkinUpdater {
 	           //trigger update exp
 	           p.connection.sendPacket(new SPacketSetExperience(p.experience, p.experienceTotal, p.experienceLevel));
 
-	           //triggers updateAbilities
-	           p.sendPlayerAbilities();
 	           //send the current inventory - otherwise player would have an empty inventory
 	           p.sendContainerToPlayer(p.inventoryContainer);
 	           p.setPlayerHealthUpdated();
@@ -407,6 +384,7 @@ public class SkinUpdater {
 	           p.interactionManager.setWorld(p.getServerWorld()); 
 	          
 	           con.sendPacket(new SPacketSpawnPosition(p.getPosition()));
+	           
 	           boolean end = true;
 	           p.copyFrom(p, end);
 	           net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerRespawnEvent(p, end);
