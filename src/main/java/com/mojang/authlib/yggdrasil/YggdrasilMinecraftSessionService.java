@@ -118,13 +118,13 @@ public class YggdrasilMinecraftSessionService extends HttpMinecraftSessionServic
     }
 
     @Override
-    public Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getTextures(final GameProfile profile, final boolean requireSecure) 
-    {
+    public Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> getTextures(final GameProfile profile, final boolean requireSecure) {
         final Property textureProperty = Iterables.getFirst(profile.getProperties().get("textures"), null);
 
         if (textureProperty == null) {
             return new HashMap<MinecraftProfileTexture.Type, MinecraftProfileTexture>();
         }
+
 
         final MinecraftTexturesPayload result;
         try {
@@ -138,16 +138,7 @@ public class YggdrasilMinecraftSessionService extends HttpMinecraftSessionServic
         if (result == null || result.getTextures() == null) {
             return new HashMap<MinecraftProfileTexture.Type, MinecraftProfileTexture>();
         }
-        
-        for (final Map.Entry<MinecraftProfileTexture.Type, MinecraftProfileTexture> entry : result.getTextures().entrySet()) 
-        {
-           if (!isWhitelistedDomain(entry.getValue().getUrl())) 
-           {
-                 LOGGER.error("Textures payload has been tampered with (non-whitelisted domain)");
-                 return new HashMap<MinecraftProfileTexture.Type, MinecraftProfileTexture>();
-           }
-        }
-        
+
         return result.getTextures();
     }
 

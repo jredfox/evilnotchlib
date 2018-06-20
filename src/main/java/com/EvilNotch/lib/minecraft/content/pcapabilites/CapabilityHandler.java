@@ -51,7 +51,7 @@ public class CapabilityHandler {
 			return;
 		if(CapabilityReg.getCapabilityConatainer(e.player) == null)
 		{
-			System.out.println("returning player already saved:" + e.player.getName() );
+			System.out.println("returning player already saved:" + CapabilityReg.getUsername(e.player ));
 			return;
 		}
 		File f = new File(LibEvents.playerDataDir,"caps/" + e.player.getUniqueID().toString() + ".dat");
@@ -59,8 +59,8 @@ public class CapabilityHandler {
 		EntityPlayerMP p = (EntityPlayerMP) e.player;
 		CapabilityReg.save(p,nbt);
 		NBTUtil.updateNBTFileSafley(f, nbt);
-		CapabilityReg.capabilities.remove(p.getName() );
-		System.out.println("saved player from logout:" + p.getName() + " toFile:" + f);
+		CapabilityReg.capabilities.remove(CapabilityReg.getUsername(p) );
+		System.out.println("saved player from logout:" + CapabilityReg.getUsername(p) + " toFile:" + f);
 	}
 	/**
 	 * used for capabilities that require on tick but, don't want to be unoptimized and grab the container every time

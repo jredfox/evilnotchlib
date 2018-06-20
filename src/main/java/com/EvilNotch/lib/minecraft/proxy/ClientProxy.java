@@ -39,6 +39,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.realms.RealmsBridge;
@@ -47,6 +48,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -208,6 +210,10 @@ public class ClientProxy extends ServerProxy{
 	public static void quitGame(EntityPlayerMP player, TextComponentString msg) 
 	{
 //		Minecraft.getMinecraft().player.displayGui(new Gui);
+	}
+
+	public static EntityPlayer getPlayer() {
+		return FMLClientHandler.instance().getClientPlayerEntity();
 	}
 
 }

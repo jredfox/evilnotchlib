@@ -174,8 +174,9 @@ public class SkinUpdater {
 
 	/**
 	 * url is used as a boolean for !hasAccountName to detect if user has cape same with event force update
+	 * @throws WrongUsageException 
 	 */
-	public static boolean updateCape(EntityPlayer sender,JSONObject textures,boolean url) 
+	public static boolean updateCape(EntityPlayer sender,JSONObject textures,boolean url) throws WrongUsageException 
 	{
 		boolean recompile = false;
 		if(sender != null)
@@ -194,7 +195,12 @@ public class SkinUpdater {
 			boolean noCape = !textures.containsKey("CAPE");
 			
 			if(noCape && !cape.url.equals(""))
-			{
+			{	
+				if(!JavaUtil.isURL(cape.url))
+				{
+					SkinData data = SkinUpdater.getSkinData(cape.url.toLowerCase());//since url is player at this point use that for player name
+					cape.url = SkinUpdater.getCapeURL(data,cape.url);
+				}
 				JSONObject jcape = new JSONObject();
 				jcape.put("url", cape.url);
 				textures.put("CAPE", jcape);
@@ -575,6 +581,15 @@ public class SkinUpdater {
 	}
 	public static void setCape(EntityPlayer player, String url,boolean packets) throws WrongUsageException 
 	{
+		String name = url;
+		if(!url.equals(""))
+		{	
+			if(!JavaUtil.isURL(url))
+			{
+				SkinData data = SkinUpdater.getSkinData(url.toLowerCase());//since url is player at this point use that for player name
+				url = SkinUpdater.getCapeURL(data,url);
+			}
+		}
 		ArrayList<Property> props = JavaUtil.toArray(player.getGameProfile().getProperties().get("textures"));
 		if(props.size() == 0)
 		{
@@ -618,7 +633,7 @@ public class SkinUpdater {
 			ReflectionUtil.setObject(p, new String(bytes,StandardCharsets.UTF_8), Property.class, "value");
 		}
 		CapCape cape = (CapCape) CapabilityReg.getCapabilityConatainer(player).getCapability(new ResourceLocation(Reference.MODID + ":" + "cape"));
-		cape.url = url;	
+		cape.url = name;
 		if(packets)
 			SkinUpdater.updateSkinPackets((EntityPlayerMP) player);
 	}
