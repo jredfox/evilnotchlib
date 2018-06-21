@@ -338,7 +338,10 @@ public class SkinUpdater {
 		}
 		return null;
 	}
-	
+	/**
+	 * force update skin render for you and all other players 
+	 * note skin has to be changed before calling this method
+	 */
     public static void updateSkinPackets(EntityPlayerMP p)
     {
 		SPacketPlayerListItem removeInfo;
@@ -406,14 +409,11 @@ public class SkinUpdater {
 	           con.sendPacket(removeInfo);
 	           con.sendPacket(addInfo);
 	           con.sendPacket(addNamed);
-	          
-	           //hide player
-		       pOnline.getServerWorld().getEntityTracker().removePlayerFromTrackers(p);
-		       pOnline.getServerWorld().getEntityTracker().untrack(p);
-		       //show player
-		       pOnline.getServerWorld().getEntityTracker().track(p);
 	         }
 	      }
+           //show && hide player to update their skin on their render
+	       EntityUtil.hidePlayer(p);
+	       EntityUtil.showPlayer(p);
 	    }
 	    catch (Exception localException) {}
     }

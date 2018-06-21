@@ -1340,6 +1340,9 @@ public class EntityUtil {
 		return server.getPlayerList().getPlayerByUsername(key);
 	}
 
+	/**
+	 * set the game type with keeping previous capabilities
+	 */
 	public static void setGameTypeSafley(EntityPlayerMP p, GameType gameType) 
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
@@ -1347,6 +1350,20 @@ public class EntityUtil {
 	    p.setGameType(gameType);
 	    p.capabilities.readCapabilitiesFromNBT(nbt);
 	    p.sendPlayerAbilities();
+	}
+
+	/**
+	 * hides the player for all users
+	 */
+	public static void hidePlayer(EntityPlayerMP p) {
+	       p.getServerWorld().getEntityTracker().removePlayerFromTrackers(p);
+	       p.getServerWorld().getEntityTracker().untrack(p);
+	}
+	/**
+	 * shows player for all users
+	 */
+	public static void showPlayer(EntityPlayerMP p) {
+	       p.getServerWorld().getEntityTracker().track(p);
 	}
 
 }
