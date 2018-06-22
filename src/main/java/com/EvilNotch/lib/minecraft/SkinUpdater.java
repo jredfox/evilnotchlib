@@ -488,18 +488,11 @@ public class SkinUpdater {
 	{
 		if(!LibEvents.noSkins.containsKey(p.getName()) )//&& JavaUtil.isOnline(url))
 		{
-			//make sure user can connect before constantly trying to add it back
-			if(JavaUtil.isOnline("api.mojang.com"))
-				LibEvents.noSkins.put(p.getName(),new IntObj(0));
-			else
-				System.out.println("no internet on adding?");
+			LibEvents.noSkins.put(p.getName(),new IntObj(0));
 		}
 		else
 		{
-			if(JavaUtil.isOnline("api.mojang.com"))
-				LibEvents.noSkins.get(p.getName()).integer = 0;
-			else
-				System.out.println("no internet on setting?");
+			LibEvents.noSkins.get(p.getName()).integer = 0;
 		}
 	}
 	public static void removeUser(String name) 

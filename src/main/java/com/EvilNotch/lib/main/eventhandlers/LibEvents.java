@@ -13,6 +13,7 @@ import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.SkinUpdater;
 import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
+import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.number.IntObj;
 
 import net.minecraft.entity.Entity;
@@ -58,6 +59,12 @@ public class LibEvents {
 			 IntObj i = pair.getValue();
 			 if(i.integer == 32*20)
 			 {
+				if(!JavaUtil.isOnline("api.mojang.com"))
+				{
+					toRemove.addAll(noSkins.keySet());
+					System.out.println("server is offline will not try to re-instantiate new skins again");
+					break;
+				}
 				 String name = pair.getKey();
 				 EntityPlayer player = EntityUtil.getPlayer(name);
 				 SkinUpdater.fireSkinEvent(player, true);
