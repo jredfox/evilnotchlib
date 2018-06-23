@@ -21,6 +21,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.EvilNotch.lanessentials.CfgLanEssentials;
+import com.EvilNotch.lanessentials.client.GuiShareToLan2;
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
@@ -48,6 +49,7 @@ import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.ConfigBase;
 import com.EvilNotch.lib.util.Line.ConfigEnhanced;
+import com.dosse.upnp.UPnP;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -288,6 +290,14 @@ public class MainJava {
 		
 		//player premium uuid cache
 		SkinUpdater.saveSkinCache();
+		
+		//clear ports
+		for(Integer port : GuiShareToLan2.ports)
+		{
+			UPnP.closePortTCP(port);
+			UPnP.closePortUDP(port);
+		}
+		GuiShareToLan2.ports.clear();
 	}
 	
 	@Mod.EventHandler
