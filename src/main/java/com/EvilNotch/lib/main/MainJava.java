@@ -21,6 +21,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.EvilNotch.lanessentials.CfgLanEssentials;
+import com.EvilNotch.lanessentials.MainMod;
 import com.EvilNotch.lanessentials.client.GuiShareToLan2;
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.Api.FieldAcess;
@@ -286,18 +287,12 @@ public class MainJava {
 			it.remove();
 		}
 		UUIDFixer.count = 0;
+		
+		//lan-essentials code that needs to be run elsewhere
 		LibEvents.noSkins.clear();
 		
 		//player premium uuid cache
 		SkinUpdater.saveSkinCache();
-		
-		//clear ports
-		for(Integer port : GuiShareToLan2.ports)
-		{
-			UPnP.closePortTCP(port);
-			UPnP.closePortUDP(port);
-		}
-		GuiShareToLan2.ports.clear();
 	}
 	
 	@Mod.EventHandler

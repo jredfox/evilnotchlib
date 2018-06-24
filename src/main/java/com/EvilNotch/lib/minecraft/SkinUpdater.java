@@ -69,6 +69,7 @@ public class SkinUpdater {
 	{
 		updateSkin(username,profile.getProperties(),sender,alexURL);
 	}
+	
 	public static void updateSkin(String username,PropertyMap pm,EntityPlayerMP sender,boolean alexURL) throws WrongUsageException
 	{
 		if(SkinUpdater.data.size() > Config.maxSkinCache)
@@ -527,7 +528,16 @@ public class SkinUpdater {
 					String signature = "";
 					JSONObject valueJson = (JSONObject) obj.get("value");
 					valueJson.put("signatureRequired", false);
-					valueJson.put("timestamp", System.currentTimeMillis());
+					
+					long time = (long) valueJson.get("timestamp");
+					long oldDay = getDays(time);
+					long newDay = getDays(System.currentTimeMillis());
+					long daysPassed = newDay-oldDay;
+					if(daysPassed >= Config.maxSkinCacheDays)
+					{
+						System.out.println("skipping style skinDays:" + daysPassed + " skin:" + name);
+						continue;
+					}
 					String value =  new String(Base64.encodeBase64(valueJson.toJSONString().getBytes()),StandardCharsets.UTF_8);
 					SkinData data = new SkinData(uuid,value,signature,name,valueJson);
 					
@@ -540,6 +550,10 @@ public class SkinUpdater {
 				ee.printStackTrace();
 			}
 		}
+	}
+	public static long getDays(long ms) 
+	{
+		return ms / (1000L*60L*60L*24L);
 	}
 	
 	public static void saveSkinCache() 

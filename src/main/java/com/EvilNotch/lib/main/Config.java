@@ -31,6 +31,7 @@ public class Config {
 	public static File cfgmenu = null;
 	public static int maxSkinCache = 200000;
 	public static String[] skinDomains = null;
+	public static long maxSkinCacheDays = 1;
 	
 	public static void loadConfig(File d)
 	{
@@ -44,6 +45,8 @@ public class Config {
 		playerDataFixOptimized = config.get("vanilla_fixer", "playerDataFixerOptimized", true).getBoolean();
 		playerOwnerAlwaysFix = config.get("vanilla_fixer", "playerOwnerSwapAlwaysFix", true).getBoolean();
 		maxSkinCache = config.get("vanilla_fixer", "SkinCacheMaxSize",maxSkinCache).getInt();
+		maxSkinCacheDays = (long)config.get("vanilla_fixer", "SkinCacheStaleDays",(int)maxSkinCacheDays).getInt();
+		
 		String[] vars = config.getStringList("blacklistCMDNames", "entity", new String[]{"\"modid:mobname\""}, "Blacklist for command sender names so it always uses general when translating input with quotes \"modid:mobname\" ");
 		for(String s : vars)
 		{
