@@ -3,7 +3,7 @@ package com.EvilNotch.lib.util.registry;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
-import com.EvilNotch.lib.util.minecraft.EntityUtil;
+import com.EvilNotch.lib.minecraft.EntityUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;

@@ -17,9 +17,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,10 +44,22 @@ import org.json.simple.parser.ParseException;
 import com.EvilNotch.lib.util.Line.LineBase;
 import com.EvilNotch.lib.util.Line.LineItemStackBase;
 
-import net.minecraft.entity.Entity;
-
 public class JavaUtil {
 	public static final String SPECIALCHARS = "~!@#$%^&*()_+`'-=/,.<>?\"{}[]:;|" + "\\";
+	
+	public static String getPublicIp() throws IOException 
+	{
+		URL whatismyip = new URL("http://checkip.amazonaws.com");
+		BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+		String ip = in.readLine(); //you get the IP as a String
+		return ip;
+	}
+
+	public static String getIpv4() throws UnknownHostException 
+	{
+        InetAddress inetAddress = InetAddress.getLocalHost();
+		return inetAddress.getHostAddress();
+	}
 	
 	public static boolean isOnline(String url)
 	{
@@ -867,6 +881,15 @@ public class JavaUtil {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static long getDays(long ms) 
+	{
+		return ms / (1000L*60L*60L*24L);
+	}
+
+	public static long getTime(long time) {
+		return System.currentTimeMillis()-time;
 	}
 
 }

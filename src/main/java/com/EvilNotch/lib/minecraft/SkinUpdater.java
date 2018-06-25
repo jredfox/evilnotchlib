@@ -530,8 +530,8 @@ public class SkinUpdater {
 					valueJson.put("signatureRequired", false);
 					
 					long time = (long) valueJson.get("timestamp");
-					long oldDay = getDays(time);
-					long newDay = getDays(System.currentTimeMillis());
+					long oldDay = JavaUtil.getDays(time);
+					long newDay = JavaUtil.getDays(System.currentTimeMillis());
 					long daysPassed = newDay-oldDay;
 					if(daysPassed >= Config.maxSkinCacheDays)
 					{
@@ -550,10 +550,6 @@ public class SkinUpdater {
 				ee.printStackTrace();
 			}
 		}
-	}
-	public static long getDays(long ms) 
-	{
-		return ms / (1000L*60L*60L*24L);
 	}
 	
 	public static void saveSkinCache() 

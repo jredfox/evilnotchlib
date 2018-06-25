@@ -1365,5 +1365,10 @@ public class EntityUtil {
 	public static void showPlayer(EntityPlayerMP p) {
 	       p.getServerWorld().getEntityTracker().track(p);
 	}
+	
+	public static void broadCastMessege(String msg) 
+	{
+		LibEvents.msgs.add(msg);
+	}
 
 }

@@ -2,6 +2,7 @@ package com.EvilNotch.lib.main.eventhandlers;
 
 import java.awt.Point;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,7 +20,9 @@ import com.EvilNotch.lib.util.number.IntObj;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ClassInheritanceMultiMap;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
@@ -27,6 +30,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
@@ -42,16 +46,52 @@ public class LibEvents {
 	public static File playerStatsDir = null;
 	public static File playerAdvancedmentsDir = null;
 	
+	 public static int mTick = 0;
+	 public static final List<String> msgs = new ArrayList();
+	 @SubscribeEvent
+	 public void mTick(ServerTickEvent e)
+	 {
+		 if(e.phase != Phase.END || msgs.isEmpty())
+			 return;
+		 Set<String> toRemove = new HashSet();
+		 for(String msg : msgs)
+		 {
+			MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+			for(EntityPlayerMP p : mcServer.getPlayerList().getPlayers())
+			{
+				p.sendMessage(new TextComponentString(msg));
+			}
+			toRemove.add(msg);
+		 }
+		 for(String s : toRemove)
+			 msgs.remove(s);
+	 }
+	
 	 /**
 	  * for when mojang servers don't respond quick enough try again in 32 seconds
 	  */
-	 public static HashMap<String,IntObj> noSkins = new HashMap();
+	 public static final HashMap<String,IntObj> noSkins = new HashMap();
+	 public static boolean hasOnline = false;
+	 public static int sTick = 0;
 	 @SubscribeEvent
 	 public void skinTick(ServerTickEvent e)
 	 {
 		 if(e.phase != Phase.END || noSkins.isEmpty())
 			 return;
+		 
 		 Set<String> toRemove = new HashSet();
+		 
+		 if(sTick % 30 == 0)
+		 {
+			 sTick = 0;
+			 //reset if server has gone offline here
+			 if(hasOnline)
+			 {
+				 hasOnline = JavaUtil.isOnline("api.mojang.com");
+				 if(!hasOnline)
+					 noSkins.clear();
+			 }
+		 }
 		 Iterator<Map.Entry<String,IntObj>> it = noSkins.entrySet().iterator();
 		 while(it.hasNext())
 		 {
@@ -59,11 +99,15 @@ public class LibEvents {
 			 IntObj i = pair.getValue();
 			 if(i.integer == 32*20)
 			 {
-				if(!JavaUtil.isOnline("api.mojang.com"))
+				if(!hasOnline)
 				{
-					toRemove.addAll(noSkins.keySet());
-					System.out.println("server is offline will not try to re-instantiate new skins again");
-					break;
+					hasOnline = JavaUtil.isOnline("api.mojang.com");
+					if(!hasOnline)
+					{
+						toRemove.addAll(noSkins.keySet());
+						System.out.println("server is offline will not try to re-instantiate new skins again");
+						break;
+					}
 				}
 				 String name = pair.getKey();
 				 EntityPlayer player = EntityUtil.getPlayer(name);
@@ -79,6 +123,7 @@ public class LibEvents {
 		 {
 			 noSkins.remove(n);
 		 }
+		 sTick++;
 	 }
 	 @SubscribeEvent
 	 public void skinNo(PlayerLoggedOutEvent e)
