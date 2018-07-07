@@ -678,6 +678,8 @@ public class EntityUtil {
 	 */
 	public static void cacheEnts(List<ResourceLocation> list,World world,boolean printLists)
 	{
+		if(!Config.debug)
+			return;
 		long time = System.currentTimeMillis();
 		if(cached && list == null)
 			return;

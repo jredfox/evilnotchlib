@@ -38,7 +38,7 @@ public class BasicItem extends Item implements IBasicItem{
 		this.setCreativeTab(tab);
 		
 		//autofill
-		populateLang(langlist,unlocalname);//not just client side I18l or something uses it on server side for translations
+		populateLang(langlist,unlocalname,id);//not just client side I18l or something uses it on server side for translations
 		
 		this.hasregister = register;
 		this.hasmodel = model;
@@ -46,10 +46,11 @@ public class BasicItem extends Item implements IBasicItem{
 		MainJava.items.add(this);
 	}
 	
-	public static void populateLang(LangEntry[] langlist,String unlocalname) {
+	public static void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "item." + unlocalname + ".name";
+			entry.loc = id;
 			itemlangs.add(entry);
 		}
 	}

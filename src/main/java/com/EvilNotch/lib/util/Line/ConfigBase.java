@@ -41,9 +41,9 @@ public class ConfigBase {
     protected char rbracket = ']';
     protected String orLogic = "||";
     
-    protected ArrayList<String> lineChecker;//optimized to only keep it as string and not reparse it
-    protected ArrayList<Comment> initChecker;
-    protected ArrayList<Comment> commentChecker;
+    protected ArrayList<String> lineChecker = new ArrayList();//optimized to only keep it as string and not reparse it
+    protected ArrayList<Comment> initChecker = new ArrayList();
+    protected ArrayList<Comment> commentChecker = new ArrayList();
     
     public ConfigBase(File file)
     {
@@ -412,6 +412,7 @@ public class ConfigBase {
     public void setLine(ILine line,boolean compareBase)
     {
     	int index = getLineIndex(compareBase ? line.getLineBase() : line);
+    	System.out.println(index);
     	if(index != -1)
     		setLine(line,index);
     	else

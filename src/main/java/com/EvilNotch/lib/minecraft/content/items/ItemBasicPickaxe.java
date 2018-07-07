@@ -33,7 +33,7 @@ public class ItemBasicPickaxe extends ItemPickaxe implements IBasicItem{
 		this.setCreativeTab(tab);
 		
 		//autofill
-		BasicItem.populateLang(langlist, unlocalname);
+		BasicItem.populateLang(langlist, unlocalname,id);
 		
 		this.hasregister = register;
 		this.hasmodel = model;

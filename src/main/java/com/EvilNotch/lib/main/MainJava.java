@@ -1,69 +1,47 @@
 package com.EvilNotch.lib.main;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
-import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
-import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.NBTUtil;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
 import com.EvilNotch.lib.minecraft.content.FakeWorld;
+import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.ToolSet;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
+import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
 import com.EvilNotch.lib.minecraft.content.commands.CMDKick;
 import com.EvilNotch.lib.minecraft.content.commands.CMDSeedGet;
 import com.EvilNotch.lib.minecraft.content.commands.CMDTP;
 import com.EvilNotch.lib.minecraft.content.commands.CMDTeleport;
+import com.EvilNotch.lib.minecraft.content.items.BasicItem;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityContainer;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityHandler;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
 import com.EvilNotch.lib.minecraft.proxy.ServerProxy;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
-import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.ConfigBase;
 import com.EvilNotch.lib.util.Line.ConfigEnhanced;
-import com.dosse.upnp.UPnP;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
-import it.unimi.dsi.fastutil.floats.Float2ByteMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.command.ICommand;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -76,13 +54,10 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -152,13 +127,14 @@ public class MainJava {
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
 
 //		BasicBlock.Properties props = new BasicBlock.Properties(new ResourceLocation(MODID + ":" + "spider"),Material.CACTUS,"pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
-//		BasicCreativeTab tab = new BasicCreativeTab("spiderTesting",new ItemStack(Items.CAKE),new LangEntry("Custom Shiny Tab","en_us"),new LangEntry("Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°","ru_ru") );
+//		BasicCreativeTab tab = new BasicCreativeTab(new ResourceLocation(MODID + ":spidertesting"),new ItemStack(Items.CAKE),new LangEntry("Custom Shiny Tab","en_us"),new LangEntry("Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°","ru_ru") );
 //		BasicItem item = new BasicItem(new ResourceLocation(MODID + ":" + "stick"),tab,new LangEntry("Modded Stick","en_us"));
 //		BasicBlock b = new BasicBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "spider"),tab,props,new LangEntry("Spider Master","en_us"),new LangEntry("Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº","ru_ru"));
 	}
 	@Mod.EventHandler
 	public void post(FMLInitializationEvent e)
 	{
+		proxy.lang();
 		proxy.initMod();
 	}
 	
@@ -166,9 +142,7 @@ public class MainJava {
 	public void post(FMLPostInitializationEvent e)
 	{
 	    proxy.postinit();//generate lang,generate shadow sizes
-	    
-		if(Config.debug)
-			EntityUtil.cacheEnts();
+		EntityUtil.cacheEnts();
 		
 		if(!Config.isDev)
 		{

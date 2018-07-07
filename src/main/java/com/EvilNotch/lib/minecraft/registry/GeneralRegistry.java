@@ -10,6 +10,7 @@ import java.util.Set;
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
+import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.minecraft.content.commands.CMDTP;
 
 import net.minecraft.block.SoundType;
@@ -134,7 +135,8 @@ public class GeneralRegistry {
     		String s = keys.next();
     		if(cmdRemove.contains(s))
     		{
-    			System.out.println("found and removing:" + s);
+    			if(Config.debug)
+    				System.out.println("found and removing:" + s);
     			keys.remove();
     		}
     	}
@@ -146,7 +148,8 @@ public class GeneralRegistry {
     		String s = cmd.getName();
     		if(cmdRemove.contains(s))
     		{
-    			System.out.println("found and removing:" + s);
+    			if(Config.debug)
+    				System.out.println("found and removing:" + s);
     			it.remove();
     		}
     	}

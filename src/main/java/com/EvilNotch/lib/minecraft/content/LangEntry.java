@@ -1,10 +1,13 @@
 package com.EvilNotch.lib.minecraft.content;
 
+import net.minecraft.util.ResourceLocation;
+
 public class LangEntry {
 	
 	public String langDisplayName = null;
 	public String langType = null;
 	public String langId = null;
+	public ResourceLocation loc = null;
 	
 	/**
 	 * use this one if your manually calling it for advanced constructors in basic items/blocks

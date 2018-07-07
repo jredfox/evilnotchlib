@@ -3,10 +3,10 @@ package com.EvilNotch.lib.minecraft.proxy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.EvilNotch.lib.Api.BlockApi;
+import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.FieldAcessClient;
 import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
@@ -14,39 +14,33 @@ import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
 import com.EvilNotch.lib.minecraft.content.ConfigLang;
+import com.EvilNotch.lib.minecraft.content.LangEntry;
+import com.EvilNotch.lib.minecraft.content.LangLine;
+import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
-import com.EvilNotch.lib.minecraft.content.client.gui.GuiMainMenuBase;
+import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
+import com.EvilNotch.lib.minecraft.content.items.BasicItem;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.Comment;
 import com.EvilNotch.lib.util.Line.ConfigBase;
 import com.EvilNotch.lib.util.Line.IHead;
 import com.EvilNotch.lib.util.Line.ILine;
-import com.EvilNotch.lib.util.Line.LineEnhanced;
 import com.EvilNotch.lib.util.Line.LineItemStack;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.Locale;
-import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
-import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -59,6 +53,7 @@ public class ClientProxy extends ServerProxy{
 	
 	public static String currentLang = null;
 	public static Map<String, String> langlistClient = null;
+	public static  Map<String,String> langlist = null;
 
 	@Override
 	public void proxypreinit()
@@ -74,20 +69,80 @@ public class ClientProxy extends ServerProxy{
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		FieldAcessClient.cacheFields();
 		MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
-		lang();
 	}
+	@Override
 	public void lang() 
 	{
 		if(!MainJava.isDeObfuscated)
 		{
-			System.out.println("lan generation only occurs in dev enviorment:");
+			System.out.println("lan generation only occurs in dev enviorment on client:");
 			return;
 		}
 		File root = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
 		if(!root.exists())
 			root.mkdirs();
-		super.lang();
+		HashMap<File,ConfigLang> cfgs = new HashMap();
+		populateLang(root,BasicBlock.blocklangs,cfgs);
+		populateLang(root,BasicItem.itemlangs,cfgs);
+		populateLang(root,BasicCreativeTab.creativeTabLang,cfgs);
+		
+		if(langlistClient == null)
+		{
+			LanguageManager manager = Minecraft.getMinecraft().getLanguageManager();
+			Locale l = (Locale)ReflectionUtil.getObject(manager, LanguageManager.class, FieldAcessClient.CURRENT_LOCALE);
+			Map<String, String> map = (Map<String, String>) ReflectionUtil.getObject(l, Locale.class, FieldAcessClient.properties);
+			langlistClient = map;
+		}
+		if(langlist == null)
+		{
+			LanguageMap manager = (LanguageMap) ReflectionUtil.getObject(null, I18n.class, FieldAcess.lang_localizedName);
+			langlist = (Map<String, String>) ReflectionUtil.getObject(manager, LanguageMap.class, MCPMappings.getField(LanguageMap.class, "languageList"));
+		}
+		for(ConfigLang cfg : cfgs.values())
+		{
+			for(ILine line : cfg.lines)
+			{
+				String key = line.getModPath();
+				String value = (String) line.getHead();
+				if(!langlistClient.containsKey(key))
+				{
+					if(Config.debug)
+						System.out.println("injecting:" + line.getString());
+					langlistClient.put(key,value);
+				}
+				if(!langlist.containsKey(key))
+				{
+					if(Config.debug)
+						System.out.println("injectingServer:" + line.getString());
+					langlist.put(key,value);
+				}
+			}
+		}
 	}
+	/**
+	 * generate lang files here
+	 */
+	public void populateLang(File root, ArrayList<LangEntry> li,HashMap<File,ConfigLang> map) 
+	{
+		String currentLang = getCurrentLang();
+		for(LangEntry lang : li)
+		{
+			File file = new File(root,lang.loc.getResourceDomain() + "/lang/" + currentLang + ".lang");
+			ConfigLang cfg = map.get(file);
+			if(cfg == null)
+			{
+				cfg = new ConfigLang(file);
+				map.put(file, cfg);
+			}
+			LangLine line = new LangLine(lang.getString());
+			cfg.addLine(line);
+		}
+		for(ConfigLang lang : map.values())
+		{	
+			lang.updateConfig();
+		}
+	}
+
 	public static String getCurrentLang() 
 	{
 		 return Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
@@ -173,7 +228,8 @@ public class ClientProxy extends ServerProxy{
 		   if(i.registerModel())
 		   {
 			  Item item = (Item)i;
-			  ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(BlockApi.getItemString(item), "inventory"));
+			  for(int index = 0;index<15;index++)
+				  ModelLoader.setCustomModelResourceLocation(item, index, new ModelResourceLocation(BlockApi.getItemString(item), "inventory"));
 		   }
 	   }
 	   for(IBasicBlock i : MainJava.blocks)

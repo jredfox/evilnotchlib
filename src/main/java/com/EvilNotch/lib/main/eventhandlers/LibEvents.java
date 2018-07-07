@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.util.JavaUtil;
@@ -118,7 +119,7 @@ public class LibEvents {
 		 playerStatsDir = new File(playerDataDir.getParentFile(),"stats");
 		 playerAdvancedmentsDir = new File(playerDataDir.getParentFile(),"advancements");
 		 
-		 if(cachedEnts)
+		 if(cachedEnts || !Config.debug)
 			 return;
 		 MainJava.worldServer = w;
 		 
@@ -127,9 +128,6 @@ public class LibEvents {
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_nbt,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_commandsender,w);
 		 
-		 System.out.println("blacklistEnt:" + EntityUtil.ent_blacklist);
-		 System.out.println("blacklistNBTEnt:" + EntityUtil.ent_blacklist_nbt);
-		 System.out.println("blacklistCMDEnt:" + EntityUtil.ent_blacklist_commandsender);
 		 cachedEnts = true;
 	 }
 }

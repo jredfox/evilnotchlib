@@ -67,7 +67,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 		this.hasconfig = config;
 		
 		//autofill
-		populateLang(langlist,unlocalname);
+		populateLang(langlist,unlocalname,id);
 		
 		//set properties of the block
 		if(props != null)
@@ -121,10 +121,11 @@ public class BasicBlock extends Block implements IBasicBlock{
 		return new Properties(line);
 	}
 
-	public static void populateLang(LangEntry[] langlist,String unlocalname) {
+	public static void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "tile." + unlocalname + ".name";
+			entry.loc = id;
 			blocklangs.add(entry);
 		}
 	}
