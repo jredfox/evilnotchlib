@@ -12,14 +12,14 @@ import java.util.Set;
 
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.SkinUpdater;
-import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
 import com.EvilNotch.lib.util.JavaUtil;
+import com.EvilNotch.lib.util.PointId;
 import com.EvilNotch.lib.util.number.IntObj;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ClassInheritanceMultiMap;
 import net.minecraft.util.text.TextComponentString;
@@ -66,88 +66,37 @@ public class LibEvents {
 		 for(String s : toRemove)
 			 msgs.remove(s);
 	 }
-	
-	 /**
-	  * for when mojang servers don't respond quick enough try again in 32 seconds
-	  */
-	 public static final HashMap<String,IntObj> noSkins = new HashMap();
-	 public static boolean hasOnline = false;
-	 public static int sTick = 0;
-	 @SubscribeEvent
-	 public void skinTick(ServerTickEvent e)
-	 {
-		 if(e.phase != Phase.END || noSkins.isEmpty())
-			 return;
-		 
-		 Set<String> toRemove = new HashSet();
-		 
-		 if(sTick % 30 == 0)
-		 {
-			 sTick = 0;
-			 //reset if server has gone offline here
-			 if(hasOnline)
-			 {
-				 hasOnline = JavaUtil.isOnline("api.mojang.com");
-				 if(!hasOnline)
-					 noSkins.clear();
-			 }
-		 }
-		 Iterator<Map.Entry<String,IntObj>> it = noSkins.entrySet().iterator();
-		 while(it.hasNext())
-		 {
-			 Map.Entry<String,IntObj> pair = it.next();
-			 IntObj i = pair.getValue();
-			 if(i.integer == 32*20)
-			 {
-				if(!hasOnline)
+	 
+		/**
+		 * entity player connection to point id(ticks existed, max tick count,String msg)
+		 * the connection is kept even on respawn so there is no glitching this kicker
+		 */
+		public static HashMap<NetHandlerPlayServer,PointId> kicker = new HashMap();
+		public static boolean isKickerIterating = false;
+		@SubscribeEvent
+		public void kick(TickEvent.ServerTickEvent e)
+		{
+			if(e.phase != Phase.END || kicker.isEmpty())
+				return;
+
+			Iterator<Map.Entry<NetHandlerPlayServer,PointId> > it = kicker.entrySet().iterator();
+			while(it.hasNext())
+			{
+				isKickerIterating = true;
+				Map.Entry<NetHandlerPlayServer,PointId> pair = it.next();
+				NetHandlerPlayServer connection = pair.getKey();
+				PointId point = pair.getValue();
+				if(point.getX() >= point.getY())
 				{
-					hasOnline = JavaUtil.isOnline("api.mojang.com");
-					if(!hasOnline)
-					{
-						toRemove.addAll(noSkins.keySet());
-						System.out.println("server is offline will not try to re-instantiate new skins again");
-						break;
-					}
+					it.remove();
+					EntityUtil.disconnectPlayer(connection.player,new TextComponentString(point.id));
 				}
-				 String name = pair.getKey();
-				 EntityPlayer player = EntityUtil.getPlayer(name);
-				 SkinUpdater.fireSkinEvent(player, true);
-				 //if not reset add to the remove list
-				 if(i.integer != 0)
-					 toRemove.add(name);
-			 }
-			 else
-				 i.integer++;
-		 }
-		 for(String n : toRemove)
-		 {
-			 noSkins.remove(n);
-		 }
-		 sTick++;
-	 }
-	 @SubscribeEvent
-	 public void skinNo(PlayerLoggedOutEvent e)
-	 {
-		 noSkins.remove(e.player.getName());
-	 }
-	
-	 @SubscribeEvent
-	 public void playerData(PlayerDataFixEvent e)
-	 {
-		 if(e.type != UUIDFixer.Types.UUIDFIX)
-			 return;
-		 
-		 String name = e.player.getName().toLowerCase();
-		 SkinUpdater.removeUser(name);
-		 
-		 String newUUID = SkinUpdater.getUUID(name);
-		 if(newUUID == null)
-		 {
-			 System.out.println("unable to fetch uuid from mojang:");
-			 return;
-		 }
-		 SkinUpdater.uuids.put(name, newUUID);//strip the bars away from uuid to match mojangs api
-	 }
+			}
+			isKickerIterating = false;
+			
+			for(PointId p : kicker.values())
+				p.setLocation(p.getX() + 1,p.getY());
+		}
 	
 	/**
 	 * Attempt to re-instantiate the entity caches for broken entities when the world is no longer fake

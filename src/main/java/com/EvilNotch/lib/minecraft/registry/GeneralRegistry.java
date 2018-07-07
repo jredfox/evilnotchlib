@@ -2,10 +2,22 @@ package com.EvilNotch.lib.minecraft.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import com.EvilNotch.lib.Api.FieldAcess;
+import com.EvilNotch.lib.Api.MCPMappings;
+import com.EvilNotch.lib.Api.ReflectionUtil;
+import com.EvilNotch.lib.minecraft.content.commands.CMDTP;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 
 public class GeneralRegistry {
@@ -13,6 +25,7 @@ public class GeneralRegistry {
 	public static ArrayList<ICommand> cmds = new ArrayList();
 	public static HashMap<ResourceLocation,Material> blockmats = new HashMap();
 	public static HashMap<ResourceLocation,SoundType> soundTypes = new HashMap();
+	public static Set<String> cmdRemove = new HashSet();
 	
 	public static void load()
 	{
@@ -72,11 +85,76 @@ public class GeneralRegistry {
 	public static void registerCommand(ICommand cmd){
 		cmds.add(cmd);
 	}
-	public static void removeCmd(int index){
-		cmds.remove(index);
-	}
 	public static ArrayList<ICommand> getCmdList(){
 		return cmds;
+	}
+	
+	public static void removeVanillaCommand(String name){
+		cmdRemove.add(name);
+	}
+	/**
+	 * remove all commands with this name
+	 */
+	public static void removeAllCMD(String name)
+	{
+		Iterator<ICommand> it = cmds.iterator();
+		while(it.hasNext())
+		{
+			ICommand cmd = it.next();
+			if(cmd.getName().equals(name))
+			{
+				it.remove();
+			}
+		}
+	}
+	/**
+	 * remove first command with this name
+	 */
+	public static void removeCMD(String name)
+	{
+		Iterator<ICommand> it = cmds.iterator();
+		while(it.hasNext())
+		{
+			ICommand cmd = it.next();
+			if(cmd.getName().equals(name))
+			{
+				it.remove();
+				break;
+			}
+		}
+	}
+	public static void removeActiveCommands(MinecraftServer server)
+	{
+    	//removes half of it
+    	ICommandManager manager = server.getCommandManager();
+    	Map<String,ICommand> map = manager.getCommands();
+    	Iterator<String> keys = map.keySet().iterator();
+    	while(keys.hasNext())
+    	{
+    		String s = keys.next();
+    		if(cmdRemove.contains(s))
+    		{
+    			System.out.println("found and removing:" + s);
+    			keys.remove();
+    		}
+    	}
+    	Set<ICommand> cmds = (Set<ICommand>) ReflectionUtil.getObject(manager, CommandHandler.class, FieldAcess.commandSet);
+    	Iterator<ICommand> it = cmds.iterator();
+    	while(it.hasNext())
+    	{
+    		ICommand cmd = it.next();
+    		String s = cmd.getName();
+    		if(cmdRemove.contains(s))
+    		{
+    			System.out.println("found and removing:" + s);
+    			it.remove();
+    		}
+    	}
+	}
+
+	public static void replaceVanillaCommand(String name, ICommand cmd){
+		removeVanillaCommand(name);
+		registerCommand(cmd);
 	}
 
 }

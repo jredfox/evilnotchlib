@@ -105,7 +105,11 @@ public class ConfigBase {
             this.first_launch = true;
             this.writeFile(new ArrayList<>());
         }
-        this.readFile();//cache arrays
+        else
+        {
+        	//no need to read this if first launch since array will always be blank
+        	this.readFile();//cache arrays
+        }
     }
 
     public void writeFile(ArrayList<String> list) 

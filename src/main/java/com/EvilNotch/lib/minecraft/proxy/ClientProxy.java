@@ -2,7 +2,9 @@ package com.EvilNotch.lib.minecraft.proxy;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.Api.FieldAcessClient;
@@ -11,12 +13,10 @@ import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
-import com.EvilNotch.lib.minecraft.SkinUpdater;
+import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.client.gui.GuiMainMenuBase;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
-import com.EvilNotch.lib.minecraft.content.client.models.BasicModel;
-import com.EvilNotch.lib.minecraft.content.client.rp.CustomResourcePack;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.Comment;
@@ -38,6 +38,8 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.client.resources.LanguageManager;
+import net.minecraft.client.resources.Locale;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -55,8 +57,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends ServerProxy{
 	
-	public static IBakedModel default_block = null;
-	
+	public static String currentLang = null;
+	public static Map<String, String> langlistClient = null;
+
 	@Override
 	public void proxypreinit()
 	{
@@ -70,9 +73,64 @@ public class ClientProxy extends ServerProxy{
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		FieldAcessClient.cacheFields();
-		
 		MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
-		
+		lang();
+	}
+	public void lang() 
+	{
+		if(!MainJava.isDeObfuscated)
+		{
+			System.out.println("lan generation only occurs in dev enviorment:");
+			return;
+		}
+		File root = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
+		if(!root.exists())
+			root.mkdirs();
+		super.lang();
+	}
+	public static String getCurrentLang() 
+	{
+		 return Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
+	}
+
+	/**
+	 * Create fast utf-8 instanceof ConfigLang then do manual injections
+	 */
+	public void injectClientLang(File f) 
+	{
+		ConfigLang cfg = new ConfigLang(f);
+		injectClientLang(cfg);
+	}
+
+	public void injectClientLang(ConfigLang cfg) 
+	{
+		for(ILine line : cfg.lines)
+		{
+			String key = line.getModPath();
+			String value = (String) line.getHead();
+			if(!langlistClient.containsKey(key))
+				langlistClient.put(key,value);
+		}
+	}
+
+	@Override
+	public void initMod()
+	{
+		menuLibInit();
+		super.initMod();
+	}
+	
+	@Override
+	public void postinit()
+	{
+		super.postinit();
+	}
+
+	/**
+	 * Reorder menus or if client overrides using whitelist do only the whitelist
+	 */
+	public static void menuLibInit() 
+	{	
 		//register user registered menus
 		File f = new File(Config.cfgmenu.getParent(),"menulib.cfg");
 		ArrayList<Comment> comments = (ArrayList<Comment>)JavaUtil.asArray(new Comment[]{new Comment("Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :("),new Comment("Format is: \"modid:mainmenu\" = \"class.full.name\"")});
@@ -95,60 +153,6 @@ public class ClientProxy extends ServerProxy{
 			}
 		}
 		
-		//cache client's skin so when going to single player world hosting it don't take forever
-		try
-		{
-			long time = System.currentTimeMillis();
-			GameProfile profile = Minecraft.getMinecraft().getSession().getProfile();
-			SkinUpdater.getSkinData(profile.getName().toLowerCase());
-			JavaUtil.printTime(time, "Done Caching Client's Skin:");
-	    	if(!MainJava.skinCache.exists() && !SkinUpdater.uuids.isEmpty())
-	    	{
-	    		System.out.println("Saving UUID Cache:");
-	    		SkinUpdater.saveSkinCache();
-	    	}
-		}
-		catch(Exception ee)
-		{
-			System.out.println("Unable to cache client's skin things are not going to work so smoothly! retrying when world is created");
-			ee.printStackTrace();
-		}
-	}
-	@Override
-	public void initMod()
-	{
-		super.initMod();
-	}
-	
-	@Override
-	public void postinit()
-	{
-		super.postinit();
-		menuLibInit();
-		
-		CustomResourcePack pack = new CustomResourcePack(ServerProxy.dirResourcePack);
-		List<IResourcePack> list = (List<IResourcePack>)ReflectionUtil.getObject(Minecraft.getMinecraft(), Minecraft.class, MCPMappings.getField(Minecraft.class, "defaultResourcePacks"));
-		list.add(pack);
-		long stamp = System.currentTimeMillis();
-		try 
-		{
-			SimpleReloadableResourceManager manager = (SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager();
-			manager.reloadResourcePack(pack);
-			pack.refresh();
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-		((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(pack);//for future
-		JavaUtil.printTime(stamp, "Done Refreshing:");
-	}
-
-	/**
-	 * Reorder menus or if client overrides using whitelist do only the whitelist
-	 */
-	public static void menuLibInit() 
-	{
 		MenuRegistry.reOrder();
 		MenuRegistry.setCurrentMenu(Config.currentMenuIndex);
 	}
@@ -159,24 +163,7 @@ public class ClientProxy extends ServerProxy{
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void modeltest(ModelBakeEvent event)
 	{
-		//TODO: needs to get updated
 		modelpreInit();
-		ModelResourceLocation loc = new ModelResourceLocation(new ResourceLocation("minecraft:diamond_block"), "inventory");
-		ModelResourceLocation loc2 = new ModelResourceLocation(new ResourceLocation("minecraft:stick"), "inventory");
-		IBakedModel diamond = event.getModelRegistry().getObject(loc);
-		IBakedModel stick = event.getModelRegistry().getObject(loc2);
-		for(IBasicBlock b : MainJava.blocks)
-		{
-			Block block = (Block)b;
-			for(String s : b.getModelStates() )
-				event.getModelRegistry().putObject(new ModelResourceLocation(BlockApi.getBlockString(block),s),new BasicModel(diamond,"minecraft:blocks/grass_top") );
-		}
-		for(IBasicItem i : MainJava.items)
-		{
-			Item item = (Item)i;
-			ModelResourceLocation itemloc = new ModelResourceLocation(BlockApi.getItemString(item),"inventory");
-			event.getModelRegistry().putObject(itemloc,new BasicModel(stick,"minecraft:blocks/coal_ore") );
-		}
 	}
 	
 	public static void modelpreInit() 
@@ -194,22 +181,11 @@ public class ClientProxy extends ServerProxy{
 		   if(i.registerModel())
 		   {
 			   Block b = (Block)i;
-			   ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), 0,  new ModelResourceLocation(BlockApi.getBlockString(b), "inventory"));
-			   ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), 0,  new ModelResourceLocation(BlockApi.getBlockString(b), "normal"));
+			   for(String s : i.getModelStates())
+				   for(int index=0;index<15;index++)
+					   ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), index,  new ModelResourceLocation(BlockApi.getBlockString(b), s));
 		   }
 	   }
-	}
-
-	public static String currentLang() {
-		return CustomResourcePack.getCurrentLang();
-	}
-
-	/**
-	 * must be called from the owner or exceptions will be thrown
-	 */
-	public static void quitGame(EntityPlayerMP player, TextComponentString msg) 
-	{
-//		Minecraft.getMinecraft().player.displayGui(new Gui);
 	}
 
 	public static EntityPlayer getPlayer() {

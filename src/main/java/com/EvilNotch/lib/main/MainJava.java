@@ -20,27 +20,24 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.EvilNotch.lanessentials.CfgLanEssentials;
-import com.EvilNotch.lanessentials.MainMod;
-import com.EvilNotch.lanessentials.client.GuiShareToLan2;
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
-import com.EvilNotch.lib.main.eventhandlers.UUIDFixer;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.NBTUtil;
-import com.EvilNotch.lib.minecraft.SkinUpdater;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
 import com.EvilNotch.lib.minecraft.content.FakeWorld;
-import com.EvilNotch.lib.minecraft.content.SkinData;
 import com.EvilNotch.lib.minecraft.content.ToolSet;
+import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
 import com.EvilNotch.lib.minecraft.content.commands.CMDKick;
 import com.EvilNotch.lib.minecraft.content.commands.CMDSeedGet;
+import com.EvilNotch.lib.minecraft.content.commands.CMDTP;
+import com.EvilNotch.lib.minecraft.content.commands.CMDTeleport;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityContainer;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityHandler;
@@ -120,7 +117,6 @@ public class MainJava {
 	 * A valid world reference once the game starts could be any dim
 	 */
 	public static World worldServer = null;
-	public static File skinCache = null;
 
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
@@ -133,9 +129,6 @@ public class MainJava {
 		FieldAcess.cacheFields();
 		fake_world = new FakeWorld();
 		Config.loadConfig(e.getModConfigurationDirectory());
-		File dir = e.getModConfigurationDirectory().getParentFile();
-		skinCache = new File(dir,"skinCache.json");
-		SkinUpdater.parseSkinCache();
 		proxy.preinit();
 		GeneralRegistry.load();
 		
@@ -143,7 +136,6 @@ public class MainJava {
 		cfgArmors = new ConfigEnhanced(new File(Config.cfg.getParent(),"config/armor.cfg"));
 		cfgBlockProps = new ConfigEnhanced(new File(Config.cfg.getParent(),"config/blockprops.cfg"));
 		
-		MinecraftForge.EVENT_BUS.register(new UUIDFixer());
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
 		MinecraftForge.EVENT_BUS.register(this);
@@ -152,6 +144,9 @@ public class MainJava {
 		GeneralRegistry.registerCommand(new CMDDim());
 		GeneralRegistry.registerCommand(new CMDSeedGet());
 		GeneralRegistry.registerCommand(new CMDKick());
+		
+		GeneralRegistry.replaceVanillaCommand("tp",new CMDTP());
+		GeneralRegistry.replaceVanillaCommand("teleport",new CMDTeleport());
 		
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
@@ -172,9 +167,8 @@ public class MainJava {
 	{
 	    proxy.postinit();//generate lang,generate shadow sizes
 	    
-		long time = System.currentTimeMillis();
-		EntityUtil.cacheEnts();
-		JavaUtil.printTime(time, "Entity Util Cached Ents:");
+		if(Config.debug)
+			EntityUtil.cacheEnts();
 		
 		if(!Config.isDev)
 		{
@@ -272,7 +266,7 @@ public class MainJava {
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		List<EntityPlayerMP> players = server.getPlayerList().getPlayers();
 		
-		System.out.println("Server is stopping is this a cliiiiiiiiiiiiiient?");
+		System.out.println("Server is stopping saving capabilities");
 		Iterator<Map.Entry<String,CapabilityContainer>> it = CapabilityReg.capabilities.entrySet().iterator();
 		while(it.hasNext())
 		{
@@ -286,18 +280,12 @@ public class MainJava {
 			System.out.print("saved player:" + name + " toFile:" + f.getName() + ".dat\n");
 			it.remove();
 		}
-		UUIDFixer.count = 0;
-		
-		//lan-essentials code that needs to be run elsewhere
-		LibEvents.noSkins.clear();
-		
-		//player premium uuid cache
-		SkinUpdater.saveSkinCache();
 	}
 	
 	@Mod.EventHandler
 	public void commandRegister(FMLServerStartingEvent e)
 	{
+		GeneralRegistry.removeActiveCommands(e.getServer());
 		for(ICommand cmd : GeneralRegistry.getCmdList())
 			e.registerServerCommand(cmd);
 	}

@@ -77,9 +77,9 @@ public class BlockApi {
 	}
 	public static void setMaterial(Block b, Material m,boolean setMatColor,String toolclazz)
 	{
-		ReflectionUtil.setObject(b, m, Block.class, FieldAcess.blockMaterial);
+		ReflectionUtil.setFinalObject(b, m, Block.class, FieldAcess.blockMaterial);
 		if(setMatColor)
-			ReflectionUtil.setObject(b, m.getMaterialMapColor(), Block.class, FieldAcess.blockMaterialMapColor);
+			ReflectionUtil.setFinalObject(b, m.getMaterialMapColor(), Block.class, FieldAcess.blockMaterialMapColor);
 		
 		//if people want null tool classes they can use setHarvestLevel
 		if(toolclazz != null)

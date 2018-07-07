@@ -11,10 +11,7 @@ import com.EvilNotch.lib.minecraft.BlockUtil;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.ItemUtil;
 import com.EvilNotch.lib.minecraft.MinecraftUtil;
-import com.EvilNotch.lib.minecraft.SkinUpdater;
 import com.EvilNotch.lib.minecraft.TestProps;
-import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
-import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
@@ -45,12 +42,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class VanillaBugFixes {
-	
-	@SubscribeEvent
-    public void skinFix(PlayerEvent.LoadFromFile e)
-    {
-		SkinUpdater.fireSkinEvent(e.getEntityPlayer(),false);
-    }
 
 	/**
 	 * if it's not the right tool set the break speed to 0

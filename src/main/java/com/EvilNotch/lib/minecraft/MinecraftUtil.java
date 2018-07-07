@@ -10,10 +10,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.minecraft.content.SkinData;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityContainer;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
-import com.EvilNotch.lib.minecraft.events.SkinFixEvent;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 

@@ -7,10 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
-import com.EvilNotch.lib.main.eventhandlers.UUIDFixer;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.NBTUtil;
-import com.EvilNotch.lib.minecraft.events.PlayerDataFixEvent;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -75,23 +73,6 @@ public class CapabilityHandler {
 			return;
 		
 		c.tick(e.player);
-	}
-	
-	/**
-	 * syncs over old capabilities from uuidchange
-	 */
-	@SubscribeEvent
-	public void capabilitySync(PlayerDataFixEvent e)
-	{
-		/*System.out.println("Patching Lib Player Capbilities to new uuid:" + e.uuidNew);
-		File caps = new File(LibEvents.playerDataDir,"caps/" + e.uuidOld.toString() + ".dat");
-		NBTTagCompound nbt = NBTUtil.getFileNBTSafley(caps);
-		if(nbt == null)
-		{
-			nbt = new NBTTagCompound();
-			System.out.println("Unable to get nbt tag data creating blank tag data will wipe");
-		}
-		CapabilityReg.read(e.player, nbt);*/
 	}
 	
 }

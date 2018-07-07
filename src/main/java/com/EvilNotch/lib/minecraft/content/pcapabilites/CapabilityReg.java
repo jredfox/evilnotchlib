@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.EvilNotch.lanessentials.capabilities.CapCape;
 import com.google.common.base.Strings;
 
 import net.minecraft.entity.player.EntityPlayer;

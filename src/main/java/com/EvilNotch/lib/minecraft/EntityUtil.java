@@ -22,7 +22,6 @@ import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
-import com.EvilNotch.lib.main.eventhandlers.UUIDFixer;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.PointId;
@@ -100,11 +99,6 @@ public class EntityUtil {
 	
 	public static boolean cached = false;
 	public static List<ResourceLocation> end_ents = new ArrayList<ResourceLocation>();
-
-	public static HashMap<ResourceLocation,String> living_names = new HashMap<ResourceLocation, String>();//Used for everything else	
-	public static HashMap<ResourceLocation,String> nonLiving_names = new HashMap<ResourceLocation, String>();//Used for everything else
-	public static HashMap<ResourceLocation,String> livingBase_names = new HashMap<ResourceLocation, String>();//Used for everything else
-	public static HashMap<Integer,String> entityIdToName = new HashMap();
 	
 	public static Set<ResourceLocation> forgemobs = new HashSet();//forge mobs that are entity living
 	
@@ -112,10 +106,6 @@ public class EntityUtil {
 	public static Set<ResourceLocation> ent_blacklist = new HashSet();//List of all failed Entities
 	public static Set<ResourceLocation> ent_blacklist_commandsender = new HashSet();//List of all failed Entities
 	public static Set<ResourceLocation> ent_blacklist_nbt = new HashSet();
-	
-	public static HashMap<ResourceLocation,Entity> livingCache = new HashMap();//Used for displaying
-	public static HashMap<ResourceLocation,Entity> nonLivingCache = new HashMap();//Used for displaying
-	public static HashMap<ResourceLocation,Entity> livingBaseCache = new HashMap();//Used for displaying
 	
 	public static String TransLateEntity(NBTTagCompound nbt,World w)
 	{
@@ -640,31 +630,6 @@ public class EntityUtil {
 	public static float getShadowSize(Entity e) {
 		return e.height / 2.0F;
 	}
-
-	public static Entity getEntityFromCache(ResourceLocation loc,World w)
-	{
-		if(loc == null)
-			return null;
-		Entity e = livingCache.get(loc);
-		if(e == null)
-			e = livingBaseCache.get(loc);
-		if(e == null)
-			e = nonLivingCache.get(loc);
-		return getEntityFromCache(e,w);
-	}
-	public static Entity getEntityFromCache(Entity e,World w)
-	{
-		if(e == null || EntityList.getEntityString(e) == null)
-			return null;
-		String s = EntityList.getEntityString(e);
-		
-		if(e instanceof EntityLiving)
-			return copyEntity(livingCache.get(s), w);
-		if(e instanceof EntityLivingBase)
-			return copyEntity(livingBaseCache.get(s),w);
-		
-		return copyEntity(nonLivingCache.get(s),w);
-	}
     /**
      * Returns a copy of the current entity object from nbt. Doesn't set locations or angles just copies from NBT
      * no jockey support
@@ -697,24 +662,6 @@ public class EntityUtil {
 			return false;
 		return list.getCompoundTagAt(4).getInteger("id") == 86;
 	}
-	public static String translateCachedEntity(Entity e)
-	{
-		return translateCachedEntity(getEntityResourceLocation(e));
-	}
-	/**
-	 * return null if it isn't cached
-	 */
-	public static String translateCachedEntity(ResourceLocation loc)
-	{
-		if(!cached || ent_blacklist.contains(loc))
-			cacheEnts();
-		String str = living_names.get(loc);
-		if(str == null)
-			str = livingBase_names.get(loc);
-		if(str == null)
-			str = nonLiving_names.get(loc);
-		return str;
-	}
 	public static void cacheEnts()
 	{
 		cacheEnts((List)null,MainJava.fake_world,true);
@@ -731,6 +678,7 @@ public class EntityUtil {
 	 */
 	public static void cacheEnts(List<ResourceLocation> list,World world,boolean printLists)
 	{
+		long time = System.currentTimeMillis();
 		if(cached && list == null)
 			return;
 		if(list == null)
@@ -746,6 +694,9 @@ public class EntityUtil {
 			}
 			boolean isAbstract = Modifier.isAbstract(clazz.getModifiers());
 			boolean isInterface = Modifier.isInterface(clazz.getModifiers());
+			//not a real entity if is interface or abstract so don't even blacklist it
+			if(isAbstract || isInterface)
+				continue;
 			try 
 			{
 				Constructor k = clazz.getConstructor(new Class[] {World.class});
@@ -756,9 +707,6 @@ public class EntityUtil {
 				MainJava.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod autoher:" + loc);
 				continue;
 			}
-			//not a real entity if is interface or abstract so don't even blacklist it
-			if(isAbstract || isInterface)
-				continue;
 			
 			Entity e = EntityUtil.createEntityByNameQuietly(loc, world,true);
 			
@@ -792,35 +740,10 @@ public class EntityUtil {
 					ent_blacklist.add(loc);
 					MainJava.logger.log(Level.ERROR,"Skipping broken Entity Failed to read onInitialSpawn() aka onSpawnWithEgg() Report to mod author:" + loc);
 				}
-    			
-    			if(e instanceof EntitySlime)
-    			{
-    				try
-    				{
-    					tag.setInteger("Size",Config.slimeInventorySize);
-    					e.readFromNBT(tag);
-    				}
-    				catch(Throwable t)
-    				{
-    					System.out.println("EntitySlime Proper Instantiation Failed to Cache Properly report to mod author:" + loc);
-    				}
-    			}
-				livingCache.put(loc, e);
-				living_names.put(loc,translation);
-			}
-			else if(base){
-				livingBaseCache.put(loc, e);
-				livingBase_names.put(loc,translation);
-			}
-			else if(nonliving){
-				nonLivingCache.put(loc, e);
-				nonLiving_names.put(loc,translation);
 			}
 		}
 		
-		JavaUtil.sortByValues(living_names);
-		JavaUtil.sortByValues(livingBase_names);
-		JavaUtil.sortByValues(nonLiving_names);
+		JavaUtil.printTime(time, "Entity Util Cached Ents:");
 		
 		if(printLists)
 		{
@@ -1213,7 +1136,7 @@ public class EntityUtil {
 
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
 	{
-		UUIDFixer.kicker.put(p.connection, new PointId(0,ticks,msg) );
+		LibEvents.kicker.put(p.connection, new PointId(0,ticks,msg) );
 	}
 
 	/**

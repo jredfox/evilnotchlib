@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
+import net.minecraft.command.CommandHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.management.PlayerList;
@@ -43,7 +44,8 @@ public class FieldAcess {
     public static String lowestRiddenX1= null;
     public static String lowestRiddenY1 = null;
     public static String lowestRiddenZ1 = null;
-	public static String lowestRiddenEnt;
+	public static String lowestRiddenEnt = null;
+	public static String commandSet = null;
 	
 	//methods
 	public static Method method_dragonManager = null;
@@ -74,6 +76,7 @@ public class FieldAcess {
 		playerDataManager = MCPMappings.getField(PlayerList.class, "playerDataManager");
 		dataFixer = MCPMappings.getField(SaveHandler.class, "dataFixer");
 		lowestRiddenEnt = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenEnt");
+		commandSet = MCPMappings.getField(CommandHandler.class,"commandSet");
 		
 		try 
 		{
