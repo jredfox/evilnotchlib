@@ -28,6 +28,7 @@ public class CapabilityHandler {
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void capabilityReader(PlayerEvent.LoadFromFile e)
 	{
+		System.out.println("FIRING PLAYEREVENT.LOADFROMFILE()");
 		if(CapabilityReg.reg.size() == 0)
 			return;
 		EntityPlayerMP p = (EntityPlayerMP) e.getEntityPlayer();
@@ -49,7 +50,7 @@ public class CapabilityHandler {
 			return;
 		if(CapabilityReg.getCapabilityConatainer(e.player) == null)
 		{
-			System.out.println("returning player already saved:" + CapabilityReg.getUsername(e.player ));
+			System.out.println("returning player already saved:" + CapabilityReg.getUsername(e.player));
 			return;
 		}
 		File f = new File(LibEvents.playerDataDir,"caps/" + e.player.getUniqueID().toString() + ".dat");

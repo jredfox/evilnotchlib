@@ -7,13 +7,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.Nullable;
+import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
 
@@ -43,7 +41,6 @@ import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityAmbientCreature;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
@@ -74,8 +71,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
@@ -1294,6 +1289,28 @@ public class EntityUtil {
 	public static void broadCastMessege(String msg) 
 	{
 		LibEvents.msgs.add(msg);
+	}
+	/**
+	 * only do the object will reset on next player.readFromNBT() use only use this if you know what you are doing
+	 */
+	public static void setEntityUUID(Entity player,UUID uuid) 
+	{
+		ReflectionUtil.setObject(player, uuid, Entity.class, FieldAcess.entityUniqueID);
+		ReflectionUtil.setObject(player, uuid.toString(), Entity.class, FieldAcess.cachedUniqueIdString);
+	}
+	/**
+	 * this alters both the uuid of the player object and the gameprofile uuid
+	 */
+	public static void setPlayerUUID(EntityPlayer player,UUID uuid) {
+		ReflectionUtil.setFinalObject(player.getGameProfile(), uuid, GameProfile.class, FieldAcess.gameProfileId);
+		setEntityUUID(player,uuid);
+	}
+
+	public static UUID getServerPlayerUUID(EntityPlayerMP player) {
+		File file = EntityUtil.getPlayerFileSafley(player, false);//updates player file synced to uuid on login
+		String pname = player.getName();
+		NBTTagCompound nbt = EntityUtil.getPlayerFileNBT(pname,player,false);
+		return UUID.fromString(nbt.getString("uuid"));
 	}
 
 }

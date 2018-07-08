@@ -35,17 +35,21 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class LibEvents {
-	public static boolean cachedEnts = false;
 	public static File worlDir = null;
 	public static File playerDataNames = null;
 	public static File playerDataDir = null;
-	public static File playerStatsDir = null;
-	public static File playerAdvancedmentsDir = null;
+	
+	 @SubscribeEvent
+	 public void respawn(PlayerRespawnEvent e)
+	 {
+		System.out.println("respawned:" + e.player.getUniqueID()); 
+	 }
 	
 	 public static int mTick = 0;
 	 public static final List<String> msgs = new ArrayList();
@@ -102,13 +106,13 @@ public class LibEvents {
 	/**
 	 * Attempt to re-instantiate the entity caches for broken entities when the world is no longer fake
 	 */
+	 public static boolean cachedEnts = false;
 	 @SubscribeEvent
 	 public void worldload(WorldEvent.Load e)
 	 {
 		 World ew = e.getWorld();
-		 if(ew.isRemote)
+		 if(ew.isRemote || cachedEnts)
 			 return;
-		 
 		 World w = DimensionManager.getWorld(0);
 		 
 		 //instantiate directories for core minecraft bug fixes
@@ -116,18 +120,15 @@ public class LibEvents {
 		 playerDataNames = new File(worlDir,"playerdata/names");
 		 playerDataNames.mkdirs();
 		 playerDataDir = playerDataNames.getParentFile();
-		 playerStatsDir = new File(playerDataDir.getParentFile(),"stats");
-		 playerAdvancedmentsDir = new File(playerDataDir.getParentFile(),"advancements");
 		 
-		 if(cachedEnts || !Config.debug)
-			 return;
 		 MainJava.worldServer = w;
+		 cachedEnts = true;
+		 if(!Config.debug)
+			 return;
 		 
 		 System.out.println("Attempting to Repair Cache From Re-Instantiating Broken Entities");
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_nbt,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_commandsender,w);
-		 
-		 cachedEnts = true;
 	 }
 }

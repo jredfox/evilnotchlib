@@ -9,6 +9,7 @@ import java.util.Map;
 import com.google.common.base.Strings;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -25,12 +26,6 @@ public class CapabilityReg {
 		reg.add(toReg);
 	}
 	
-	public static void registerCapability(EntityPlayer p,ResourceLocation loc,ICapability cap,CapabilityContainer container)
-	{
-		container.capabilities.put(loc, cap);
-		if(cap instanceof ITick)
-			container.ticks.add((ITick) cap);
-	}
 	/**
 	 * may return null
 	 */
@@ -64,16 +59,17 @@ public class CapabilityReg {
 	}
 	
 	public static void registerEntity(EntityPlayer p) 
-	{
+	{	
 		String name = getUsername(p);
 		if(!capabilities.containsKey(name))
 			CapabilityReg.capabilities.put(name, new CapabilityContainer() );
+		
+		CapabilityContainer container = getCapabilityConatainer(p);
 		for(ICapabilityProvider provider : reg)
 		{
-			provider.register(p,getCapabilityConatainer(p));
+			provider.register(p,container);
 		}
 	}
-
 
 	/**
 	 * may return null get capability from player name and resoruce location

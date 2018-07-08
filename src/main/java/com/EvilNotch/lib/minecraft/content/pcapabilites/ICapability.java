@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-public interface ICapability extends ICopy{
+public interface ICapability{
 	
 	public void readFromNBT(NBTTagCompound nbt,EntityPlayer player,CapabilityContainer container);
 	public void writeToNBT(NBTTagCompound nbt,EntityPlayer player,CapabilityContainer container);

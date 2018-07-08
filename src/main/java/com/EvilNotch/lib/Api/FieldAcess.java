@@ -38,6 +38,9 @@ public class FieldAcess {
 	public static String playerDataManager = null;
 	public static String dataFixer = null;
 	
+	public static String entityUniqueID = null;
+	public static String cachedUniqueIdString = null;
+	
 	public static String lowestRiddenX = null;
     public static String lowestRiddenY = null;
     public static String lowestRiddenZ = null;
@@ -55,6 +58,7 @@ public class FieldAcess {
     public static Method setFlag;
 	
 	public static boolean cached = false;
+	public static String gameProfileId = null;
 	
 	public static void cacheFields()
 	{
@@ -77,6 +81,9 @@ public class FieldAcess {
 		dataFixer = MCPMappings.getField(SaveHandler.class, "dataFixer");
 		lowestRiddenEnt = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenEnt");
 		commandSet = MCPMappings.getField(CommandHandler.class,"commandSet");
+		entityUniqueID = MCPMappings.getField(Entity.class, "entityUniqueID");
+		cachedUniqueIdString = MCPMappings.getField(Entity.class, "cachedUniqueIdString");
+		gameProfileId = MCPMappings.getField(GameProfile.class, "id");
 		
 		try 
 		{

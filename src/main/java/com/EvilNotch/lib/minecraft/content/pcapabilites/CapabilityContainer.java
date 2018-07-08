@@ -25,7 +25,6 @@ public class CapabilityContainer {
 		return this.capabilities.get(loc);
 	}
 	
-	
 	public void preSave(NBTTagCompound nbt, EntityPlayer player, CapabilityContainer c){
 		for(IListener li : this.listeners)
 			li.preSave(nbt,player,c);
@@ -47,6 +46,12 @@ public class CapabilityContainer {
 	public void tick(EntityPlayer player){
 		for(ITick tick : this.ticks)
 			tick.tick(player, this);
+	}
+	
+	public void registerCapability(ResourceLocation loc,ICapability cap){
+		this.capabilities.put(loc, cap);
+		if(cap instanceof ITick)
+			this.ticks.add((ITick) cap);
 	}
 
 }
