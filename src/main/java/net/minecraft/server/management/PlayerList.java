@@ -1,10 +1,13 @@
 package net.minecraft.server.management;
 
+import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.ReflectionUtil;
+import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
+import com.EvilNotch.lib.util.Line.LineBase;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -131,7 +134,7 @@ public abstract class PlayerList
     {
         GameProfile gameprofile = playerIn.getGameProfile();
         
-        System.out.println("uuid:" + playerIn.getUniqueID());
+        System.out.println("init Connect UUID:" + playerIn.getUniqueID());
         PlayerProfileCache playerprofilecache = this.mcServer.getPlayerProfileCache();
         GameProfile gameprofile1 = playerprofilecache.getProfileByUUID(gameprofile.getId());
         String s = gameprofile1 == null ? gameprofile.getName() : gameprofile1.getName();
@@ -340,10 +343,12 @@ public abstract class PlayerList
     public NBTTagCompound readPlayerDataFromFile(EntityPlayerMP playerIn)
     {
         NBTTagCompound nbttagcompound = getPlayerNBT(playerIn);
-    	playerIn.readFromNBT(nbttagcompound);
-    	DataFixer fixer = EntityUtil.getDataFixer((SaveHandler) this.playerDataManager);
     	if(nbttagcompound != null)
+    	{
+    		DataFixer fixer = EntityUtil.getDataFixer((SaveHandler) this.playerDataManager);
     		nbttagcompound = fixer.process(FixTypes.PLAYER, nbttagcompound);
+    		playerIn.readFromNBT(nbttagcompound);
+    	}
     	net.minecraftforge.event.ForgeEventFactory.firePlayerLoadingEvent(playerIn, this.playerDataManager, playerIn.getUniqueID().toString());
         return nbttagcompound;
     }
@@ -351,29 +356,20 @@ public abstract class PlayerList
      * getPlayerNBT() regardless of login
      */
     public NBTTagCompound getPlayerNBT(EntityPlayerMP player)
-    {
-        //set the inital value of the player's uuid to what it's suppose to be
-    	GameProfile gameprofile = player.getGameProfile();
-        UUID init = EntityPlayer.getUUID(gameprofile);
-        EntityUtil.setEntityUUID(player,init);
-        
-        UUID actual = EntityUtil.getServerPlayerUUID(player);
-        if(!actual.toString().equals(player.getUniqueID().toString()))
-        {
-        	System.out.println("Patching Player UUID uuidPlayer:" + player.getUniqueID() + " with uuidServer:" + actual);
-        	EntityUtil.setPlayerUUID(player,actual);
-        	System.out.println(player.getUniqueID() + "\n" + player.getGameProfile().getId());
-        }
-        
+    {   
+    	System.out.println("getNBT:" + player.getGameProfile().getId());
         NBTTagCompound nbttagcompound = this.mcServer.worlds[0].getWorldInfo().getPlayerNBTTagCompound();
-        if (player.getName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
+        //uuidfixer SP code here
+        if(!Config.playerOwnerAlwaysFix && player.getName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
         {
-            return nbttagcompound;
+        	File toParse = EntityUtil.getPlayerFile(player.getUniqueID().toString(), true);
+        	if(!toParse.exists())
+        	{
+        		System.out.println("using level.dat NBT:");
+        		return nbttagcompound;
+        	}
         }
-        else
-        {
-            return ((net.minecraft.world.storage.SaveHandler)this.playerDataManager).getPlayerNBT(player);
-        }
+       return ((net.minecraft.world.storage.SaveHandler)this.playerDataManager).getPlayerNBT(player);
     }
 
     /**
@@ -518,6 +514,7 @@ public abstract class PlayerList
      */
     public EntityPlayerMP createPlayerForUser(GameProfile profile)
     {
+    	patchUUID(profile);
         UUID uuid = EntityPlayer.getUUID(profile);
         List<EntityPlayerMP> list = Lists.<EntityPlayerMP>newArrayList();
 
@@ -557,7 +554,21 @@ public abstract class PlayerList
         return new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(0), profile, playerinteractionmanager);
     }
 
-    /**
+    public void patchUUID(GameProfile gameprofile) 
+    {
+        //set the inital value of the player's uuid to what it's suppose to be
+        UUID init = EntityPlayer.getUUID(gameprofile);
+        
+        UUID actual = EntityUtil.getServerPlayerUUID(gameprofile);
+        System.out.println("Checking UUID:" + gameprofile.getName() + " with:" + actual);
+        if(!actual.toString().equals(init.toString()))
+        {
+        	System.out.println("Patching Player UUID uuidPlayer:" + gameprofile.getId() + " with uuidServer:" + actual);
+    		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, FieldAcess.gameProfileId);
+        }
+	}
+
+	/**
      * Destroys the given player entity and recreates another in the given dimension. Used when respawning after death
      * or returning from the End
      */

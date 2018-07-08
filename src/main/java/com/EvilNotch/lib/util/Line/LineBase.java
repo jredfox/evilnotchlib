@@ -176,10 +176,9 @@ public class LineBase implements ILine
 	{
 		String valid = "1234567890.-";
 		String valid_endings = "bslfdi";//byte,short,long,float,double,int
-		String check = ".-";
+		String check = ".";
 		int indexdot = 0;
-		int indexn = 0;
-		if(s.indexOf('.') == 0 || s.indexOf('.') == s.length() - 1)
+		if(s.indexOf('.') == 0 || s.indexOf('.') == s.length() - 1 || s.indexOf('-') > 0)
 			return false;
 		for(int i=0;i<s.length();i++)
 		{
@@ -189,10 +188,8 @@ public class LineBase implements ILine
 			{
 				if(character.equals("."))
 					indexdot++;
-				else
-					indexn++;
 				
-				if(indexdot > 1 || indexn > 1)
+				if(indexdot > 1)
 					return false;
 			}
 			if(!valid.contains(character))

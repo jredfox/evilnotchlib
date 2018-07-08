@@ -27,7 +27,6 @@ public class Config {
 	public static boolean menuWhiteList = false;
 	public static ResourceLocation currentMenuIndex = null;
 	public static boolean playerOwnerAlwaysFix = true;
-	public static boolean playerDataFixOptimized = true;
 	public static File cfgmenu = null;
 	
 	public static void loadConfig(File d)
@@ -39,7 +38,6 @@ public class Config {
 		debug = config.get("general", "Debug", false).getBoolean();
 		slimeInventorySize = config.get("entity", "slimeSizeInCache", 2).getInt();
 		isDev = config.get("general", "isDev", false).getBoolean();
-		playerDataFixOptimized = config.get("vanilla_fixer", "playerDataFixerOptimized", true).getBoolean();
 		playerOwnerAlwaysFix = config.get("vanilla_fixer", "playerOwnerSwapAlwaysFix", true).getBoolean();
 
 		

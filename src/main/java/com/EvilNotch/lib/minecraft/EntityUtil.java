@@ -377,6 +377,13 @@ public class EntityUtil {
 		else
 			return new File(LibEvents.playerDataNames,player.getName() + ".dat");
 	}
+	public static File getPlayerFile(String username,boolean uuid)
+	{
+		if(uuid)
+			return new File(LibEvents.playerDataDir,username + ".dat");
+		else
+			return new File(LibEvents.playerDataNames,username + ".dat");
+	}
 	
 	/**
 	 * Returns the uuidFile or cached file based on uuid boolean
@@ -406,6 +413,17 @@ public class EntityUtil {
 			}
 			return file;
 		}
+	}
+	public static File getPlayerFileNameSafley(GameProfile profile)
+	{
+		File file = getPlayerFile(profile.getName(),false);
+		if(!file.exists())
+		{
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setString("uuid", profile.getId().toString() );
+			updatePlayerFile(file,nbt);
+		}
+		return file;
 	}
 	/**
 	 * Update Player file
@@ -1306,10 +1324,9 @@ public class EntityUtil {
 		setEntityUUID(player,uuid);
 	}
 
-	public static UUID getServerPlayerUUID(EntityPlayerMP player) {
-		File file = EntityUtil.getPlayerFileSafley(player, false);//updates player file synced to uuid on login
-		String pname = player.getName();
-		NBTTagCompound nbt = EntityUtil.getPlayerFileNBT(pname,player,false);
+	public static UUID getServerPlayerUUID(GameProfile profile) {
+		File file = EntityUtil.getPlayerFileNameSafley(profile);//updates player file synced to uuid on login
+		NBTTagCompound nbt = NBTUtil.getFileNBT(file);
 		return UUID.fromString(nbt.getString("uuid"));
 	}
 
