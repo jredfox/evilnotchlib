@@ -15,3 +15,19 @@ fixes forge parsing playerdata files twice on login
 notch drops apples again
 future: Move too quickly and vechile checks removed since this is a modding enviorment
 ```
+
+Features:
+```
+MCPMappings and ReflectionUtil API: ability to get and set objects with ease
+Menu Lib: allows for modders to register their menu for multiple menu browsing
+BlockAPI: set objects in blocks for coders
+Player Capabilities: different from forge they are easy to regiser and use. Currently server side only
+Basic MC Lib:ability to make modding easier automation for registration and lang future models to
+GeneralRegistry: registry for commands, sound types and other general stuffs regsiter stuff here for compatibility
+EntityModRegistry: support SpawnListEntries with NBT mobs
+Client Block Place Event: fires on client side for client sync on block placing
+Line Library: a powerful library for parsing lines in many forms "modid:block" = "custom parsing values"
+ConfigBase: part of the line library as an api implementation for the line library
+Number Obj: allows for object modifyable primitive values
+CSVE: basic implementation of comma seperated values with a varible system in place
+```
