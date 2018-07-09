@@ -59,14 +59,14 @@ public class Transformer implements IClassTransformer
                 case 0:
                 	TestTransformer.transformClass(classNode, PlayerList2.class, "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;");
                 	TestTransformer.transformClass(classNode, PlayerList2.class, "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;");
-                	TestTransformer.transformClass(classNode, PlayerList2.class, "createPlayerForUser", "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;", "g", "(Lcom/mojang/authlib/GameProfile;)Loq;");
-                	break;
+                	OtherTransformer.transformOther(classNode, obfuscated);
+                break;
             }
 
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-            //FileUtils.writeByteArrayToFile(new File("C:/Users/jjred/Desktop/test.class"), classWriter.toByteArray());
+            FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
             
             return classWriter.toByteArray();
         }
