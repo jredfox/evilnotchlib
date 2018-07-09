@@ -28,6 +28,6 @@ EntityModRegistry: support SpawnListEntries with NBT mobs
 Client Block Place Event: fires on client side for client sync on block placing
 Line Library: a powerful library for parsing lines in many forms "modid:block" = "custom parsing values"
 ConfigBase: part of the line library as an api implementation for the line library
-Number Obj: allows for object modifyable primitive values
+Primitive Obj: allows for object modifyable primitive values(byte,short,int,long,float,double,boolean)
 CSVE: basic implementation of comma seperated values with a varible system in place
 ```
