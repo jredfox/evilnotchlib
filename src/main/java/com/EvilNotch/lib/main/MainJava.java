@@ -47,6 +47,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -254,6 +255,7 @@ public class MainJava {
 			System.out.print("saved player:" + name + " toFile:" + f.getName() + ".dat\n");
 			it.remove();
 		}
+		PlayerList.nbts.clear();
 	}
 	
 	@Mod.EventHandler

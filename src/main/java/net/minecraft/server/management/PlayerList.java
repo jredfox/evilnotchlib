@@ -1,26 +1,30 @@
 package net.minecraft.server.management;
 
-import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.Api.ReflectionUtil;
-import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.main.eventhandlers.LibEvents;
-import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
-import com.EvilNotch.lib.util.Line.LineBase;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.mojang.authlib.GameProfile;
-import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.EvilNotch.lib.Api.FieldAcess;
+import com.EvilNotch.lib.Api.ReflectionUtil;
+import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.EvilNotch.lib.util.JavaUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.mojang.authlib.GameProfile;
+
+import io.netty.buffer.Unpooled;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.entity.Entity;
@@ -55,7 +59,6 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.StatList;
 import net.minecraft.stats.StatisticsManagerServer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
@@ -74,12 +77,8 @@ import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.storage.IPlayerFileData;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class PlayerList
 {
@@ -349,15 +348,23 @@ public abstract class PlayerList
     		nbttagcompound = fixer.process(FixTypes.PLAYER, nbttagcompound);
     		playerIn.readFromNBT(nbttagcompound);
     	}
+    	nbts.remove(playerIn.getUniqueID());
     	net.minecraftforge.event.ForgeEventFactory.firePlayerLoadingEvent(playerIn, this.playerDataManager, playerIn.getUniqueID().toString());
         return nbttagcompound;
     }
     /**
      * getPlayerNBT() regardless of login
      */
+    public static HashMap<UUID,NBTTagCompound> nbts = new HashMap();
     public NBTTagCompound getPlayerNBT(EntityPlayerMP player)
     {   
     	System.out.println("getNBT:" + player.getGameProfile().getId());
+    	NBTTagCompound cache = nbts.get(player.getUniqueID());
+    	if(cache != null)
+    	{
+    		System.out.println("using cached nbttagcompound:");
+    		return cache;
+    	}
         NBTTagCompound nbttagcompound = this.mcServer.worlds[0].getWorldInfo().getPlayerNBTTagCompound();
         //uuidfixer SP code here
         if(!Config.playerOwnerAlwaysFix && player.getName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
@@ -366,10 +373,13 @@ public abstract class PlayerList
         	if(!toParse.exists())
         	{
         		System.out.println("using level.dat NBT:");
+        		nbts.put(player.getUniqueID(), nbttagcompound);
         		return nbttagcompound;
         	}
         }
-       return ((net.minecraft.world.storage.SaveHandler)this.playerDataManager).getPlayerNBT(player);
+       NBTTagCompound defaultNBT = ((net.minecraft.world.storage.SaveHandler)this.playerDataManager).getPlayerNBT(player);
+	   nbts.put(player.getUniqueID(), defaultNBT);
+	   return defaultNBT;
     }
 
     /**
@@ -556,6 +566,7 @@ public abstract class PlayerList
 
     public void patchUUID(GameProfile gameprofile) 
     {
+    	long time = System.currentTimeMillis();
         //set the inital value of the player's uuid to what it's suppose to be
         UUID init = EntityPlayer.getUUID(gameprofile);
         
@@ -566,6 +577,7 @@ public abstract class PlayerList
         	System.out.println("Patching Player UUID uuidPlayer:" + gameprofile.getId() + " with uuidServer:" + actual);
     		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, FieldAcess.gameProfileId);
         }
+        JavaUtil.printTime(time, "Done Patching UUID:");
 	}
 
 	/**
