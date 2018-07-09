@@ -80,7 +80,7 @@ public class MainJava {
 	//lib stuffs
 	public static boolean isDeObfuscated = true;
 	public static final String MODID =  "evilnotchlib";
-	public static final String VERSION = "1.2.3-43";//SNAPSHOT
+	public static final String VERSION = "1.2.3-51";//SNAPSHOT
 	public static final String NAME = "Evil Notch Lib";
 	public static final String max_version = "4.0.0.0.0";//allows for 5 places in lib version
 	public static boolean isClient = false;
@@ -255,7 +255,7 @@ public class MainJava {
 			System.out.print("saved player:" + name + " toFile:" + f.getName() + ".dat\n");
 			it.remove();
 		}
-		PlayerList.nbts.clear();
+		EntityUtil.nbts.clear();
 	}
 	
 	@Mod.EventHandler

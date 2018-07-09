@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -101,6 +102,11 @@ public class EntityUtil {
 	public static Set<ResourceLocation> ent_blacklist = new HashSet();//List of all failed Entities
 	public static Set<ResourceLocation> ent_blacklist_commandsender = new HashSet();//List of all failed Entities
 	public static Set<ResourceLocation> ent_blacklist_nbt = new HashSet();
+	
+	/**
+	 * used on player login so it doesn't parse twice will self empty login complete so don't expect data to be here long
+	 */
+    public static HashMap<UUID,NBTTagCompound> nbts = new HashMap();
 	
 	public static String TransLateEntity(NBTTagCompound nbt,World w)
 	{
@@ -1328,6 +1334,22 @@ public class EntityUtil {
 		File file = EntityUtil.getPlayerFileNameSafley(profile);//updates player file synced to uuid on login
 		NBTTagCompound nbt = NBTUtil.getFileNBT(file);
 		return UUID.fromString(nbt.getString("uuid"));
+	}
+
+    public static void patchUUID(GameProfile gameprofile) 
+    {
+    	long time = System.currentTimeMillis();
+        //set the inital value of the player's uuid to what it's suppose to be
+        UUID init = EntityPlayer.getUUID(gameprofile);
+        
+        UUID actual = EntityUtil.getServerPlayerUUID(gameprofile);
+        System.out.println("Checking UUID:" + gameprofile.getName() + " with:" + actual);
+        if(!actual.toString().equals(init.toString()))
+        {
+        	System.out.println("Patching Player UUID uuidPlayer:" + gameprofile.getId() + " with uuidServer:" + actual);
+    		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, FieldAcess.gameProfileId);
+        }
+        JavaUtil.printTime(time, "Done Patching UUID:");
 	}
 
 }
