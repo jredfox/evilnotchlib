@@ -840,7 +840,6 @@ public class EntityUtil {
 	}
 	/**
 	 * teleport entire stack
-	 * @throws WrongUsageException 
 	 */
 	public static void teleportStack(Entity index,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim) throws WrongUsageException
 	{
@@ -903,19 +902,15 @@ public class EntityUtil {
 			NetHandlerPlayServer connection = player.connection;
 			FieldAcess.capture.invoke(connection);
 			
-			Entity lowest = player.getLowestRidingEntity();
 			ReflectionUtil.setObject(connection, player, NetHandlerPlayServer.class, FieldAcess.lowestRiddenEnt);
 			
-			if(lowest == null)
-				return;
+			ReflectionUtil.setObject(connection, player.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX);
+			ReflectionUtil.setObject(connection, player.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY);
+			ReflectionUtil.setObject(connection, player.posZ, NetHandlerPlayServer.class, FieldAcess.lowestRiddenZ);
 			
-			ReflectionUtil.setObject(connection, lowest.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX);
-			ReflectionUtil.setObject(connection, lowest.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY);
-			ReflectionUtil.setObject(connection, lowest.posZ, NetHandlerPlayServer.class, FieldAcess.lowestRiddenZ);
-			
-			ReflectionUtil.setObject(connection, lowest.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX1);
-			ReflectionUtil.setObject(connection, lowest.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY1);
-			ReflectionUtil.setObject(connection, lowest.posZ, NetHandlerPlayServer.class, FieldAcess.lowestRiddenZ1);
+			ReflectionUtil.setObject(connection, player.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX1);
+			ReflectionUtil.setObject(connection, player.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY1);
+			ReflectionUtil.setObject(connection, player.posZ, NetHandlerPlayServer.class, FieldAcess.lowestRiddenZ1);
 		}
 		catch(Throwable t)
 		{
@@ -1103,6 +1098,7 @@ public class EntityUtil {
             Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
             EntityPlayerMP player = (EntityPlayerMP)e;
             player.connection.setPlayerLocation(x, y, z, yaw, pitch, set);
+            EntityUtil.captureCoords(player);
         }
         else
         {

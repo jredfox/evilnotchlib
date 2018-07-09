@@ -176,8 +176,9 @@ public class CMDDim extends CommandTeleport{
      */
     public void teleportEnt(Entity entity,MinecraftServer server, double x, double y, double z, float yaw, float pitch, int traveldim) throws WrongUsageException
     {
-    	if(this.wholeStack())
+    	if(this.wholeStack() || true)
     	{
+    		System.out.println("Debug TPING STACK");
     		EntityUtil.teleportStack(entity, server, x, y, z,yaw,pitch, traveldim);
     	}
     	else if(!this.dismountPassengers() )

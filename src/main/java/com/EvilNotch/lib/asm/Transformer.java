@@ -34,7 +34,8 @@ public class Transformer implements IClassTransformer
 {
     private static final  String[] classesBeingTransformed = 
     	{
-    			"net.minecraft.server.management.PlayerList"
+    			"net.minecraft.server.management.PlayerList",
+    			"net.minecraft.block.BlockCactus"
     	};
     	
     
@@ -57,16 +58,20 @@ public class Transformer implements IClassTransformer
             switch(index)
             {
                 case 0:
-                	TestTransformer.transformClass(classNode, PlayerList2.class, "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;");
-                	TestTransformer.transformClass(classNode, PlayerList2.class, "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;");
+//                	TestTransformer.transformClass(classNode, PlayerList2.class, "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;");
+//                	TestTransformer.transformClass(classNode, PlayerList2.class, "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;");
                 	OtherTransformer.transformOther(classNode, obfuscated);
+                break;
+                case 1:
+                	//debugger test for void methods
+//                	TestTransformer.transformClass(classNode, Methods.class, "onEntityCollidedWithBlock", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/entity/Entity;)V", "a", "(Lamu;Let;Lawt;Lvg;)V");
                 break;
             }
 
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-            FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+//            FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
             
             return classWriter.toByteArray();
         }

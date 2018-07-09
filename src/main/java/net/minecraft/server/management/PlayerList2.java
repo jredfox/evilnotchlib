@@ -366,14 +366,18 @@ public abstract class PlayerList2
     	}
         NBTTagCompound nbttagcompound = this.mcServer.worlds[0].getWorldInfo().getPlayerNBTTagCompound();
         //uuidfixer SP code here
-        if(!Config.playerOwnerAlwaysFix && player.getName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
+        if(nbttagcompound != null && player.getName().equals(this.mcServer.getServerOwner()))
         {
-        	File toParse = EntityUtil.getPlayerFile(player.getUniqueID().toString(), true);
-        	if(!toParse.exists())
+        	UUID lvl = nbttagcompound.getUniqueId("UUID");
+        	if(!Config.playerOwnerAlwaysFix || lvl.equals(player.getUniqueID()))
         	{
-        		System.out.println("using level.dat NBT:");
-        		EntityUtil.nbts.put(player.getUniqueID(), nbttagcompound);
-        		return nbttagcompound;
+        		File toParse = EntityUtil.getPlayerFile(player.getUniqueID().toString(), true);
+        		if(!toParse.exists())
+        		{
+        			System.out.println("using level.dat NBT:");
+        			EntityUtil.nbts.put(player.getUniqueID(), nbttagcompound);
+        			return nbttagcompound;
+        		}
         	}
         }
        NBTTagCompound defaultNBT = ((net.minecraft.world.storage.SaveHandler)this.playerDataManager).getPlayerNBT(player);

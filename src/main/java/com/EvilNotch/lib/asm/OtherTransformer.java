@@ -44,6 +44,7 @@ public class OtherTransformer
 	                 toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/EvilNotch/lib/minecraft/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
 	               
 	                 method.instructions.insertBefore(targetNode, toInsert);
+	                 System.out.println("Injected line EntityUtil.patchUUID() > PlayerList.createPlayerForUser()");
 				 }
 				 else
 				 {

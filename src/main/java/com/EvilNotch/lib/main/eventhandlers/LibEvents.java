@@ -45,12 +45,6 @@ public class LibEvents {
 	public static File playerDataNames = null;
 	public static File playerDataDir = null;
 	
-	 @SubscribeEvent
-	 public void respawn(PlayerRespawnEvent e)
-	 {
-		System.out.println("respawned:" + e.player.getUniqueID()); 
-	 }
-	
 	 public static int mTick = 0;
 	 public static final List<String> msgs = new ArrayList();
 	 @SubscribeEvent
