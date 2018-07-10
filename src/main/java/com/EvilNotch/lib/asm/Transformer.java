@@ -44,7 +44,7 @@ public class Transformer implements IClassTransformer
                 case 0:
                 	TestTransformer.transformMethod(classNode, classesBeingTransformed.get(index), inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
                 	TestTransformer.transformMethod(classNode, classesBeingTransformed.get(index), inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
-                	OtherTransformer.transformOther(classNode, obfuscated);
+                	OtherTransformer.injectUUIDPatcher(classNode, obfuscated);
                 	TestTransformer.clearCacheNodes();
                 break;
             }
@@ -52,7 +52,7 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-            FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+//            FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
             
             return classWriter.toByteArray();
         }

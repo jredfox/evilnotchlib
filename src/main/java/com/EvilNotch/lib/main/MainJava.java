@@ -31,6 +31,7 @@ import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityContainer;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityHandler;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
+import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.proxy.ServerProxy;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
 import com.EvilNotch.lib.util.Line.ConfigBase;
@@ -66,7 +67,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 
-@Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION,acceptableRemoteVersions = "*")
+@Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION)
 public class MainJava {
 	//Automation
 	public static ArrayList<IBasicBlock> blocks = new ArrayList();
@@ -80,7 +81,7 @@ public class MainJava {
 	//lib stuffs
 	public static boolean isDeObfuscated = true;
 	public static final String MODID =  "evilnotchlib";
-	public static final String VERSION = "1.2.3-51";//SNAPSHOT
+	public static final String VERSION = "1.2.3-52";//SNAPSHOT
 	public static final String NAME = "Evil Notch Lib";
 	public static final String max_version = "4.0.0.0.0";//allows for 5 places in lib version
 	public static boolean isClient = false;
@@ -137,6 +138,7 @@ public class MainJava {
 	{
 		proxy.lang();
 		proxy.initMod();
+		NetWorkHandler.init();
 	}
 	
 	@Mod.EventHandler
@@ -255,7 +257,12 @@ public class MainJava {
 			System.out.print("saved player:" + name + " toFile:" + f.getName() + ".dat\n");
 			it.remove();
 		}
+		//prevent memory leaks
 		EntityUtil.nbts.clear();
+		LibEvents.playerFlags.clear();
+		LibEvents.kicker.clear();
+		LibEvents.isKickerIterating = false;
+		LibEvents.msgs.clear();
 	}
 	
 	@Mod.EventHandler

@@ -21,6 +21,8 @@ import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
+import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
+import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.PointId;
@@ -1345,8 +1347,8 @@ public class EntityUtil {
         {
         	System.out.println("Patching Player UUID uuidPlayer:" + gameprofile.getId() + " with uuidServer:" + actual);
     		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, FieldAcess.gameProfileId);
+    		LibEvents.playerFlags.add(gameprofile.getName());
         }
-        JavaUtil.printTime(time, "Done Patching UUID:");
 	}
 
 }

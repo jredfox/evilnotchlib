@@ -18,6 +18,7 @@ import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.LangLine;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
+import com.EvilNotch.lib.minecraft.content.client.ClientUUID;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.EvilNotch.lib.minecraft.content.items.BasicItem;
@@ -41,6 +42,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.text.translation.LanguageMap;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -69,6 +71,7 @@ public class ClientProxy extends ServerProxy{
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		FieldAcessClient.cacheFields();
 		MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
+		ClientCommandHandler.instance.registerCommand(new ClientUUID());
 	}
 	@Override
 	public void lang() 

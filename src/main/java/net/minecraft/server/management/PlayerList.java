@@ -18,6 +18,8 @@ import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
+import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -131,8 +133,8 @@ public abstract class PlayerList
 
     public void initializeConnectionToPlayer(NetworkManager netManager, EntityPlayerMP playerIn, NetHandlerPlayServer nethandlerplayserver)
     {
+		
         GameProfile gameprofile = playerIn.getGameProfile();
-        
         System.out.println("init Connect UUID:" + playerIn.getUniqueID());
         PlayerProfileCache playerprofilecache = this.mcServer.getPlayerProfileCache();
         GameProfile gameprofile1 = playerprofilecache.getProfileByUUID(gameprofile.getId());
@@ -564,7 +566,8 @@ public abstract class PlayerList
             playerinteractionmanager = new PlayerInteractionManager(this.mcServer.getWorld(0));
         }
 
-        return new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(0), profile, playerinteractionmanager);
+        EntityPlayerMP player = new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(0), profile, playerinteractionmanager);
+        return player;
     }
 
 	/**

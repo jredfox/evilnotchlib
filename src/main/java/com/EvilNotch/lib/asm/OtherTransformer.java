@@ -15,7 +15,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class OtherTransformer 
 {
-	public static void transformOther(ClassNode GUIOverlayClass, boolean obfuscated) 
+	public static void injectUUIDPatcher(ClassNode GUIOverlayClass, boolean obfuscated) 
 	{
 		 final String method_name = obfuscated ? "g" : "createPlayerForUser";
 		 final String method_desc = obfuscated ? "(Lcom/mojang/authlib/GameProfile;)Loq;" : "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;";

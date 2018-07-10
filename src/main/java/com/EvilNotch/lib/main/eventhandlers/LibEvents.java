@@ -1,6 +1,5 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
-import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,29 +12,21 @@ import java.util.Set;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.util.JavaUtil;
+import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
+import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.util.PointId;
-import com.EvilNotch.lib.util.number.IntObj;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ClassInheritanceMultiMap;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -44,6 +35,20 @@ public class LibEvents {
 	public static File worlDir = null;
 	public static File playerDataNames = null;
 	public static File playerDataDir = null;
+	
+	public static Set<String> playerFlags = new HashSet();
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void join(PlayerLoggedInEvent e)
+	{
+		if(playerFlags.contains(e.player.getName()))
+		{
+			System.out.println("Server Sending UUID To:" + e.player.getName() );
+			EntityPlayerMP playerIn = (EntityPlayerMP) e.player;
+			PacketUUID id = new PacketUUID(playerIn.getUniqueID().toString());
+			NetWorkHandler.INSTANCE.sendTo(id, playerIn);
+			playerFlags.remove(e.player.getName());
+		}
+	}
 	
 	 public static int mTick = 0;
 	 public static final List<String> msgs = new ArrayList();
