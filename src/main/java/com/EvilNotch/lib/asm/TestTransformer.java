@@ -2,7 +2,7 @@ package com.EvilNotch.lib.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -15,15 +15,19 @@ import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import com.EvilNotch.lib.util.JavaUtil;
+
 public class TestTransformer 
 {	
+	public static HashMap<String,ClassNode> cacheNodes = new HashMap();
+	
 	public static void transformMethod(ClassNode classToTransform,String className,String inputStream,String method_name,String method_desc,String c,String v,String obMethod) 
 	{
+		long time = System.currentTimeMillis();
 		MethodNode method = FMLCorePlugin.isObf ? getMethodNode(classToTransform,c,v) : getMethodNode(classToTransform,method_name,method_desc);
 		try
 		{
-			InputStream stream = Transformer.class.getClassLoader().getResourceAsStream(inputStream);
-			MethodNode mn = getMethodNode(stream, obMethod, method_desc);
+			MethodNode mn = getCachedMethodNode(inputStream, obMethod, method_desc);
 			method.localVariables.clear();
 			method.instructions = mn.instructions;
 			method.localVariables = getLocalVar(mn,className);
@@ -32,22 +36,29 @@ public class TestTransformer
 		{
 			e.printStackTrace();
 		}
+		JavaUtil.printTime(time, "Done Patching " + className + "." + method_name + "() :");
+	}
+	
+	public static MethodNode getCachedMethodNode(String inputStream, String obMethod, String method_desc) throws IOException 
+	{
+		if(cacheNodes.containsKey(inputStream))
+		{
+			System.out.println("using cached node:");
+			ClassNode node = cacheNodes.get(inputStream);
+			return getMethodNode(node,obMethod,method_desc);
+		}
+		InputStream stream = Transformer.class.getClassLoader().getResourceAsStream(inputStream);
+		ClassNode node = getClassNode(stream);
+		cacheNodes.put(inputStream, node);
+		return getMethodNode(node,obMethod,method_desc);
 	}
 	public static MethodNode GetMethodNode(Class ourClass, String method_name,String method_desc) throws IOException 
 	{
 		String className = ourClass.getName();
 		String classAsPath = className.replaceAll("\\.", "/") + ".class";
 		InputStream stream = ourClass.getClassLoader().getResourceAsStream(classAsPath);
-		return getMethodNode(stream,method_name,method_desc);
-	}
-	public static MethodNode getMethodNode(InputStream stream, String method_name,String method_desc) throws IOException 
-	{
-		byte[] newbyte = IOUtils.toByteArray(stream);
-		ClassNode classNode = new ClassNode();
-		ClassReader classReader = new ClassReader(newbyte);
-		classReader.accept(classNode,0);
-		
-		return getMethodNode(classNode,method_name,method_desc);
+		ClassNode node = getClassNode(stream);
+		return getMethodNode(node,method_name,method_desc);
 	}
 	public static MethodNode getMethodNode(ClassNode classNode, String method_name, String method_desc) 
 	{
@@ -59,6 +70,15 @@ public class TestTransformer
 			}
 		}
 		return null;
+	}
+	
+	public static ClassNode getClassNode(InputStream stream) throws IOException 
+	{
+		byte[] newbyte = IOUtils.toByteArray(stream);
+		ClassNode classNode = new ClassNode();
+		ClassReader classReader = new ClassReader(newbyte);
+		classReader.accept(classNode,0);
+		return classNode;
 	}
 
 	public static List<LocalVariableNode> getLocalVar(MethodNode method, String name) throws IOException 
@@ -101,5 +121,9 @@ public class TestTransformer
 				}
 			}
 		}
+	}
+
+	public static void clearCacheNodes() {
+		cacheNodes.clear();
 	}
 }

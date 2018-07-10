@@ -1,53 +1,37 @@
 package com.EvilNotch.lib.asm;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
-import com.mojang.authlib.minecraft.InsecureTextureException;
+import com.EvilNotch.lib.util.JavaUtil;
 
-import static org.objectweb.asm.Opcodes.*;
-
-import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.server.management.PlayerList;
 
 public class Transformer implements IClassTransformer
 {
-    private static final  String[] classesBeingTransformed = 
+    public static final List<String> classesBeingTransformed = JavaUtil.asArray(new String[]
     {
     	"net.minecraft.server.management.PlayerList"
-    };	
+    });	
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {
     	if(!FMLCorePlugin.isObf)
     		return classToTransform;
-        int index = Arrays.asList(classesBeingTransformed).indexOf(transformedName);
+        int index = classesBeingTransformed.indexOf(transformedName);
         return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
     }
     
     public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
-    	System.out.println("Transforming: " + classesBeingTransformed[index]);
+    	System.out.println("Transforming: " + classesBeingTransformed.get(index));
         try
         {
             ClassNode classNode = new ClassNode();
@@ -58,9 +42,10 @@ public class Transformer implements IClassTransformer
             switch(index)
             {
                 case 0:
-                	TestTransformer.transformMethod(classNode, classesBeingTransformed[index], inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
-                	TestTransformer.transformMethod(classNode, classesBeingTransformed[index], inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
+                	TestTransformer.transformMethod(classNode, classesBeingTransformed.get(index), inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
+                	TestTransformer.transformMethod(classNode, classesBeingTransformed.get(index), inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
                 	OtherTransformer.transformOther(classNode, obfuscated);
+                	TestTransformer.clearCacheNodes();
                 break;
             }
 
