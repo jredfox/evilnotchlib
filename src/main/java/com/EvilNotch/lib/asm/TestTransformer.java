@@ -15,35 +15,66 @@ import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-
 public class TestTransformer 
 {	
-	public static void transformClass(ClassNode ClassToTransform,String className,String clazzNewMethod,String method_name,String method_desc,String c,String v,String obMethod) 
+	public static void transformMethod(ClassNode classToTransform,String className,String inputStream,String method_name,String method_desc,String c,String v,String obMethod) 
 	{
-		for (MethodNode method : ClassToTransform.methods)
+		MethodNode method = FMLCorePlugin.isObf ? getMethodNode(classToTransform,c,v) : getMethodNode(classToTransform,method_name,method_desc);
+		try
 		{
-			if (FMLCorePlugin.isObf && method.name.equals(c) && method.desc.equals(v)|| !FMLCorePlugin.isObf && method.name.equals(method_name) && method.desc.equals(method_desc))
-			{
-				try
-				{
-					String s = "assets/evilnotchlib/asm/" + clazzNewMethod;
-					System.out.println(s + " " + obMethod);
-					InputStream stream = Transformer.class.getClassLoader().getResourceAsStream(s);
-					System.out.println(stream == null);
-					MethodNode mn = GetMethodNode(stream, obMethod, method_desc);
-					method.localVariables.clear();
-//					patchInstructions(mn,className,clazzNewMethod.replaceAll("\\.", "/"));
-					method.instructions = mn.instructions;
-					method.localVariables = GetLocalVar(mn,className);
-				} 
-				catch (Exception e) 
-				{
-					e.printStackTrace();
-				}
-			}	
+			InputStream stream = Transformer.class.getClassLoader().getResourceAsStream(inputStream);
+			MethodNode mn = getMethodNode(stream, obMethod, method_desc);
+			method.localVariables.clear();
+			method.instructions = mn.instructions;
+			method.localVariables = getLocalVar(mn,className);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
+	public static MethodNode GetMethodNode(Class ourClass, String method_name,String method_desc) throws IOException 
+	{
+		String className = ourClass.getName();
+		String classAsPath = className.replaceAll("\\.", "/") + ".class";
+		InputStream stream = ourClass.getClassLoader().getResourceAsStream(classAsPath);
+		return getMethodNode(stream,method_name,method_desc);
+	}
+	public static MethodNode getMethodNode(InputStream stream, String method_name,String method_desc) throws IOException 
+	{
+		byte[] newbyte = IOUtils.toByteArray(stream);
+		ClassNode classNode = new ClassNode();
+		ClassReader classReader = new ClassReader(newbyte);
+		classReader.accept(classNode,0);
+		
+		return getMethodNode(classNode,method_name,method_desc);
+	}
+	public static MethodNode getMethodNode(ClassNode classNode, String method_name, String method_desc) 
+	{
+		for (MethodNode method : classNode.methods)
+		{
+			if (method.name.equals(method_name) && method.desc.equals(method_desc))
+			{
+				return method;
+			}
+		}
+		return null;
+	}
 
+	public static List<LocalVariableNode> getLocalVar(MethodNode method, String name) throws IOException 
+	{
+		name = name.replaceAll("\\.", "/") + ";";
+		List<LocalVariableNode> l = method.localVariables;
+		for(LocalVariableNode lvn : l)
+		{
+			if(lvn.name.equals("this"))
+			{
+				lvn.desc = "L" + name;
+			}
+		}
+		return l;
+	}
+	
 	public static void patchInstructions(MethodNode mn, String className, String NewClassName) 
 	{
 		InsnList il = mn.instructions;
@@ -70,42 +101,5 @@ public class TestTransformer
 				}
 			}
 		}
-	}
-	public static MethodNode GetMethodNode(Class ourClass, String method_name,String method_desc) throws IOException 
-	{
-		String className = ourClass.getName();
-		String classAsPath = className.replaceAll("\\.", "/") + ".class";
-		InputStream stream = ourClass.getClassLoader().getResourceAsStream(classAsPath);
-		return GetMethodNode(stream,method_name,method_desc);
-	}
-	public static MethodNode GetMethodNode(InputStream stream, String method_name,String method_desc) throws IOException 
-	{
-		byte[] newbyte = IOUtils.toByteArray(stream);
-		ClassNode classNode = new ClassNode();
-		ClassReader classReader = new ClassReader(newbyte);
-		classReader.accept(classNode,0);
-		
-		for (MethodNode method : classNode.methods)
-		{
-			//System.out.println("Name: " + method.name + " Desc: " + method.desc);
-			if (method.name.equals(method_name) && method.desc.equals(method_desc))
-			{
-				return method;
-			}
-		}
-		return null;
-	}
-
-	public static List<LocalVariableNode> GetLocalVar(MethodNode method, String Name) throws IOException 
-	{
-		List<LocalVariableNode> l = method.localVariables;
-		for(LocalVariableNode lvn : l)
-		{
-			if(lvn.name.equals("this"))
-			{
-				lvn.desc = "L" + Name.replaceAll("\\.", "/") + ";";
-			}
-		}
-		return l;
 	}
 }

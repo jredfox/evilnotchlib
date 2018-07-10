@@ -32,10 +32,9 @@ import net.minecraft.server.management.PlayerList;
 public class Transformer implements IClassTransformer
 {
     private static final  String[] classesBeingTransformed = 
-    	{
-    			"net.minecraft.server.management.PlayerList"
-    	};
-    	
+    {
+    	"net.minecraft.server.management.PlayerList"
+    };	
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
@@ -54,12 +53,13 @@ public class Transformer implements IClassTransformer
             ClassNode classNode = new ClassNode();
             ClassReader classReader = new ClassReader(classToTransform);
             classReader.accept(classNode, 0);
+            String inputBase = "assets/evilnotchlib/asm/";
 
             switch(index)
             {
                 case 0:
-                	TestTransformer.transformClass(classNode, classesBeingTransformed[index], "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
-                	TestTransformer.transformClass(classNode, classesBeingTransformed[index], "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
+                	TestTransformer.transformMethod(classNode, classesBeingTransformed[index], inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
+                	TestTransformer.transformMethod(classNode, classesBeingTransformed[index], inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
                 	OtherTransformer.transformOther(classNode, obfuscated);
                 break;
             }
@@ -67,7 +67,7 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-            //FileUtils.writeByteArrayToFile(new File("C:/Users/jjred/Desktop/test.class"), classWriter.toByteArray());
+            FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
             
             return classWriter.toByteArray();
         }
