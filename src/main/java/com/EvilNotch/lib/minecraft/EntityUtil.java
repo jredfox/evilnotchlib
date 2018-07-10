@@ -969,6 +969,7 @@ public class EntityUtil {
 
         playerList.preparePlayer(player, sourceWorld);
         player.connection.setPlayerLocation(xCoord, yCoord, zCoord, yaw, pitch);
+        EntityUtil.captureCoords(player);
         player.interactionManager.setWorld(targetWorld);
         player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
         

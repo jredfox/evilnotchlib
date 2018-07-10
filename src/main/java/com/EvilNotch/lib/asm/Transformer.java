@@ -28,25 +28,25 @@ import static org.objectweb.asm.Opcodes.*;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.server.management.PlayerList;
-import net.minecraft.server.management.PlayerList2;
 
 public class Transformer implements IClassTransformer
 {
     private static final  String[] classesBeingTransformed = 
     	{
-    			"net.minecraft.server.management.PlayerList",
-    			"net.minecraft.block.BlockCactus"
+    			"net.minecraft.server.management.PlayerList"
     	};
     	
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {
-            int index = Arrays.asList(classesBeingTransformed).indexOf(transformedName);
-            return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
+    	if(!FMLCorePlugin.isObf)
+    		return classToTransform;
+        int index = Arrays.asList(classesBeingTransformed).indexOf(transformedName);
+        return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
     }
     
-    private static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
+    public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
     	System.out.println("Transforming: " + classesBeingTransformed[index]);
         try
@@ -58,20 +58,16 @@ public class Transformer implements IClassTransformer
             switch(index)
             {
                 case 0:
-//                	TestTransformer.transformClass(classNode, PlayerList2.class, "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;");
-//                	TestTransformer.transformClass(classNode, PlayerList2.class, "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;");
+                	TestTransformer.transformClass(classNode, classesBeingTransformed[index], "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
+                	TestTransformer.transformClass(classNode, classesBeingTransformed[index], "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
                 	OtherTransformer.transformOther(classNode, obfuscated);
-                break;
-                case 1:
-                	//debugger test for void methods
-//                	TestTransformer.transformClass(classNode, Methods.class, "onEntityCollidedWithBlock", "(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/entity/Entity;)V", "a", "(Lamu;Let;Lawt;Lvg;)V");
                 break;
             }
 
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-//            FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+            //FileUtils.writeByteArrayToFile(new File("C:/Users/jjred/Desktop/test.class"), classWriter.toByteArray());
             
             return classWriter.toByteArray();
         }
