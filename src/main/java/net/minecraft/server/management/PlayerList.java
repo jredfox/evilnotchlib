@@ -3,7 +3,6 @@ package net.minecraft.server.management;
 import java.io.File;
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,13 +13,8 @@ import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
-import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
-import com.EvilNotch.lib.util.JavaUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -133,16 +127,12 @@ public abstract class PlayerList
 
     public void initializeConnectionToPlayer(NetworkManager netManager, EntityPlayerMP playerIn, NetHandlerPlayServer nethandlerplayserver)
     {
-		
         GameProfile gameprofile = playerIn.getGameProfile();
-        System.out.println("init Connect UUID:" + playerIn.getUniqueID());
         PlayerProfileCache playerprofilecache = this.mcServer.getPlayerProfileCache();
         GameProfile gameprofile1 = playerprofilecache.getProfileByUUID(gameprofile.getId());
         String s = gameprofile1 == null ? gameprofile.getName() : gameprofile1.getName();
         playerprofilecache.addEntry(gameprofile);
-//        System.out.println("Previous NBT:" + EntityUtil.getEntityNBT(playerIn));
         NBTTagCompound nbttagcompound = this.readPlayerDataFromFile(playerIn);
-//        System.out.println("nbt of player:" + nbttagcompound + " Dimension:" + playerIn.dimension);
         playerIn.setWorld(this.mcServer.getWorld(playerIn.dimension));
 
         World playerWorld = this.mcServer.getWorld(playerIn.dimension);
@@ -566,11 +556,10 @@ public abstract class PlayerList
             playerinteractionmanager = new PlayerInteractionManager(this.mcServer.getWorld(0));
         }
 
-        EntityPlayerMP player = new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(0), profile, playerinteractionmanager);
-        return player;
+        return new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(0), profile, playerinteractionmanager);
     }
 
-	/**
+    /**
      * Destroys the given player entity and recreates another in the given dimension. Used when respawning after death
      * or returning from the End
      */

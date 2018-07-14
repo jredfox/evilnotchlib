@@ -47,7 +47,7 @@ public class TestTransformer
 			ClassNode node = cacheNodes.get(inputStream);
 			return getMethodNode(node,obMethod,method_desc);
 		}
-		InputStream stream = Transformer.class.getClassLoader().getResourceAsStream(inputStream);
+		InputStream stream = TestTransformer.class.getClassLoader().getResourceAsStream(inputStream);
 		ClassNode node = getClassNode(stream);
 		cacheNodes.put(inputStream, node);
 		return getMethodNode(node,obMethod,method_desc);
