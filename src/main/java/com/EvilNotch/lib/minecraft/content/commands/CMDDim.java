@@ -63,17 +63,22 @@ public class CMDDim extends CommandTeleport{
        		Entity toPlayer = args.length <= 2 && flag ? fromPlayer : getEntity(server, sender, args[index++]);
        		
        		int dim = flag ? Integer.parseInt(arg) : toPlayer.dimension;
+       		if(flag)
+       		{
+       			EntityUtil.teleportSpawn(fromPlayer, server, dim);
+       			return;
+       		}
        		if(toPlayer instanceof EntityLivingBase && fromPlayer instanceof EntityLivingBase)
        		{
        			((EntityLivingBase)fromPlayer).rotationYawHead = ((EntityLivingBase)toPlayer).rotationYawHead;
        		}
-       		teleportEnt(fromPlayer, server, toPlayer.posX, toPlayer.posY, toPlayer.posZ,toPlayer.rotationYaw,toPlayer.rotationPitch, dim);        	
+       		teleportEnt(fromPlayer, server, toPlayer.posX, toPlayer.posY, toPlayer.posZ,toPlayer.rotationYaw,toPlayer.rotationPitch, dim);
         	
        		notifyCommandListener(sender, this, "commands.teleport.success.coordinates", new Object[] {fromPlayer.getName(),  toPlayer.posX, toPlayer.posY, toPlayer.posZ,"Dim:" + toPlayer.dimension});
         }
         else if (args.length == 3)
         {
-        	//tpdim @p int senderBoolean
+        	//tpdim @p int
     		if(args.length == 3)
     		{
     			String last = args[args.length-1];
@@ -84,33 +89,11 @@ public class CMDDim extends CommandTeleport{
     		
     		String dim = args[index++];
     		String bool = args[index++];
-    		if(!LineBase.isStringNum(dim) || !JavaUtil.isStringBoolean(bool))
+    		if(!LineBase.isStringNum(dim) || JavaUtil.isStringBoolean(bool))
     			throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
     		
     		int dimension = Integer.parseInt(dim);
-    		boolean senderCoords = Boolean.parseBoolean(bool);
-    		double x = e.posX;
-    		double y = e.posY;
-    		double z = e.posZ;
-    		
-    		if(senderCoords)
-    		{
-    			Vec3d vec3d = sender.getPositionVector();
-                x = vec3d.x;
-                y = vec3d.y;
-                z = vec3d.z;
-                if(sender instanceof Entity)
-                {
-                	Entity e2 = (Entity)sender;
-                	e.rotationYaw = e2.rotationYaw;
-                	e.rotationPitch = e2.rotationPitch;
-                	if(sender instanceof EntityLivingBase && e instanceof EntityLivingBase)
-                	{
-                		((EntityLivingBase)e).rotationYawHead = ((EntityLivingBase)e2).rotationYawHead;
-                	}
-                }
-    		}
-    		teleportEnt(e, server, x, y, z, e.rotationYaw, e.rotationPitch, dimension);
+    		EntityUtil.teleportSpawn(e, server, dimension);
         }
         else if (args.length >= 4)
         {

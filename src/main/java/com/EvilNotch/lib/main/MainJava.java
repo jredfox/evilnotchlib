@@ -268,14 +268,23 @@ public class MainJava {
 	@Mod.EventHandler
 	public void commandRegister(FMLServerStartingEvent e)
 	{
-		GeneralRegistry.removeActiveCommands(e.getServer());
+		MinecraftServer server = e.getServer();
+		GeneralRegistry.removeActiveCommands(server);
 		for(ICommand cmd : GeneralRegistry.getCmdList())
 			e.registerServerCommand(cmd);
+		
+		//directories instantiate
+		System.out.println("Server Starting Event:");
+		LibEvents.worlDir = server.worlds[0].getSaveHandler().getWorldDirectory();
+		System.out.println(LibEvents.worlDir.getAbsolutePath());
+		LibEvents.playerDataDir = new File(LibEvents.worlDir,"playerdata");
+		LibEvents.playerDataNames = new File(LibEvents.worlDir,"playerdata/names");
 	}
 
 	public static boolean isDeObfucscated()
     {
-    	try{
+    	try
+    	{
     		ReflectionHelper.findField(Block.class, MCPMappings.getFieldOb(Block.class,"blockHardness"));
     		return false;//return false since obfuscated field had no exceptions
     	}

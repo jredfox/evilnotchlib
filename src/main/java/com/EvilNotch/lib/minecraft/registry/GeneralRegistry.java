@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.minecraft.content.commands.CMDTP;
+import com.EvilNotch.lib.main.MainJava;
+import com.EvilNotch.lib.minecraft.content.tileentity.TileEntTest;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -19,6 +19,8 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
 
 public class GeneralRegistry {
@@ -27,9 +29,11 @@ public class GeneralRegistry {
 	public static HashMap<ResourceLocation,Material> blockmats = new HashMap();
 	public static HashMap<ResourceLocation,SoundType> soundTypes = new HashMap();
 	public static Set<String> cmdRemove = new HashSet();
+	public static HashMap<String,Class> tileEnts = new HashMap();
 	
 	public static void load()
 	{
+		System.out.println("loading mats");
 		//register block materials
 		blockmats.put(new ResourceLocation("AIR"), Material.AIR);
 		blockmats.put(new ResourceLocation("ANVIL"), Material.ANVIL);
@@ -68,6 +72,7 @@ public class GeneralRegistry {
 		blockmats.put(new ResourceLocation("WEB"), Material.WEB);
 		blockmats.put(new ResourceLocation("WOOD"), Material.WOOD);
 		 
+		System.out.println("loading sound types");
 		//register soundtypes
 		soundTypes.put(new ResourceLocation("ANVIL"), SoundType.ANVIL);
 		soundTypes.put(new ResourceLocation("CLOTH"), SoundType.CLOTH);
@@ -81,6 +86,13 @@ public class GeneralRegistry {
 		soundTypes.put(new ResourceLocation("SNOW"), SoundType.SNOW);
 		soundTypes.put(new ResourceLocation("STONE"), SoundType.STONE);
 		soundTypes.put(new ResourceLocation("WOOD"), SoundType.WOOD);
+		replaceTileEntity(TileEntityFurnace.class,TileEntTest.class,new ResourceLocation(MainJava.MODID + ":" + "furnace"));
+	}
+	
+	public static void replaceTileEntity(Class old,Class newclazz,ResourceLocation id)
+	{
+		tileEnts.put(old.getName(), newclazz);
+		TileEntity.register(id.toString(), newclazz);
 	}
 	
 	public static void registerCommand(ICommand cmd){

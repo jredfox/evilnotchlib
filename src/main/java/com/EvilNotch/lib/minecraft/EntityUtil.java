@@ -841,6 +841,29 @@ public class EntityUtil {
 		}
 	}
 	/**
+	 * teleport an entity to spawn across dimenions support
+	 */
+    public static void teleportSpawn(Entity ep,MinecraftServer server,int dimension) throws WrongUsageException 
+    {
+    	World w = server.getWorld(dimension);
+    	BlockPos bp = w.provider.getRandomizedSpawnPoint();
+    	double x = bp.getX() + 0.5;
+		double y = bp.getY();
+		double z = bp.getZ() + 0.5;
+		ep.setPosition(x, y, z);
+		
+		if(ep.world.provider.getDimension() != dimension)
+			ep.setWorld(w);
+		ep.world.getChunkFromBlockCoords(bp);
+
+		while (!ep.world.getCollisionBoxes(ep, ep.getEntityBoundingBox()).isEmpty() && ep.posY < 256.0D)
+	    {
+	    	ep.setPosition(ep.posX, ep.posY + 1.0D, ep.posZ);
+	    }
+		EntityUtil.telePortEntity(ep, server, ep.posX,ep.posY,ep.posZ, ep.rotationYaw, ep.rotationPitch, dimension);
+	}
+    
+	/**
 	 * teleport entire stack
 	 */
 	public static void teleportStack(Entity index,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim) throws WrongUsageException
@@ -937,11 +960,7 @@ public class EntityUtil {
         {
         	return teleportEntityInterdimentional(e,server,prevDim,traveldim,x,y,z,yaw,pitch);
         }
-        if(e.posX != x || e.posY != y || e.posZ != z || yaw != e.rotationYaw || pitch != e.rotationPitch)
-        {
-        	return doTeleport(e, x, y, z,yaw,pitch);
-        }
-        return e;
+        return doTeleport(e, x, y, z,yaw,pitch);
 	}
     /**
      * This is the black magic responsible for teleporting players between dimensions!

@@ -27,8 +27,8 @@ public class ConfigBase {
     public boolean fancyLines = false;
     
     //comments and wrappers
-    protected ArrayList<Comment> init;
-    protected ArrayList<Comment> origin;
+    protected ArrayList<Comment> init = null;
+    protected ArrayList<Comment> origin = null;
     protected ArrayList<Comment> comments = null;
     
     protected char commentStart = '#';
@@ -41,9 +41,9 @@ public class ConfigBase {
     protected char rbracket = ']';
     protected String orLogic = "||";
     
-    protected ArrayList<String> lineChecker = new ArrayList();//optimized to only keep it as string and not reparse it
-    protected ArrayList<Comment> initChecker = new ArrayList();
-    protected ArrayList<Comment> commentChecker = new ArrayList();
+    protected ArrayList<String> lineChecker = null;//optimized to only keep it as string and not reparse it
+    protected ArrayList<Comment> initChecker = null;
+    protected ArrayList<Comment> commentChecker = null;
     
     public ConfigBase(File file)
     {
@@ -72,6 +72,13 @@ public class ConfigBase {
     
     public ConfigBase(File file, ArrayList<Comment> initComments, String header,char commentStart,char lhwrap,char rhwrap,char hslash,boolean comments,char lsep,char lquote,char lbracket,char rbracket,boolean fancyLine,String orLogic)
     {
+    	this.lineChecker = new ArrayList();
+    	this.initChecker = new ArrayList();
+    	this.commentChecker = new ArrayList();
+    	this.init = new ArrayList();
+    	this.origin = new ArrayList();
+    	this.comments = new ArrayList();
+    	
         this.cfgfile = file;
         this.lines = new ArrayList<>();
         for(Comment c : initComments)

@@ -10,18 +10,22 @@ import java.util.Map;
 import java.util.Set;
 
 import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.EvilNotch.lib.minecraft.TileEntityUtil;
+import com.EvilNotch.lib.minecraft.events.TileEntityCreateEvent;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
+import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
 import com.EvilNotch.lib.util.PointId;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -48,6 +52,33 @@ public class LibEvents {
 			NetWorkHandler.INSTANCE.sendTo(id, playerIn);
 			playerFlags.remove(e.player.getName());
 		}
+	}
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void create(BlockEvent.BreakEvent e)
+	{
+		TileEntity tile = e.getWorld().getTileEntity(e.getPos());
+		if(tile != null)
+			System.out.println(tile.getClass().getName());
+	}
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void create(TileEntityCreateEvent e)
+	{
+		/*Class clazz = e.tile.getClass();
+		if(GeneralRegistry.tileEnts.containsKey(clazz.getName()))
+		{
+			try 
+			{
+				NBTTagCompound nbt = TileEntityUtil.getTileNBT(e.tile);
+				e.tile = (TileEntity) GeneralRegistry.tileEnts.get(clazz.getName()).newInstance();
+				e.tile.readFromNBT(nbt);
+				e.tile.markDirty();
+			} 
+			catch (Exception ee)
+			{
+				ee.printStackTrace();
+			}
+			System.out.println("TileEvent:" + clazz.getSimpleName() + " with:" + e.tile.getClass().getSimpleName());
+		}*/
 	}
 	
 	 public static int mTick = 0;
@@ -110,21 +141,11 @@ public class LibEvents {
 	 public void worldload(WorldEvent.Load e)
 	 {
 		 World ew = e.getWorld();
-		 if(ew.isRemote || cachedEnts)
+		 if(ew.isRemote || cachedEnts || !Config.debug)
 			 return;
-		 World w = DimensionManager.getWorld(0);
-		 
-		 //instantiate directories for core minecraft bug fixes
-		 worlDir = w.getSaveHandler().getWorldDirectory();
-		 playerDataNames = new File(worlDir,"playerdata/names");
-		 playerDataNames.mkdirs();
-		 playerDataDir = playerDataNames.getParentFile();
-		 
-		 MainJava.worldServer = w;
+		 System.out.println("WorldLoadEvent firing!");
 		 cachedEnts = true;
-		 if(!Config.debug)
-			 return;
-		 
+		 World w = e.getWorld();
 		 System.out.println("Attempting to Repair Cache From Re-Instantiating Broken Entities");
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_nbt,w);
