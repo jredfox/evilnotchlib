@@ -298,7 +298,7 @@ public class LineBase implements ILine
 		String compare = "" + this.name;
 		if(!compare.equals("null") )
 			strname = "" + this.seperator + this.name;
-		return  new String(this.modid + strname);
+		return new String(this.modid + strname);
     }
 	@Override
 	public String getModid() {

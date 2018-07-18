@@ -137,6 +137,7 @@ public class MainJava {
 	public void init(FMLInitializationEvent e)
 	{
 		proxy.lang();
+		proxy.jsonGen();
 		proxy.initMod();
 		NetWorkHandler.init();
 	}

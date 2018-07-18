@@ -15,7 +15,7 @@ public class ClientUUID extends CommandBase implements IClientCommand{
 
 	@Override
 	public String getName() {
-		return "getUUUIIDD";
+		return "getUUID";
 	}
 
 	@Override

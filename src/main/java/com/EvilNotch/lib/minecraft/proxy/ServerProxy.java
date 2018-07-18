@@ -36,8 +36,8 @@ public class ServerProxy {
 	public void proxypreinit() {}
 	public void initMod() {}
 
-	public void lang() {
-		
-	}
+	//client only methods
+	public void lang() {}
+	public void jsonGen() {}
 
 }

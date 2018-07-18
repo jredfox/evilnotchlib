@@ -9,6 +9,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
+import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -31,7 +32,19 @@ public class Transformer implements IClassTransformer
     
     public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
-    	System.out.println("Transforming: " + classesBeingTransformed.get(index));
+    	String name = classesBeingTransformed.get(index);
+    	if(name.equals("net.minecraft.server.management.PlayerList") && !ConfigCore.asm_playerlist)
+    	{
+    		System.out.println("ASM Disabled for playerlist");
+    		return classToTransform;
+    	}
+    	else if(name.equals("net.minecraft.tileentity.TileEntityFurnace") && !ConfigCore.asm_furnace)
+    	{
+    		System.out.println("ASM Disabled for furnace fix");
+    		return classToTransform;
+    	}
+    	
+    	System.out.println("Transforming: " + name);
         try
         {
             ClassNode classNode = new ClassNode();

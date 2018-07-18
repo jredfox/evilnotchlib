@@ -71,7 +71,16 @@ public class ClientProxy extends ServerProxy{
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		FieldAcessClient.cacheFields();
 		MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
-		ClientCommandHandler.instance.registerCommand(new ClientUUID());
+		if(Config.debug)
+			ClientCommandHandler.instance.registerCommand(new ClientUUID());
+	}
+	@Override
+	public void jsonGen()
+	{
+		for(IBasicBlock b : MainJava.blocks)
+		{
+			
+		}
 	}
 	@Override
 	public void lang() 

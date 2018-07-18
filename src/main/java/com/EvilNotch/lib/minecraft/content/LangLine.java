@@ -75,7 +75,7 @@ public class LangLine implements ILine {
 	public void parse(String str, char sep, char q, char... invalid) {
 		String[] section = LineBase.getParts(str, "=");
 		this.head = section[1].trim();
-		this.id = section[0];
+		this.id = section[0].trim();
 	}
 
 	@Override
