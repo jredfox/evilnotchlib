@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.FieldAcessClient;
 import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
+import com.EvilNotch.lib.asm.FMLCorePlugin;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
@@ -39,6 +43,12 @@ import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.Locale;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemPickaxe;
+import net.minecraft.item.ItemSpade;
+import net.minecraft.item.ItemSword;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.text.translation.LanguageMap;
@@ -56,6 +66,7 @@ public class ClientProxy extends ServerProxy{
 	public static String currentLang = null;
 	public static Map<String, String> langlistClient = null;
 	public static  Map<String,String> langlist = null;
+	public static File root = null;
 
 	@Override
 	public void proxypreinit()
@@ -75,17 +86,88 @@ public class ClientProxy extends ServerProxy{
 			ClientCommandHandler.instance.registerCommand(new ClientUUID());
 	}
 	@Override
-	public void jsonGen()
+	public void jsonGen() throws Exception
 	{
+		if(!MainJava.isDeObfuscated)
+		{
+			System.out.println("json generation only occurs on the client side in dev enviorment");
+			return;
+		}
+		boolean flag = false;
 		for(IBasicItem i : MainJava.items)
 		{
-			
+			JSONObject json = null;
+			if(i instanceof ItemAxe || i instanceof ItemHoe || i instanceof ItemPickaxe || i instanceof ItemSpade || i instanceof ItemSword)
+			{
+				json = getJSONItem("item/handheld", i);
+			}
+			else
+			{
+				//for both item armor and regular items this is the parent
+				json = getJSONItem("item/generated", i);
+			}
+			ResourceLocation loc = i.getRegistryName();
+			File dir = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
+			if(!dir.getParentFile().exists())
+				dir.getParentFile().mkdirs();
+			if(!dir.exists())
+			{
+				flag = true;
+				dir.createNewFile();
+			}
+			JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{json.toJSONString()} ), dir, true);
 		}
 		for(IBasicBlock b : MainJava.blocks)
 		{
-			
+			JSONObject bs = getJSONBlockState(b);
+			JSONObject block = getModelBlock("block/cube_all",b);
+			JSONObject item = getJSONBlockItem(b);
+		}
+		if(flag)
+		{
+			System.out.println("refreshing resources as a new json has been generated");
+			Minecraft.getMinecraft().refreshResources();
 		}
 	}
+	public static JSONObject getJSONBlockItem(IBasicBlock b) {
+		JSONObject json = new JSONObject();
+		ResourceLocation loc = b.getRegistryName();
+		json.put("parent", loc.getResourceDomain() + ":block/" + loc.getResourcePath());
+		return json;
+	}
+
+	public static JSONObject getJSONBlockState(IBasicBlock b) {
+		JSONObject bs = new JSONObject();
+		JSONObject normal = new JSONObject();
+		normal.put("model", b.getRegistryName());
+		bs.put("variants", normal);
+		return bs;
+	}
+
+	public static JSONObject getModelBlock(String parent, IBasicBlock b) {
+		Block block = (Block)b;
+		JSONObject json = new JSONObject();
+		json.put("parent", parent);
+		
+		JSONObject textures = new JSONObject();
+		ResourceLocation loc = block.getRegistryName();
+		textures.put("layer0", loc.getResourceDomain() + ":blocks/" + b.getTextureName());
+		json.put("textures",textures);
+		return json;
+	}
+
+	public static JSONObject getJSONItem(String parent,IBasicItem i) {
+		Item item = (Item)i;
+		JSONObject json = new JSONObject();
+		json.put("parent", parent);
+		
+		JSONObject textures = new JSONObject();
+		ResourceLocation loc = item.getRegistryName();
+		textures.put("layer0", loc.getResourceDomain() + ":items/" + i.getTextureName());
+		json.put("textures",textures);
+		return json;
+	}
+
 	@Override
 	public void lang() 
 	{
@@ -94,7 +176,7 @@ public class ClientProxy extends ServerProxy{
 			System.out.println("lan generation only occurs in dev enviorment on client:");
 			return;
 		}
-		File root = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
+		root  = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
 		if(!root.exists())
 			root.mkdirs();
 		HashMap<File,ConfigLang> cfgs = new HashMap();

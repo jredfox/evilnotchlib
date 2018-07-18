@@ -38,6 +38,6 @@ public class ServerProxy {
 
 	//client only methods
 	public void lang() {}
-	public void jsonGen() {}
+	public void jsonGen() throws Exception {}
 
 }
