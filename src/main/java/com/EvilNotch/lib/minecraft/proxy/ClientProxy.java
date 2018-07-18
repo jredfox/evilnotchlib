@@ -77,6 +77,10 @@ public class ClientProxy extends ServerProxy{
 	@Override
 	public void jsonGen()
 	{
+		for(IBasicItem i : MainJava.items)
+		{
+			
+		}
 		for(IBasicBlock b : MainJava.blocks)
 		{
 			

@@ -18,14 +18,13 @@ public class Transformer implements IClassTransformer
 {
     public static final List<String> classesBeingTransformed = JavaUtil.asArray(new String[]
     {
-    	"net.minecraft.server.management.PlayerList"
+    	"net.minecraft.server.management.PlayerList",
+    	"net.minecraft.tileentity.TileEntityFurnace"
     });	
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {
-    	if(!FMLCorePlugin.isObf)
-    		return classToTransform;
         int index = classesBeingTransformed.indexOf(transformedName);
         return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
     }
@@ -33,18 +32,8 @@ public class Transformer implements IClassTransformer
     public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
     	String name = classesBeingTransformed.get(index);
-    	if(name.equals("net.minecraft.server.management.PlayerList") && !ConfigCore.asm_playerlist)
-    	{
-    		System.out.println("ASM Disabled for playerlist");
-    		return classToTransform;
-    	}
-    	else if(name.equals("net.minecraft.tileentity.TileEntityFurnace") && !ConfigCore.asm_furnace)
-    	{
-    		System.out.println("ASM Disabled for furnace fix");
-    		return classToTransform;
-    	}
+   		System.out.println("Transforming: " + name);
     	
-    	System.out.println("Transforming: " + name);
         try
         {
             ClassNode classNode = new ClassNode();
@@ -55,17 +44,32 @@ public class Transformer implements IClassTransformer
             switch(index)
             {
                 case 0:
+                	if(FMLCorePlugin.isObf || !ConfigCore.asm_playerlist)
+                	{
+                		System.out.println("returning default class:" + name);
+                		return classToTransform;
+                	}
                 	TestTransformer.transformMethod(classNode, classesBeingTransformed.get(index), inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
                 	TestTransformer.transformMethod(classNode, classesBeingTransformed.get(index), inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
                 	OtherTransformer.injectUUIDPatcher(classNode, obfuscated);
                 	TestTransformer.clearCacheNodes();
+                break;
+                
+                case 1:
+                	if(!ConfigCore.asm_furnace)
+                	{
+                		System.out.println("returning default class:" + name);
+                		return classToTransform;
+                	}
+                	FurnaceTransformer.transformMethod(classNode,obfuscated);
                 break;
             }
 
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-//            FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+//            if(index == 1)
+//            	FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
             
             return classWriter.toByteArray();
         }
