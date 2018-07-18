@@ -44,9 +44,9 @@ public class Transformer implements IClassTransformer
             switch(index)
             {
                 case 0:
-                	if(FMLCorePlugin.isObf || !ConfigCore.asm_playerlist)
+                	if(!FMLCorePlugin.isObf || !ConfigCore.asm_playerlist)
                 	{
-                		System.out.println("returning default class:" + name);
+                		System.out.println("returning default class:" + name + " ob:" + FMLCorePlugin.isObf + " cfg:" + ConfigCore.asm_playerlist);
                 		return classToTransform;
                 	}
                 	TestTransformer.transformMethod(classNode, classesBeingTransformed.get(index), inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
