@@ -15,12 +15,12 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 public class OtherTransformer 
 {
-	public static void injectUUIDPatcher(ClassNode GUIOverlayClass, boolean obfuscated) 
+	public static void injectUUIDPatcher(ClassNode playerList, boolean obfuscated) 
 	{
 		 final String method_name = obfuscated ? "g" : "createPlayerForUser";
 		 final String method_desc = obfuscated ? "(Lcom/mojang/authlib/GameProfile;)Loq;" : "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;";
 		 
-		 for (MethodNode method : GUIOverlayClass.methods)
+		 for (MethodNode method : playerList.methods)
 		 {
 			 if (method.name.equals(method_name) && method.desc.equals(method_desc))
 			 {
@@ -40,14 +40,14 @@ public class OtherTransformer
 				 {
 					 
 					 InsnList toInsert = new InsnList();
-	                    toInsert.add(new VarInsnNode(ALOAD,1));
-	                    toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/EvilNotch/lib/minecraft/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
+	                 toInsert.add(new VarInsnNode(ALOAD,1));
+	                 toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/EvilNotch/lib/minecraft/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
 	               
 	                 method.instructions.insertBefore(targetNode, toInsert);
 				 }
 				 else
 				 {
-					 System.out.println("Error Asming Other");
+					 System.out.println("Error Asming UUIDPatcher REPORT THIS TO MOD AUTHOR");
 				 }
 	
 			 }

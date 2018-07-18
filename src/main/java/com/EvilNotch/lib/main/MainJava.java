@@ -134,7 +134,7 @@ public class MainJava {
 //		BasicBlock b = new BasicBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "spider"),tab,props,new LangEntry("Spider Master","en_us"),new LangEntry("Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº","ru_ru"));
 	}
 	@Mod.EventHandler
-	public void post(FMLInitializationEvent e)
+	public void init(FMLInitializationEvent e)
 	{
 		proxy.lang();
 		proxy.initMod();
