@@ -23,7 +23,7 @@ MCPMappings and ReflectionUtil API: ability to get and set objects with ease
 Menu Lib: allows for modders to register their menu for multiple menu browsing
 BlockAPI: set objects in blocks for coders
 Player Capabilities: different from forge they are easy to regiser and use. Currently server side only
-Basic MC Lib:ability to make modding easier automation for registration and lang future models to
+Basic MC Lib:ability to make modding easier automation for registration and lang
 GeneralRegistry: registry for commands, sound types and other general stuffs regsiter stuff here for compatibility
 EntityModRegistry: support SpawnListEntries with NBT mobs
 Client Block Place Event: fires on client side for client sync on block placing
@@ -37,4 +37,5 @@ Font Renderer
 NBTPathAPI
 Dynamic Client Translations
 Lan Skin Host Fix
+Json model lang generation automation
 ```
