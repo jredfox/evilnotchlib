@@ -11,7 +11,7 @@ Bug Fixes:
 vanilla eggs on spawners
 uuid fix(if uuid doesn't match server patch it)
 uuid fix single player(if you give another person your world you get the right playerdata)
-TileEntityFurnace.class patch(all the times it was casting to and from short have been removed to increase fuel time to integer max value)
+TileEntityFurnace(increase from short to int)
 fixes forge parsing playerdata files twice on login
 notch drops apples again
 future: Move too quickly and vechile checks removed since this is a modding enviorment
@@ -31,4 +31,10 @@ Line Library: a powerful library for parsing lines in many forms "modid:block" =
 ConfigBase: part of the line library as an api implementation for the line library
 Primitive Obj: allows for object modifyable primitive values(byte,short,int,long,float,double,boolean)
 CSVE: basic implementation of comma seperated values with a varible system in place
+
+Future:
+Font Renderer
+NBTPathAPI
+Dynamic Client Translations
+Lan Skin Host Fix
 ```
