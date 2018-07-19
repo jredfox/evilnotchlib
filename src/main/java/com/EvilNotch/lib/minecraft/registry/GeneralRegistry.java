@@ -11,7 +11,6 @@ import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.minecraft.content.tileentity.TileEntTest;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -86,13 +85,6 @@ public class GeneralRegistry {
 		soundTypes.put(new ResourceLocation("SNOW"), SoundType.SNOW);
 		soundTypes.put(new ResourceLocation("STONE"), SoundType.STONE);
 		soundTypes.put(new ResourceLocation("WOOD"), SoundType.WOOD);
-		replaceTileEntity(TileEntityFurnace.class,TileEntTest.class,new ResourceLocation(MainJava.MODID + ":" + "furnace"));
-	}
-	
-	public static void replaceTileEntity(Class old,Class newclazz,ResourceLocation id)
-	{
-		tileEnts.put(old.getName(), newclazz);
-		TileEntity.register(id.toString(), newclazz);
 	}
 	
 	public static void registerCommand(ICommand cmd){

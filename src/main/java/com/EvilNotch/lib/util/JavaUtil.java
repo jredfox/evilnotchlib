@@ -892,4 +892,22 @@ public class JavaUtil {
 		return System.currentTimeMillis()-time;
 	}
 
+	public static void saveJSONSafley(JSONObject json, File file) throws IOException 
+	{
+		createFileSafley(file);
+		saveJSON(json,file);
+	}
+
+	public static void createFileSafley(File file) throws IOException {
+		File parent = file.getParentFile();
+		if(!parent.exists())
+			parent.mkdirs();
+		if(!file.exists())
+			file.createNewFile();
+	}
+
+	public static void saveJSON(JSONObject json, File file) {
+		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{json.toJSONString()} ), file, true);
+	}
+
 }

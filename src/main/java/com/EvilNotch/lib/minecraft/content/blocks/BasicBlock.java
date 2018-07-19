@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.main.MainJava;
+import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.ConfigBase;
 import com.EvilNotch.lib.util.Line.LineEnhanced;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
@@ -274,7 +275,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 
 	@Override
 	public List<String> getModelStates() {
-		return Arrays.asList(new Object[]{"inventory","normal"});
+		return JavaUtil.asArray(new Object[]{"inventory","normal"});
 	}
 
 }

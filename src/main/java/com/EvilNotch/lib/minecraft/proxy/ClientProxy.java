@@ -107,21 +107,38 @@ public class ClientProxy extends ServerProxy{
 				json = getJSONItem("item/generated", i);
 			}
 			ResourceLocation loc = i.getRegistryName();
-			File dir = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
-			if(!dir.getParentFile().exists())
-				dir.getParentFile().mkdirs();
-			if(!dir.exists())
-			{
+			File file = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
+			if(!file.exists())
 				flag = true;
-				dir.createNewFile();
-			}
-			JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{json.toJSONString()} ), dir, true);
+			JavaUtil.saveJSONSafley(json, file);
 		}
 		for(IBasicBlock b : MainJava.blocks)
 		{
+			ResourceLocation loc = b.getRegistryName();
+			
 			JSONObject bs = getJSONBlockState(b);
+			File fbs = new File(root,loc.getResourceDomain() + "/blockstates/" + loc.getResourcePath() + ".json");
+			
+			if(!fbs.exists())
+				flag = true;
+			
+			JavaUtil.saveJSONSafley(bs,fbs);
+
 			JSONObject block = getModelBlock("block/cube_all",b);
+			File bmodel = new File(root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
+			
+			if(!bmodel.exists())
+				flag = true;
+			
+			JavaUtil.saveJSONSafley(block, bmodel);
+			
 			JSONObject item = getJSONBlockItem(b);
+			File itemFile = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
+			
+			if(!itemFile.exists())
+				flag = true;
+			
+			JavaUtil.saveJSONSafley(item, itemFile);
 		}
 		if(flag)
 		{
@@ -136,12 +153,16 @@ public class ClientProxy extends ServerProxy{
 		return json;
 	}
 
-	public static JSONObject getJSONBlockState(IBasicBlock b) {
-		JSONObject bs = new JSONObject();
+	public static JSONObject getJSONBlockState(IBasicBlock b) 
+	{
+		JSONObject json = new JSONObject();
+		JSONObject varients = new JSONObject();
 		JSONObject normal = new JSONObject();
-		normal.put("model", b.getRegistryName());
-		bs.put("variants", normal);
-		return bs;
+		
+		normal.put("model", b.getRegistryName().toString());
+		varients.put("normal", normal);
+		json.put("variants", varients);
+		return json;
 	}
 
 	public static JSONObject getModelBlock(String parent, IBasicBlock b) {
@@ -151,7 +172,7 @@ public class ClientProxy extends ServerProxy{
 		
 		JSONObject textures = new JSONObject();
 		ResourceLocation loc = block.getRegistryName();
-		textures.put("layer0", loc.getResourceDomain() + ":blocks/" + b.getTextureName());
+		textures.put("all", loc.getResourceDomain() + ":blocks/" + b.getTextureName());
 		json.put("textures",textures);
 		return json;
 	}

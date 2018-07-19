@@ -9,6 +9,8 @@ public class LangEntry {
 	public String langId = null;
 	public ResourceLocation loc = null;
 	
+	public static final String en_us = "en_us";
+	
 	/**
 	 * use this one if your manually calling it for advanced constructors in basic items/blocks
 	 */

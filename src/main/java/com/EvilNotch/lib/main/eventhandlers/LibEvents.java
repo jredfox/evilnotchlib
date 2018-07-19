@@ -12,7 +12,6 @@ import java.util.Set;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.TileEntityUtil;
-import com.EvilNotch.lib.minecraft.events.TileEntityCreateEvent;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
@@ -53,34 +52,6 @@ public class LibEvents {
 			playerFlags.remove(e.player.getName());
 		}
 	}
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void create(BlockEvent.BreakEvent e)
-	{
-		TileEntity tile = e.getWorld().getTileEntity(e.getPos());
-		if(tile != null)
-			System.out.println(tile.getClass().getName());
-	}
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void create(TileEntityCreateEvent e)
-	{
-		/*Class clazz = e.tile.getClass();
-		if(GeneralRegistry.tileEnts.containsKey(clazz.getName()))
-		{
-			try 
-			{
-				NBTTagCompound nbt = TileEntityUtil.getTileNBT(e.tile);
-				e.tile = (TileEntity) GeneralRegistry.tileEnts.get(clazz.getName()).newInstance();
-				e.tile.readFromNBT(nbt);
-				e.tile.markDirty();
-			} 
-			catch (Exception ee)
-			{
-				ee.printStackTrace();
-			}
-			System.out.println("TileEvent:" + clazz.getSimpleName() + " with:" + e.tile.getClass().getSimpleName());
-		}*/
-	}
-	
 	 public static int mTick = 0;
 	 public static final List<String> msgs = new ArrayList();
 	 @SubscribeEvent
