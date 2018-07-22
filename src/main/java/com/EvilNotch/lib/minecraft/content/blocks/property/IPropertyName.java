@@ -4,5 +4,6 @@ import java.util.Set;
 
 public interface IPropertyName {
 	
-	Set<Integer> getMetaDataValues();
+	public Set<Integer> getMetaDataValues();
+	public Enum getValue(int meta);
 }

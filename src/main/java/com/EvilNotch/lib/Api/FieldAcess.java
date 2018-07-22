@@ -59,6 +59,7 @@ public class FieldAcess {
 	
 	public static boolean cached = false;
 	public static String gameProfileId = null;
+	public static String blockstate = null;
 	
 	public static void cacheFields()
 	{
@@ -84,6 +85,7 @@ public class FieldAcess {
 		entityUniqueID = MCPMappings.getField(Entity.class, "entityUniqueID");
 		cachedUniqueIdString = MCPMappings.getField(Entity.class, "cachedUniqueIdString");
 		gameProfileId = MCPMappings.getField(GameProfile.class, "id");
+		blockstate = MCPMappings.getField(Block.class, "blockState");
 		
 		try 
 		{

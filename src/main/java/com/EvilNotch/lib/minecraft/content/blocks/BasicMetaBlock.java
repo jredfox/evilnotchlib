@@ -1,14 +1,19 @@
 package com.EvilNotch.lib.minecraft.content.blocks;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.EvilNotch.lib.Api.FieldAcess;
+import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
-import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock.Properties;
 import com.EvilNotch.lib.minecraft.content.blocks.item.IMetaName;
 import com.EvilNotch.lib.minecraft.content.blocks.item.ItemBlockMeta;
-import com.EvilNotch.lib.minecraft.content.blocks.property.PropertyMetaEnum;
+import com.EvilNotch.lib.minecraft.content.blocks.property.IPropertyMeta;
+import com.EvilNotch.lib.minecraft.content.blocks.property.IPropertyName;
 import com.EvilNotch.lib.util.JavaUtil;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -27,9 +32,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	
-	public IProperty property;
+	public IProperty property = null;
 	
-	public BasicMetaBlock(ResourceLocation id,PropertyInteger pi,LangEntry... lang) {
+	public BasicMetaBlock(ResourceLocation id,IProperty pi,LangEntry... lang) {
 		this(Material.ROCK,id,pi,lang);
 	}
 	
@@ -37,29 +42,45 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	 * lang name is whatever is "displayname","lang" 
 	 * where lang is langauage type like "en_us" everyting else has been done for you
 	 */
-	public BasicMetaBlock(Material blockMaterialIn,ResourceLocation id,PropertyInteger pi,LangEntry... lang) {
+	public BasicMetaBlock(Material blockMaterialIn,ResourceLocation id,IProperty pi,LangEntry... lang) {
 		this(blockMaterialIn,id,null,pi,lang);
 	}
-	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,PropertyInteger pi,LangEntry... lang) {
+	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,IProperty pi,LangEntry... lang) {
 		this(mat,id,tab,null,pi,lang);
 	}
-	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,Properties props,PropertyInteger pi,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,null,false,props,pi,lang);
+	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,Properties props,IProperty pi,LangEntry... lang) {
+		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,null,props,pi,lang);
 	}
-
-	public BasicMetaBlock(Material blockMaterialIn, MapColor blockMapColorIn, ResourceLocation id, CreativeTabs tab,
-			boolean model, boolean register, boolean lang, boolean config, ItemBlock itemblock, boolean useItemBlock,
-			Properties props,IProperty prop, LangEntry[] langlist) {
-		super(blockMaterialIn, blockMapColorIn, id, tab, model, register, lang, config, itemblock, useItemBlock, props,
-				langlist);
+	
+	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,Properties props,IProperty pi,ItemBlock ib,LangEntry... lang) {
+		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,ib,props,pi,lang);
+	}
+	
+	/**
+	 * uses the itemblock if not null regardless whether which boolean you call
+	 */
+	public BasicMetaBlock(Material blockMaterialIn, MapColor blockMapColorIn, ResourceLocation id, CreativeTabs tab,boolean model, boolean register, boolean lang, boolean config, ItemBlock itemblock,Properties props,IProperty prop, LangEntry... langlist) 
+	{
+		super(blockMaterialIn, blockMapColorIn, id, tab, model, register, lang, config, itemblock, false, props,langlist);
 		this.property = prop;
 		
-		this.itemblock = new ItemBlockMeta(this);
-		this.itemblock.setRegistryName(id);
+		if(itemblock == null)
+			this.itemblock = new ItemBlockMeta(this);
+		else
+			this.itemblock = itemblock;
 		
-        this.setDefaultState(this.blockState.getBaseState().withProperty(prop, getValue(prop)));
+		this.itemblock.setRegistryName(id);
+		System.out.println("Constructor Call:" + this.property);
+		
+		//since vanilla is ignorant as hell by not populating new properties we need to reset the entire block state container and yes it's f****** final
+		setStateConstructor(this.property);
 	}
-	public Comparable getValue(IProperty prop) 
+	public void setStateConstructor(IProperty prop) {
+		ReflectionUtil.setFinalObject(this, this.createBlockState(), Block.class, FieldAcess.blockstate);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(prop, getDefaultValue(prop)));
+	}
+
+	public Comparable getDefaultValue(IProperty prop) 
 	{
 		if(prop instanceof PropertyInteger)
 		{
@@ -67,13 +88,13 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 		}
 		else if(prop instanceof PropertyBool)
 		{
-			return new Boolean(false);
+			return Boolean.valueOf(false);
 		}
 		else if(prop instanceof PropertyDirection)
 		{
 			return EnumFacing.NORTH;
 		}
-		else if(prop instanceof PropertyMetaEnum)
+		else if(prop instanceof IPropertyName)
 		{
 			return (Comparable) JavaUtil.getFirst(prop.getAllowedValues());
 		}
@@ -81,32 +102,109 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	}
 
 	@Override
-	public BlockStateContainer createBlockState(){
+	public BlockStateContainer createBlockState()
+	{
+		if(this.property == null)
+		{
+			System.out.println("Property hasn't yet been constructed yet!");
+			return super.createBlockState();
+		}
 		return new BlockStateContainer(this,new IProperty[]{this.property});
 	}
 	
 	@Override
-	public int getMetaFromState(IBlockState state){
-		return (Integer)state.getValue(this.property);
+	public int getMetaFromState(IBlockState state)
+	{
+		if(this.property instanceof PropertyInteger)
+		{
+			return (Integer)state.getValue(this.property);
+		}
+		else if(this.property instanceof PropertyBool)
+		{
+			Boolean b = (Boolean) state.getValue(this.property);
+			return !b ? 0 : 1;
+		}
+		else if(this.property instanceof PropertyDirection)
+		{
+			EnumFacing facing = (EnumFacing) state.getValue(this.property);
+			return facing.getIndex();
+		}
+		else if(this.property instanceof IPropertyName)
+		{
+			IPropertyMeta p = (IPropertyMeta) state.getValue(this.property);
+			return p.getMetaData();
+		}
+		return -1;
 	}
+
 	@Override
-	public IBlockState getStateFromMeta(int meta){
-		return this.getDefaultState().withProperty(this.property, meta);
+	public IBlockState getStateFromMeta(int meta)
+	{
+		IBlockState state = this.getDefaultState();
+		
+		if(this.property instanceof PropertyInteger)
+		{
+			return state.withProperty(this.property, meta);
+		}
+		else if(this.property instanceof PropertyBool)
+		{
+			boolean b = meta == 0 ? false : true;
+			return state.withProperty(this.property, Boolean.valueOf(b));
+		}
+		else if(this.property instanceof PropertyDirection)
+		{
+			return state.withProperty(this.property, EnumFacing.getFront(meta));
+		}
+		else if(this.property instanceof IPropertyName)
+		{
+			IPropertyName p = (IPropertyName) this.property;
+			return state.withProperty(this.property, p.getValue(meta));
+		}
+		return null;
 	}
+	
 	@Override
-    protected ItemStack getSilkTouchDrop(IBlockState state)
+    public ItemStack getSilkTouchDrop(IBlockState state)
     {
-		return new ItemStack(Item.getItemFromBlock(this), 1, (Integer)state.getValue(this.property) );
+		return new ItemStack(Item.getItemFromBlock(this), 1, this.getMetaFromState(state) );
     }
 	@Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-		Collection<Integer> metas = this.property.getAllowedValues();
+		Set<Integer> metas = getValuesOfProperty(this.property);
 		for(int i : metas)
 		{
 			items.add(new ItemStack(this,1,i));
 		}
     }
+	@Override
+	public Set<Integer> getValuesOfProperty(IProperty p)
+	{
+		Set<Integer> set = new HashSet();
+		if(this.property instanceof PropertyInteger)
+		{
+			Collection<Integer> li = this.property.getAllowedValues();
+			for(Integer i : li)
+				set.add(i);
+		}
+		else if(this.property instanceof PropertyBool)
+		{
+			return (Set<Integer>) JavaUtil.asSet(0,1);
+		}
+		else if(this.property instanceof PropertyDirection)
+		{
+			for(EnumFacing f : EnumFacing.VALUES)
+				set.add(f.getIndex());
+		}
+		else if(this.property instanceof IPropertyName)
+		{
+			Set<IPropertyMeta> li = (Set<IPropertyMeta>) this.property.getAllowedValues();
+			for(IPropertyMeta m : li)
+				set.add(m.getMetaData());
+		}
+		return set;
+	}
+
 	@Override
 	public int damageDropped(IBlockState state){
 		return this.getMetaFromState(state);

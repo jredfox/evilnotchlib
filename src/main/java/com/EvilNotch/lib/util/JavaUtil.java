@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -914,6 +915,13 @@ public class JavaUtil {
 		for(Object obj : li)
 			return obj;
 		return null;
+	}
+
+	public static Set<Integer> asSet(Object... obj) {
+		Set set = new HashSet();
+		for(Object o : obj)
+			set.add(o);
+		return set;
 	}
 
 }

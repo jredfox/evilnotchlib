@@ -20,7 +20,10 @@ import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.ToolMat;
 import com.EvilNotch.lib.minecraft.content.ToolSet;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
+import com.EvilNotch.lib.minecraft.content.blocks.BasicMetaBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
+import com.EvilNotch.lib.minecraft.content.blocks.property.PropertyMetaEnum;
+import com.EvilNotch.lib.minecraft.content.blocks.test.EnumCheese;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
 import com.EvilNotch.lib.minecraft.content.commands.CMDKick;
@@ -43,6 +46,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommand;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -137,6 +141,7 @@ public class MainJava {
 		ItemBasicAxe axe = new ItemBasicAxe(test,new ResourceLocation(MODID + ":" + "pickaxe"),tab, new LangEntry("RadioActive Pick","en_us"));
 		BasicBlock b = new BasicBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "spider"),tab,props,new LangEntry("Spider Master","en_us"),new LangEntry("Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº","ru_ru"));
 		
+		BasicMetaBlock b2 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "meta_enumeration"), tab, null,PropertyMetaEnum.createProperty("cheese", EnumCheese.class));
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent e) throws Exception

@@ -3,6 +3,7 @@ package com.EvilNotch.lib.minecraft.content.blocks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.main.MainJava;
@@ -168,6 +169,10 @@ public class BasicBlock extends Block implements IBasicBlock{
 		public Properties(){
 			this.loc = new ResourceLocation("null");
 		}
+		public Properties(ResourceLocation loc)
+		{
+			this.loc = loc;
+		}
 		/**
 		 * Basic constructor
 		 * loc is the resource location of the block
@@ -329,6 +334,11 @@ public class BasicBlock extends Block implements IBasicBlock{
 	@Override
 	public IProperty getModelProperty() {
 		return null;
+	}
+
+	@Override
+	public Set<Integer> getValuesOfProperty(IProperty p) {
+		return JavaUtil.asSet(0);
 	}
 
 }
