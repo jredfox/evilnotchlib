@@ -910,4 +910,10 @@ public class JavaUtil {
 		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{json.toJSONString()} ), file, true);
 	}
 
+	public static Object getFirst(Collection li) {
+		for(Object obj : li)
+			return obj;
+		return null;
+	}
+
 }

@@ -44,6 +44,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -82,7 +83,7 @@ public class MainJava {
 	//lib stuffs
 	public static boolean isDeObfuscated = true;
 	public static final String MODID =  "evilnotchlib";
-	public static final String VERSION = "1.2.3-52";//SNAPSHOT
+	public static final String VERSION = "1.2.3-53";//SNAPSHOT
 	public static final String NAME = "Evil Notch Lib";
 	public static final String max_version = "4.0.0.0.0";//allows for 5 places in lib version
 	public static boolean isClient = false;
@@ -135,6 +136,7 @@ public class MainJava {
 		ToolMat test = new ToolMat(new ResourceLocation(MODID + ":" + "test"), 2, 100, 10, 3, 30);
 		ItemBasicAxe axe = new ItemBasicAxe(test,new ResourceLocation(MODID + ":" + "pickaxe"),tab, new LangEntry("RadioActive Pick","en_us"));
 		BasicBlock b = new BasicBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "spider"),tab,props,new LangEntry("Spider Master","en_us"),new LangEntry("Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº","ru_ru"));
+		
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent e) throws Exception

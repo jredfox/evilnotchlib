@@ -1,26 +1,31 @@
 package com.EvilNotch.lib.minecraft.content.blocks;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.main.MainJava;
+import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.ConfigBase;
 import com.EvilNotch.lib.util.Line.LineEnhanced;
-import com.EvilNotch.lib.minecraft.content.LangEntry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.actors.threadpool.Arrays;
 
 public class BasicBlock extends Block implements IBasicBlock{
 	
@@ -276,6 +281,54 @@ public class BasicBlock extends Block implements IBasicBlock{
 	@Override
 	public List<String> getModelStates() {
 		return JavaUtil.asArray(new Object[]{"inventory","normal"});
+	}
+	
+	@Override
+	public List<String> getBlockStatesNames()
+	{
+		List<String> list = new ArrayList();
+		IProperty prop = this.getModelProperty();
+		if(prop == null)
+			list.add("normal");
+		else
+		{
+			if(prop instanceof PropertyInteger)
+			{
+				PropertyInteger i = (PropertyInteger)prop;
+				Collection<Integer> ints = i.getAllowedValues();
+				for(Integer index : ints)
+					list.add(prop.getName() + "=" + index);
+			}
+			else if (prop instanceof PropertyBool)
+			{
+				PropertyBool p = (PropertyBool)prop;
+				list.add(p.getName() + "=" + true);
+				list.add(p.getName() + "=" + false);
+			}
+			else if(prop instanceof PropertyDirection)
+			{
+				PropertyDirection p = (PropertyDirection)prop;
+				list.add(p.getName() + "=" + EnumFacing.NORTH.getName());
+				list.add(p.getName() + "=" + EnumFacing.SOUTH.getName());
+				list.add(p.getName() + "=" + EnumFacing.EAST.getName());
+				list.add(p.getName() + "=" + EnumFacing.WEST.getName());
+			}
+			else if (prop instanceof PropertyEnum)
+			{
+				PropertyEnum p = (PropertyEnum)prop;
+				Collection <IStringSerializable> enums = p.getAllowedValues();
+				for(IStringSerializable e : enums)
+				{
+					list.add(p.getName() + "=" + e.getName());
+				}
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public IProperty getModelProperty() {
+		return null;
 	}
 
 }
