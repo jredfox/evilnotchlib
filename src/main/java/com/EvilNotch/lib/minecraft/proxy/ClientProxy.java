@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -399,17 +400,15 @@ public class ClientProxy extends ServerProxy{
 			   if(i.isMeta() )
 			   {
 					ModelLoader.setCustomStateMapper((Block) b, new StateMapperSupreme());
-				   
-				   List<String> list = i.getBlockStatesNames();
-				   List<ModelResourceLocation> names = new ArrayList();
-				   for(String s : list)
-				   {
-					   String[] parts = s.split("=");
-					   names.add(new ModelResourceLocation(i.getRegistryName().toString() + "_" + parts[1],"inventory"));
-				   }
-				   ResourceLocation[] locs = new ResourceLocation[names.size()]; 
-				   JavaUtil.populateStatic(locs,names);
-				   ModelBakery.registerItemVariants(item, locs);
+					HashMap<Integer,ModelResourceLocation> metas = i.getModelMap();
+					Iterator<Map.Entry<Integer,ModelResourceLocation>> it = metas.entrySet().iterator();
+					while(it.hasNext())
+					{
+						Map.Entry<Integer, ModelResourceLocation> pair = it.next();
+						int meta = pair.getKey();
+						ModelResourceLocation loc = pair.getValue();
+						ModelLoader.setCustomModelResourceLocation(item, meta, loc);
+					}
 			   }
 			   else
 			   {

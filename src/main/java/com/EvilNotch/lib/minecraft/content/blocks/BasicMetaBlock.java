@@ -2,6 +2,7 @@ package com.EvilNotch.lib.minecraft.content.blocks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,11 +25,13 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
@@ -77,6 +80,20 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 		//since vanilla is ignorant as hell by not populating new properties we need to reset the entire block state container and yes it's f****** final
 		setStateConstructor(this.property);
 	}
+	/**
+	 * supports metadata and block states
+	 */
+	@Override
+	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) 
+	{
+		for(LangEntry entry : langlist)
+		{
+			entry.langId = "tile." + unlocalname + "_" + entry.meta + ".name";
+			entry.loc = id;
+			blocklangs.add(entry);
+		}
+	}
+	
 	public void setStateConstructor(IProperty prop) {
 		ReflectionUtil.setFinalObject(this, this.createBlockState(), Block.class, FieldAcess.blockstate);
         this.setDefaultState(this.blockState.getBaseState().withProperty(prop, getDefaultValue(prop)));
@@ -108,7 +125,7 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	{
 		if(this.property == null)
 		{
-			System.out.println("Property hasn't yet been constructed yet!");
+//			System.out.println("Property hasn't yet been constructed yet!");
 			return super.createBlockState();
 		}
 		return new BlockStateContainer(this,new IProperty[]{this.property});
@@ -222,5 +239,35 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	@Override
 	public IProperty getStateProperty(){
 		return this.property;
+	}
+	@Override
+	public HashMap<Integer, ModelResourceLocation> getModelMap() 
+	{
+		HashMap<Integer, ModelResourceLocation> map = new HashMap();
+		Set<Integer> set = this.getValuesOfProperty(this.getStateProperty());
+		for(int i : set)
+		{
+			if(this.property instanceof PropertyInteger)
+			{
+				map.put(i, new ModelResourceLocation(this.getRegistryName() + "_" + i,this.property.getName() + "=" + i));
+			}
+			else if(this.property instanceof PropertyBool)
+			{
+				boolean b = i == 0 ? false : true;
+				map.put(i, new ModelResourceLocation(this.getRegistryName() + "_" + b,this.property.getName() + "=" + b));
+			}
+			else if(this.property instanceof PropertyDirection)
+			{
+				EnumFacing f = EnumFacing.getFront(i);
+				map.put(i, new ModelResourceLocation(this.getRegistryName() + "_" + f.getName(),this.property.getName() + "=" + f.getName()));
+			}
+			else if(this.property instanceof IPropertyName)
+			{
+				IPropertyName p = (IPropertyName) this.property;
+				IStringSerializable getter = (IStringSerializable) p.getValue(i);
+				map.put(i, new ModelResourceLocation(this.getRegistryName() + "_" + getter.getName(),this.property.getName() + "=" + getter.getName()));
+			}
+		}
+		return map;
 	}
 }

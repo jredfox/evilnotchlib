@@ -1,12 +1,16 @@
 package com.EvilNotch.lib.minecraft.content.blocks;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface IBasicBlock extends IBasicItem{
 	
@@ -20,4 +24,6 @@ public interface IBasicBlock extends IBasicItem{
 	default public boolean isMeta(){
 		return getBlockStatesNames().size() > 1;
 	}
+	@SideOnly(Side.CLIENT)
+	public HashMap<Integer, ModelResourceLocation> getModelMap();
 }

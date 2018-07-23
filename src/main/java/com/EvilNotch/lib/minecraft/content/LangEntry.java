@@ -7,6 +7,7 @@ public class LangEntry {
 	public String langDisplayName = null;
 	public String langType = null;
 	public String langId = null;
+	public String meta = null;
 	public ResourceLocation loc = null;
 	
 	public static final String en_us = "en_us";
@@ -18,20 +19,21 @@ public class LangEntry {
 		this.langDisplayName = display;
 		this.langType = langType;
 	}
-	
-	/**
-	 * Don't use this one if your using the advanced constructor on basic items/blocks as it auto fills in the id of the lang
-	 */
-	public LangEntry(String display,String langType,String langid){
+	public LangEntry(String display,String langType,String meta){
 		this.langDisplayName = display;
 		this.langType = langType;
-		this.langId = langid;
+		this.meta = meta;
 	}
 	
 	@Override
-	public String toString(){return this.langId + "=" + this.langDisplayName + " Lang:" + this.langType;}
+	public String toString(){return this.getString();}
 	
-	public String getString(){return this.langId + "=" + this.langDisplayName;}
+	public String getString()
+	{
+		if(this.meta != null)
+			return this.langId + "=" + this.langDisplayName;
+		return this.langId + "_" + this.meta + "=" + this.langDisplayName;
+	}
 	
 	@Override
 	public boolean equals(Object obj){

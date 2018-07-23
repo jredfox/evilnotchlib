@@ -20,10 +20,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class StateMapperSupreme extends StateMapperBase{
 
 	public static final String normal = "normal";
+	public static int index = -1;
 	
 	@Override
 	public ModelResourceLocation getModelResourceLocation(IBlockState state) 
 	{
+		index++;
 		Block block = state.getBlock();
 		IBasicBlock b = (IBasicBlock)block;
 		IProperty p = b.getStateProperty();
@@ -50,7 +52,7 @@ public class StateMapperSupreme extends StateMapperBase{
 			IStringSerializable name = (IStringSerializable) state.getValue(p);
 			model = new ModelResourceLocation(block.getRegistryName() + "_" + name.getName(),p.getName() + "=" + name.getName());
 		}
-		System.out.println("grabbing Model:" + model);
+//		System.out.println("grabbing Model:" + block.getRegistryName() + " count:" + index + " model:" + model);
 		return model;
 	}
 

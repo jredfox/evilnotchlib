@@ -2,6 +2,7 @@ package com.EvilNotch.lib.minecraft.content.blocks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
@@ -35,6 +37,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 	public boolean haslang = false;
 	public boolean hasconfig = false;
 	public ItemBlock itemblock = null;
+	public List<String> cacheStates;
 	
 	public static ArrayList<LangEntry> blocklangs = new ArrayList();//is static so each object doesn't have a new arraylist optimized for finding and going through
 	
@@ -128,7 +131,8 @@ public class BasicBlock extends Block implements IBasicBlock{
 		return new Properties(line);
 	}
 
-	public static void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
+	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) 
+	{
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "tile." + unlocalname + ".name";
@@ -291,6 +295,10 @@ public class BasicBlock extends Block implements IBasicBlock{
 	@Override
 	public List<String> getBlockStatesNames()
 	{
+		if(cacheStates != null)
+		{
+			return cacheStates;
+		}
 		List<String> list = new ArrayList();
 		IProperty prop = this.getStateProperty();
 		if(prop == null)
@@ -322,6 +330,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 				}
 			}
 		}
+		cacheStates = list;
 		return list;
 	}
 
@@ -333,6 +342,14 @@ public class BasicBlock extends Block implements IBasicBlock{
 	@Override
 	public Set<Integer> getValuesOfProperty(IProperty p) {
 		return JavaUtil.asSet(0);
+	}
+
+	@Override
+	public HashMap<Integer, ModelResourceLocation> getModelMap() 
+	{
+		HashMap<Integer, ModelResourceLocation> map = new HashMap();
+		map.put(0, new ModelResourceLocation(this.getRegistryName().toString(),"inventory"));
+		return map;
 	}
 
 }
