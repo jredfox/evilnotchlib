@@ -3,17 +3,18 @@ package com.EvilNotch.lib.minecraft.proxy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.FieldAcessClient;
 import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
-import com.EvilNotch.lib.asm.FMLCorePlugin;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
@@ -23,6 +24,7 @@ import com.EvilNotch.lib.minecraft.content.LangLine;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.client.ClientUUID;
+import com.EvilNotch.lib.minecraft.content.client.block.StateMapperSupreme;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.EvilNotch.lib.minecraft.content.items.BasicItem;
@@ -35,15 +37,16 @@ import com.EvilNotch.lib.util.Line.ILine;
 import com.EvilNotch.lib.util.Line.LineItemStack;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.Locale;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemPickaxe;
@@ -54,6 +57,7 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -116,29 +120,51 @@ public class ClientProxy extends ServerProxy{
 		{
 			ResourceLocation loc = b.getRegistryName();
 			
-			JSONObject bs = getJSONBlockState(b);
-			File fbs = new File(root,loc.getResourceDomain() + "/blockstates/" + loc.getResourcePath() + ".json");
+			//blockstate gen
+			List<String> names = b.getBlockStatesNames();
 			
-			if(!fbs.exists())
-				flag = true;
-			
-			JavaUtil.saveJSONSafley(bs,fbs);
-
-			JSONObject block = getModelBlock("block/cube_all",b);
-			File bmodel = new File(root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
-			
-			if(!bmodel.exists())
-				flag = true;
-			
-			JavaUtil.saveJSONSafley(block, bmodel);
-			
-			JSONObject item = getJSONBlockItem(b);
-			File itemFile = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
-			
-			if(!itemFile.exists())
-				flag = true;
-			
-			JavaUtil.saveJSONSafley(item, itemFile);
+			//block model gen
+			if(names.size() > 1)
+			{
+				for(String s : names)
+				{
+					String prop = s.split("=")[1];
+					
+					//blockstates
+					JSONObject bs = getJSONBlockState(names,b,b.getStateProperty(),prop);
+					File fbs = new File(root,loc.getResourceDomain() + "/blockstates/" + loc.getResourcePath() + "_" + prop + ".json");
+					if(!fbs.exists())
+						flag = true;
+					JavaUtil.saveJSONSafley(bs, fbs);
+					
+					JSONObject block = getModelBlock("block/cube_all", b,prop);
+					File mBlockFile = new File(root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + "_" + prop + ".json");
+					JavaUtil.saveJSONSafley(block, mBlockFile);
+					
+					//itemblock part
+					JSONObject item = getJSONBlockItem(b,prop);
+					File itemFile = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + prop + ".json");
+					JavaUtil.saveJSONSafley(item, itemFile);
+				}
+			}
+			else
+			{
+				JSONObject block = getModelBlock("block/cube_all", b,names.get(0));
+				File bmodel = new File(root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
+				
+				if(!bmodel.exists())
+					flag = true;
+				
+				JavaUtil.saveJSONSafley(block, bmodel);
+				
+				JSONObject item = getJSONBlockItem(b,names.get(0));
+				File itemFile = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
+				
+				if(!itemFile.exists())
+					flag = true;
+				
+				JavaUtil.saveJSONSafley(item, itemFile);
+			}
 		}
 		if(flag)
 		{
@@ -146,33 +172,44 @@ public class ClientProxy extends ServerProxy{
 			Minecraft.getMinecraft().refreshResources();
 		}
 	}
-	public static JSONObject getJSONBlockItem(IBasicBlock b) {
+	public static JSONObject getJSONBlockItem(IBasicBlock b,String name) {
 		JSONObject json = new JSONObject();
 		ResourceLocation loc = b.getRegistryName();
-		json.put("parent", loc.getResourceDomain() + ":block/" + loc.getResourcePath());
+		json.put("parent", loc.getResourceDomain() + ":block/" + (name.equals("normal") ? loc.getResourcePath() : loc.getResourcePath() + "_" + name) );
 		return json;
 	}
 
-	public static JSONObject getJSONBlockState(IBasicBlock b) 
+	public static JSONObject getJSONBlockState(List<String> names,IBasicBlock b,IProperty p,String name) 
 	{
 		JSONObject json = new JSONObject();
 		JSONObject varients = new JSONObject();
 		JSONObject normal = new JSONObject();
 		
-		normal.put("model", b.getRegistryName().toString());
-		varients.put("normal", normal);
+		if(names.size() > 1)
+		{
+			JSONObject model = new JSONObject();
+			model.put("model", b.getRegistryName() + "_" + name);
+			varients.put(p.getName() + "=" + name, model);
+		}
+		else
+		{
+			normal.put("model", b.getRegistryName().toString());
+			varients.put("normal", normal);
+		}
+		
 		json.put("variants", varients);
+		
 		return json;
 	}
 
-	public static JSONObject getModelBlock(String parent, IBasicBlock b) {
+	public static JSONObject getModelBlock(String parent, IBasicBlock b,String name) {
 		Block block = (Block)b;
 		JSONObject json = new JSONObject();
 		json.put("parent", parent);
 		
 		JSONObject textures = new JSONObject();
 		ResourceLocation loc = block.getRegistryName();
-		textures.put("all", loc.getResourceDomain() + ":blocks/" + b.getTextureName());
+		textures.put("all", loc.getResourceDomain() + ":blocks/" + (name.equals("normal") ? b.getTextureName() : b.getTextureName() + "_" + name) );
 		json.put("textures",textures);
 		return json;
 	}
@@ -335,13 +372,14 @@ public class ClientProxy extends ServerProxy{
 	 * future:Generate models with textures coming from the registry name
 	 */
 	@SubscribeEvent(priority=EventPriority.HIGH)
-	public void modeltest(ModelBakeEvent event)
+	public void modeltest(ModelRegistryEvent event)
 	{
 		modelpreInit();
 	}
 	
 	public static void modelpreInit() 
 	{
+		System.out.println("Loading MODELS");
 		for(IBasicItem i : MainJava.items)
 	    {
 		   if(i.registerModel())
@@ -356,9 +394,30 @@ public class ClientProxy extends ServerProxy{
 		   if(i.registerModel())
 		   {
 			   Block b = (Block)i;
-			   for(String s : i.getModelStates())
-				   for(int index=0;index<15;index++)
-					   ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), index,  new ModelResourceLocation(BlockApi.getBlockString(b), s));
+			   Item item = Item.getItemFromBlock(b);
+			   
+			   if(i.isMeta() )
+			   {
+					ModelLoader.setCustomStateMapper((Block) b, new StateMapperSupreme());
+				   
+				   List<String> list = i.getBlockStatesNames();
+				   List<ModelResourceLocation> names = new ArrayList();
+				   for(String s : list)
+				   {
+					   String[] parts = s.split("=");
+					   names.add(new ModelResourceLocation(i.getRegistryName().toString() + "_" + parts[1],"inventory"));
+				   }
+				   ResourceLocation[] locs = new ResourceLocation[names.size()]; 
+				   JavaUtil.populateStatic(locs,names);
+				   ModelBakery.registerItemVariants(item, locs);
+			   }
+			   else
+			   {
+				   for(String s : i.getModelStates())
+				   {
+					   ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(BlockApi.getBlockString(b), s));
+			   	   }
+			   }
 		   }
 	   }
 	}

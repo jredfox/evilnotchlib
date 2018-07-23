@@ -45,6 +45,9 @@ import com.EvilNotch.lib.util.Line.ConfigEnhanced;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -141,7 +144,15 @@ public class MainJava {
 		ItemBasicAxe axe = new ItemBasicAxe(test,new ResourceLocation(MODID + ":" + "pickaxe"),tab, new LangEntry("RadioActive Pick","en_us"));
 		BasicBlock b = new BasicBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "spider"),tab,props,new LangEntry("Spider Master","en_us"),new LangEntry("Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº","ru_ru"));
 		
-		BasicMetaBlock b2 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "meta_enumeration"), tab, null,PropertyMetaEnum.createProperty("cheese", EnumCheese.class));
+//		BasicMetaBlock b2 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "cheese"), tab, null,PropertyMetaEnum.createProperty("cheese", EnumCheese.class));
+		BasicMetaBlock b3 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "meat"), tab, null,PropertyInteger.create("meat",0,15));
+//		BasicMetaBlock b4 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "wolf"), tab, null,PropertyBool.create("wolf"));
+//		BasicMetaBlock b5 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "facing"), tab, null,PropertyDirection.create("direction"));
+
+//		System.out.println("Model States b2:" + b2.getBlockStatesNames() );
+		System.out.println("Model States b3:" + b3.getBlockStatesNames() );
+//		System.out.println("Model States b4:" + b4.getBlockStatesNames() );
+//		System.out.println("Model States b5:" + b5.getBlockStatesNames() );
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent e) throws Exception

@@ -292,7 +292,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 	public List<String> getBlockStatesNames()
 	{
 		List<String> list = new ArrayList();
-		IProperty prop = this.getModelProperty();
+		IProperty prop = this.getStateProperty();
 		if(prop == null)
 			list.add("normal");
 		else
@@ -309,17 +309,11 @@ public class BasicBlock extends Block implements IBasicBlock{
 				PropertyBool p = (PropertyBool)prop;
 				list.add(p.getName() + "=" + true);
 				list.add(p.getName() + "=" + false);
-			}
-			else if(prop instanceof PropertyDirection)
-			{
-				PropertyDirection p = (PropertyDirection)prop;
-				list.add(p.getName() + "=" + EnumFacing.NORTH.getName());
-				list.add(p.getName() + "=" + EnumFacing.SOUTH.getName());
-				list.add(p.getName() + "=" + EnumFacing.EAST.getName());
-				list.add(p.getName() + "=" + EnumFacing.WEST.getName());
+				PropertyDirection d;
 			}
 			else if (prop instanceof PropertyEnum)
 			{
+				//this also covers PropertyDirection
 				PropertyEnum p = (PropertyEnum)prop;
 				Collection <IStringSerializable> enums = p.getAllowedValues();
 				for(IStringSerializable e : enums)
@@ -332,7 +326,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 	}
 
 	@Override
-	public IProperty getModelProperty() {
+	public IProperty getStateProperty() {
 		return null;
 	}
 

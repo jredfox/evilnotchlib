@@ -14,6 +14,10 @@ public interface IBasicBlock extends IBasicItem{
 	public boolean hasItemBlock();
 	public List<String> getModelStates();
 	public List<String> getBlockStatesNames();
-	public IProperty getModelProperty();
+	public IProperty getStateProperty();
 	public Set<Integer> getValuesOfProperty(IProperty p);
+	
+	default public boolean isMeta(){
+		return getBlockStatesNames().size() > 1;
+	}
 }

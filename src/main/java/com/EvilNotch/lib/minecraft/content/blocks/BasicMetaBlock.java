@@ -1,7 +1,9 @@
 package com.EvilNotch.lib.minecraft.content.blocks;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.EvilNotch.lib.Api.FieldAcess;
@@ -217,5 +219,8 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 		return "_" + stack.getItemDamage();
 	}
 	
-
+	@Override
+	public IProperty getStateProperty(){
+		return this.property;
+	}
 }

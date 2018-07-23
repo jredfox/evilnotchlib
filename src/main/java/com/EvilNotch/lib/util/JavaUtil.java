@@ -45,6 +45,8 @@ import org.json.simple.parser.ParseException;
 import com.EvilNotch.lib.util.Line.LineBase;
 import com.EvilNotch.lib.util.Line.LineItemStackBase;
 
+import net.minecraft.util.ResourceLocation;
+
 public class JavaUtil {
 	public static final String SPECIALCHARS = "~!@#$%^&*()_+`'-=/,.<>?\"{}[]:;|" + "\\";
 	
@@ -922,6 +924,11 @@ public class JavaUtil {
 		for(Object o : obj)
 			set.add(o);
 		return set;
+	}
+
+	public static void populateStatic(Object[] locs, List names) {
+		for(int i=0;i<names.size();i++)
+			locs[i] = names.get(i);
 	}
 
 }
