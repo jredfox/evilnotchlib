@@ -31,6 +31,7 @@ import com.EvilNotch.lib.minecraft.content.commands.CMDSeedGet;
 import com.EvilNotch.lib.minecraft.content.commands.CMDTP;
 import com.EvilNotch.lib.minecraft.content.commands.CMDTeleport;
 import com.EvilNotch.lib.minecraft.content.items.BasicItem;
+import com.EvilNotch.lib.minecraft.content.items.BasicItemMeta;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.content.items.ItemBasicPickaxe;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityContainer;
@@ -149,11 +150,13 @@ public class MainJava {
 		BasicMetaBlock b5 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "facing"), tab, null,PropertyDirection.create("direction"),
 				new LangEntry("UP","en_us","up"),new LangEntry("Down","en_us","down"),new LangEntry("North","en_us","north"),
 				new LangEntry("South","en_us","south"),new LangEntry("East","en_us","east"),new LangEntry("West","en_us","west"));
-
+		BasicItemMeta i2 = new BasicItemMeta(new ResourceLocation(MODID + ":" + "ingot"), 4,tab,
+				new LangEntry("Purple Ingot","en_us","0"),new LangEntry("Yellow Ingot","en_us","1"),new LangEntry("Tropical Ingot","en_us","2"),new LangEntry("Blue Ingot","en_us","3"),
+				new LangEntry("Cloud Ingot","en_us","4"));
 		System.out.println("Model States b2:" + b2.getBlockStatesNames() );
 		System.out.println("Model States b3:" + b3.getBlockStatesNames() );
-//		System.out.println("Model States b4:" + b4.getBlockStatesNames() );
-//		System.out.println("Model States b5:" + b5.getBlockStatesNames() );
+		System.out.println("Model States b4:" + b4.getBlockStatesNames() );
+		System.out.println("Model States b5:" + b5.getBlockStatesNames() );
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent e) throws Exception

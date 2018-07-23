@@ -46,7 +46,7 @@ public class BasicItem extends Item implements IBasicItem{
 		MainJava.items.add(this);
 	}
 	
-	public static void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
+	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "item." + unlocalname + ".name";
@@ -123,6 +123,10 @@ public class BasicItem extends Item implements IBasicItem{
 			}
 		}
 		return mat.getEnum();
+	}
+	@Override
+	public int getMaxMeta() {
+		return 0;
 	}
 
 }

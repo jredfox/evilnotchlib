@@ -35,7 +35,7 @@ public class ItemBasicHoe extends ItemHoe implements IBasicItem{
 		this.setCreativeTab(tab);
 		
 		//autofill
-		BasicItem.populateLang(langlist, unlocalname,id);
+		this.populateLang(langlist, unlocalname,id);
 		
 		this.hasregister = register;
 		this.hasmodel = model;
@@ -44,6 +44,15 @@ public class ItemBasicHoe extends ItemHoe implements IBasicItem{
 		
 		MainJava.items.add(this);
 	}
+	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
+		for(LangEntry entry : langlist)
+		{
+			entry.langId = "item." + unlocalname + ".name";
+			entry.loc = id;
+			BasicItem.itemlangs.add(entry);
+		}
+	}
+	
 	@Override
 	public boolean register() {
 		return this.hasregister;

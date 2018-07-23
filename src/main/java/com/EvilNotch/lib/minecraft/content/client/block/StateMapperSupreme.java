@@ -35,22 +35,22 @@ public class StateMapperSupreme extends StateMapperBase{
 		if(p instanceof PropertyInteger)
 		{
 			String i = state.getValue(p).toString();
-			model = new ModelResourceLocation(block.getRegistryName() + "_" + i,p.getName() + "=" + i);
+			model = new ModelResourceLocation(block.getRegistryName() ,p.getName() + "=" + i);
 		}
 		else if(p instanceof PropertyBool)
 		{
 			String bool = state.getValue(p).toString();
-			model = new ModelResourceLocation(block.getRegistryName() + "_" + bool,p.getName() + "=" + bool);
+			model = new ModelResourceLocation(block.getRegistryName() ,p.getName() + "=" + bool);
 		}
 		else if(p instanceof PropertyDirection)
 		{
 			String dir = state.getValue(p).toString();
-			model = new ModelResourceLocation(block.getRegistryName() + "_" + dir,p.getName() + "=" + dir);
+			model = new ModelResourceLocation(block.getRegistryName() ,p.getName() + "=" + dir);
 		}
 		else if(p instanceof PropertyEnum)
 		{
 			IStringSerializable name = (IStringSerializable) state.getValue(p);
-			model = new ModelResourceLocation(block.getRegistryName() + "_" + name.getName(),p.getName() + "=" + name.getName());
+			model = new ModelResourceLocation(block.getRegistryName() ,p.getName() + "=" + name.getName());
 		}
 //		System.out.println("grabbing Model:" + block.getRegistryName() + " count:" + index + " model:" + model);
 		return model;

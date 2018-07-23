@@ -3,11 +3,9 @@ package com.EvilNotch.lib.minecraft.proxy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.simple.JSONObject;
 
@@ -57,7 +55,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -102,20 +99,36 @@ public class ClientProxy extends ServerProxy{
 		for(IBasicItem i : MainJava.items)
 		{
 			JSONObject json = null;
+			ResourceLocation loc = i.getRegistryName();
 			if(i instanceof ItemAxe || i instanceof ItemHoe || i instanceof ItemPickaxe || i instanceof ItemSpade || i instanceof ItemSword)
 			{
 				json = getJSONItem("item/handheld", i);
+				File file = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
+				if(!file.exists())
+					flag = true;
+				JavaUtil.saveJSONSafley(json, file);
+			}
+			else if(i.isMeta())
+			{
+				for(int index=0;index<=i.getMaxMeta();index++)
+				{
+					json = getJSONItem("item/generated", i,index);
+					File file = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + index + ".json");
+					if(!file.exists())
+						flag = true;
+					JavaUtil.saveJSONSafley(json, file);
+				}
 			}
 			else
 			{
 				//for both item armor and regular items this is the parent
 				json = getJSONItem("item/generated", i);
+				File file = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
+				if(!file.exists())
+					flag = true;
+				JavaUtil.saveJSONSafley(json, file);
 			}
-			ResourceLocation loc = i.getRegistryName();
-			File file = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
-			if(!file.exists())
-				flag = true;
-			JavaUtil.saveJSONSafley(json, file);
+			
 		}
 		for(IBasicBlock b : MainJava.blocks)
 		{
@@ -125,18 +138,18 @@ public class ClientProxy extends ServerProxy{
 			List<String> names = b.getBlockStatesNames();
 			
 			//block model gen
-			if(names.size() > 1)
+			if(b.isMeta())
 			{
+				//blockstates
+				JSONObject bs = getJSONBlockState(names,b);
+				File fbs = new File(root,loc.getResourceDomain() + "/blockstates/" + loc.getResourcePath() + ".json");
+				if(!fbs.exists())
+					flag = true;
+				JavaUtil.saveJSONSafley(bs, fbs);
+				
 				for(String s : names)
 				{
 					String prop = s.split("=")[1];
-					
-					//blockstates
-					JSONObject bs = getJSONBlockState(names,b,b.getStateProperty(),prop);
-					File fbs = new File(root,loc.getResourceDomain() + "/blockstates/" + loc.getResourcePath() + "_" + prop + ".json");
-					if(!fbs.exists())
-						flag = true;
-					JavaUtil.saveJSONSafley(bs, fbs);
 					
 					JSONObject block = getModelBlock("block/cube_all", b,prop);
 					File mBlockFile = new File(root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + "_" + prop + ".json");
@@ -180,17 +193,22 @@ public class ClientProxy extends ServerProxy{
 		return json;
 	}
 
-	public static JSONObject getJSONBlockState(List<String> names,IBasicBlock b,IProperty p,String name) 
+	public static JSONObject getJSONBlockState(List<String> names,IBasicBlock b) 
 	{
 		JSONObject json = new JSONObject();
 		JSONObject varients = new JSONObject();
 		JSONObject normal = new JSONObject();
 		
-		if(names.size() > 1)
+		if(b.isMeta())
 		{
-			JSONObject model = new JSONObject();
-			model.put("model", b.getRegistryName() + "_" + name);
-			varients.put(p.getName() + "=" + name, model);
+			IProperty p = b.getStateProperty();
+			for(String s : names)
+			{
+				JSONObject model = new JSONObject();
+				String name = s.split("=")[1];
+				model.put("model", b.getRegistryName() + "_" + name);
+				varients.put(p.getName() + "=" + name, model);
+			}
 		}
 		else
 		{
@@ -214,15 +232,24 @@ public class ClientProxy extends ServerProxy{
 		json.put("textures",textures);
 		return json;
 	}
-
+	
 	public static JSONObject getJSONItem(String parent,IBasicItem i) {
+		return getJSONItem(parent,i,0);
+	}
+
+	public static JSONObject getJSONItem(String parent,IBasicItem i,int meta) {
 		Item item = (Item)i;
 		JSONObject json = new JSONObject();
 		json.put("parent", parent);
 		
 		JSONObject textures = new JSONObject();
 		ResourceLocation loc = item.getRegistryName();
-		textures.put("layer0", loc.getResourceDomain() + ":items/" + i.getTextureName());
+		if(i.isMeta())
+		{
+			textures.put("layer0", loc.getResourceDomain() + ":items/" + i.getTextureName() + "_" + meta);
+		}
+		else
+			textures.put("layer0", loc.getResourceDomain() + ":items/" + i.getTextureName());
 		json.put("textures",textures);
 		return json;
 	}
@@ -386,8 +413,18 @@ public class ClientProxy extends ServerProxy{
 		   if(i.registerModel())
 		   {
 			  Item item = (Item)i;
-			  for(int index = 0;index<15;index++)
-				  ModelLoader.setCustomModelResourceLocation(item, index, new ModelResourceLocation(BlockApi.getItemString(item), "inventory"));
+			  if(i.isMeta())
+			  {
+				 List<ResourceLocation> locs = new ArrayList();
+				 for(int index=0;index<=i.getMaxMeta();index++)
+				 {
+					 ModelLoader.setCustomModelResourceLocation(item, index, new ModelResourceLocation(item.getRegistryName() + "_" + index,"inventory"));
+				 }
+			  }
+			  else
+			  {
+				  ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(BlockApi.getItemString(item), "inventory"));
+			  }
 		   }
 	   }
 	   for(IBasicBlock i : MainJava.blocks)

@@ -291,4 +291,18 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 		}
 		return map;
 	}
+	@Override
+	public int getMaxMeta() 
+	{
+		Set<Integer> set = this.getValuesOfProperty(this.property);
+		int meta = 0;
+		for(int i : set)
+			if(i > meta)
+				meta = i;
+		return meta;
+	}
+	@Override
+	public boolean isMeta(){
+		return true;
+	}
 }

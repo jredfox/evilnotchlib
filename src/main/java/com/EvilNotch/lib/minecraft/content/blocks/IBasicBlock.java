@@ -21,9 +21,6 @@ public interface IBasicBlock extends IBasicItem{
 	public IProperty getStateProperty();
 	public Set<Integer> getValuesOfProperty(IProperty p);
 	
-	default public boolean isMeta(){
-		return getBlockStatesNames().size() > 1;
-	}
 	@SideOnly(Side.CLIENT)
 	public HashMap<Integer, ModelResourceLocation> getModelMap();
 }
