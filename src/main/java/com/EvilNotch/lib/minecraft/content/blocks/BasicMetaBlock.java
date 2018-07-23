@@ -125,7 +125,6 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	{
 		if(this.property == null)
 		{
-//			System.out.println("Property hasn't yet been constructed yet!");
 			return super.createBlockState();
 		}
 		return new BlockStateContainer(this,new IProperty[]{this.property});
@@ -233,9 +232,31 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	 */
 	@Override
 	public String getSpecialName(ItemStack stack) {
-		return "_" + stack.getItemDamage();
+		return "_" + this.getPropertyName(stack.getItemDamage());
 	}
-	
+	/**
+	 * metadata of itemstack to proper unlocalized suffix name
+	 */
+	public String getPropertyName(int meta) 
+	{
+		if(this.property instanceof PropertyInteger)
+			return "" + meta;
+		else if(this.property instanceof PropertyBool)
+		{
+			return "" + (meta == 0 ? false : true);
+		}
+		else if(this.property instanceof PropertyDirection)
+		{
+			return EnumFacing.getFront(meta).getName();
+		}
+		else if(this.property instanceof IPropertyName)
+		{
+			IPropertyName p = (IPropertyName)this.property;
+			return ((IStringSerializable)p.getValue(meta)).getName();
+		}
+		return null;
+	}
+
 	@Override
 	public IProperty getStateProperty(){
 		return this.property;

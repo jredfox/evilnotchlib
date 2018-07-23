@@ -30,9 +30,7 @@ public class LangEntry {
 	
 	public String getString()
 	{
-		if(this.meta != null)
-			return this.langId + "=" + this.langDisplayName;
-		return this.langId + "_" + this.meta + "=" + this.langDisplayName;
+		return this.langId + "=" + this.langDisplayName;
 	}
 	
 	@Override
