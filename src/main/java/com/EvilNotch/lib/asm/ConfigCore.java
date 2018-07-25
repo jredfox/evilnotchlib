@@ -6,6 +6,8 @@ import net.minecraftforge.common.config.Configuration;
 
 public class ConfigCore {
 	
+	public static boolean playerOwnerAlwaysFix = true;
+	
 	public static boolean asm_playerlist = true;
 	public static boolean asm_furnace = true;
 	
@@ -18,6 +20,8 @@ public class ConfigCore {
 		config.load();
 		asm_playerlist = config.get("asm","uuidFixer",true).getBoolean();
 		asm_furnace = config.get("asm","furnaceFix",true).getBoolean();
+		
+		playerOwnerAlwaysFix = config.get("general", "playerOwnerSwapAlwaysFix", true).getBoolean();
 		config.save();
 	}
 

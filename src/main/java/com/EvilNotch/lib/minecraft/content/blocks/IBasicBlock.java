@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 
 import net.minecraft.block.properties.IProperty;
@@ -23,4 +24,6 @@ public interface IBasicBlock extends IBasicItem{
 	
 	@SideOnly(Side.CLIENT)
 	public HashMap<Integer, ModelResourceLocation> getModelMap();
+	@SideOnly(Side.CLIENT)
+	public ModelPart getModelPart();
 }

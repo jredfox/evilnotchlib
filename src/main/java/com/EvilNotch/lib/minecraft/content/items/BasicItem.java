@@ -124,9 +124,5 @@ public class BasicItem extends Item implements IBasicItem{
 		}
 		return mat.getEnum();
 	}
-	@Override
-	public int getMaxMeta() {
-		return 0;
-	}
 
 }

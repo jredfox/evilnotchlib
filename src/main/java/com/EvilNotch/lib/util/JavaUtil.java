@@ -734,7 +734,7 @@ public class JavaUtil {
 		return file.getName().split("\\.")[0];
 	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static ArrayList asArray(Object[] staticArr) {
+	public static ArrayList asArray(Object... staticArr) {
 		ArrayList list = new ArrayList();
 		for(int i=0;i<staticArr.length;i++)
 			list.add(staticArr[i]);
@@ -931,4 +931,13 @@ public class JavaUtil {
 			locs[i] = names.get(i);
 	}
 
+	public static JSONObject getJsonFromString(String string) {
+		JSONParser p = new JSONParser();
+		try {
+			return (JSONObject) p.parse(string);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

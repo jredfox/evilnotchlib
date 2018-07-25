@@ -15,6 +15,7 @@ import com.EvilNotch.lib.Api.FieldAcessClient;
 import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
 import com.EvilNotch.lib.minecraft.content.ConfigLang;
@@ -23,6 +24,7 @@ import com.EvilNotch.lib.minecraft.content.LangLine;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.client.ClientUUID;
+import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
 import com.EvilNotch.lib.minecraft.content.client.block.StateMapperSupreme;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
@@ -40,7 +42,6 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.Locale;
@@ -60,6 +61,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -77,12 +79,14 @@ public class ClientProxy extends ServerProxy{
 	}
 	
 	@Override
-	public void preinit() 
+	public void preinit(FMLPreInitializationEvent e) 
 	{
-		super.preinit();
+		super.preinit(e);
+		
+		ConfigMenu.loadMenuLib(e.getModConfigurationDirectory());
+		FieldAcessClient.cacheFields();
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
-		FieldAcessClient.cacheFields();
 		MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
 		if(Config.debug)
 			ClientCommandHandler.instance.registerCommand(new ClientUUID());
@@ -128,7 +132,6 @@ public class ClientProxy extends ServerProxy{
 					flag = true;
 				JavaUtil.saveJSONSafley(json, file);
 			}
-			
 		}
 		for(IBasicBlock b : MainJava.blocks)
 		{
@@ -151,19 +154,23 @@ public class ClientProxy extends ServerProxy{
 				{
 					String prop = s.split("=")[1];
 					
-					JSONObject block = getModelBlock("block/cube_all", b,prop);
+					JSONObject block = getModelBlock(b,prop);
 					File mBlockFile = new File(root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + "_" + prop + ".json");
+					if(!mBlockFile.exists())
+						flag = true;
 					JavaUtil.saveJSONSafley(block, mBlockFile);
 					
 					//itemblock part
 					JSONObject item = getJSONBlockItem(b,prop);
 					File itemFile = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + prop + ".json");
+					if(!itemFile.exists())
+						flag = true;
 					JavaUtil.saveJSONSafley(item, itemFile);
 				}
 			}
 			else
 			{
-				JSONObject block = getModelBlock("block/cube_all", b,names.get(0));
+				JSONObject block = getModelBlock(b,names.get(0));
 				File bmodel = new File(root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
 				
 				if(!bmodel.exists())
@@ -186,6 +193,7 @@ public class ClientProxy extends ServerProxy{
 			Minecraft.getMinecraft().refreshResources();
 		}
 	}
+
 	public static JSONObject getJSONBlockItem(IBasicBlock b,String name) {
 		JSONObject json = new JSONObject();
 		ResourceLocation loc = b.getRegistryName();
@@ -221,14 +229,16 @@ public class ClientProxy extends ServerProxy{
 		return json;
 	}
 
-	public static JSONObject getModelBlock(String parent, IBasicBlock b,String name) {
+	public static JSONObject getModelBlock(IBasicBlock b,String stateValue) 
+	{
+		ModelPart base = b.getModelPart();
 		Block block = (Block)b;
 		JSONObject json = new JSONObject();
-		json.put("parent", parent);
+		json.put("parent", base.parent);
 		
 		JSONObject textures = new JSONObject();
 		ResourceLocation loc = block.getRegistryName();
-		textures.put("all", loc.getResourceDomain() + ":blocks/" + (name.equals("normal") ? b.getTextureName() : b.getTextureName() + "_" + name) );
+		textures.put("all", loc.getResourceDomain() + ":blocks/" + (stateValue.equals("normal") ? b.getTextureName() : b.getTextureName() + "_" + stateValue) );
 		json.put("textures",textures);
 		return json;
 	}
@@ -371,7 +381,7 @@ public class ClientProxy extends ServerProxy{
 	public static void menuLibInit() 
 	{	
 		//register user registered menus
-		File f = new File(Config.cfgmenu.getParent(),"menulib.cfg");
+		File f = new File(ConfigMenu.cfgmenu.getParent(),"menulib.cfg");
 		ArrayList<Comment> comments = (ArrayList<Comment>)JavaUtil.asArray(new Comment[]{new Comment("Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :("),new Comment("Format is: \"modid:mainmenu\" = \"class.full.name\"")});
 		ConfigBase cfg = new ConfigBase(f,comments);
 		if(Loader.isModLoaded("thebetweenlands"))
@@ -393,7 +403,7 @@ public class ClientProxy extends ServerProxy{
 		}
 		
 		MenuRegistry.reOrder();
-		MenuRegistry.setCurrentMenu(Config.currentMenuIndex);
+		MenuRegistry.setCurrentMenu(ConfigMenu.currentMenuIndex);
 	}
 
 	/**

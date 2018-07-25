@@ -1,6 +1,7 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
 import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.client.gui.GuiFakeMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
@@ -88,13 +89,13 @@ public class ClientEvents {
 		{
 			MenuRegistry.advancePreviousMenu();
 			Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.getCurrentGui());
-			Config.saveMenuIndex();
+			ConfigMenu.saveMenuIndex();
 		}
 		else if(e.getButton().id == 499)
 		{
 			MenuRegistry.advanceNextMenu();
 			Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.getCurrentGui());
-			Config.saveMenuIndex();
+			ConfigMenu.saveMenuIndex();
 		}
 	}
 	

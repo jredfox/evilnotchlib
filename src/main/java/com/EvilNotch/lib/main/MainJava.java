@@ -115,7 +115,7 @@ public class MainJava {
 		FieldAcess.cacheFields();
 		fake_world = new FakeWorld();
 		Config.loadConfig(e.getModConfigurationDirectory());
-		proxy.preinit();
+		proxy.preinit(e);
 		GeneralRegistry.load();
 		
 		cfgTools = new ConfigEnhanced(new File(Config.cfg.getParent(),"config/tools.cfg"));
@@ -153,10 +153,6 @@ public class MainJava {
 		BasicItemMeta i2 = new BasicItemMeta(new ResourceLocation(MODID + ":" + "ingot"), 4,tab,
 				new LangEntry("Purple Ingot","en_us","0"),new LangEntry("Yellow Ingot","en_us","1"),new LangEntry("Tropical Ingot","en_us","2"),new LangEntry("Blue Ingot","en_us","3"),
 				new LangEntry("Cloud Ingot","en_us","4"));
-		System.out.println("Model States b2:" + b2.getBlockStatesNames() );
-		System.out.println("Model States b3:" + b3.getBlockStatesNames() );
-		System.out.println("Model States b4:" + b4.getBlockStatesNames() );
-		System.out.println("Model States b5:" + b5.getBlockStatesNames() );
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent e) throws Exception

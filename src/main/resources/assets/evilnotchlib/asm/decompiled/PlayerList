@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.EvilNotch.lib.asm.ConfigCore;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.google.common.collect.Lists;
@@ -373,7 +374,7 @@ public abstract class PlayerList
         if(nbttagcompound != null && player.getName().equals(this.mcServer.getServerOwner()))
         {
         	UUID lvl = nbttagcompound.getUniqueId("UUID");
-        	if(!Config.playerOwnerAlwaysFix || lvl.equals(player.getUniqueID()))
+        	if(!ConfigCore.playerOwnerAlwaysFix || lvl.equals(player.getUniqueID()))
         	{
         		File toParse = EntityUtil.getPlayerFile(player.getUniqueID().toString(), true);
         		if(!toParse.exists())

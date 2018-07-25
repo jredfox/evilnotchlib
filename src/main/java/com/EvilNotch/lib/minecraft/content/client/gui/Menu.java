@@ -3,6 +3,7 @@ package com.EvilNotch.lib.minecraft.content.client.gui;
 import java.lang.reflect.Constructor;
 
 import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.util.ICopy;
 
 import net.minecraft.client.gui.Gui;
@@ -99,6 +100,6 @@ public class Menu implements IMenu {
 	{
 		lbutton.setButtonTexture(this.bTexture);
 		rbutton.setButtonTexture(this.bTexture);
-		return previous ? (Config.fancyPage ? new GuiBasicButton(498,5,5,64,20,"previous",this.bTexture) : lbutton ) : (Config.fancyPage ? new GuiBasicButton(499,74,5,64,20,"next",this.bTexture) : rbutton);
+		return previous ? (ConfigMenu.fancyPage ? new GuiBasicButton(498,5,5,64,20,"previous",this.bTexture) : lbutton ) : (ConfigMenu.fancyPage ? new GuiBasicButton(499,74,5,64,20,"next",this.bTexture) : rbutton);
 	}
 }

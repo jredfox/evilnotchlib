@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.main.MainJava;
 
 import net.minecraft.client.Minecraft;
@@ -141,10 +142,10 @@ public class MenuRegistry {
 	 */
 	public static void reOrder()
 	{
-		if(Config.menuWhiteList)
+		if(ConfigMenu.menuWhiteList)
 		{
 			ArrayList<IMenu> newMenus = new ArrayList();
-			for(ResourceLocation loc : Config.whiteListConfig)
+			for(ResourceLocation loc : ConfigMenu.whiteListConfig)
 			{
 				IMenu menu = MenuRegistry.getMenu(loc);
 				if(menu == null)
@@ -156,17 +157,17 @@ public class MenuRegistry {
 			return;
 		}
 		
-		if(Config.menusConfig.size() == 0)
+		if(ConfigMenu.menusConfig.size() == 0)
 		{
 			//error catch
 			System.out.print("[MenuLib/ERR] Returning Menu Size Configured List 0\nReturning And Repairing Config:\n");
-			Config.saveMenus(getIds());
+			ConfigMenu.saveMenus(getIds());
 			return;
 		}
-		else if(menus.size() != Config.menusConfig.size()){
+		else if(menus.size() != ConfigMenu.menusConfig.size()){
 			//error catch sizes must be the same
 			System.out.print("[MenuLib/ERR] Size Not Same As Codded Switch WhiteList on if your removing GUIS\nRepairing Config!\n");
-			Config.saveMenus(getIds());
+			ConfigMenu.saveMenus(getIds());
 			return;
 		}
 		else{
@@ -174,12 +175,12 @@ public class MenuRegistry {
 			ArrayList newMenus = new ArrayList();
 			for(int i=0;i<menus.size();i++)
 			{
-				ResourceLocation loc = Config.menusConfig.get(i);
+				ResourceLocation loc = ConfigMenu.menusConfig.get(i);
 				IMenu menu = getMenu(loc);
 				if(menu == null)
 				{
 					MainJava.logger.log(Level.FATAL, "[MenuLib/ERR] Null Menu For Resource Location: " + loc + "\nInput Not Accepted Skipping Menu List Reparing Config");
-					Config.saveMenus(getIds());
+					ConfigMenu.saveMenus(getIds());
 					return;
 				}
 				newMenus.add(menu);

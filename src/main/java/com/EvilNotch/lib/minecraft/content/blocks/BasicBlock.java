@@ -9,6 +9,7 @@ import java.util.Set;
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
+import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.ConfigBase;
 import com.EvilNotch.lib.util.Line.LineEnhanced;
@@ -350,6 +351,11 @@ public class BasicBlock extends Block implements IBasicBlock{
 		HashMap<Integer, ModelResourceLocation> map = new HashMap();
 		map.put(0, new ModelResourceLocation(this.getRegistryName().toString(),"inventory"));
 		return map;
+	}
+
+	@Override
+	public ModelPart getModelPart() {
+		return ModelPart.cube_all;
 	}
 
 }
