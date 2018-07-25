@@ -16,7 +16,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class Transformer implements IClassTransformer
 {
-    public static final List<String> classesBeingTransformed = JavaUtil.asArray(new String[]
+    public static final List<String> classesBeingTransformed = (List<String>)JavaUtil.<String>asArray2(new Object[]
     {
     	"net.minecraft.server.management.PlayerList",
     	"net.minecraft.tileentity.TileEntityFurnace"

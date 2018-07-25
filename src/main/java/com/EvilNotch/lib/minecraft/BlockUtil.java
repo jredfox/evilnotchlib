@@ -21,6 +21,12 @@ public class BlockUtil {
 		return ForgeRegistries.BLOCKS.getKey(block);
 	}
 	
+    public static int getHarvestLevel(IBlockState state) 
+    {
+    	Block b = state.getBlock();
+    	return b.getHarvestLevel(state);
+	}
+	
     public static void DropBlock(World world, BlockPos p, ItemStack stack)
     {
     	 if (!world.isRemote && world.getGameRules().hasRule("doTileDrops") && !world.restoringBlockSnapshots) // do not drop items while restoring blockstates, prevents item dupe

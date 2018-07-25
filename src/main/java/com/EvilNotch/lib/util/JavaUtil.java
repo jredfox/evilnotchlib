@@ -740,6 +740,12 @@ public class JavaUtil {
 			list.add(staticArr[i]);
 		return list;
 	}
+	public static <T extends Object> ArrayList<T> asArray2(Object... staticArr) {
+		ArrayList<T> list = new ArrayList();
+		for(int i=0;i<staticArr.length;i++)
+			list.add((T) staticArr[i]);
+		return list;
+	}
 	public static boolean isStringNullOrEmpty(String string) {
 		if(string == null || string.isEmpty())
 			return true;
