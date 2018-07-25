@@ -30,12 +30,15 @@ Client Block Place Event: fires on client side for client sync on block placing
 Line Library: a powerful library for parsing lines in many forms "modid:block" = "custom parsing values"
 ConfigBase: part of the line library as an api implementation for the line library
 Primitive Obj: allows for object modifyable primitive values(byte,short,int,long,float,double,boolean)
+PairObj: unlike the other Pair classes this one makes since and uses generics so you never have to type cast
+JavaUtil: varius pure java utilities
 CSVE: basic implementation of comma seperated values with a varible system in place
+Json model generation(Basic MC Lib)
+Lang generation(Basic MC Lib)
 
 Future:
 Font Renderer
 NBTPathAPI
 Dynamic Client Translations
 Lan Skin Host Fix
-Json model lang generation automation
 ```
