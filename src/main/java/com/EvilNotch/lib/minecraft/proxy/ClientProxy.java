@@ -36,6 +36,7 @@ import com.EvilNotch.lib.util.Line.ConfigBase;
 import com.EvilNotch.lib.util.Line.IHead;
 import com.EvilNotch.lib.util.Line.ILine;
 import com.EvilNotch.lib.util.Line.LineItemStack;
+import com.EvilNotch.lib.util.simple.PairString;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -229,6 +230,9 @@ public class ClientProxy extends ServerProxy{
 		return json;
 	}
 
+	/**
+	 * supports textures with multiple states and multi textured blocks at the same time
+	 */
 	public static JSONObject getModelBlock(IBasicBlock b,String stateValue) 
 	{
 		ModelPart base = b.getModelPart();
@@ -238,7 +242,22 @@ public class ClientProxy extends ServerProxy{
 		
 		JSONObject textures = new JSONObject();
 		ResourceLocation loc = block.getRegistryName();
-		textures.put("all", loc.getResourceDomain() + ":blocks/" + (stateValue.equals("normal") ? b.getTextureName() : b.getTextureName() + "_" + stateValue) );
+		String particle = "particle";
+		for(PairString pair : base.keySet)
+		{
+			if(pair.obj1.equals(particle) && base.customParticle)
+			{
+				textures.put(particle, loc.getResourceDomain() + ":blocks/" + (stateValue.equals("normal") ? b.getTextureName() + "_" + particle : b.getTextureName() + "_" + stateValue + "_" + particle) );
+				continue;
+			}
+			
+			String texture = loc.getResourceDomain() + ":blocks/" + (stateValue.equals("normal") ? b.getTextureName() : b.getTextureName() + "_" + stateValue);
+			if(base.customSide)
+			{
+				texture += "_" + pair.getValue();
+			}
+			textures.put(pair.getValue(),texture);
+		}
 		json.put("textures",textures);
 		return json;
 	}

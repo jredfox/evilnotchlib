@@ -30,6 +30,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BasicBlock extends Block implements IBasicBlock{
 	
@@ -352,7 +354,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 		map.put(0, new ModelResourceLocation(this.getRegistryName().toString(),"inventory"));
 		return map;
 	}
-
+	
 	@Override
 	public ModelPart getModelPart() {
 		return ModelPart.cube_all;

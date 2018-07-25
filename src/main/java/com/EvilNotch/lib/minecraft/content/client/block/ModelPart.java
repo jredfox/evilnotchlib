@@ -27,8 +27,8 @@ public class ModelPart {
 	public static final ModelPart cube_all = new ModelPart();
 	public static final ModelPart cube_bottom_top = new ModelPart("{\"parent\": \"block/cube_bottom_top\",\"textures\": {\"particle\": \"#side\",\"down\": \"#bottom\",\"up\": \"#top\",\"north\": \"#side\",\"east\": \"#side\",\"south\": \"#side\",\"west\": \"#side\"}}");
 	public static final ModelPart cube_column = new ModelPart("{\"parent\": \"block/cube_column\",\"textures\": {\"particle\": \"#side\",\"down\": \"#end\",\"up\": \"#end\",\"north\": \"#side\",\"east\": \"#side\",\"south\": \"#side\",\"west\": \"#side\"}}");
-	public static final ModelPart cube_directional = new ModelPart("{\"parent\": \"block/cube_directional\",\"textures\": {\"particle\": \"#north\",\"down\": \"#down\",\"up\": \"#up\",\"north\": \"#north\",\"east\": \"#east\",\"south\": \"#south\",\"west\": \"#west\"}}");
-	public static final ModelPart cube_mirrored = new ModelPart("{\"parent\": \"block/cube_mirrored\",\"textures\": {\"particle\": \"#north\",\"down\": \"#down\",\"up\": \"#up\",\"north\": \"#north\",\"east\": \"#east\",\"south\": \"#south\",\"west\": \"#west\"}}");
+	public static final ModelPart cube_directional = new ModelPart("{\"parent\": \"block/cube_directional\",\"textures\": {\"particle\": \"#null\",\"down\": \"#down\",\"up\": \"#up\",\"north\": \"#north\",\"east\": \"#east\",\"south\": \"#south\",\"west\": \"#west\"}}");
+	public static final ModelPart cube_mirrored = new ModelPart("{\"parent\": \"block/cube_mirrored\",\"textures\": {\"particle\": \"#null\",\"down\": \"#down\",\"up\": \"#up\",\"north\": \"#north\",\"east\": \"#east\",\"south\": \"#south\",\"west\": \"#west\"}}");
 	public static final ModelPart cube_mirrored_all = new ModelPart("{\"parent\": \"block/cube_mirrored_all\",\"textures\": {\"particle\": \"#all\",\"down\": \"#all\",\"up\": \"#all\",\"north\": \"#all\",\"east\": \"#all\",\"south\": \"#all\",\"west\": \"#all\"}}");
 	public static final ModelPart cube_top = new ModelPart("{\"parent\": \"block/cube_top\",\"textures\": {\"particle\": \"#side\",\"down\": \"#side\",\"up\": \"#top\",\"north\": \"#side\",\"east\": \"#side\",\"south\": \"#side\",\"west\": \"#side\"}}");
 	
@@ -49,10 +49,15 @@ public class ModelPart {
 		{
 			String key = (String)obj;
 			String value = (String) textures.get(key);
-			value = value.substring(value.indexOf('#'), value.length());
+			if(value.contains("#"))
+				value = value.substring(value.indexOf('#')+1, value.length());
+			if(key.equals("particle") && value.equals("null"))
+			{
+//				System.out.println("particle not implemented!" + textures.toJSONString());
+				this.customParticle = true;
+			}
 			keySet.add(new PairString(key,value));
 		}
-		this.customParticle = getHasCustomParitcle();
 		this.customSide = getHasCustomSide();
 	}
 	
@@ -75,21 +80,6 @@ public class ModelPart {
 			}
 		}
 		return false;
-	}
-	protected boolean getHasCustomParitcle() 
-	{
-		String name = getValue("particle");
-		
-		String north = getValue("north");
-		String south = getValue("south");
-		String east = getValue("east");
-		String west = getValue("west");
-		String up = getValue("up");
-		String down = getValue("down");
-		
-		boolean hasParticle = name.equals(down) || name.equals(up) || name.equals(north) || name.equals(south) || name.equals(east) || name.equals(west);
-		
-		return !hasParticle;
 	}
 	
 	public String getValue(String key) 

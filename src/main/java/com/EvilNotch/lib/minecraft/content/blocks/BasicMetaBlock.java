@@ -75,7 +75,6 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 			this.itemblock = itemblock;
 		
 		this.itemblock.setRegistryName(id);
-		System.out.println("Constructor Call:" + this.property);
 		
 		//since vanilla is ignorant as hell by not populating new properties we need to reset the entire block state container and yes it's f****** final
 		setStateConstructor(this.property);
