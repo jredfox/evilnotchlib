@@ -40,7 +40,9 @@ public class BasicBlock extends Block implements IBasicBlock{
 	public boolean haslang = false;
 	public boolean hasconfig = false;
 	public ItemBlock itemblock = null;
+	public BlockProperties blockprops = null;
 	public List<String> cacheStates;
+	
 	
 	public static ArrayList<LangEntry> blocklangs = new ArrayList();//is static so each object doesn't have a new arraylist optimized for finding and going through
 	
@@ -58,7 +60,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 	public BasicBlock(Material mat,ResourceLocation id,CreativeTabs tab,LangEntry... lang) {
 		this(mat,id,tab,null,lang);
 	}
-	public BasicBlock(Material mat,ResourceLocation id,CreativeTabs tab,Properties props,LangEntry... lang) {
+	public BasicBlock(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,LangEntry... lang) {
 		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,null,true,props,lang);
 	}
 	
@@ -66,7 +68,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 	 * MUST BE CALLED DURING PREINIT OR LATER
 	 * in order for lang to work it needs to be called before post init or it's manual lang registries for you
 	 */
-	public BasicBlock(Material blockMaterialIn, MapColor blockMapColorIn,ResourceLocation id,CreativeTabs tab,boolean model,boolean register,boolean lang,boolean config,ItemBlock itemblock,boolean useItemBlock,BasicBlock.Properties props,LangEntry... langlist) 
+	public BasicBlock(Material blockMaterialIn, MapColor blockMapColorIn,ResourceLocation id,CreativeTabs tab,boolean model,boolean register,boolean lang,boolean config,ItemBlock itemblock,boolean useItemBlock,BlockProperties props,LangEntry... langlist) 
 	{
 		super(blockMaterialIn, blockMapColorIn);
 		this.setRegistryName(id);
@@ -83,17 +85,35 @@ public class BasicBlock extends Block implements IBasicBlock{
 		populateLang(langlist,unlocalname,id);
 		
 		//set properties of the block
+		fillProperties(props);
+		
+		MainJava.blocks.add(this);
+		
+		if(useItemBlock)
+		{
+			if(itemblock == null)
+				itemblock = new ItemBlock(this);
+			itemblock.setRegistryName(id);
+			this.itemblock = itemblock;
+		}
+	}
+	protected void fillProperties(BlockProperties props) 
+	{
 		if(props != null)
 		{
-			if(config)
-				props = BasicBlock.getConfiguredBlockProps(props);
+			if(this.hasconfig)
+				props = BasicBlock.getConfiguredBlockProps(this,props);
+			this.blockprops = props;
 			
 			this.blockHardness = props.blockHardness;
 			this.blockResistance = props.blastResistance;
+
 			this.setHarvestLevel(props.harvestTool, props.harvestLvl);
 			
 			if(props.mat != null)
+			{
 				BlockApi.setMaterial(this, props.mat,true,props.harvestTool);
+			}
 			
 			if(props.sound != null)
 				this.setSoundType(props.sound);
@@ -114,24 +134,16 @@ public class BasicBlock extends Block implements IBasicBlock{
 				this.blockParticleGravity = props.blockParticleGravity;
 			}
 		}
-		
-		MainJava.blocks.add(this);
-		
-		if(useItemBlock)
-		{
-			if(itemblock == null)
-				itemblock = new ItemBlock(this);
-			itemblock.setRegistryName(id);
-			this.itemblock = itemblock;
-		}
 	}
-	public static Properties getConfiguredBlockProps(Properties props) 
+
+	public static BlockProperties getConfiguredBlockProps(Block b,BlockProperties props) 
 	{
-		LineEnhanced line = new LineEnhanced(props.toString());
+		LineEnhanced line = new LineEnhanced("\"" + b.getRegistryName() + "\" " + props.toString());
+//		System.out.println("propline:" + line.getString());
 		ConfigBase cfg = MainJava.cfgBlockProps;
 		cfg.addLine(line);
 		line = (LineEnhanced) cfg.getUpdatedLine(line);
-		return new Properties(line);
+		return new BlockProperties(line);
 	}
 
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) 
@@ -141,127 +153,6 @@ public class BasicBlock extends Block implements IBasicBlock{
 			entry.langId = "tile." + unlocalname + ".name";
 			entry.loc = id;
 			blocklangs.add(entry);
-		}
-	}
-
-	public static class Properties{
-		public ResourceLocation loc = null;
-		public Material mat = null;
-		public String harvestTool = null;
-		public float blockHardness = 0f;
-		public float blastResistance = 0f;
-		public int harvestLvl = -1;
-		public SoundType sound = null;
-		
-		public int flamability = -1;
-		public int flameEncoragement = -1;
-		
-		public float slipperiness = 0.6F;
-		public int lightValue = 0;
-		
-		/**
-		 * set this manually to true to use advanced properties you must manually configure each of them to your desire
-		 */
-		public boolean advanced = false;
-		
-		public boolean translucent = false;
-		public int lightOpacity = 0;
-		public boolean useNeighborBrightness = false;
-		public boolean enableStats = true;
-		public float blockParticleGravity = 1.0F;
-		
-		/**
-		 * Construct default with only default values you manipulate what you want
-		 */
-		public Properties(){
-			this.loc = new ResourceLocation("null");
-		}
-		public Properties(ResourceLocation loc)
-		{
-			this.loc = loc;
-		}
-		/**
-		 * Basic constructor
-		 * loc is the resource location of the block
-		 * and mat is the material of that block
-		 */
-		public Properties(ResourceLocation loc,Material mat,String tool,float hard,float resist,int lvl){
-			this(loc,mat,tool,hard,resist,lvl,null);
-		}
-		public Properties(ResourceLocation loc,Material mat,String tool,float hard,float resist,int lvl, SoundType sound){
-			this(loc,mat,tool,hard,resist,lvl,sound,-1,-1);
-		}
-		public Properties(ResourceLocation loc,Material mat,String tool,float hard,float resist,int lvl, SoundType sound,int flamE,int flame){
-			this(loc,mat,tool,hard,resist,lvl,sound,flamE,flame,0.6F,0);
-		}
-
-		public Properties(ResourceLocation loc,Material mat,String tool,float hard,float resist,int lvl,SoundType sound,int flameE,int flame,float slip,int light){
-			this.loc = loc;
-			this.mat = mat;
-			this.harvestTool = tool;
-			this.blockHardness = hard;
-			this.blastResistance = resist;
-			this.harvestLvl = lvl;
-			this.sound = sound;
-			this.flameEncoragement = flameE;
-			this.flamability = flame;
-			this.slipperiness = slip;
-			this.lightValue = light;
-		}
-		public Properties(LineEnhanced line)
-		{
-			this.loc = line.getResourceLocation();
-			if(line.hasStrMeta)
-				this.mat = BlockApi.getMatFromReg(new ResourceLocation(line.strmeta));
-			int size = line.heads.size();
-			if(size >= 5)
-			{
-				this.harvestTool = line.getString(0);
-				this.blockHardness = line.getFloat(1);
-				this.blastResistance = line.getFloat(2);
-				this.harvestLvl = line.getInt(3);
-				this.sound = BlockApi.getSoundType(new ResourceLocation(line.getString(4)));
-			}
-			if(size == 7)
-			{
-				this.flameEncoragement = line.getInt(5);
-				this.flamability = line.getInt(6);
-				return;
-			}
-			if(size >= 9)
-			{
-				this.flameEncoragement = line.getInt(5);
-				this.flamability = line.getInt(6);
-				this.slipperiness = line.getFloat(7);
-				this.lightValue = line.getInt(8);
-			}
-			if(size == 14)
-			{
-				this.advanced = true;
-				this.translucent = line.getBoolean(9);
-				this.lightOpacity = line.getInt(10);
-				this.useNeighborBrightness = line.getBoolean(11);
-				this.enableStats = line.getBoolean(12);
-				this.blockParticleGravity = line.getFloat(13);
-			}
-		}
-		
-		@Override
-		public String toString()
-		{
-			String init = "\"" + this.harvestTool + "\"" + "," + this.blockHardness + "f," + this.blastResistance + "f," + this.harvestLvl + "," + "\"" + BlockApi.getSoundTypeLoc(this.sound) + "\"";
-			String bonus = "";
-			boolean useAll = this.advanced || this.slipperiness != 0.6F || this.lightValue != 0;
-			boolean useFlame = this.flamability != -1 || this.flameEncoragement != -1;
-			if(useAll){
-				bonus = "," + this.flameEncoragement + "," + this.flamability + "," + this.slipperiness + "f," + this.lightValue;
-				if(this.advanced)
-					bonus += "," + this.translucent + "," + this.lightOpacity + "," + this.useNeighborBrightness + "," + this.enableStats + "," + this.blockParticleGravity + "f";
-			}
-			else if(useFlame){
-				bonus = "," + this.flameEncoragement + "," + this.flamability;
-			}
-			return "\"" + this.loc.toString() + "\" <\"" + BlockApi.getMaterialLoc(this.mat) + "\">" + " = [" + init + bonus +"]";
 		}
 	}
 	
@@ -358,6 +249,11 @@ public class BasicBlock extends Block implements IBasicBlock{
 	@Override
 	public ModelPart getModelPart() {
 		return ModelPart.cube_all;
+	}
+
+	@Override
+	public BlockProperties getBlockProperties() {
+		return this.blockprops;
 	}
 
 }

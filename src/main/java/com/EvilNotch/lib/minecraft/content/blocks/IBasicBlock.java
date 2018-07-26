@@ -20,6 +20,10 @@ public interface IBasicBlock extends IBasicItem{
 	public List<String> getModelStates();
 	public List<String> getBlockStatesNames();
 	/**
+	 * null is allowed just make sure you don't do anything with it yourself
+	 */
+	public BlockProperties getBlockProperties();
+	/**
 	 * your primary block state for models on the statemapper and also is server side to
 	 */
 	public IProperty getStateProperty();

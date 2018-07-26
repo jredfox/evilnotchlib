@@ -50,6 +50,67 @@ import net.minecraft.util.ResourceLocation;
 public class JavaUtil {
 	public static final String SPECIALCHARS = "~!@#$%^&*()_+`'-=/,.<>?\"{}[]:;|" + "\\";
 	
+	/**
+	 * cast without loosing data and have a random negitive number
+	 */
+	public static int castInt(long l)
+	{
+		if(l > Integer.MAX_VALUE)
+			return Integer.MAX_VALUE;
+		if(l < Integer.MIN_VALUE)
+			return Integer.MIN_VALUE;
+		return (int)l;
+	}
+	public static short castShort(long l)
+	{
+		if(l > Short.MAX_VALUE)
+		{
+			return Short.MAX_VALUE;
+		}
+		else if(l < Short.MIN_VALUE)
+		{
+			return Short.MIN_VALUE;
+		}
+		return (short)l;
+	}
+	public static byte castByte(long l)
+	{
+		if(l > Byte.MAX_VALUE)
+			return Byte.MAX_VALUE;
+		if(l < Byte.MIN_VALUE)
+			return Byte.MIN_VALUE;
+		return (byte)l;
+	}
+	
+	public static short castShort(int i)
+	{
+		if(i > Short.MAX_VALUE)
+		{
+			return Short.MAX_VALUE;
+		}
+		else if(i < Short.MIN_VALUE)
+		{
+			return Short.MIN_VALUE;
+		}
+		return (short)i;
+	}
+	public static byte castByte(int i)
+	{
+		if(i > Byte.MAX_VALUE)
+			return Byte.MAX_VALUE;
+		if(i < Byte.MIN_VALUE)
+			return Byte.MIN_VALUE;
+		return (byte)i;
+	}
+	public static byte castByte(short s)
+	{
+		if(s > Byte.MAX_VALUE)
+			return Byte.MAX_VALUE;
+		if(s < Byte.MIN_VALUE)
+			return Byte.MIN_VALUE;
+		return (byte)s;
+	}
+	
 	public static String getPublicIp() throws IOException 
 	{
 		URL whatismyip = new URL("http://checkip.amazonaws.com");

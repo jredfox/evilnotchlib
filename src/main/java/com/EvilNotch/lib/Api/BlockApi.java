@@ -99,7 +99,7 @@ public class BlockApi {
 		float blastResistance = BlockApi.getBlastResistence(b);
 		int harvestLvl = b.getHarvestLevel(b.getDefaultState());
 		SoundType sound = b.getSoundType();
-		System.out.println("tool:" + tool + ",hardness:" + blockHardness + ",blast:" + blastResistance + ",harvestlvl:" + harvestLvl + ",sound:" + (sound == SoundType.STONE) + 
+		System.out.println(b.getRegistryName() + " tool:" + tool + " mat rock:" + (BlockApi.getblockmaterial(b) == Material.ROCK)+",hardness:" + blockHardness + ",blast:" + blastResistance + ",harvestlvl:" + harvestLvl + ",sound:" + (sound == SoundType.STONE) + 
 				" flameE:" + Blocks.FIRE.getEncouragement(b) + " flame:" + Blocks.FIRE.getFlammability(b) + 
 				" slip:" + b.slipperiness + " light:" + b.getLightValue(b.getDefaultState()));
 	}

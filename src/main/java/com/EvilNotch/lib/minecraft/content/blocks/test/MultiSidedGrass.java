@@ -2,8 +2,8 @@ package com.EvilNotch.lib.minecraft.content.blocks.test;
 
 import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicMetaBlock;
+import com.EvilNotch.lib.minecraft.content.blocks.BlockProperties;
 import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
-import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock.Properties;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -28,18 +28,18 @@ public class MultiSidedGrass extends BasicMetaBlock{
 	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,IProperty pi,LangEntry... lang) {
 		this(mat,id,tab,null,pi,lang);
 	}
-	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,Properties props,IProperty pi,LangEntry... lang) {
+	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,LangEntry... lang) {
 		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,null,props,pi,lang);
 	}
 	
-	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,Properties props,IProperty pi,ItemBlock ib,LangEntry... lang) {
+	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,ItemBlock ib,LangEntry... lang) {
 		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,ib,props,pi,lang);
 	}
 	
 	/**
 	 * uses the itemblock if not null regardless whether which boolean you call
 	 */
-	public MultiSidedGrass(Material mat, MapColor mc, ResourceLocation id, CreativeTabs tab,boolean model, boolean register, boolean lang, boolean config, ItemBlock itemblock,Properties props,IProperty prop, LangEntry... langlist) 
+	public MultiSidedGrass(Material mat, MapColor mc, ResourceLocation id, CreativeTabs tab,boolean model, boolean register, boolean lang, boolean config, ItemBlock itemblock,BlockProperties props,IProperty prop, LangEntry... langlist) 
 	{
 		super(mat,mc,id,tab,model,register,lang,config,itemblock,props,prop,langlist);
 	}

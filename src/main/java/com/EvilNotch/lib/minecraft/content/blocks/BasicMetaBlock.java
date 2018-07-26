@@ -53,18 +53,18 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,IProperty pi,LangEntry... lang) {
 		this(mat,id,tab,null,pi,lang);
 	}
-	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,Properties props,IProperty pi,LangEntry... lang) {
+	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,LangEntry... lang) {
 		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,null,props,pi,lang);
 	}
 	
-	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,Properties props,IProperty pi,ItemBlock ib,LangEntry... lang) {
+	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,ItemBlock ib,LangEntry... lang) {
 		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,ib,props,pi,lang);
 	}
 	
 	/**
 	 * uses the itemblock if not null regardless whether which boolean you call
 	 */
-	public BasicMetaBlock(Material blockMaterialIn, MapColor blockMapColorIn, ResourceLocation id, CreativeTabs tab,boolean model, boolean register, boolean lang, boolean config, ItemBlock itemblock,Properties props,IProperty prop, LangEntry... langlist) 
+	public BasicMetaBlock(Material blockMaterialIn, MapColor blockMapColorIn, ResourceLocation id, CreativeTabs tab,boolean model, boolean register, boolean lang, boolean config, ItemBlock itemblock,BlockProperties props,IProperty prop, LangEntry... langlist) 
 	{
 		super(blockMaterialIn, blockMapColorIn, id, tab, model, register, lang, config, itemblock, false, props,langlist);
 		this.property = prop;

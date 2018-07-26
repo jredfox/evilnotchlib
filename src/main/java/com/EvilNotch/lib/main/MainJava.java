@@ -21,6 +21,7 @@ import com.EvilNotch.lib.minecraft.content.ToolMat;
 import com.EvilNotch.lib.minecraft.content.ToolSet;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicMetaBlock;
+import com.EvilNotch.lib.minecraft.content.blocks.BlockProperties;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.property.PropertyMetaEnum;
 import com.EvilNotch.lib.minecraft.content.blocks.test.EnumCheese;
@@ -54,7 +55,6 @@ import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -91,7 +91,7 @@ public class MainJava {
 	//lib stuffs
 	public static boolean isDeObfuscated = true;
 	public static final String MODID =  "evilnotchlib";
-	public static final String VERSION = "1.2.3-53";//SNAPSHOT
+	public static final String VERSION = "1.2.3";//SNAPSHOT 57
 	public static final String NAME = "Evil Notch Lib";
 	public static final String max_version = "4.0.0.0.0";//allows for 5 places in lib version
 	public static boolean isClient = false;
@@ -138,7 +138,7 @@ public class MainJava {
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
 
-		BasicBlock.Properties props = new BasicBlock.Properties(new ResourceLocation(MODID + ":" + "spider"),Material.CACTUS,"pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
+		BlockProperties props = new BlockProperties(new ResourceLocation(MODID + ":" + "spider"),"pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
 		BasicCreativeTab tab = new BasicCreativeTab(new ResourceLocation(MODID + ":spidertesting"),new ItemStack(Items.CAKE),new LangEntry("Custom Shiny Tab","en_us"),new LangEntry("Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°","ru_ru") );
 		BasicItem item = new BasicItem(new ResourceLocation(MODID + ":" + "stick"),tab,new LangEntry("Modded Stick","en_us"));
 		ToolMat test = new ToolMat(new ResourceLocation(MODID + ":" + "test"), 2, 100, 10, 3, 30);
