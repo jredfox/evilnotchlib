@@ -18,14 +18,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class StateMapperSupreme extends StateMapperBase{
-
-	public static final String normal = "normal";
-	public static int index = -1;
 	
 	@Override
 	public ModelResourceLocation getModelResourceLocation(IBlockState state) 
 	{
-		index++;
 		Block block = state.getBlock();
 		IBasicBlock b = (IBasicBlock)block;
 		IProperty p = b.getStateProperty();

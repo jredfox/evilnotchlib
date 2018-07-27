@@ -85,6 +85,8 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	@Override
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) 
 	{
+		if(!this.useLangRegistry())
+			return;
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "tile." + unlocalname + "_" + entry.meta + ".name";

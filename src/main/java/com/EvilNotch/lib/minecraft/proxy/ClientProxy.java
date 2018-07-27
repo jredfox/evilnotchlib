@@ -103,6 +103,11 @@ public class ClientProxy extends ServerProxy{
 		boolean flag = false;
 		for(IBasicItem i : MainJava.items)
 		{
+			if(!i.registerModel())
+			{
+				System.out.println("skipping model gen:" + i.getRegistryName());
+				continue;
+			}
 			JSONObject json = null;
 			ResourceLocation loc = i.getRegistryName();
 			if(i instanceof ItemAxe || i instanceof ItemHoe || i instanceof ItemPickaxe || i instanceof ItemSpade || i instanceof ItemSword)
@@ -136,6 +141,11 @@ public class ClientProxy extends ServerProxy{
 		}
 		for(IBasicBlock b : MainJava.blocks)
 		{
+			if(!b.registerModel())
+			{
+				System.out.println("skipping model gen:" + b.getRegistryName());
+				continue;
+			}
 			ResourceLocation loc = b.getRegistryName();
 			
 			//blockstate gen

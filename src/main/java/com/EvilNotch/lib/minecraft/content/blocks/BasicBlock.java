@@ -101,7 +101,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 	{
 		if(props != null)
 		{
-			if(this.hasconfig)
+			if(this.useConfigPropterties())
 				props = BasicBlock.getConfiguredBlockProps(this,props);
 			this.blockprops = props;
 			
@@ -139,7 +139,6 @@ public class BasicBlock extends Block implements IBasicBlock{
 	public static BlockProperties getConfiguredBlockProps(Block b,BlockProperties props) 
 	{
 		LineEnhanced line = new LineEnhanced("\"" + b.getRegistryName() + "\" " + props.toString());
-//		System.out.println("propline:" + line.getString());
 		ConfigBase cfg = MainJava.cfgBlockProps;
 		cfg.addLine(line);
 		line = (LineEnhanced) cfg.getUpdatedLine(line);
@@ -148,6 +147,8 @@ public class BasicBlock extends Block implements IBasicBlock{
 
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) 
 	{
+		if(!this.useLangRegistry())
+			return;
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "tile." + unlocalname + ".name";

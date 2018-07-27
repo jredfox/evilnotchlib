@@ -28,6 +28,8 @@ public class BasicItemMeta extends BasicItem{
 	}
 	@Override
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
+		if(!this.useLangRegistry())
+			return;
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "item." + unlocalname + "_" + entry.meta + ".name";

@@ -47,6 +47,8 @@ public class BasicItem extends Item implements IBasicItem{
 	}
 	
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
+		if(!this.useLangRegistry())
+			return;
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "item." + unlocalname + ".name";

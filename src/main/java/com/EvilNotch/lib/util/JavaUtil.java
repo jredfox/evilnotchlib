@@ -51,7 +51,7 @@ public class JavaUtil {
 	public static final String SPECIALCHARS = "~!@#$%^&*()_+`'-=/,.<>?\"{}[]:;|" + "\\";
 	
 	/**
-	 * cast without loosing data and have a random negitive number
+	 * cast without loosing data and have a random negative number
 	 */
 	public static int castInt(long l)
 	{

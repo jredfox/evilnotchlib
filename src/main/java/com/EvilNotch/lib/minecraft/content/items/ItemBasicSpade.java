@@ -43,6 +43,8 @@ public class ItemBasicSpade extends ItemSpade implements IBasicItem{
 		MainJava.items.add(this);
 	}
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
+		if(!this.useLangRegistry())
+			return;
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "item." + unlocalname + ".name";
