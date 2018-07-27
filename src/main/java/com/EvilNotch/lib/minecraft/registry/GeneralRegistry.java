@@ -6,21 +6,25 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
+import com.EvilNotch.lib.minecraft.content.recipe.ShapelessRecipe;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandManager;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public class GeneralRegistry {
 	
@@ -162,6 +166,11 @@ public class GeneralRegistry {
 	public static void replaceVanillaCommand(String name, ICommand cmd){
 		removeVanillaCommand(name);
 		registerCommand(cmd);
+	}
+
+	public static void addShapelessRecipe(IForgeRegistry<IRecipe> reg,ResourceLocation id,ItemStack output, ItemStack... params) 
+	{
+		reg.register(new ShapelessRecipe(id,output,params).setRegistryName(id));
 	}
 
 }
