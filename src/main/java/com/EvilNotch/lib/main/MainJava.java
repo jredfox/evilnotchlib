@@ -308,7 +308,6 @@ public class MainJava {
 		//directories instantiate
 		System.out.println("Server Starting Event:");
 		LibEvents.worlDir = server.worlds[0].getSaveHandler().getWorldDirectory();
-		System.out.println(LibEvents.worlDir.getAbsolutePath());
 		LibEvents.playerDataDir = new File(LibEvents.worlDir,"playerdata");
 		LibEvents.playerDataNames = new File(LibEvents.worlDir,"playerdata/names");
 	}

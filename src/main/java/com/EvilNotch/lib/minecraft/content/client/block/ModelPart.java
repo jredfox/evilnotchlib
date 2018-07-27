@@ -70,7 +70,7 @@ public class ModelPart {
 		String up = getValue("up");
 		String down = getValue("down");
 		
-		ArrayList<String> list = JavaUtil.asArray(down,up,north,south,east,west);
+		ArrayList<String> list = JavaUtil.asArray(new Object[]{down,up,north,south,east,west});
 		for(String s : list)
 		{
 			for(String s2 : list)

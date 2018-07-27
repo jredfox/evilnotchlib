@@ -1,5 +1,6 @@
 package com.EvilNotch.lib.minecraft.content.commands;
 
+import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 
 import net.minecraft.command.CommandBase;
@@ -60,6 +61,10 @@ public class CMDTP extends CommandTP {
             {
                 Entity entity1 = getEntity(server, sender, args[args.length - 1]);
                 entity.dismountRidingEntity();
+                if (entity1.world != entity.world && !Config.tpAllowCrossDim)
+                {
+                    throw new CommandException("commands.tp.notSameDimension", new Object[0]);
+                }
                     
                 EntityUtil.telePortEntity(entity, server, entity1.posX, entity1.posY, entity1.posZ, entity1.rotationYaw, entity1.rotationPitch, entity1.dimension);
 
