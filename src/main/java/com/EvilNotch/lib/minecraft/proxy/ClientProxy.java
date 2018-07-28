@@ -47,12 +47,15 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.Locale;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSpade;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.text.translation.LanguageMap;
@@ -500,5 +503,20 @@ public class ClientProxy extends ServerProxy{
 	public static EntityPlayer getPlayer() {
 		return FMLClientHandler.instance().getClientPlayerEntity();
 	}
+
+	/*public static int getBurn(IInventory tileFurnace, int pixels) 
+	{
+        long i = (long)tileFurnace.getField(1);
+        
+        if (i == 0)
+        {
+            i = 200L;
+        }
+
+        long j = ( (tileFurnace.getField(0) * (long)pixels));
+        j = j/i;
+//        System.out.println("j:" + j + " i:" + i + " feild:" + tileFurnace.getField(0));
+        return JavaUtil.castInt(j);
+	}*/
 
 }

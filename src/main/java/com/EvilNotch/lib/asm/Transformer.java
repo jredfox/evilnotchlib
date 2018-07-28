@@ -19,7 +19,8 @@ public class Transformer implements IClassTransformer
     public static final List<String> classesBeingTransformed = (List<String>)JavaUtil.<String>asArray2(new Object[]
     {
     	"net.minecraft.server.management.PlayerList",
-    	"net.minecraft.tileentity.TileEntityFurnace"
+    	"net.minecraft.tileentity.TileEntityFurnace",
+    	"net.minecraft.client.gui.inventory.GuiFurnace"
     });	
     
     @Override
@@ -49,8 +50,8 @@ public class Transformer implements IClassTransformer
                 		System.out.println("returning default class:" + name + " ob:" + FMLCorePlugin.isObf + " cfg:" + ConfigCore.asm_playerlist);
                 		return classToTransform;
                 	}
-                	TestTransformer.transformMethod(classNode, classesBeingTransformed.get(index), inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
-                	TestTransformer.transformMethod(classNode, classesBeingTransformed.get(index), inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
+                	TestTransformer.transformMethod(classNode, name, inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
+                	TestTransformer.transformMethod(classNode, name, inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
                 	OtherTransformer.injectUUIDPatcher(classNode, obfuscated);
                 	TestTransformer.clearCacheNodes();
                 break;
@@ -61,14 +62,28 @@ public class Transformer implements IClassTransformer
                 		System.out.println("returning default class:" + name);
                 		return classToTransform;
                 	}
-                	FurnaceTransformer.transformMethod(classNode,obfuscated);
+                	if(FMLCorePlugin.isObf)
+                	{
+                		TestTransformer.transformMethod(classNode, name, inputBase + "TileEntityFurnace", "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V", "a", "(Lfy;)V", "func_145839_a");
+                		TestTransformer.transformMethod(classNode, name, inputBase + "TileEntityFurnace", "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", "b", "(Lfy;)Lfy;", "func_189515_b");
+                	}
+                	else
+                	{
+                		FurnaceTransformer.transformMethod(classNode,obfuscated);
+                	}
+                break;
+                
+                case 2:
+                	if(!ConfigCore.asm_furnace || !FMLCorePlugin.isObf)
+                		return classToTransform;
+                	TestTransformer.transformMethod(classNode, name, inputBase + "GuiFurnace", "getBurnLeftScaled", "(I)I", "i", "(I)I", "func_175382_i");
                 break;
             }
 
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-//            if(index == 1)
+//            if(index == 2)
 //            	FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
             
             return classWriter.toByteArray();
