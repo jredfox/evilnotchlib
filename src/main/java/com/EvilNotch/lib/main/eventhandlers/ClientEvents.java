@@ -125,10 +125,9 @@ public class ClientEvents {
 		if(stack.isEmpty() || ench.tagCount() == 0)
 			return;
 		List<String> toolTip = e.getToolTip();
-		List<String> list = JavaUtil.copyArrays(toolTip);
-		for(int i=0;i<list.size();i++)
+		for(int i=0;i<toolTip.size();i++)
 		{
-			String s = list.get(i);
+			String s = toolTip.get(i);
 			if(!s.contains("enchantment.level"))
 				continue;
 			for(int j=0;j<ench.tagCount();j++)
@@ -142,14 +141,10 @@ public class ClientEvents {
 				String enchname = enchantment.getTranslatedName(lvl);
 				if(s.equals(enchname))
 				{
-					list.set(i, enchName + " " + Roman);
+					toolTip.set(i, enchName + " " + Roman);
 				}
 			}
 		}
-		toolTip.clear();
-		
-		for(String s : list)
-			toolTip.add(s);
 	}
 
     public String getEnchName(Enchantment e)
