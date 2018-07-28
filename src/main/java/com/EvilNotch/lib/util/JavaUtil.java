@@ -664,7 +664,7 @@ public class JavaUtil {
 		return list;
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static ArrayList copyArrays(ArrayList li) 
+	public static ArrayList copyArrays(List li) 
 	{
 		ArrayList list = new ArrayList();
 		for(Object object : li)

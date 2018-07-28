@@ -1,20 +1,32 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
-import com.EvilNotch.lib.main.Config;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.EvilNotch.lib.minecraft.NBTUtil;
 import com.EvilNotch.lib.minecraft.content.client.gui.GuiFakeMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
+import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
+import com.EvilNotch.lib.util.JavaUtil;
+import com.EvilNotch.lib.util.RomanNumerals;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class ClientEvents {
 	
@@ -98,5 +110,57 @@ public class ClientEvents {
 			ConfigMenu.saveMenuIndex();
 		}
 	}
+	
+	/**
+	 * tooltip roman numerals fixer
+	 */
+	@SubscribeEvent (priority = EventPriority.HIGH)
+	public void onToolTip(ItemTooltipEvent e)
+	{
+		ItemStack stack = e.getItemStack();
+		NBTTagList ench = stack.getEnchantmentTagList();
+		if(ench.tagCount() == 0)
+			ench = NBTUtil.getNBTTagListSafley(stack.getTagCompound(),"StoredEnchantments",10);
+			
+		if(stack.isEmpty() || ench.tagCount() == 0)
+			return;
+		List<String> toolTip = e.getToolTip();
+		List<String> list = JavaUtil.copyArrays(toolTip);
+		for(int i=0;i<list.size();i++)
+		{
+			String s = list.get(i);
+			if(!s.contains("enchantment.level"))
+				continue;
+			for(int j=0;j<ench.tagCount();j++)
+			{
+				NBTTagCompound nbt = (NBTTagCompound)ench.getCompoundTagAt(j);
+				int id = nbt.getInteger("id");
+				int lvl = nbt.getInteger("lvl");
+				String Roman = RomanNumerals.translateIntToRoman(lvl);
+				Enchantment enchantment = Enchantment.getEnchantmentByID(id);
+				String enchName = getEnchName(enchantment);
+				String enchname = enchantment.getTranslatedName(lvl);
+				if(s.equals(enchname))
+				{
+					list.set(i, enchName + " " + Roman);
+				}
+			}
+		}
+		toolTip.clear();
+		
+		for(String s : list)
+			toolTip.add(s);
+	}
+
+    public String getEnchName(Enchantment e)
+    {
+        String s = I18n.translateToLocal(e.getName());
+
+        if (e.isCurse())
+        {
+            s = TextFormatting.RED + s;
+        }
+        return s;
+    }
 	
 }

@@ -133,5 +133,11 @@ public class NBTUtil {
 		}
 		return getFileNBT(file);
 	}
+	public static NBTTagList getNBTTagListSafley(NBTTagCompound tag, String name, int type) 
+	{
+		if(tag == null)
+			return new NBTTagList();
+		return tag.getTagList(name, type);
+	}
 
 }
