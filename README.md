@@ -11,7 +11,8 @@ Bug Fixes:
 vanilla eggs on spawners
 uuid fix(if uuid doesn't match server patch it)
 uuid fix single player(if you give another person your world you get the right playerdata)
-TileEntityFurnace(increase from short to int)
+TileEntityFurnace(increase from short to int,fixed not properly reading/writing currentItemBurnTime)
+GuiFurnace(fixed gui going out of bounds of integer thus displaying data wrong)
 fixes forge parsing playerdata files twice on login
 notch drops apples again
 future: Move too quickly and vechile checks removed since this is a modding enviorment
