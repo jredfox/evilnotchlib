@@ -15,6 +15,7 @@ fixes forge parsing playerdata files twice on login
 TileEntityFurnace(increase from short to int,fixed not properly reading/writing currentItemBurnTime)
 GuiFurnace(fixed gui going out of bounds of integer thus displaying data wrong)
 notch drops apples again
+ItemToolTip Enchantment Fix(if text breaks manually uses enchantment name and roman numeral generator or integer)
 future: Move too quickly and vechile checks removed since this is a modding enviorment
 ```
 
