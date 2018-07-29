@@ -3,6 +3,7 @@ package com.EvilNotch.lib.asm;
 import java.io.File;
 import java.util.Map;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 public class FMLCorePlugin implements IFMLLoadingPlugin

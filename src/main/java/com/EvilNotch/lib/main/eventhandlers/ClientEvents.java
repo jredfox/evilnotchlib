@@ -9,6 +9,7 @@ import com.EvilNotch.lib.minecraft.NBTUtil;
 import com.EvilNotch.lib.minecraft.content.client.gui.GuiFakeMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
+import com.EvilNotch.lib.minecraft.events.ClientBlockPlaceEvent;
 import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.RomanNumerals;
@@ -25,6 +26,7 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -125,10 +127,9 @@ public class ClientEvents {
 		if(stack.isEmpty() || ench.tagCount() == 0)
 			return;
 		List<String> toolTip = e.getToolTip();
-		List<String> list = JavaUtil.copyArrays(toolTip);
-		for(int i=0;i<list.size();i++)
+		for(int i=0;i<toolTip.size();i++)
 		{
-			String s = list.get(i);
+			String s = toolTip.get(i);
 			if(!s.contains("enchantment.level"))
 				continue;
 			for(int j=0;j<ench.tagCount();j++)
@@ -142,14 +143,10 @@ public class ClientEvents {
 				String enchname = enchantment.getTranslatedName(lvl);
 				if(s.equals(enchname))
 				{
-					list.set(i, enchName + " " + Roman);
+					toolTip.set(i, enchName + " " + Roman);
 				}
 			}
 		}
-		toolTip.clear();
-		
-		for(String s : list)
-			toolTip.add(s);
 	}
 
     public String getEnchName(Enchantment e)
@@ -162,5 +159,18 @@ public class ClientEvents {
         }
         return s;
     }
+    
+	@SubscribeEvent (priority = EventPriority.HIGH)
+	public void blockplace(ClientBlockPlaceEvent e)
+	{
+//		System.out.println(e.pos1 + " " + e.pos2);
+		System.out.print("fireing:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
+	}
+	@SubscribeEvent (priority = EventPriority.HIGH)
+	public void blockplace(BlockEvent.PlaceEvent e)
+	{
+//		System.out.println(e.pos1 + " " + e.pos2);
+		System.out.print("server:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
+	}
 	
 }

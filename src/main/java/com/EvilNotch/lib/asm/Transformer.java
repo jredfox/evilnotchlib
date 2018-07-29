@@ -13,6 +13,8 @@ import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 
 public class Transformer implements IClassTransformer
 {
@@ -20,7 +22,8 @@ public class Transformer implements IClassTransformer
     {
     	"net.minecraft.server.management.PlayerList",
     	"net.minecraft.tileentity.TileEntityFurnace",
-    	"net.minecraft.client.gui.inventory.GuiFurnace"
+    	"net.minecraft.client.gui.inventory.GuiFurnace",
+    	"net.minecraft.item.ItemStack"
     });	
     
     @Override
@@ -78,12 +81,21 @@ public class Transformer implements IClassTransformer
                 		return classToTransform;
                 	TestTransformer.transformMethod(classNode, name, inputBase + "GuiFurnace", "getBurnLeftScaled", "(I)I", "i", "(I)I", "func_175382_i");
                 break;
+                
+                case 3:
+                	if(!ConfigCore.asm_clientPlaceEvent || !FMLCorePlugin.isObf)
+                	{
+                		System.out.println("returning bytes ITEMSTACK");
+                		return classToTransform;
+                	}
+                	TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "onItemUse", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Lnet/minecraft/util/EnumActionResult;", "a", "(Laed;Lamu;Let;Lub;Lfa;FFF)Lud;", "func_179546_a");
+                break;
             }
 
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-//            if(index == 2)
+//            if(index == 3)
 //            	FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
             
             return classWriter.toByteArray();
