@@ -16,6 +16,7 @@ TileEntityFurnace(increase from short to int,fixed not properly reading/writing 
 GuiFurnace(fixed gui going out of bounds of integer thus displaying data wrong)
 notch drops apples again
 ItemToolTip Enchantment Fix(if text breaks manually uses enchantment name and roman numeral generator or integer)
+BlockEntityTag fix(sync client changes on the same tick rather then later,don't have to be in creative)
 future: Move too quickly and vechile checks removed since this is a modding enviorment
 ```
 
