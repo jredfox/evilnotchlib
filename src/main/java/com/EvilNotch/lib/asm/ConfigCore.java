@@ -11,6 +11,7 @@ public class ConfigCore {
 	public static boolean asm_playerlist = true;
 	public static boolean asm_furnace = true;
 	public static boolean asm_clientPlaceEvent = true;
+	public static boolean asm_setTileNBTFix = true;
 	
 	public static void load()
 	{
@@ -22,7 +23,8 @@ public class ConfigCore {
 		asm_playerlist = config.get("asm","uuidFixer",true).getBoolean();
 		asm_furnace = config.get("asm","furnaceFix",true).getBoolean();
 		asm_clientPlaceEvent = config.get("asm","clientBlockPlaceEvent",true).getBoolean();
-				
+		asm_setTileNBTFix = config.get("asm","setTileNBTItemBlockFix",true).getBoolean();
+		
 		playerOwnerAlwaysFix = config.get("general", "playerOwnerSwapAlwaysFix", true).getBoolean();
 		config.save();
 	}
