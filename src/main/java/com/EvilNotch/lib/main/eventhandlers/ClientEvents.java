@@ -163,13 +163,11 @@ public class ClientEvents {
 	@SubscribeEvent (priority = EventPriority.HIGH)
 	public void blockplace(ClientBlockPlaceEvent e)
 	{
-//		System.out.println(e.pos1 + " " + e.pos2);
 		System.out.print("fireing:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
 	}
 	@SubscribeEvent (priority = EventPriority.HIGH)
 	public void blockplace(BlockEvent.PlaceEvent e)
 	{
-//		System.out.println(e.pos1 + " " + e.pos2);
 		System.out.print("server:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
 	}
 	
