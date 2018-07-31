@@ -46,7 +46,7 @@ Dynamic Client Translations
 Lan Skin Host Fix
 ```
 
-Instalation Compiled:
+Instalation This as a Dependancy:
 ```
 Install forge mdk mc version
 Create a libs folder and put the version of EvilNotch Lib you need
