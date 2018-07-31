@@ -52,17 +52,7 @@ Install forge mdk mc version
 Create a libs folder and put the version of EvilNotch Lib you need
 Go into eclipse java build path and add the jar
 Installl the build.gradle to your mdk as it has support for UTF-8 compiliation
-Go into EvilNotLib jar > src > main > resources > evilnotchlib > asm > decompiled and pull out the files and drag them into your src/main/java.
-Name the files .java(these are patched mdk classes you for the decompiled workspace in compiled it's done via asm)
-Go into eclipse and change move the files to the right packages
-```
-
-Instalation Decompiled Forking:
-```
-Install forge mdk mc version
-Delete Src
-Install Evil Notch Lib SRC
-src/main/java.
-Name the files .java(these are patched mdk classes you for the decompiled workspace in compiled it's done via asm)
-Go into eclipse and change move the files to the right packages
+Go into EvilNotLib jar > src > main > resources > evilnotchlib > asm > decompiled
+Drag and drop what patched decompiled classes you need and rename the compilations and move to the proper packaging
+Sadley this is the only way in the lib to setup the decomp work space since the asm isn't written for decompiled yet. They are all patched classes
 ```
