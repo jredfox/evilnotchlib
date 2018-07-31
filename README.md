@@ -55,4 +55,5 @@ Installl the build.gradle to your mdk as it has support for UTF-8 compiliation
 Go into EvilNotLib jar > src > main > resources > evilnotchlib > asm > decompiled
 Drag and drop what patched decompiled classes you need and rename the compilations and move to the proper packaging
 Sadley this is the only way in the lib to setup the decomp work space since the asm isn't written for decompiled yet. They are all patched classes
+When compiling your mod make sure you delete the net/minecraft folder as it's not needed because in compiled it's done using asm
 ```
