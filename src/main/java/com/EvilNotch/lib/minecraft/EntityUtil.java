@@ -109,6 +109,18 @@ public class EntityUtil {
 	 * used on player login so it doesn't parse twice will self empty login complete so don't expect data to be here long
 	 */
     public static HashMap<UUID,NBTTagCompound> nbts = new HashMap();
+    
+	public static String getUnlocalizedName(NBTTagCompound data, World w) 
+	{
+		data = data.copy();
+		ResourceLocation loc = new ResourceLocation(data.getString("id"));
+		return getUnlocalizedName(EntityUtil.createEntityFromNBTQuietly(loc, data, w));
+	}
+    
+    public static String getUnlocalizedName(Entity e)
+    {
+    	return "entity." + EntityList.getEntityString(e) + ".name";
+    }
 	
 	public static String TransLateEntity(NBTTagCompound nbt,World w)
 	{
@@ -128,20 +140,6 @@ public class EntityUtil {
     	if(entity == null || w == null)
     		return null;
     	ResourceLocation loc = getEntityResourceLocation(entity);
-    	if(loc != null)
-    	{
-    		if(Config.cmdBlacklist.contains(loc) )
-    		{
-    			String str = translateEntityGeneral(entity,w);
-    			if(str == null)
-    				return null;
-    			//if mistranslated fix it
-    	    	if(isMistranslated(str))
-    	    		str = str.substring(7, str.length()-5 );
-        		return str;
-    		}
-    	}
-    	
     	String strentity = translateEntityCmd(entity,w);
     	
     	//if cmd fails try general name

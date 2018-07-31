@@ -5,11 +5,13 @@ import java.util.List;
 
 import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.EvilNotch.lib.minecraft.EnumChatFormatting;
 import com.EvilNotch.lib.minecraft.NBTUtil;
 import com.EvilNotch.lib.minecraft.content.client.gui.GuiFakeMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.EvilNotch.lib.minecraft.events.ClientBlockPlaceEvent;
+import com.EvilNotch.lib.minecraft.events.DynamicTranslationEvent;
 import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.RomanNumerals;
@@ -163,12 +165,12 @@ public class ClientEvents {
 	@SubscribeEvent (priority = EventPriority.HIGH)
 	public void blockplace(ClientBlockPlaceEvent e)
 	{
-		System.out.print("fireing:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
+//		System.out.print("fireing:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
 	}
 	@SubscribeEvent (priority = EventPriority.HIGH)
 	public void blockplace(BlockEvent.PlaceEvent e)
 	{
-		System.out.print("server:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
+//		System.out.print("server:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
 	}
 	
 }

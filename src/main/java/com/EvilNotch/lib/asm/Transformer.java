@@ -25,7 +25,7 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.client.gui.inventory.GuiFurnace",
     	"net.minecraft.item.ItemStack",
     	"net.minecraft.item.ItemBlock"
-    });	
+    });
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
@@ -57,6 +57,7 @@ public class Transformer implements IClassTransformer
                 	TestTransformer.transformMethod(classNode, name, inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
                 	TestTransformer.transformMethod(classNode, name, inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
                 	OtherTransformer.injectUUIDPatcher(classNode, obfuscated);
+                	TestTransformer.clearCacheNodes();
                 break;
                 
                 case 1:
@@ -88,7 +89,15 @@ public class Transformer implements IClassTransformer
                 		System.out.println("returning bytes ITEMSTACK");
                 		return classToTransform;
                 	}
-                	TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "onItemUse", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Lnet/minecraft/util/EnumActionResult;", "a", "(Laed;Lamu;Let;Lub;Lfa;FFF)Lud;", "func_179546_a");
+                	if(true)
+                	{
+                		TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "onItemUse", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Lnet/minecraft/util/EnumActionResult;", "a", "(Laed;Lamu;Let;Lub;Lfa;FFF)Lud;", "func_179546_a");
+                		TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "getDisplayName", "()Ljava/lang/String;", "r", "()Ljava/lang/String;", "func_82833_r");
+                		ClassWriter classWriter = new Writer(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+                		classNode.accept(classWriter);
+//                		FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+                		return classWriter.toByteArray();
+                	}
                 break;
                 
                 case 4:
@@ -97,7 +106,6 @@ public class Transformer implements IClassTransformer
                 	TestTransformer.transformMethod(classNode, name, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "a", "(Lamu;Laed;Let;Laip;)Z", "func_179224_a");
                 break;
             }
-        	TestTransformer.clearCacheNodes();
 
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);

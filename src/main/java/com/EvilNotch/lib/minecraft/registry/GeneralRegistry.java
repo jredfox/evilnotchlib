@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.main.MainJava;
+import com.EvilNotch.lib.minecraft.MinecraftUtil;
 import com.EvilNotch.lib.minecraft.content.recipe.ShapelessRecipe;
+import com.EvilNotch.lib.util.simple.PairObj;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -20,19 +24,21 @@ import net.minecraft.command.ICommandManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.world.GameRules;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class GeneralRegistry {
 	
-	public static ArrayList<ICommand> cmds = new ArrayList();
+	//adding
+	public static List<ICommand> cmds = new ArrayList();
 	public static HashMap<ResourceLocation,Material> blockmats = new HashMap();
 	public static HashMap<ResourceLocation,SoundType> soundTypes = new HashMap();
+	public static List<PairObj<String,Object>> gameRules = new ArrayList();
+	
+	//removing
 	public static Set<String> cmdRemove = new HashSet();
-	public static HashMap<String,Class> tileEnts = new HashMap();
+	public static Set<String> gameRulesRemove = new HashSet();
 	
 	public static void load()
 	{
@@ -94,7 +100,7 @@ public class GeneralRegistry {
 	public static void registerCommand(ICommand cmd){
 		cmds.add(cmd);
 	}
-	public static ArrayList<ICommand> getCmdList(){
+	public static List<ICommand> getCmdList(){
 		return cmds;
 	}
 	
@@ -132,6 +138,21 @@ public class GeneralRegistry {
 			}
 		}
 	}
+
+	public static void replaceVanillaCommand(String name, ICommand cmd){
+		removeVanillaCommand(name);
+		registerCommand(cmd);
+	}
+	
+	public static void registerGameRule(String name,boolean value)
+	{
+		gameRules.add(new PairObj<String,Object>(name,value));
+	}
+	public static void registerGameRule(String name,int value)
+	{
+		gameRules.add(new PairObj<String,Object>(name,value));
+	}
+	
 	public static void removeActiveCommands(MinecraftServer server)
 	{
     	//removes half of it
@@ -162,12 +183,43 @@ public class GeneralRegistry {
     		}
     	}
 	}
-
-	public static void replaceVanillaCommand(String name, ICommand cmd){
-		removeVanillaCommand(name);
-		registerCommand(cmd);
+	
+	public static void removeVanillaGameRule(String name)
+	{
+		gameRulesRemove.add(name);
+	}
+	public static void removeActiveGameRules(GameRules g)
+	{
+		TreeMap<String, Object> map = (TreeMap<String, Object>) ReflectionUtil.getObject(g, GameRules.class, FieldAcess.gameRuleMap);
+		for(String s : gameRulesRemove)
+		{
+			map.remove(s);
+		}
+	}
+	public static void removeModGameRule(String s)
+	{
+		Iterator<PairObj<String,Object>> it = gameRules.iterator();
+		while(it.hasNext())
+		{
+			PairObj<String,Object> pair = it.next();
+			if(s.equals(pair.getKey()))
+			{
+				System.out.println("found and removing:" + pair);
+				it.remove();
+				break;
+			}
+		}
 	}
 
+	public static void injectGameRules(GameRules g)
+	{
+		for(PairObj<String,Object> pair : gameRules)
+		{
+			Object value = pair.getValue();
+			GameRules.ValueType type = value instanceof Boolean ? GameRules.ValueType.BOOLEAN_VALUE : GameRules.ValueType.NUMERICAL_VALUE;
+			MinecraftUtil.addGameRule(g, pair.getKey(), value, type);
+		}
+	}
 	public static void addShapelessRecipe(IForgeRegistry<IRecipe> reg,ResourceLocation id,ItemStack output, ItemStack... params) 
 	{
 		reg.register(new ShapelessRecipe(id,output,params).setRegistryName(id));

@@ -60,6 +60,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -304,6 +305,10 @@ public class MainJava {
 		GeneralRegistry.removeActiveCommands(server);
 		for(ICommand cmd : GeneralRegistry.getCmdList())
 			e.registerServerCommand(cmd);
+		
+		GameRules g = e.getServer().getEntityWorld().getGameRules();
+		GeneralRegistry.removeActiveGameRules(g);
+		GeneralRegistry.injectGameRules(g);
 		
 		//directories instantiate
 		System.out.println("Server Starting Event:");

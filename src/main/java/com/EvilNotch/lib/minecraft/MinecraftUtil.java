@@ -25,14 +25,30 @@ import net.minecraft.world.World;
 
 public class MinecraftUtil {
 	
-   public static void addGameRule(GameRules g,String pos, boolean init, ValueType type) 
+   public static void addGameRule(GameRules g,String ruleName, Object init, ValueType type) 
    {
-	   if(!g.hasRule(pos))
-		   g.addGameRule(pos, "" + init, type);
-	   else
-		   g.addGameRule(pos, "" + g.getBoolean(pos), type);
+	   if(init instanceof Boolean)
+		   addGameRuleBoolean(g,ruleName,init,type);
+	   else if(init instanceof Integer)
+		   addGameInteger(g,ruleName,init,type);
    }
 	 
+   public static void addGameInteger(GameRules g, String ruleName, Object init, ValueType type) 
+   {
+	   if(!g.hasRule(ruleName))
+		   g.addGameRule(ruleName, "" + init, type);
+	   else
+		   g.addGameRule(ruleName, "" + g.getInt(ruleName), type);
+   }
+
+   public static void addGameRuleBoolean(GameRules g, String ruleName, Object init, ValueType type) 
+   {
+	   if(!g.hasRule(ruleName))
+		   g.addGameRule(ruleName, "" + init, type);
+	   else
+		   g.addGameRule(ruleName, "" + g.getBoolean(ruleName), type);
+   }
+
    public static SoundEvent getSoundEvent(ResourceLocation soundEventIN) {
 	 return SoundEvent.REGISTRY.getObject(soundEventIN);
    }

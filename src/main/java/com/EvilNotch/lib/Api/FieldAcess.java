@@ -12,6 +12,7 @@ import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.end.DragonFightManager;
@@ -60,6 +61,7 @@ public class FieldAcess {
 	public static boolean cached = false;
 	public static String gameProfileId = null;
 	public static String blockstate = null;
+	public static String gameRuleMap = null;
 	
 	public static void cacheFields()
 	{
@@ -86,6 +88,7 @@ public class FieldAcess {
 		cachedUniqueIdString = MCPMappings.getField(Entity.class, "cachedUniqueIdString");
 		gameProfileId = MCPMappings.getField(GameProfile.class, "id");
 		blockstate = MCPMappings.getField(Block.class, "blockState");
+		gameRuleMap =  MCPMappings.getField(GameRules.class, "rules");
 		
 		try 
 		{

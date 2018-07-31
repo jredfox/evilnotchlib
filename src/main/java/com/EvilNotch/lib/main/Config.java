@@ -17,7 +17,6 @@ public class Config {
 
 	public static boolean debug = false;
 	public static File cfg = null;
-	public static ArrayList<ResourceLocation> cmdBlacklist = new ArrayList();
 	public static boolean isDev = false;
 	public static boolean tpAllowCrossDim = false;
 	
@@ -30,13 +29,6 @@ public class Config {
 		debug = config.get("general", "Debug", false).getBoolean();
 		isDev = config.get("general", "isDev", false).getBoolean();
 		tpAllowCrossDim = config.get("general","tpAllowCrossDim",true).getBoolean();
-		String[] vars = config.getStringList("blacklistCMDNames", "entity", new String[]{"\"modid:mobname\""}, "Blacklist for command sender names so it always uses general when translating input with quotes \"modid:mobname\" ");
-		for(String s : vars)
-		{
-			if(!LineBase.toWhiteSpaced(s).equals(""))
-				cmdBlacklist.add((new LineBase(s)).getResourceLocation() );
-		}
-		
 		config.save();
 	}
 
