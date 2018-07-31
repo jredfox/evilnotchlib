@@ -29,7 +29,7 @@ Player Capabilities: different from forge they are easy to regiser and use. Curr
 Basic MC Lib:ability to make modding easier automation for registration and lang
 GeneralRegistry: registry for commands, sound types and other general stuffs regsiter stuff here for compatibility
 EntityModRegistry: support SpawnListEntries with NBT mobs
-Client Block Place Event: fires on client side for client sync on block placing
+ClientBlockPlaceEvent: fires on client side when player places block for client sync
 Line Library: a powerful library for parsing lines in many forms "modid:block" = "custom parsing values"
 ConfigBase: part of the line library as an api implementation for the line library
 Primitive Obj: allows for object modifyable primitive values(byte,short,int,long,float,double,boolean)
@@ -38,11 +38,11 @@ JavaUtil: varius pure java utilities
 CSVE: basic implementation of comma seperated values with a varible system in place
 Json model generation(Basic MC Lib)
 Lang generation(Basic MC Lib)
+Dyanmic Tranlsation Event(let's you override ItemStack#getDisplayName())
 
 Future:
 Font Renderer
 NBTPathAPI
-Dynamic Client Translations
 Lan Skin Host Fix
 ```
 
