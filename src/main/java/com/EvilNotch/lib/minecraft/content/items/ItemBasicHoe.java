@@ -34,13 +34,13 @@ public class ItemBasicHoe extends ItemHoe implements IBasicItem{
 		this.setUnlocalizedName(unlocalname);
 		this.setCreativeTab(tab);
 		
-		//autofill
-		this.populateLang(langlist, unlocalname,id);
-		
 		this.hasregister = register;
 		this.hasmodel = model;
 		this.haslang = lang;
 		this.hasconfig = config;
+		
+		//autofill
+		this.populateLang(langlist, unlocalname,id);
 		
 		MainJava.items.add(this);
 	}

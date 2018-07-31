@@ -32,19 +32,22 @@ public class ItemBasicPickaxe extends ItemPickaxe implements IBasicItem{
 		this.setUnlocalizedName(unlocalname);
 		this.setCreativeTab(tab);
 		
-		//autofill
-		this.populateLang(langlist, unlocalname,id);
-		
 		this.hasregister = register;
 		this.hasmodel = model;
 		this.haslang = lang;
 		this.hasconfig = config;
 		
+		//autofill
+		this.populateLang(langlist, unlocalname,id);
+		
 		MainJava.items.add(this);
 	}
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
 		if(!this.useLangRegistry())
+		{
+			System.out.println("returning no lang:" + langlist[0] + " hasLang:" + this.haslang);
 			return;
+		}
 		for(LangEntry entry : langlist)
 		{
 			entry.langId = "item." + unlocalname + ".name";

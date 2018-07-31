@@ -37,12 +37,13 @@ public class BasicItem extends Item implements IBasicItem{
 		this.setUnlocalizedName(unlocalname);
 		this.setCreativeTab(tab);
 		
-		//autofill
-		populateLang(langlist,unlocalname,id);//not just client side I18l or something uses it on server side for translations
-		
 		this.hasregister = register;
 		this.hasmodel = model;
 		this.haslang = lang;
+		
+		//autofill
+		populateLang(langlist,unlocalname,id);//not just client side I18l or something uses it on server side for translations
+		
 		MainJava.items.add(this);
 	}
 	
