@@ -161,7 +161,6 @@ public class CMDDim extends CommandTeleport{
     {
     	if(this.wholeStack() || true)
     	{
-    		System.out.println("Debug TPING STACK");
     		EntityUtil.teleportStack(entity, server, x, y, z,yaw,pitch, traveldim);
     	}
     	else if(!this.dismountPassengers() )

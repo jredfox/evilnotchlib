@@ -2,6 +2,10 @@ package com.EvilNotch.lib.util.primitive;
 
 import com.EvilNotch.lib.util.JavaUtil;
 
+/**
+ * a modifyable integer object that can convert not just cast between other primitive values
+ * @author jredfox
+ */
 @SuppressWarnings("serial")
 public class IntObj extends Number implements IModNumber{
 	

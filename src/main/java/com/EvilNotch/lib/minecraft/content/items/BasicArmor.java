@@ -84,10 +84,14 @@ public class BasicArmor extends ItemArmor implements IBasicItem,IBasicArmor{
 		super.onArmorTick(world, player, itemStack);
 		if(this.effect == null || this.armorset  == null)
 			return;
+		ItemStack head = player.inventory.armorInventory.get(3);
+		//return from ticking if helmet isn't on since I only need one thing happening per tick
+		if(head.getItem() != this)
+			return;
 		ItemStack boots = player.inventory.armorInventory.get(0);
 		ItemStack pants = player.inventory.armorInventory.get(1);
 		ItemStack chest = player.inventory.armorInventory.get(2);
-		ItemStack head = player.inventory.armorInventory.get(3);
+
 		if(!this.hasFullArmorSet(boots, pants, chest, head))
 			return;
 		

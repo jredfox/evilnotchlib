@@ -877,36 +877,23 @@ public class EntityUtil {
 	{
 		//get all passengers and riding entities
         ArrayList<Entity> list = (ArrayList<Entity>) JavaUtil.toArray(entity.getRecursivePassengers());
-        ArrayList<Entity> rides = new ArrayList();
-        
-        for(Entity e : list)
-        	rides.add(e.getRidingEntity());
-        
-        entity = EntityUtil.telePortEntity(entity, server, x, y, z,yaw,pitch, traveldim);
-        setEntity(entity,rides);//correct riding passenger
-        
+        list.add(0,entity);
+
         for(int i=0;i<list.size();i++)
         {
         	Entity e = list.get(i);
         	e = EntityUtil.telePortEntity(e,server,x,y,z,e.rotationYaw,e.rotationPitch,traveldim);//keep yaw/pitch so they all don't face the same way only the base mob
-        	setEntity(e,rides);//correct riding passengers
-        	
-        	Entity toRide = rides.get(i);
-        	if(toRide != null)
-        	{
-        		e.startRiding(toRide,true);
-        	}
-        	if(e instanceof EntityPlayerMP)
-        	{
-        		EntityPlayerMP player = (EntityPlayerMP)e;
-        		player.connection.sendPacket(new SPacketSetPassengers(toRide));
-        	}
         }
 	}
-    private static void setEntity(Entity changed, ArrayList<Entity> rides) {
+    protected static void setEntity(Entity changed, ArrayList<Entity> rides) {
 		for(int i=0;i<rides.size();i++)
 		{
 			Entity e = rides.get(i);
+			if(e == null)
+			{
+				System.out.println("ent null:" + i);
+				continue;
+			}
 			if(e.getUniqueID().toString().equals(changed.getUniqueID().toString()) && e != changed )
 			{
 				rides.set(i, changed);
@@ -949,7 +936,9 @@ public class EntityUtil {
 	public static Entity telePortEntity(Entity e,MinecraftServer server, double x, double y, double z,float yaw,float pitch, int traveldim) throws WrongUsageException
 	{
 		if(e.isDead)
+		{
 			return e;
+		}
 		
 		e.dismountRidingEntity();
         int prevDim = e.dimension;
@@ -1118,7 +1107,7 @@ public class EntityUtil {
             Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
             EntityPlayerMP player = (EntityPlayerMP)e;
             player.connection.setPlayerLocation(x, y, z, yaw, pitch, set);
-            EntityUtil.captureCoords(player);
+//            EntityUtil.captureCoords(player);
         }
         else
         {
@@ -1132,7 +1121,7 @@ public class EntityUtil {
         }
 
         //vanilla hotfix if entity isn't loaded and not added to the chunk do this don't check players because sometimes the world will randomly remove them causing chunks not to load from players
-        if(!(e instanceof EntityPlayer))
+       /* if(!(e instanceof EntityPlayer))
         {
         	if(!MinecraftUtil.isChunkLoaded(e.world, chunkX, chunkZ, true))
         	{
@@ -1150,7 +1139,7 @@ public class EntityUtil {
         		}
         	}
         	e.world.updateEntityWithOptionalForce(e, false);
-        }
+        }*/
     	
         return e;
     }
