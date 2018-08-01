@@ -34,6 +34,7 @@ import com.EvilNotch.lib.minecraft.content.commands.CMDTP;
 import com.EvilNotch.lib.minecraft.content.commands.CMDTeleport;
 import com.EvilNotch.lib.minecraft.content.items.BasicItem;
 import com.EvilNotch.lib.minecraft.content.items.BasicItemMeta;
+import com.EvilNotch.lib.minecraft.content.items.IBasicArmor;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.content.items.ItemBasicPickaxe;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityContainer;
@@ -225,6 +226,29 @@ public class MainJava {
 	    	ItemStack c = set.chestplate;
 	    	ItemStack l = set.leggings;
 	    	ItemStack b = set.boots;
+	    	if(h.getItem() instanceof IBasicArmor)
+	    	{
+	    		IBasicArmor basic = (IBasicArmor)h.getItem();
+	    		basic.setArmorSet(set);
+	    	}
+	    	if(c.getItem() instanceof IBasicArmor)
+	    	{
+	    		IBasicArmor basic = (IBasicArmor)c.getItem();
+	    		basic.setArmorSet(set);
+	    	}
+	    	if(l.getItem() instanceof IBasicArmor)
+	    	{
+	    		IBasicArmor basic = (IBasicArmor)l.getItem();
+	    		basic.setArmorSet(set);
+	    	}
+	    	if(b.getItem() instanceof IBasicArmor)
+	    	{
+	    		IBasicArmor basic = (IBasicArmor)b.getItem();
+	    		basic.setArmorSet(set);
+	    	}
+	    	
+	    	if(!set.hasRecipe)
+	    		continue;
 	    	ItemStack block = set.block;
 	    	boolean meta = set.allMetaBlock;
 	    	//helmet
@@ -276,7 +300,7 @@ public class MainJava {
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		List<EntityPlayerMP> players = server.getPlayerList().getPlayers();
 		
-		System.out.println("Server is stopping saving capabilities");
+		System.out.println("Server is stopping. Saving capabilities");
 		Iterator<Map.Entry<String,CapabilityContainer>> it = CapabilityReg.capabilities.entrySet().iterator();
 		while(it.hasNext())
 		{

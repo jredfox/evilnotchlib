@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.ConfigMenu;
-import com.EvilNotch.lib.util.ICopy;
+import com.EvilNotch.lib.util.simple.ICopy;
 
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;

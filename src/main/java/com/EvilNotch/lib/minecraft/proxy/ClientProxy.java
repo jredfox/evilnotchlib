@@ -304,7 +304,6 @@ public class ClientProxy extends ServerProxy{
 			System.out.println("lan generation only occurs in dev enviorment on client:");
 			return;
 		}
-		System.out.println("Loading Lang Generation:" + BasicItem.itemlangs);
 		root  = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
 		if(!root.exists())
 			root.mkdirs();

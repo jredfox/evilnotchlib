@@ -44,6 +44,7 @@ import org.json.simple.parser.ParseException;
 
 import com.EvilNotch.lib.util.Line.LineBase;
 import com.EvilNotch.lib.util.Line.LineItemStackBase;
+import com.EvilNotch.lib.util.simple.ICopy;
 
 import net.minecraft.util.ResourceLocation;
 
@@ -110,6 +111,76 @@ public class JavaUtil {
 			return Byte.MIN_VALUE;
 		return (byte)s;
 	}
+	public static byte castByte(float f) 
+	{
+		long l = convertToLong(f);
+		return JavaUtil.castByte(l);
+	}
+	public static byte castByte(double d) 
+	{
+		long l = convertToLong(d);
+		return JavaUtil.castByte(l);
+	}
+	
+	public static short castShort(float f) 
+	{
+		long l = convertToLong(f);
+		return JavaUtil.castShort(l);
+	}
+	public static short castShort(double d) 
+	{
+		long l = convertToLong(d);
+		return JavaUtil.castShort(l);
+	}
+	public static int castInt(float f) 
+	{
+		long l = convertToLong(f);
+		return JavaUtil.castInt(l);
+	}
+	public static int castInt(double d) 
+	{
+		long l = convertToLong(d);
+		return JavaUtil.castInt(l);
+	}
+	public static long castLong(float f)
+	{
+		return convertToLong(f);
+	}
+	public static long castLong(double d)
+	{
+		return convertToLong(d);
+	}
+	public static float castFloat(double d)
+	{
+		if(d > Float.MAX_VALUE)
+			return Float.MAX_VALUE;
+		else if (d < Float.MIN_VALUE)
+			return Float.MIN_VALUE;
+		return (float)d;
+	}
+	
+	/**
+	 * doesn't work every time as java algorithms truncate to 0 sometimes when negative only????
+	 */
+	public static long convertToLong(double d)
+	{
+		if(d > Long.MAX_VALUE)
+			return Long.MAX_VALUE;
+		if(d < Long.MIN_VALUE)
+			return Long.MIN_VALUE;
+		return Math.round(d);
+	}
+	/**
+	 * doesn't work every time as java algorithms truncate to 0 sometimes when negative only????
+	 */
+	public static long convertToLong(float f)
+	{
+		if(f > Long.MAX_VALUE)
+			return Long.MAX_VALUE;
+		if(f < Long.MIN_VALUE)
+			return Long.MIN_VALUE;
+		return (long)f;
+	}
 	
 	public static String getPublicIp() throws IOException 
 	{
@@ -150,15 +221,29 @@ public class JavaUtil {
 		}
 	}
 	
-	public static int getInt(Number obj){
+	public static int getInt(Number obj)
+	{
+		if(obj instanceof Long)
+			return JavaUtil.castInt((Long)obj);
 		return obj.intValue();
 	}
 	public static short getShort(Number obj){
+		if(obj instanceof Long)
+			return JavaUtil.castShort((Long)obj);
+		else if(obj instanceof Integer)
+			return JavaUtil.castShort((Integer)obj);
 		return obj.shortValue();
 	}
 	public static byte getByte(Number obj){
+		if(obj instanceof Long)
+			return JavaUtil.castByte((Long)obj);
+		else if(obj instanceof Integer)
+			return JavaUtil.castByte((Integer)obj);
+		else if(obj instanceof Short)
+			return JavaUtil.castByte((Short)obj);
 		return obj.byteValue();
 	}
+	
 	public static Long getLong(Number obj){
 		return obj.longValue();
 	}

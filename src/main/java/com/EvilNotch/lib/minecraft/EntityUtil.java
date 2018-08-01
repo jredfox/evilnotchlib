@@ -25,8 +25,8 @@ import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.PointId;
 import com.EvilNotch.lib.util.Line.LineBase;
+import com.EvilNotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.WrongUsageException;

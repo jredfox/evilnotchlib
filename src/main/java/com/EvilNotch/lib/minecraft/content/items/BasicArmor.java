@@ -2,10 +2,12 @@ package com.EvilNotch.lib.minecraft.content.items;
 
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.content.ArmorMat;
+import com.EvilNotch.lib.minecraft.content.ArmorSet;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -13,12 +15,13 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class BasicArmor extends ItemArmor implements IBasicItem{
+public class BasicArmor extends ItemArmor implements IBasicItem,IBasicArmor{
 	PotionEffect effect = null;
 	public boolean hasregister = false;
 	public boolean hasmodel = false;
 	public boolean haslang = false;
 	public boolean hasconfig = false;
+	public ArmorSet armorset = null;
 	
 	/**
 	 * the booleans are used for later calls in case people want to call create objects before preinit
@@ -68,22 +71,33 @@ public class BasicArmor extends ItemArmor implements IBasicItem{
 		}
 	}
 	
+	public void setArmorSet(ArmorSet set){
+		this.armorset = set;
+	}
+	public ArmorSet getArmorSet(){
+		return this.armorset;
+	}
+	
 	@Override
-	public void onArmorTick(final World world, final EntityPlayer player, final ItemStack itemStack) {
+	public void onArmorTick(final World world, final EntityPlayer player, final ItemStack itemStack) 
+	{
 		super.onArmorTick(world, player, itemStack);
-		if(this.effect == null)
+		if(this.effect == null || this.armorset  == null)
 			return;
 		ItemStack boots = player.inventory.armorInventory.get(0);
 		ItemStack pants = player.inventory.armorInventory.get(1);
 		ItemStack chest = player.inventory.armorInventory.get(2);
 		ItemStack head = player.inventory.armorInventory.get(3);
-		if(boots == null || pants == null || chest == null || head == null)
+		if(!this.hasFullArmorSet(boots, pants, chest, head))
 			return;
-		if(boots.isEmpty() || pants.isEmpty()|| chest.isEmpty() || head.isEmpty())
-			return;
+		
 		if (!player.isPotionActive(this.effect.getPotion())) { // If the Potion isn't currently active,
 			player.addPotionEffect(new PotionEffect(this.effect)); // Apply a copy of the PotionEffect to the player
 		}
+	}
+	public boolean hasFullArmorSet(ItemStack boots, ItemStack pants, ItemStack chest, ItemStack head) 
+	{
+		return this.armorset.boots.getItem() == boots.getItem() && this.armorset.leggings.getItem() == pants.getItem() && this.armorset.chestplate.getItem() == chest.getItem() && this.armorset.helmet.getItem() == head.getItem();
 	}
 	@Override
 	public boolean register() {
@@ -101,6 +115,9 @@ public class BasicArmor extends ItemArmor implements IBasicItem{
 	public boolean useConfigPropterties() {
 		return this.hasconfig;
 	}
-
+	@Override
+	public PotionEffect getPotionEffect() {
+		return this.effect;
+	}
 
 }

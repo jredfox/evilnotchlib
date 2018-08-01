@@ -1,13 +1,14 @@
 package com.EvilNotch.lib.util.Line;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.EvilNotch.lib.util.JavaUtil;
 
 public interface IMultiHead{
 	
 	public Object getHead(int index);
-	public ArrayList getHeads();
+	public List getHeads();
 	public ArrEntry getStaticArray(int index);
 	
 	public int getInt(int index);

@@ -13,16 +13,17 @@ public class ArmorSet {
 	public ItemStack boots;
 	public ItemStack block;
 	public boolean allMetaBlock = true;
+	public boolean hasRecipe = true;
 	
 	public ArmorSet(Item h, Item c, Item l,Item b,ItemStack block,boolean allMeta)
 	{
-		this(h,c,l,b,block,allMeta,true);
+		this(h,c,l,b,block,allMeta,true,true);
 	}
 	
 	/**
 	 * All meta boolean for the itemstack block
 	 */
-	public ArmorSet(Item h, Item c, Item l,Item b,ItemStack block,boolean allMeta,boolean register)
+	public ArmorSet(Item h, Item c, Item l,Item b,ItemStack block,boolean allMeta,boolean register,boolean recipe)
 	{
 		this.helmet = new ItemStack(h);
 		this.chestplate = new ItemStack(c);
@@ -32,6 +33,7 @@ public class ArmorSet {
 		this.allMetaBlock = allMeta;
 		if(register)
 			MainJava.armorsets.add(this);
+		this.hasRecipe = recipe;
 	}
 	
 	public ArmorSet(ItemStack h, ItemStack c, ItemStack l,ItemStack b,ItemStack block,boolean allMeta)

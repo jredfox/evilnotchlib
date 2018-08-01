@@ -2,7 +2,7 @@ package com.EvilNotch.lib.minecraft.content.pcapabilites;
 
 import java.util.ArrayList;
 
-import com.EvilNotch.lib.util.ICopy;
+import com.EvilNotch.lib.util.simple.ICopy;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

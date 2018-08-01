@@ -2,7 +2,7 @@ package com.EvilNotch.lib.util.Line;
 
 import java.lang.reflect.Constructor;
 
-import com.EvilNotch.lib.util.ICopy;
+import com.EvilNotch.lib.util.simple.ICopy;
 
 import net.minecraft.util.ResourceLocation;
 

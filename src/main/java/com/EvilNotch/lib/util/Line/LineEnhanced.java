@@ -2,9 +2,10 @@ package com.EvilNotch.lib.util.Line;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import com.EvilNotch.lib.util.ICopy;
 import com.EvilNotch.lib.util.JavaUtil;
+import com.EvilNotch.lib.util.simple.ICopy;
 
 public class LineEnhanced extends LineItemStackBase implements IMultiHead,IHead{
 	
@@ -302,7 +303,7 @@ public class LineEnhanced extends LineItemStackBase implements IMultiHead,IHead{
 	 * Pos is used for line dynamic logic or another thing but, default pos is 0
 	 */
 	@Override
-	public ArrayList<Object> getHeads() 
+	public List<Object> getHeads() 
 	{
 		return this.heads;
 	}

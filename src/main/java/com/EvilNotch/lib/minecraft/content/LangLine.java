@@ -1,8 +1,8 @@
 package com.EvilNotch.lib.minecraft.content;
 
-import com.EvilNotch.lib.util.ICopy;
 import com.EvilNotch.lib.util.Line.ILine;
 import com.EvilNotch.lib.util.Line.LineBase;
+import com.EvilNotch.lib.util.simple.ICopy;
 
 import net.minecraft.util.ResourceLocation;
 

@@ -15,7 +15,7 @@ import com.EvilNotch.lib.minecraft.TileEntityUtil;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
-import com.EvilNotch.lib.util.PointId;
+import com.EvilNotch.lib.util.simple.PointId;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;

@@ -1,4 +1,6 @@
-package com.EvilNotch.lib.util.number;
+package com.EvilNotch.lib.util.primitive;
+
+import com.EvilNotch.lib.util.JavaUtil;
 
 @SuppressWarnings("serial")
 public class IntObj extends Number implements IModNumber{
@@ -30,11 +32,11 @@ public class IntObj extends Number implements IModNumber{
 	}
 	@Override
 	public byte byteValue(){
-		return (byte)this.integer;
+		return JavaUtil.castByte(this.integer);
 	}
 	@Override
 	public short shortValue(){
-		return (short)this.integer;
+		return JavaUtil.castShort(this.integer);
 	}
 
 	@Override
@@ -44,7 +46,7 @@ public class IntObj extends Number implements IModNumber{
 
 	@Override
 	public void setLong(long l) {
-		this.integer = (int)l;
+		this.integer = JavaUtil.castInt(l);
 	}
 
 	@Override
@@ -59,12 +61,12 @@ public class IntObj extends Number implements IModNumber{
 
 	@Override
 	public void setFloat(float f) {
-		this.integer = (int)f;
+		this.integer = JavaUtil.castInt(f);
 	}
 
 	@Override
 	public void setDouble(double d) {
-		this.integer = (int)d;
+		this.integer = JavaUtil.castInt(d);
 	}
 	
 	@Override

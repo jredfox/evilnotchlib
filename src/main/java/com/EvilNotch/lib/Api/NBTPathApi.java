@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.EvilNotch.lib.util.ICopy;
-import com.EvilNotch.lib.util.IObject;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.LineBase;
+import com.EvilNotch.lib.util.simple.ICopy;
+import com.EvilNotch.lib.util.simple.IObject;
 import com.google.common.base.Strings;
 
 import net.minecraft.nbt.NBTBase;

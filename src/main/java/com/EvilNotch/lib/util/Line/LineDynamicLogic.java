@@ -3,8 +3,8 @@ package com.EvilNotch.lib.util.Line;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.EvilNotch.lib.util.ICopy;
 import com.EvilNotch.lib.util.JavaUtil;
+import com.EvilNotch.lib.util.simple.ICopy;
 
 import net.minecraft.util.ResourceLocation;
 

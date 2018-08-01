@@ -1,6 +1,6 @@
 package com.EvilNotch.lib.util.Line;
 
-import com.EvilNotch.lib.util.IObject;
+import com.EvilNotch.lib.util.simple.IObject;
 
 import net.minecraft.util.ResourceLocation;
 

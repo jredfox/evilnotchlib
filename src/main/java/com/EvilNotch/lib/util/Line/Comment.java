@@ -1,7 +1,7 @@
 package com.EvilNotch.lib.util.Line;
 
-import com.EvilNotch.lib.util.ICopy;
-import com.EvilNotch.lib.util.IObject;
+import com.EvilNotch.lib.util.simple.ICopy;
+import com.EvilNotch.lib.util.simple.IObject;
 
 public class Comment implements IObject{
     public int lineIndex = -1;

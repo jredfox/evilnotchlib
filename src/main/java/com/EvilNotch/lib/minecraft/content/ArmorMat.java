@@ -4,10 +4,10 @@ import java.util.HashMap;
 
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.minecraft.MinecraftUtil;
-import com.EvilNotch.lib.util.IEnumContainer;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.ArrEntry;
 import com.EvilNotch.lib.util.Line.LineEnhanced;
+import com.EvilNotch.lib.util.simple.IEnumContainer;
 
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;

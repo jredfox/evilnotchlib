@@ -1,70 +1,72 @@
-package com.EvilNotch.lib.util.number;
+package com.EvilNotch.lib.util.primitive;
 
-public class ShortObj extends Number implements IModNumber{
+import com.EvilNotch.lib.util.JavaUtil;
+
+public class DoubleObj extends Number implements IModNumber{
 	
-	public short s;
+	public double d;
 	
-	public ShortObj(short s){
-		this.s = s;
+	public DoubleObj(double d){
+		this.d = d;
 	}
 
 	@Override
 	public double doubleValue() {
-		return (double)this.s;
+		return this.d;
 	}
 
 	@Override
 	public float floatValue() {
-		return (float)this.s;
+		return JavaUtil.castFloat(this.d);
 	}
 
 	@Override
 	public int intValue() {
-		return (int)this.s;
+		return JavaUtil.castInt(this.d);
 	}
 
 	@Override
 	public long longValue() {
-		return (long)this.s;
+		return JavaUtil.castInt(this.d);
 	}
 	
 	@Override
 	public byte byteValue(){
-		return (byte)this.s;
+		return JavaUtil.castByte(this.d);
 	}
 	@Override
 	public short shortValue(){
-		return this.s;
+		return JavaUtil.castShort(this.d);
 	}
 
 	@Override
 	public void setInt(int i) {
-		this.s = (short)i;
+		this.d = (double)i;
 	}
 
 	@Override
 	public void setLong(long l) {
-		this.s = (short)l;
+		this.d = (double)l;
 	}
 
 	@Override
 	public void setByte(byte b) {
-		this.s = (short)b;
+		this.d = (double)b;
 	}
 
 	@Override
 	public void setShort(short s) {
-		this.s = s;
+		this.d = (double)s;
 	}
 
 	@Override
 	public void setFloat(float f) {
-		this.s = (short)f;
+		this.d = (double)f;
 	}
 
 	@Override
 	public void setDouble(double d) {
-		this.s = (short)d;
+		this.d = d;
 	}
 	
 	@Override
@@ -72,11 +74,11 @@ public class ShortObj extends Number implements IModNumber{
 		if(!(obj instanceof Number))
 			return false;
 		Number num = (Number)obj;
-		return this.shortValue() == num.shortValue();
+		return this.doubleValue() == num.doubleValue();
 	}
 	@Override 
 	public String toString(){
-		return "" + this.shortValue();
+		return "" + this.doubleValue();
 	}
 
 }

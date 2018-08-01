@@ -2,6 +2,8 @@ package com.EvilNotch.lib.asm;
 
 import java.io.File;
 
+import net.minecraft.block.Block;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.config.Configuration;
 
 public class ConfigCore {
@@ -17,7 +19,7 @@ public class ConfigCore {
 	{
 		File dir = new File(System.getProperty("user.dir"));
 		File filecfg = new File(dir,"config/evilnotchlib/asm.cfg");
-		System.out.println("Loading CoreMod Configurations for ASM:" +  filecfg);
+		System.out.println("Loading CoreMod Configurations for ASM:");
 		Configuration config = new Configuration(filecfg);
 		config.load();
 		asm_playerlist = config.get("asm","uuidFixer",true).getBoolean();

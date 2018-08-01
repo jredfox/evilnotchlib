@@ -14,7 +14,7 @@ import com.EvilNotch.lib.minecraft.events.ClientBlockPlaceEvent;
 import com.EvilNotch.lib.minecraft.events.DynamicTranslationEvent;
 import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
 import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.RomanNumerals;
+import com.EvilNotch.lib.util.simple.RomanNumerals;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;

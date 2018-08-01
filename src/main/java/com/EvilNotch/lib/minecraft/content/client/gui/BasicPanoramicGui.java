@@ -22,7 +22,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
 
-import com.EvilNotch.lib.util.ICopy;
+import com.EvilNotch.lib.util.simple.ICopy;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Runnables;
 

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util;
+package com.EvilNotch.lib.util.primitive;
 
 public class BooleanObj{
 	

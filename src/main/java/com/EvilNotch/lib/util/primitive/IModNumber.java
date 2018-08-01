@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.number;
+package com.EvilNotch.lib.util.primitive;
 
 public interface IModNumber {
 	

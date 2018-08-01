@@ -13,7 +13,7 @@ import java.util.List;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.EvilNotch.lib.util.ICopy;
+import com.EvilNotch.lib.util.simple.ICopy;
 
 
 /**
