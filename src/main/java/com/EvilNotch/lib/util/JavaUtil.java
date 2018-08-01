@@ -44,6 +44,7 @@ import org.json.simple.parser.ParseException;
 
 import com.EvilNotch.lib.util.Line.LineBase;
 import com.EvilNotch.lib.util.Line.LineItemStackBase;
+import com.EvilNotch.lib.util.primitive.LongObj;
 import com.EvilNotch.lib.util.simple.ICopy;
 
 import net.minecraft.util.ResourceLocation;
@@ -182,14 +183,72 @@ public class JavaUtil {
 		return (long)f;
 	}
 	
+	public static int getInt(Number obj)
+	{
+		obj = getIntNum(obj);
+		if(obj instanceof Long)
+			return JavaUtil.castInt((Long)obj);
+		return obj.intValue();
+	}
+	public static short getShort(Number obj)
+	{
+		obj = getIntNum(obj);
+		if(obj instanceof Long)
+			return JavaUtil.castShort((Long)obj);
+		else if(obj instanceof Integer)
+			return JavaUtil.castShort((Integer)obj);
+		return obj.shortValue();
+	}
+	public static byte getByte(Number obj)
+	{
+		obj = getIntNum(obj);
+		if(obj instanceof Long)
+			return JavaUtil.castByte((Long)obj);
+		else if(obj instanceof Integer)
+			return JavaUtil.castByte((Integer)obj);
+		else if(obj instanceof Short)
+			return JavaUtil.castByte((Short)obj);
+		return obj.byteValue();
+	}
+	
+	public static Long getLong(Number obj){
+		obj = getIntNum(obj);
+		return obj.longValue();
+	}
+	public static double getDouble(Number obj){
+		return obj.doubleValue();
+	}
+	public static float getFloat(Number obj){
+		return obj.floatValue();
+	}
+	/**
+	 * if double/float convert to integer of long else do nothing
+	 */
+	public static Number getIntNum(Number obj) {
+		if(obj instanceof Double)
+		{
+			obj = new Long(JavaUtil.convertToLong((Double)obj));
+		}
+		else if(obj instanceof Float)
+		{
+			obj = new Long(JavaUtil.convertToLong((Float)obj));
+		}
+		return obj;
+	}
+	
+	/**
+	 * dynamically get your current public ip adress I recommend cacheing it somewhere so it doesn't go throw a huge process each time
+	 */
 	public static String getPublicIp() throws IOException 
 	{
 		URL whatismyip = new URL("http://checkip.amazonaws.com");
 		BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 		String ip = in.readLine(); //you get the IP as a String
-		return ip;
+		return ip.trim();
 	}
-
+	/**
+	 * your current computer adress's ip
+	 */
 	public static String getIpv4() throws UnknownHostException 
 	{
         InetAddress inetAddress = InetAddress.getLocalHost();
@@ -219,39 +278,6 @@ public class JavaUtil {
 		{
 			return false;
 		}
-	}
-	
-	public static int getInt(Number obj)
-	{
-		if(obj instanceof Long)
-			return JavaUtil.castInt((Long)obj);
-		return obj.intValue();
-	}
-	public static short getShort(Number obj){
-		if(obj instanceof Long)
-			return JavaUtil.castShort((Long)obj);
-		else if(obj instanceof Integer)
-			return JavaUtil.castShort((Integer)obj);
-		return obj.shortValue();
-	}
-	public static byte getByte(Number obj){
-		if(obj instanceof Long)
-			return JavaUtil.castByte((Long)obj);
-		else if(obj instanceof Integer)
-			return JavaUtil.castByte((Integer)obj);
-		else if(obj instanceof Short)
-			return JavaUtil.castByte((Short)obj);
-		return obj.byteValue();
-	}
-	
-	public static Long getLong(Number obj){
-		return obj.longValue();
-	}
-	public static double getDouble(Number obj){
-		return obj.doubleValue();
-	}
-	public static float getFloat(Number obj){
-		return obj.floatValue();
 	}
 	
 	public static void getAllFilesFromDir(File directory, ArrayList<File> files,String extension) {
