@@ -385,7 +385,7 @@ public class JavaUtil {
 		System.out.println(msg + (System.currentTimeMillis()-time) + "ms" );
 	}
 	
-	public void writeToClipboard(String s, ClipboardOwner owner) 
+	public static void writeToClipboard(String s, ClipboardOwner owner) 
 	{
 		if(s == null)
 			s = "null";

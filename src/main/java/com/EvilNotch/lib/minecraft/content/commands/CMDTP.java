@@ -66,7 +66,7 @@ public class CMDTP extends CommandTP {
                     throw new CommandException("commands.tp.notSameDimension", new Object[0]);
                 }
                     
-                EntityUtil.telePortEntity(entity, server, entity1.posX, entity1.posY, entity1.posZ, entity1.rotationYaw, entity1.rotationPitch, entity1.dimension);
+                EntityUtil.teleportStackAtIndex(entity, server, entity1.posX, entity1.posY, entity1.posZ, entity1.rotationYaw, entity1.rotationPitch, entity1.dimension);
 
                 notifyCommandListener(sender, this, "commands.tp.success", new Object[] {entity.getName(), entity1.getName()});
             }
@@ -74,7 +74,7 @@ public class CMDTP extends CommandTP {
     }
     public void teleportEntity(Entity e,MinecraftServer server, CommandBase.CoordinateArg argX, CommandBase.CoordinateArg argY, CommandBase.CoordinateArg argZ, CommandBase.CoordinateArg argYaw, CommandBase.CoordinateArg argPitch) throws WrongUsageException
     {
-    	EntityUtil.telePortEntity(e, server, argX.getResult(), argY.getResult(), argZ.getResult(), (float)argYaw.getResult(), (float)argPitch.getResult(), e.dimension);
+    	EntityUtil.teleportStackAtIndex(e, server, argX.getResult(), argY.getResult(), argZ.getResult(), (float)argYaw.getResult(), (float)argPitch.getResult(), e.dimension);
     }
 
 }

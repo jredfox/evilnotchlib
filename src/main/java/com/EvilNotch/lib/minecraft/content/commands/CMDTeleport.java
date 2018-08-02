@@ -60,7 +60,7 @@ public class CMDTeleport extends CommandTeleport{
      */
     public void doTeleport(Entity e,MinecraftServer server, CommandBase.CoordinateArg argX, CommandBase.CoordinateArg argY, CommandBase.CoordinateArg argZ, CommandBase.CoordinateArg argYaw, CommandBase.CoordinateArg argPitch) throws WrongUsageException
     {
-    	EntityUtil.telePortEntity(e, server, argX.getResult(), argY.getResult(), argZ.getResult(), (float)argYaw.getResult(), (float)argPitch.getResult(), e.dimension);
+    	EntityUtil.teleportStackAtIndex(e, server, argX.getResult(), argY.getResult(), argZ.getResult(), (float)argYaw.getResult(), (float)argPitch.getResult(), e.dimension);
     }
 
 }

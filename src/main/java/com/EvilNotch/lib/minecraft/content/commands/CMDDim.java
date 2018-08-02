@@ -144,9 +144,6 @@ public class CMDDim extends CommandTeleport{
                     hasFlags = true;
                 }
                 
-                if(this.dismountPassengers())
-                	entity.removePassengers();
-                
                 teleportEnt(entity, server, x, y, z,yaw,pitch, traveldim);
                 
                 notifyCommandListener(sender, this, "commands.teleport.success.coordinates", new Object[] {entity.getName(), commandbase$coordinatearg.getResult(), commandbase$coordinatearg1.getResult(), commandbase$coordinatearg2.getResult(),"Dim:" + traveldim});
@@ -159,27 +156,26 @@ public class CMDDim extends CommandTeleport{
      */
     public void teleportEnt(Entity entity,MinecraftServer server, double x, double y, double z, float yaw, float pitch, int traveldim) throws WrongUsageException
     {
-    	if(this.wholeStack() || true)
+    	if(this.wholeStack())
     	{
     		EntityUtil.teleportStack(entity, server, x, y, z,yaw,pitch, traveldim);
     	}
-    	else if(!this.dismountPassengers() )
+    	else if(this.stackAtIndex() )
     	{
     		EntityUtil.teleportStackAtIndex(entity, server, x, y, z,yaw,pitch, traveldim);
     	}
     	else
     	{
-    		entity.removePassengers();
-    		EntityUtil.telePortEntity(entity, server, x, y, z,yaw,pitch, traveldim);
+    		EntityUtil.telePortEntitySync(entity, server, x, y, z,yaw,pitch, traveldim);
     	}
     }
 	public boolean wholeStack()
     {
     	return false;
     }
-    public boolean dismountPassengers()
+    public boolean stackAtIndex()
     {
-    	return false;
+    	return true;
     }
 
 	/**

@@ -858,7 +858,7 @@ public class EntityUtil {
 	    {
 	    	ep.setPosition(ep.posX, ep.posY + 1.0D, ep.posZ);
 	    }
-		EntityUtil.telePortEntity(ep, server, ep.posX,ep.posY,ep.posZ, ep.rotationYaw, ep.rotationPitch, dimension);
+		EntityUtil.telePortEntitySync(ep, server, ep.posX,ep.posY,ep.posZ, ep.rotationYaw, ep.rotationPitch, dimension);
 	}
     
 	/**
@@ -871,27 +871,55 @@ public class EntityUtil {
 	
 	/**
 	 * used for /tpdim as requested by micah_laster to save all mounts above you
-	 * @throws WrongUsageException 
 	 */
 	public static void teleportStackAtIndex(Entity entity,MinecraftServer server,double x, double y, double z, float yaw, float pitch, int traveldim) throws WrongUsageException
 	{
+		if(entity.getLowestRidingEntity() != entity)
+			entity.dismountRidingEntity();
+		
 		//get all passengers and riding entities
-        ArrayList<Entity> list = (ArrayList<Entity>) JavaUtil.toArray(entity.getRecursivePassengers());
+        List<Entity> list = (ArrayList<Entity>) JavaUtil.toArray(entity.getRecursivePassengers());
         list.add(0,entity);
+       
+        List<Entity> toRide = new ArrayList();
+        for(Entity e : list)
+        	toRide.add(e.getRidingEntity());
 
         for(int i=0;i<list.size();i++)
         {
         	Entity e = list.get(i);
-        	e = EntityUtil.telePortEntity(e,server,x,y,z,e.rotationYaw,e.rotationPitch,traveldim);//keep yaw/pitch so they all don't face the same way only the base mob
+        	e = EntityUtil.telePortEntity(e,server,x,y,z,yaw,pitch,traveldim);//keep yaw/pitch so they all don't face the same way only the base mob
+        	setEntity(e,toRide);
+        }
+        //remount entities then sync players
+        for(int i=0;i<list.size();i++)
+        {
+        	Entity e = list.get(i);
+        	Entity other = toRide.get(i);
+        	if(other != null)
+        		e.startRiding(other,true);
+        	
+            if (e instanceof EntityPlayerMP) 
+            {
+            	updatePassengerClient((EntityPlayerMP)e,other);
+            }
         }
 	}
-    protected static void setEntity(Entity changed, ArrayList<Entity> rides) {
+    public static void updatePassengerClient(EntityPlayerMP playerMP,Entity e) 
+    {
+    	if(e != null)
+    	{
+//    		System.out.println("Syncing Packets to:" + playerMP.getName() + " with:" + e.getName());
+    		playerMP.connection.sendPacket(new SPacketSetPassengers(e));
+    	}
+	}
+
+	protected static void setEntity(Entity changed, List<Entity> rides) {
 		for(int i=0;i<rides.size();i++)
 		{
 			Entity e = rides.get(i);
 			if(e == null)
 			{
-				System.out.println("ent null:" + i);
 				continue;
 			}
 			if(e.getUniqueID().toString().equals(changed.getUniqueID().toString()) && e != changed )
@@ -912,7 +940,7 @@ public class EntityUtil {
 			NetHandlerPlayServer connection = player.connection;
 			FieldAcess.capture.invoke(connection);
 			
-			ReflectionUtil.setObject(connection, player, NetHandlerPlayServer.class, FieldAcess.lowestRiddenEnt);
+			ReflectionUtil.setObject(connection, player.getLowestRidingEntity(), NetHandlerPlayServer.class, FieldAcess.lowestRiddenEnt);
 			
 			ReflectionUtil.setObject(connection, player.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX);
 			ReflectionUtil.setObject(connection, player.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY);
@@ -939,8 +967,8 @@ public class EntityUtil {
 		{
 			return e;
 		}
-		
-		e.dismountRidingEntity();
+    	e.dismountRidingEntity();
+    	e.removePassengers();
         int prevDim = e.dimension;
     	
         if(traveldim != prevDim)
@@ -1106,8 +1134,9 @@ public class EntityUtil {
         {
             Set<SPacketPlayerPosLook.EnumFlags> set = EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class);
             EntityPlayerMP player = (EntityPlayerMP)e;
+            player.setLocationAndAngles(chunkX, y, chunkZ, yaw, pitch);
             player.connection.setPlayerLocation(x, y, z, yaw, pitch, set);
-//            EntityUtil.captureCoords(player);
+            EntityUtil.captureCoords(player);
         }
         else
         {
@@ -1121,7 +1150,7 @@ public class EntityUtil {
         }
 
         //vanilla hotfix if entity isn't loaded and not added to the chunk do this don't check players because sometimes the world will randomly remove them causing chunks not to load from players
-       /* if(!(e instanceof EntityPlayer))
+       if(!(e instanceof EntityPlayer))
         {
         	if(!MinecraftUtil.isChunkLoaded(e.world, chunkX, chunkZ, true))
         	{
@@ -1134,12 +1163,12 @@ public class EntityUtil {
         		Chunk chunk = e.world.getChunkFromChunkCoords(chunkX,chunkZ);
         		if(!containsEntity(chunk.getEntityLists(),e))
         		{
-        			System.out.println("here adding:" + e.getName() + " \"chunk not loaded\"");
-        			chunk.addEntity(e);
+//        			System.out.println("here adding:" + e.getName() + " \"chunk not loaded\"");
+//        			chunk.addEntity(e);
         		}
         	}
         	e.world.updateEntityWithOptionalForce(e, false);
-        }*/
+        }
     	
         return e;
     }
@@ -1355,6 +1384,24 @@ public class EntityUtil {
     		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, FieldAcess.gameProfileId);
     		LibEvents.playerFlags.add(gameprofile.getName());
         }
+	}
+    /**
+     * use this for individual entity telports otherwise use teleport stack or teleport stack at index
+     */
+	public static void telePortEntitySync(Entity entity, MinecraftServer server, double x, double y, double z,float yaw, float pitch, int traveldim) throws WrongUsageException 
+	{	
+		Entity riding = null;
+		if(entity instanceof EntityPlayerMP)
+		{
+			riding = entity.getRidingEntity();
+		}
+		
+		EntityUtil.telePortEntity(entity, server, x, y, z, yaw, pitch, traveldim);
+		
+		if(riding != null)
+		{
+			updatePassengerClient((EntityPlayerMP) entity, riding);
+		}
 	}
 
 }
