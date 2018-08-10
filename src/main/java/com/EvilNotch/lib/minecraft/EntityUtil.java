@@ -6,11 +6,16 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,8 +26,11 @@ import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
+import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions;
+import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityInfo;
+import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
-import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
+import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.LineBase;
@@ -32,25 +40,49 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.IEntityMultiPart;
+import net.minecraft.entity.IMerchant;
+import net.minecraft.entity.INpc;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.item.EntityEnderEye;
+import net.minecraft.entity.item.EntityFireworkRocket;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.monster.EntityElderGuardian;
+import net.minecraft.entity.monster.EntityEndermite;
+import net.minecraft.entity.monster.EntityGolem;
+import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntityPolarBear;
+import net.minecraft.entity.monster.EntityShulker;
+import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.monster.EntityVex;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAmbientCreature;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntityFlying;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityWaterMob;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityFireball;
+import net.minecraft.entity.projectile.EntityShulkerBullet;
+import net.minecraft.init.Biomes;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -65,8 +97,6 @@ import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.network.play.server.SPacketSetPassengers;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.DemoPlayerInteractionManager;
-import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.ClassInheritanceMultiMap;
 import net.minecraft.util.EnumHand;
@@ -82,13 +112,13 @@ import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry.EntityRegistration;
@@ -99,6 +129,9 @@ public class EntityUtil {
 	public static List<ResourceLocation> end_ents = new ArrayList<ResourceLocation>();
 	
 	public static Set<ResourceLocation> forgemobs = new HashSet();//forge mobs that are entity living
+	public static HashMap<ResourceLocation,String[]> living = new HashMap();
+	public static HashMap<ResourceLocation,String[]> nonliving = new HashMap();
+	public static HashMap<ResourceLocation,String[]> livingbase = new HashMap();
 	
 	public static Set<ResourceLocation> ents_worldneedy = new HashSet();//List of entities that need the world how greedy?
 	public static Set<ResourceLocation> ent_blacklist = new HashSet();//List of all failed Entities
@@ -269,11 +302,31 @@ public class EntityUtil {
     	str.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
     	p.sendMessage(str);
     }
+    
     public static void sendClipBoard(String pc,String c,EntityPlayer p ,String messege,String url)
+    {
+    	sendClipBoard(pc,c,p,messege,url,true);
+    }
+    public static void sendClipBoard(String pc,String c,EntityPlayer p ,String messege,String url,boolean copyURL)
     {
     	TextComponentString str = new TextComponentString(pc + messege + " " + c + EnumChatFormatting.UNDERLINE + url);
     	str.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
     	p.sendMessage(str);
+    	if(copyURL)
+    		sendToClientClipBoard(p,url);
+    }
+    
+    public static void sendToClientClipBoard(EntityPlayer p,String message)
+    {
+    	if(p instanceof EntityPlayerMP)
+    	{
+            PacketClipBoard packet = new PacketClipBoard(message);
+            NetWorkHandler.INSTANCE.sendTo(packet, (EntityPlayerMP)p);
+    	}
+    	else
+    	{
+    		JavaUtil.writeToClipboard(message, null);
+    	}
     }
     /**
      * Spawn Entity by spawnlistentry from Scratch
@@ -292,34 +345,42 @@ public class EntityUtil {
 		   SpawnListEntryAdvanced advanced = (SpawnListEntryAdvanced)entry;
 		   NBTTagCompound compound = advanced.NBT.copy();
 		   compound.setString("id", advanced.loc.toString());
-		   Entity e = getEntityJockey(compound,w,x,y,z,true);
+		   Entity e = getEntityJockey(compound,w,x,y,z,true,true);
 		   return e != null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
+	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean spawn) 
+	{	
+		return getEntityJockey(compound,worldIn,x,y,z,true,useInterface,spawn);
+	}
 	/**
 	 * Doesn't force nbt if you don't need it to unlike vanilla this is the forum of the /summon command
 	 * silkspawners eggs will support multiple indexes but, not to this extent not requring recursion use only when fully supporting new format
 	 */
-	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean firstcall) 
+	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean firstcall,boolean useInterface,boolean attemptSpawn) 
 	{	
-        Entity entity = getEntity(compound,worldIn,new BlockPos(x,y,z),firstcall,true);
+        Entity entity = getEntity(compound,worldIn,new BlockPos(x,y,z),firstcall,useInterface);
         if(entity == null)
         	return null;
         
         entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
         entity.forceSpawn = true;
-        if(!worldIn.spawnEntity(entity))
-        	return null;
+        
+        if(attemptSpawn)
+        {
+        	if(!worldIn.spawnEntity(entity))
+        		return null;
+        }
         
         if (compound.hasKey("Passengers", 9))
         {
              NBTTagList nbttaglist = compound.getTagList("Passengers", 10);
              for (int i = 0; i < nbttaglist.tagCount(); ++i)
              {
-                 Entity entity1 = getEntityJockey(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z,false);
+                 Entity entity1 = getEntityJockey(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z,false,useInterface,attemptSpawn);
                   if (entity1 != null)
                   {
                       entity1.startRiding(entity, true);
@@ -342,6 +403,12 @@ public class EntityUtil {
 			e = EntityUtil.createEntityByNameQuietly(new ResourceLocation(nbt.getString("id")),world);
 			if(e instanceof EntityLiving && useInterface)
 				((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(pos), (IEntityLivingData)null);
+			if(!useInterface && e instanceof EntitySlime)
+			{
+				NBTTagCompound tag = EntityUtil.getEntityNBT(e);
+				tag.setInteger("Size", 0);
+				e.readFromNBT(tag);
+			}
 		}
 		return e;
 	}
@@ -525,99 +592,189 @@ public class EntityUtil {
     	}
 		return new LineBase("\"" + modid + ":" + modName + "\"");
     }
-	/**GetColor Based on Entity Attributes and or classes
-	 * returns EnumChatFormatting format to apply to a string to colorize it
-	 * Dynamic Colored Text if not vanilla
-	 * Custom Vanilla Support
-	 * Custom Configed Support
-	 */
-	public static String getColoredEntityText(Entity e,boolean isEnd)
+	public static List<EntityDefintions.EntityInfo> getInfos(Entity e)
 	{
-		if(e == null)//|| Config.colorText == false)
-			return EnumChatFormatting.WHITE + "";
-		//Sees if it's and ender mob
-		if(EntityUtil.end_ents.contains(EntityList.getEntityString(e)) && EntityList.getEntityString(e) != null || isEnd)
-				return EnumChatFormatting.DARK_PURPLE + "";
+		List<EntityDefintions.EntityInfo> list = new ArrayList();
+		if(isLiving(e))
+			list.add(EntityInfo.living);
+		if(isOnlyBase(e))
+			list.add(EntityInfo.entitybase);
+		if(isNonLiving(e))
+			list.add(EntityInfo.nonliving);
+		if(isItem(e))
+			list.add(EntityInfo.item);
+		if(isProjectile(e))
+			list.add(EntityInfo.projectile);
+		if(isMultiPart(e))
+			list.add(EntityInfo.multiPart);
+		if(isMonster(e))
+			list.add(EntityInfo.hostile);
+		if(isPassive(e))
+			list.add(EntityInfo.passive);
+		if(isPeacefull(e))
+			list.add(EntityInfo.peacefull);
 		
-		//Scans Enum Class for modded enum types
-		EnumCreatureType[] k = EnumCreatureType.values();
-		boolean ismoded = false;
-		for(Object a : k)
-		{
-			String b = a.toString();
-			if(!b.equals("ambient") && !b.equals("creature") && !b.equals("creature") && !b.equals("monster") && !b.equals("waterCreature"))
-				ismoded = e.isCreatureType((EnumCreatureType) a, false);
-		}
-			if(ismoded)
-				return EnumChatFormatting.STRIKETHROUGH + "" + EnumChatFormatting.BOLD + "";
-		
-		boolean ambient = e.isCreatureType(EnumCreatureType.AMBIENT, false);
-		boolean creature = e.isCreatureType(EnumCreatureType.CREATURE, false);
-		boolean water = e.isCreatureType(EnumCreatureType.WATER_CREATURE, false);
-		if(!water && e instanceof EntityLivingBase)
-			water = ((EntityLivingBase)e).canBreatheUnderwater();
-		boolean fire = e.isImmuneToFire();
-		boolean monster = e.isCreatureType(EnumCreatureType.MONSTER, false);
+		return list;
+	}
 
-		/*
-		if(e instanceof EntityLivingBase)
+	/**
+	 * get the entity types to do stuff with it. note multiple types might be thrown into the array
+	 */
+	public static List<EntityDefintions.EntityType> getTypes(Entity e)
+	{
+		List<EntityDefintions.EntityType> list = new ArrayList();
+		if(isFire(e))
+			list.add(EntityType.fire);
+		if(isWater(e))
+			list.add(EntityType.water);
+		if(isFlying(e))
+			list.add(EntityType.flying);
+		if(isMonster(e))
+			list.add(EntityType.monster);
+		if(isBoss(e))
+			list.add(EntityType.boss);
+		if(isCreature(e))
+			list.add(EntityType.creature);
+		if(isAmbient(e))
+			list.add(EntityType.ambient);
+		if(isAreaCloud(e))
+			list.add(EntityType.areaeffectcloud);
+		if(isTameable(e))
+			list.add(EntityType.tameable);
+		if(isRanged(e))
+			list.add(EntityType.ranged);
+		if(isEnder(e))
+			list.add(EntityType.ender);
+		if(isNPC(e))
+			list.add(EntityType.npc);
+		
+		return list;
+	}
+	private static boolean isNPC(Entity e) {
+		return e instanceof INpc || e instanceof IMerchant;
+	}
+
+	/**
+	 * gets the array list of types then returns them in an order which makes since
+	 */
+	public static String getColor(Entity e)
+	{
+		List<EntityType> types = getTypes(e);
+		if(types.contains(EntityType.boss))
+			return EnumChatFormatting.DARK_PURPLE + EnumChatFormatting.BOLD;
+		else if(types.contains(EntityType.tameable))
+			return EnumChatFormatting.DARK_BLUE;
+		else if(types.contains(EntityType.ender))
+			return EnumChatFormatting.DARK_PURPLE;
+		else if(types.contains(EntityType.areaeffectcloud))
+			return EnumChatFormatting.DARK_AQUA;
+		else if(types.contains(EntityType.flying) && !(e instanceof EntityBat) && !(e instanceof EntityBlaze))
+			return EnumChatFormatting.YELLOW;
+		else if(types.contains(EntityType.ambient))
+			return EnumChatFormatting.DARK_GRAY;
+		else if(types.contains(EntityType.ranged) && e instanceof IMob)
+			return EnumChatFormatting.DARK_RED;
+		else if(types.contains(EntityType.fire))
+			return EnumChatFormatting.GOLD;
+		else if(types.contains(EntityType.water))
+			return EnumChatFormatting.AQUA;
+		else if(types.contains(EntityType.monster))
+			return EnumChatFormatting.RED;
+		else if(types.contains(EntityType.npc) || e instanceof EntityGolem)
+			return EnumChatFormatting.GREEN;
+		else if(types.contains(EntityType.creature))
+			return EnumChatFormatting.LIGHT_PURPLE;
+		
+		return EnumChatFormatting.WHITE;
+	}
+	@Deprecated
+	private static boolean isPeacefull(Entity e) {
+		return !isMonster(e) && !isPassive(e);
+	}
+	@Deprecated
+	private static boolean isPassive(Entity e) {
+		return e instanceof EntityPigZombie || e instanceof EntityWolf || e instanceof EntityPolarBear;
+	}
+
+	private static boolean isMultiPart(Entity e) {
+		return e instanceof IEntityMultiPart;
+	}
+
+	public static boolean isProjectile(Entity e) 
+	{
+		return e instanceof Entity && e instanceof IProjectile || e instanceof EntityFireball || e instanceof EntityShulkerBullet || e instanceof EntityEnderEye || e instanceof EntityFireworkRocket;
+	}
+
+	private static boolean isOnlyBase(Entity e) {
+		return e instanceof EntityLivingBase && !(e instanceof EntityLiving);
+	}
+
+	private static boolean isNonLiving(Entity e) {
+		return !(e instanceof EntityLivingBase);
+	}
+
+	private static boolean isLiving(Entity e) {
+		return e instanceof EntityLiving;
+	}
+
+	private static boolean isItem(Entity e) {
+		return e instanceof EntityItem;
+	}
+	private static boolean isEnder(Entity e) {
+		ResourceLocation loc = EntityUtil.getEntityResourceLocation(e);
+		if(loc == null)
+			return false;
+		return EntityUtil.end_ents.contains(loc);
+	}
+
+	private static boolean isRanged(Entity e) {
+		return e instanceof IRangedAttackMob;
+	}
+
+	private static boolean isTameable(Entity e) {
+		return e instanceof EntityTameable || e instanceof AbstractHorse;
+	}
+
+	public static boolean isAreaCloud(Entity e) {
+		return e instanceof EntityAreaEffectCloud;
+	}
+
+	private static boolean isAmbient(Entity e) {
+		boolean ambient = e.isCreatureType(EnumCreatureType.AMBIENT, false) || e instanceof EntityAmbientCreature;
+		return ambient;
+	}
+
+	public static boolean isCreature(Entity e){
+		boolean creature = e.isCreatureType(EnumCreatureType.CREATURE, false) || e instanceof IAnimals || e instanceof EntityCreature;
+		return creature;
+	}
+	public static boolean isMonster(Entity e) 
+	{
+		boolean monster = e.isCreatureType(EnumCreatureType.MONSTER, false);
+		if(!monster)
+			return e instanceof IMob;
+		return true;
+	}
+	public static boolean isBoss(Entity e)
+	{
+		return e instanceof EntityWither || e instanceof EntityDragon || e instanceof EntityElderGuardian;
+	}
+	private static boolean isFlying(Entity e) 
+	{
+		return e instanceof EntityFlying || e instanceof net.minecraft.entity.EntityFlying || e instanceof EntityBat || e instanceof EntityBlaze || e instanceof EntityVex;
+	}
+
+	private static boolean isFire(Entity e) {
+		return e.isImmuneToFire();
+	}
+
+	public static boolean isWater(Entity e) {
+		boolean water = e.isCreatureType(EnumCreatureType.WATER_CREATURE, false) || e instanceof EntityGuardian || e instanceof EntityWaterMob;
+		if(!water && e instanceof EntityLivingBase)
 		{
-			EntityLivingBase en = (EntityLivingBase)e;
-			EnumCreatureAttribute enums = en.getCreatureAttribute();
-			boolean undead = enums == EnumCreatureAttribute.UNDEAD;
-			boolean arthropod = enums == EnumCreatureAttribute.ARTHROPOD;
-			boolean undefined = enums == EnumCreatureAttribute.UNDEFINED;
-		}*/
-		boolean boss = e instanceof EntityDragon || e instanceof EntityWither;
-		
-		//Checks Enum Attributes
-		if(ambient && !fire && !(e instanceof EntityTameable) && !(e instanceof EntityFlying) && !(e instanceof IRangedAttackMob) && !boss && !(e instanceof IEntityMultiPart))
-			return EnumChatFormatting.DARK_GRAY + "";
-		if(creature && !fire && !(e instanceof EntityTameable) && !(e instanceof EntityFlying) && !(e instanceof IRangedAttackMob) && !boss && !(e instanceof IEntityMultiPart))
-			return EnumChatFormatting.LIGHT_PURPLE + "";
-		if(water && !fire  && !(e instanceof EntityTameable) && !(e instanceof EntityFlying) && !(e instanceof IRangedAttackMob) && !boss && !(e instanceof IEntityMultiPart))
-			return EnumChatFormatting.AQUA + "";
-		if(fire && !(e instanceof EntityTameable) && !(e instanceof EntityFlying) && !(e instanceof IRangedAttackMob) && !boss && !(e instanceof IEntityMultiPart))
-			return EnumChatFormatting.GOLD + "";
-		if(monster && !fire  && !(e instanceof EntityTameable) && !(e instanceof EntityFlying) && !(e instanceof IRangedAttackMob) && !boss && !(e instanceof IEntityMultiPart))
-			return EnumChatFormatting.RED + "";
-		
-		
-		//Checks Classes if hasn't Returned
-		if(e instanceof EntityTameable)
-			return EnumChatFormatting.DARK_BLUE + "";
-		
-		if(boss || e instanceof IEntityMultiPart)
-			return EnumChatFormatting.BOLD + "" + EnumChatFormatting.DARK_PURPLE;
-		
-		if(e instanceof EntityFlying)
-			return EnumChatFormatting.BOLD + "" + EnumChatFormatting.YELLOW;
-		
-		if(e instanceof IRangedAttackMob && e instanceof EntityMob)
-			return EnumChatFormatting.DARK_RED + "";	
-		
-		if(e instanceof EntityAmbientCreature && !(e instanceof EntityAnimal))
-			return EnumChatFormatting.DARK_GRAY + "";
-		
-		if(e instanceof EntityAnimal && !(e instanceof EntityCreature) || e instanceof IAnimals && !(e instanceof EntityCreature))
-			return EnumChatFormatting.LIGHT_PURPLE + "";
-		
-		if (e instanceof EntityAgeable)
-			return EnumChatFormatting.LIGHT_PURPLE + "";
-		
-		if(e instanceof EntityCreature)
-			return EnumChatFormatting.GREEN + "";
-		
-		if(fire)
-			return EnumChatFormatting.GOLD + "";
-		
-		if(e instanceof EntityWaterMob)
-			return EnumChatFormatting.AQUA + "";
-		
-		if(e instanceof EntityMob)
-			return EnumChatFormatting.RED + "";
-		
-		return EnumChatFormatting.WHITE + "";
+			water = ((EntityLivingBase)e).canBreatheUnderwater();
+		}
+		return water;
 	}
 	
 	//Prints Colored Chat from player
@@ -697,13 +854,14 @@ public class EntityUtil {
 	 */
 	public static void cacheEnts(List<ResourceLocation> list,World world,boolean printLists)
 	{
-		if(!Config.debug)
-			return;
 		long time = System.currentTimeMillis();
 		if(cached && list == null)
 			return;
 		if(list == null)
 			list = JavaUtil.asList(EntityList.getEntityNameList());
+		
+		for(EnumCreatureType type : EnumCreatureType.values())
+			ge(Biomes.SKY.getSpawnableList(type));
 		
 		for(ResourceLocation loc : list)
 		{
@@ -730,6 +888,8 @@ public class EntityUtil {
 			}
 			
 			Entity e = EntityUtil.createEntityByNameQuietly(loc, world,true);
+			if(e instanceof EntityEndermite || e instanceof EntityShulker)
+				end_ents.add(loc);
 			
 			boolean living = e instanceof EntityLiving; 
 			boolean base = e instanceof EntityLivingBase && !(e instanceof EntityLiving);
@@ -762,7 +922,25 @@ public class EntityUtil {
 					MainJava.logger.log(Level.ERROR,"Skipping broken Entity Failed to read onInitialSpawn() aka onSpawnWithEgg() Report to mod author:" + loc);
 				}
 			}
+			if(!ent_blacklist.contains(loc) && !ent_blacklist_nbt.contains(loc))
+			{
+				String[] names = new String[3];
+				names[0] = EntityUtil.getUnlocalizedName(e);
+				names[1] = I18n.translateToLocal(names[0]);
+				names[2] = EntityUtil.getColor(e);
+				
+				if(living)
+					EntityUtil.living.put(loc,names);
+				else if(base)
+					EntityUtil.livingbase.put(loc,names);
+				else if(nonliving)
+					EntityUtil.nonliving.put(loc,names);
+			}
 		}
+		
+		EntityUtil.living = orderList(EntityUtil.living);
+		EntityUtil.livingbase = orderList(EntityUtil.livingbase);
+		EntityUtil.nonliving = orderList(EntityUtil.nonliving);
 		
 		JavaUtil.printTime(time, "Entity Util Cached Ents:");
 		
@@ -776,6 +954,41 @@ public class EntityUtil {
 		}
 		
 		cached = true;
+	}
+	 public static void ge(List<Biome.SpawnListEntry> mr_renchen_dies)
+     {
+		for (Biome.SpawnListEntry b : mr_renchen_dies)
+	  	{
+	  		ResourceLocation loc = EntityList.getKey(b.entityClass);
+	  		EntityUtil.end_ents.add(loc);
+	  	}
+     }
+
+	/**
+	 * orders list using a custom comparator comparing the [1] index in the value of the hashmap
+	 */
+	public static HashMap orderList(HashMap<ResourceLocation, String[]> map) 
+	{
+		List list = new LinkedList(map.entrySet());
+		Comparator custom = new Comparator()
+		{
+	          public int compare(Object obj1, Object obj2) 
+	          {
+	        	  Map.Entry<Object,String[]> entry1 = (Map.Entry<Object,String[]>)obj1;
+	        	  Map.Entry<Object,String[]> entry2 = (Map.Entry<Object,String[]>)obj2;
+	        	  String trans1 = entry1.getValue()[1];
+	        	  String trans2 = entry2.getValue()[1];
+	        	  return trans1.compareTo(trans2);  
+	          }
+		};
+		Collections.sort(list,custom);
+		
+	     HashMap sortedHashMap = new LinkedHashMap();
+	     for (Iterator it = list.iterator(); it.hasNext();) {
+	            Map.Entry entry = (Map.Entry) it.next();
+	            sortedHashMap.put(entry.getKey(), entry.getValue());
+	     } 
+	     return sortedHashMap;
 	}
 
 	/**
@@ -901,7 +1114,7 @@ public class EntityUtil {
         	
             if (e instanceof EntityPlayerMP) 
             {
-            	updatePassengerClient((EntityPlayerMP)e,other);
+               	updatePassengerClient((EntityPlayerMP)e,e);
             }
         }
 	}
@@ -909,7 +1122,7 @@ public class EntityUtil {
     {
     	if(e != null)
     	{
-//    		System.out.println("Syncing Packets to:" + playerMP.getName() + " with:" + e.getName());
+    		System.out.println("Syncing Packets to:" + playerMP.getName() + " with:" + e.getName());
     		playerMP.connection.sendPacket(new SPacketSetPassengers(e));
     	}
 	}
@@ -1151,7 +1364,7 @@ public class EntityUtil {
 
         //vanilla hotfix if entity isn't loaded and not added to the chunk do this don't check players because sometimes the world will randomly remove them causing chunks not to load from players
        if(!(e instanceof EntityPlayer))
-        {
+       {
         	if(!MinecraftUtil.isChunkLoaded(e.world, chunkX, chunkZ, true))
         	{
         		//remove from old chunk
@@ -1161,15 +1374,15 @@ public class EntityUtil {
         			chunkOld.removeEntity(e);
         		}
         		Chunk chunk = e.world.getChunkFromChunkCoords(chunkX,chunkZ);
-        		if(!containsEntity(chunk.getEntityLists(),e))
+        		/*if(!containsEntity(chunk.getEntityLists(),e))
         		{
-//        			System.out.println("here adding:" + e.getName() + " \"chunk not loaded\"");
-//        			chunk.addEntity(e);
-        		}
+        			System.out.println("here adding:" + e.getName() + " \"chunk not loaded\"");
+        			chunk.addEntity(e);
+        		}*/
         	}
         	e.world.updateEntityWithOptionalForce(e, false);
         }
-    	
+      	
         return e;
     }
 
@@ -1234,65 +1447,6 @@ public class EntityUtil {
 		{
 			player.connection.disconnect(new TextComponentTranslation(msg.getText(),new Object[0]) );
 		}
-	}
-
-	/**
-	 * gets a blank player data from your original player
-	 */
-	public static NBTTagCompound getBlankPlayerData(EntityPlayerMP player) 
-	{
-		int dim = 0;
-		
-    	//ps support get the initial dimension
-    	if(Loader.isModLoaded("perfectspawn"))
-    	{
-    		try 
-    		{
-    			Object psconfig = getPsConfig();
-				int psdim = getPsDim(psconfig);
-				dim = psdim;
-			}
-    		catch (Throwable e)
-    		{
-				e.printStackTrace();
-			}
-    	}
-    	
-		PlayerInteractionManager playerinteractionmanager;
-		if (player.mcServer.isDemo())
-        {
-            playerinteractionmanager = new DemoPlayerInteractionManager(player.mcServer.getWorld(dim));
-        }
-        else
-        {
-            playerinteractionmanager = new PlayerInteractionManager(player.mcServer.getWorld(dim));
-        }
-
-        EntityPlayerMP entityplayermp = new EntityPlayerMP(player.mcServer, player.mcServer.getWorld(dim), new GameProfile(null,"forge_fake_player"), playerinteractionmanager);
-        entityplayermp.interactionManager.setGameType(player.world.getWorldInfo().getGameType());
-        World playerWorld = player.mcServer.getWorld(player.dimension);
-        BlockPos spawnPoint = playerWorld.provider.getRandomizedSpawnPoint();
-        entityplayermp.setPosition(spawnPoint.getX() + 0.5D, spawnPoint.getY(), spawnPoint.getZ() + 0.5D);
-        NBTTagCompound nbt = EntityUtil.getEntityNBT(entityplayermp);
-        
-        return nbt;
-	}
-
-	@Deprecated
-	public static Object getPsConfig() throws Throwable
-	{
-		File worldDir = DimensionManager.getCurrentSaveRootDirectory();
-		Class psclazz = Class.forName("lumien.perfectspawn.PerfectSpawn");
-		Object instance = ReflectionUtil.getObject(null, psclazz, "INSTANCE");
-		Object configHandler = ReflectionUtil.getObject(instance, psclazz, "configHandler");
-		Object psconfig = ReflectionUtil.getObject(configHandler, Class.forName("lumien.perfectspawn.config.PSConfigHandler"), "activeConfig");
-		return psconfig;
-	}
-	@Deprecated
-	public static int getPsDim(Object psconfig) throws ClassNotFoundException,Exception
-	{
-		Integer psdim = (Integer) ReflectionUtil.getObject(psconfig, Class.forName("lumien.perfectspawn.config.PSConfig"), "initialSpawnDimension");
-		return psdim;
 	}
 
 	public static ItemStack getActiveItemStack(EntityPlayer p,EnumHand hand) 
@@ -1400,7 +1554,7 @@ public class EntityUtil {
 		
 		if(riding != null)
 		{
-			updatePassengerClient((EntityPlayerMP) entity, riding);
+			updatePassengerClient((EntityPlayerMP) entity, entity);
 		}
 	}
 

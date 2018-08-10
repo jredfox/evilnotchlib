@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.TileEntityUtil;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
@@ -112,7 +113,7 @@ public class LibEvents {
 	 public void worldload(WorldEvent.Load e)
 	 {
 		 World ew = e.getWorld();
-		 if(ew.isRemote || cachedEnts || !Config.debug)
+		 if(!EntityUtil.cached || ew.isRemote || cachedEnts)
 			 return;
 		 System.out.println("WorldLoadEvent firing!");
 		 cachedEnts = true;

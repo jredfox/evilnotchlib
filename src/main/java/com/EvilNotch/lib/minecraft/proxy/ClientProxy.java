@@ -18,6 +18,7 @@ import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
+import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.LangLine;

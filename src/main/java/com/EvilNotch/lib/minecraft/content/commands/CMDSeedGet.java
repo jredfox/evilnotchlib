@@ -2,11 +2,14 @@ package com.EvilNotch.lib.minecraft.content.commands;
 
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.EnumChatFormatting;
+import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
+import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -19,7 +22,7 @@ public class CMDSeedGet extends CommandBase {
      */
     public String getName()
     {
-        return "seedGet";
+        return "seed";
     }
 
     /**
@@ -35,7 +38,7 @@ public class CMDSeedGet extends CommandBase {
      */
     public String getUsage(ICommandSender sender)
     {
-        return "commands.reload.usage";
+       return "commands.seed.usage";
     }
 
     /**
@@ -44,7 +47,8 @@ public class CMDSeedGet extends CommandBase {
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         World world = (World)(sender instanceof EntityPlayer ? ((EntityPlayer)sender).world : server.getWorld(0));
-        EntityUtil.sendClipBoard(EnumChatFormatting.WHITE,EnumChatFormatting.WHITE, (EntityPlayer)sender, "Seed:" , "" + world.getSeed());
+        EntityUtil.sendClipBoard(EnumChatFormatting.WHITE,EnumChatFormatting.WHITE, (EntityPlayer)sender, "Seed:","" + world.getSeed(),false);
+        EntityUtil.sendToClientClipBoard((EntityPlayerMP)sender,  "Seed:" + world.getSeed());
     }
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {

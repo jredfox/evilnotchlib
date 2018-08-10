@@ -19,6 +19,7 @@ public class Config {
 	public static File cfg = null;
 	public static boolean isDev = false;
 	public static boolean tpAllowCrossDim = false;
+	public static boolean replaceTP = true;
 	
 	public static void loadConfig(File d)
 	{
@@ -29,6 +30,7 @@ public class Config {
 		debug = config.get("general", "Debug", false).getBoolean();
 		isDev = config.get("general", "isDev", false).getBoolean();
 		tpAllowCrossDim = config.get("general","tpAllowCrossDim",true).getBoolean();
+		replaceTP = config.get("general","tpReplace",true).getBoolean();
 		config.save();
 	}
 

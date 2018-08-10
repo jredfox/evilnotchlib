@@ -30,6 +30,7 @@ import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
 import com.EvilNotch.lib.minecraft.content.commands.CMDKick;
 import com.EvilNotch.lib.minecraft.content.commands.CMDSeedGet;
+import com.EvilNotch.lib.minecraft.content.commands.CMDStack;
 import com.EvilNotch.lib.minecraft.content.commands.CMDTP;
 import com.EvilNotch.lib.minecraft.content.commands.CMDTeleport;
 import com.EvilNotch.lib.minecraft.content.items.BasicItem;
@@ -53,6 +54,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.command.ICommand;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -131,12 +133,15 @@ public class MainJava {
 		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
 		
 		GeneralRegistry.registerCommand(new CMDDim());
-		GeneralRegistry.registerCommand(new CMDSeedGet());
+		GeneralRegistry.registerCommand(new CMDStack());
 		GeneralRegistry.registerCommand(new CMDKick());
 		
-		GeneralRegistry.replaceVanillaCommand("tp",new CMDTP());
-		GeneralRegistry.replaceVanillaCommand("teleport",new CMDTeleport());
-		
+		GeneralRegistry.replaceVanillaCommand("seed", new CMDSeedGet());
+		if(Config.replaceTP)
+		{
+			GeneralRegistry.replaceVanillaCommand("tp",new CMDTP());
+			GeneralRegistry.replaceVanillaCommand("teleport",new CMDTeleport());
+		}
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
 
@@ -179,7 +184,6 @@ public class MainJava {
 	public void post(FMLPostInitializationEvent e)
 	{
 	    proxy.postinit();//generate lang,generate shadow sizes
-		EntityUtil.cacheEnts();
 		
 		if(!Config.isDev)
 		{

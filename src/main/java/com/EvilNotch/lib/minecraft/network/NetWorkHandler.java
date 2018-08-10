@@ -1,6 +1,8 @@
 package com.EvilNotch.lib.minecraft.network;
 
 import com.EvilNotch.lib.main.MainJava;
+import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
+import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoardHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUIDHandler;
 
@@ -17,5 +19,6 @@ public class NetWorkHandler {
 	{
 		INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(MainJava.MODID);
 		INSTANCE.registerMessage(PacketUUIDHandler.class, PacketUUID.class, networkid++, Side.CLIENT);
+		INSTANCE.registerMessage(PacketClipBoardHandler.class, PacketClipBoard.class, networkid++, Side.CLIENT);
 	}
 }
