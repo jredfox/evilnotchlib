@@ -71,6 +71,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -178,6 +179,11 @@ public class MainJava {
 		}
 		proxy.initMod();
 		NetWorkHandler.init();
+	}
+	@Mod.EventHandler
+	public void init(FMLLoadCompleteEvent e) throws Exception
+	{
+		proxy.onLoadComplete();
 	}
 	
 	@Mod.EventHandler

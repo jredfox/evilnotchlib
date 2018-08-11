@@ -31,6 +31,7 @@ import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityInfo;
 import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
+import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.LineBase;
@@ -132,6 +133,8 @@ public class EntityUtil {
 	public static HashMap<ResourceLocation,String[]> living = new HashMap();
 	public static HashMap<ResourceLocation,String[]> nonliving = new HashMap();
 	public static HashMap<ResourceLocation,String[]> livingbase = new HashMap();
+	
+	public static int slimeSize = 0;
 	
 	public static Set<ResourceLocation> ents_worldneedy = new HashSet();//List of entities that need the world how greedy?
 	public static Set<ResourceLocation> ent_blacklist = new HashSet();//List of all failed Entities
@@ -352,25 +355,21 @@ public class EntityUtil {
 			return false;
 		}
 	}
-	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean spawn) 
-	{	
-		return getEntityJockey(compound,worldIn,x,y,z,true,useInterface,spawn);
-	}
 	/**
 	 * Doesn't force nbt if you don't need it to unlike vanilla this is the forum of the /summon command
 	 * silkspawners eggs will support multiple indexes but, not to this extent not requring recursion use only when fully supporting new format
 	 */
-	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean firstcall,boolean useInterface,boolean attemptSpawn) 
+	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn) 
 	{	
-        Entity entity = getEntity(compound,worldIn,new BlockPos(x,y,z),firstcall,useInterface);
+        Entity entity = getEntity(compound,worldIn,new BlockPos(x,y,z),useInterface);
         if(entity == null)
         	return null;
         
         entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
-        entity.forceSpawn = true;
         
         if(attemptSpawn)
         {
+            entity.forceSpawn = true;
         	if(!worldIn.spawnEntity(entity))
         		return null;
         }
@@ -380,7 +379,7 @@ public class EntityUtil {
              NBTTagList nbttaglist = compound.getTagList("Passengers", 10);
              for (int i = 0; i < nbttaglist.tagCount(); ++i)
              {
-                 Entity entity1 = getEntityJockey(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z,false,useInterface,attemptSpawn);
+                 Entity entity1 = getEntityJockey(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z,useInterface,attemptSpawn);
                   if (entity1 != null)
                   {
                       entity1.startRiding(entity, true);
@@ -393,11 +392,10 @@ public class EntityUtil {
 
 	/**
 	 * first index is to determine if your on the first part of the opening of the nbt if so treat nbt like normal
-	 * @return
 	 */
-	private static Entity getEntity(NBTTagCompound nbt,World world,BlockPos pos,boolean firstIndex,boolean useInterface) {
+	public static Entity getEntity(NBTTagCompound nbt,World world,BlockPos pos,boolean useInterface) {
 		Entity e = null;
-		if(getEntityProps(nbt).getSize() > 0 || !nbt.hasKey("Passengers") && firstIndex)
+		if(getEntityProps(nbt).getSize() > 0)
 			e = EntityUtil.createEntityFromNBTQuietly(new ResourceLocation(nbt.getString("id")), nbt, world);
 		else{
 			e = EntityUtil.createEntityByNameQuietly(new ResourceLocation(nbt.getString("id")),world);
@@ -406,19 +404,12 @@ public class EntityUtil {
 			if(!useInterface && e instanceof EntitySlime)
 			{
 				NBTTagCompound tag = EntityUtil.getEntityNBT(e);
-				tag.setInteger("Size", 0);
+				tag.setInteger("Size", slimeSize);
 				e.readFromNBT(tag);
 			}
 		}
 		return e;
 	}
-
-	private static boolean legacySpawnListEntry(SpawnListEntry entry) throws Exception {
-		if(!(entry instanceof SpawnListEntryAdvanced) || ((SpawnListEntryAdvanced)entry).NBT == null )
-			return true;
-		return false;
-	}
-
 	private static NBTTagCompound getEntityProps(NBTTagCompound nbt) {
 		if(nbt == null)
 			return null;
@@ -426,6 +417,12 @@ public class EntityUtil {
 		nbt.removeTag("Passengers");
 		nbt.removeTag("id");
 		return nbt;
+	}
+
+	private static boolean legacySpawnListEntry(SpawnListEntry entry) throws Exception {
+		if(!(entry instanceof SpawnListEntryAdvanced) || ((SpawnListEntryAdvanced)entry).NBT == null )
+			return true;
+		return false;
 	}
 	public static String getEntityString(Entity e)
 	{
@@ -802,8 +799,17 @@ public class EntityUtil {
         
         return f1;
 	}
+	/**
+	 * since mods almost never overrode this method we should be fine
+	 * supports vanilla wither like 1.7.10
+	 */
 	@Deprecated
-	public static float getShadowSize(Entity e) {
+	public static float getShadowSize(Entity e) 
+	{
+		if(e instanceof EntityWither)
+		{
+			return e.height / 8.0F;
+		}
 		return e.height / 2.0F;
 	}
     /**
@@ -915,6 +921,12 @@ public class EntityUtil {
 				{
 					Entity entity = EntityUtil.createEntityByNameQuietly(loc, world,true);
 					((EntityLiving)entity).onInitialSpawn(e.world.getDifficultyForLocation(new BlockPos(0,4,0)), (IEntityLivingData)null);
+					if(entity instanceof EntitySlime)
+					{
+						NBTTagCompound nbt = EntityUtil.getEntityNBT(entity);
+						nbt.setInteger("Size", slimeSize);
+						entity.readFromNBT(nbt);
+					}
 				}
 				catch(Throwable t)
 				{

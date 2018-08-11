@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -62,6 +63,7 @@ public class FieldAcess {
 	public static String gameProfileId = null;
 	public static String blockstate = null;
 	public static String gameRuleMap = null;
+	public static String shadowSize = null;
 	
 	public static void cacheFields()
 	{
@@ -89,6 +91,7 @@ public class FieldAcess {
 		gameProfileId = MCPMappings.getField(GameProfile.class, "id");
 		blockstate = MCPMappings.getField(Block.class, "blockState");
 		gameRuleMap =  MCPMappings.getField(GameRules.class, "rules");
+		shadowSize = MCPMappings.getField(Render.class, "shadowSize");
 		
 		try 
 		{
