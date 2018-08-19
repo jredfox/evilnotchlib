@@ -8,8 +8,10 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.translation.I18n;
@@ -55,15 +57,17 @@ public class FieldAcess {
 	//methods
 	public static Method method_dragonManager = null;
 	public static Method methodEnt_copyDataFromOld = null;
-    public static Method capture;
+    public static Method capture = null;
     public static Method chunkLoaded = null;
-    public static Method setFlag;
+    public static Method setFlag = null;
+    public static Method method_setSlimeSize = null;
 	
 	public static boolean cached = false;
 	public static String gameProfileId = null;
 	public static String blockstate = null;
 	public static String gameRuleMap = null;
 	public static String shadowSize = null;
+	public static String potentialSpawns = null;
 	
 	public static void cacheFields()
 	{
@@ -92,6 +96,7 @@ public class FieldAcess {
 		blockstate = MCPMappings.getField(Block.class, "blockState");
 		gameRuleMap =  MCPMappings.getField(GameRules.class, "rules");
 		shadowSize = MCPMappings.getField(Render.class, "shadowSize");
+		potentialSpawns = MCPMappings.getField(MobSpawnerBaseLogic.class,"potentialSpawns");
 		
 		try 
 		{
@@ -100,6 +105,14 @@ public class FieldAcess {
 			chunkLoaded = World.class.getDeclaredMethod(MCPMappings.getMethod(World.class, "isChunkLoaded"), int.class,int.class,boolean.class);
 			capture = NetHandlerPlayServer.class.getDeclaredMethod(MCPMappings.getMethod(NetHandlerPlayServer.class, "captureCurrentPosition"));	
 			setFlag = Entity.class.getDeclaredMethod(MCPMappings.getMethod(Entity.class, "setFlag"), int.class,boolean.class);
+			method_setSlimeSize = EntitySlime.class.getDeclaredMethod(MCPMappings.getMethod(EntitySlime.class, "setSlimeSize"), int.class,boolean.class);
+			
+			methodEnt_copyDataFromOld.setAccessible(true);
+			method_dragonManager.setAccessible(true);
+			capture.setAccessible(true);
+			chunkLoaded.setAccessible(true);
+			setFlag.setAccessible(true);
+			method_setSlimeSize.setAccessible(true);
 			
 			lowestRiddenX = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenX");
 		    lowestRiddenY = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenY");
@@ -107,12 +120,6 @@ public class FieldAcess {
 		    lowestRiddenX1 = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenX1");
 		    lowestRiddenY1 = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenY1");
 		    lowestRiddenZ1 = MCPMappings.getField(NetHandlerPlayServer.class, "lowestRiddenZ1");
-			
-			methodEnt_copyDataFromOld.setAccessible(true);
-			method_dragonManager.setAccessible(true);
-			capture.setAccessible(true);
-			chunkLoaded.setAccessible(true);
-			setFlag.setAccessible(true);
 		}
 		catch (Throwable t)
 		{

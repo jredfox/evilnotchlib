@@ -134,8 +134,6 @@ public class EntityUtil {
 	public static HashMap<ResourceLocation,String[]> nonliving = new HashMap();
 	public static HashMap<ResourceLocation,String[]> livingbase = new HashMap();
 	
-	public static int slimeSize = 0;
-	
 	public static Set<ResourceLocation> ents_worldneedy = new HashSet();//List of entities that need the world how greedy?
 	public static Set<ResourceLocation> ent_blacklist = new HashSet();//List of all failed Entities
 	public static Set<ResourceLocation> ent_blacklist_commandsender = new HashSet();//List of all failed Entities
@@ -401,12 +399,6 @@ public class EntityUtil {
 			e = EntityUtil.createEntityByNameQuietly(new ResourceLocation(nbt.getString("id")),world);
 			if(e instanceof EntityLiving && useInterface)
 				((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(pos), (IEntityLivingData)null);
-			if(!useInterface && e instanceof EntitySlime)
-			{
-				NBTTagCompound tag = EntityUtil.getEntityNBT(e);
-				tag.setInteger("Size", slimeSize);
-				e.readFromNBT(tag);
-			}
 		}
 		return e;
 	}
@@ -685,15 +677,15 @@ public class EntityUtil {
 		return EnumChatFormatting.WHITE;
 	}
 	@Deprecated
-	private static boolean isPeacefull(Entity e) {
+	public static boolean isPeacefull(Entity e) {
 		return !isMonster(e) && !isPassive(e);
 	}
 	@Deprecated
-	private static boolean isPassive(Entity e) {
+	public static boolean isPassive(Entity e) {
 		return e instanceof EntityPigZombie || e instanceof EntityWolf || e instanceof EntityPolarBear;
 	}
 
-	private static boolean isMultiPart(Entity e) {
+	public static boolean isMultiPart(Entity e) {
 		return e instanceof IEntityMultiPart;
 	}
 
@@ -702,33 +694,33 @@ public class EntityUtil {
 		return e instanceof Entity && e instanceof IProjectile || e instanceof EntityFireball || e instanceof EntityShulkerBullet || e instanceof EntityEnderEye || e instanceof EntityFireworkRocket;
 	}
 
-	private static boolean isOnlyBase(Entity e) {
+	public static boolean isOnlyBase(Entity e) {
 		return e instanceof EntityLivingBase && !(e instanceof EntityLiving);
 	}
 
-	private static boolean isNonLiving(Entity e) {
+	public static boolean isNonLiving(Entity e) {
 		return !(e instanceof EntityLivingBase);
 	}
 
-	private static boolean isLiving(Entity e) {
+	public static boolean isLiving(Entity e) {
 		return e instanceof EntityLiving;
 	}
 
-	private static boolean isItem(Entity e) {
+	public static boolean isItem(Entity e) {
 		return e instanceof EntityItem;
 	}
-	private static boolean isEnder(Entity e) {
+	public static boolean isEnder(Entity e) {
 		ResourceLocation loc = EntityUtil.getEntityResourceLocation(e);
 		if(loc == null)
 			return false;
 		return EntityUtil.end_ents.contains(loc);
 	}
 
-	private static boolean isRanged(Entity e) {
+	public static boolean isRanged(Entity e) {
 		return e instanceof IRangedAttackMob;
 	}
 
-	private static boolean isTameable(Entity e) {
+	public static boolean isTameable(Entity e) {
 		return e instanceof EntityTameable || e instanceof AbstractHorse;
 	}
 
@@ -736,7 +728,7 @@ public class EntityUtil {
 		return e instanceof EntityAreaEffectCloud;
 	}
 
-	private static boolean isAmbient(Entity e) {
+	public static boolean isAmbient(Entity e) {
 		boolean ambient = e.isCreatureType(EnumCreatureType.AMBIENT, false) || e instanceof EntityAmbientCreature;
 		return ambient;
 	}
@@ -921,12 +913,6 @@ public class EntityUtil {
 				{
 					Entity entity = EntityUtil.createEntityByNameQuietly(loc, world,true);
 					((EntityLiving)entity).onInitialSpawn(e.world.getDifficultyForLocation(new BlockPos(0,4,0)), (IEntityLivingData)null);
-					if(entity instanceof EntitySlime)
-					{
-						NBTTagCompound nbt = EntityUtil.getEntityNBT(entity);
-						nbt.setInteger("Size", slimeSize);
-						entity.readFromNBT(nbt);
-					}
 				}
 				catch(Throwable t)
 				{

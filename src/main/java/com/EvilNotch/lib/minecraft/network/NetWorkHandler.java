@@ -21,4 +21,8 @@ public class NetWorkHandler {
 		INSTANCE.registerMessage(PacketUUIDHandler.class, PacketUUID.class, networkid++, Side.CLIENT);
 		INSTANCE.registerMessage(PacketClipBoardHandler.class, PacketClipBoard.class, networkid++, Side.CLIENT);
 	}
+	public static void registerMessage(Class handler, Class packet, Side side)
+	{
+		INSTANCE.registerMessage(handler, packet,networkid++, side);
+	}
 }
