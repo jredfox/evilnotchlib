@@ -351,7 +351,7 @@ public class EntityUtil {
 	}
 	/**
 	 * Doesn't force nbt if you don't need it to unlike vanilla this is the forum of the /summon command
-	 * silkspawners eggs will support multiple indexes but, not to this extent not requring recursion use only when fully supporting new format
+	 * silkspawners eggs will support multiple indexes but, not to this extent not requiring recursion use only when fully supporting new format
 	 */
 	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn) 
 	{	
@@ -389,7 +389,7 @@ public class EntityUtil {
 	}
 
 	/**
-	 * first index is to determine if your on the first part of the opening of the nbt if so treat nbt like normal
+	 * first index is to determine if your on the first part of the opening of the nbt if so treat nbt like normal with forge support
 	 */
 	public static Entity getEntity(NBTTagCompound nbt,World world,BlockPos pos,boolean useInterface,MobSpawnerBaseLogic logic) {
 		Entity e = null;

@@ -69,7 +69,7 @@ public class CapabilityHandler {
 	{
 		if(e.phase != Phase.END)
 			return;
-		CapabilityContainer c = CapabilityReg.getCapabilityConatainer(e.player);
+		PCapabilityContainer c = CapabilityReg.getCapabilityConatainer(e.player);
 		if(c == null || c.ticks.size() == 0)
 			return;
 		

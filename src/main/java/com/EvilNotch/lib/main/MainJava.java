@@ -38,7 +38,7 @@ import com.EvilNotch.lib.minecraft.content.items.BasicItemMeta;
 import com.EvilNotch.lib.minecraft.content.items.IBasicArmor;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.content.items.ItemBasicPickaxe;
-import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityContainer;
+import com.EvilNotch.lib.minecraft.content.pcapabilites.PCapabilityContainer;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityHandler;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
@@ -311,10 +311,10 @@ public class MainJava {
 		List<EntityPlayerMP> players = server.getPlayerList().getPlayers();
 		
 		System.out.println("Server is stopping. Saving capabilities");
-		Iterator<Map.Entry<String,CapabilityContainer>> it = CapabilityReg.capabilities.entrySet().iterator();
+		Iterator<Map.Entry<String,PCapabilityContainer>> it = CapabilityReg.capabilities.entrySet().iterator();
 		while(it.hasNext())
 		{
-			Map.Entry<String,CapabilityContainer> pair = it.next();
+			Map.Entry<String,PCapabilityContainer> pair = it.next();
 			String name = pair.getKey();
 			EntityPlayerMP player = server.getPlayerList().getPlayerByUsername(name);
 			File f = new File(LibEvents.playerDataDir,"caps/" + player.getUniqueID().toString() + ".dat");

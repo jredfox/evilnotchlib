@@ -6,9 +6,9 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public interface IListener {
 	
-	public void preSave(NBTTagCompound nbt,EntityPlayer player,CapabilityContainer container);
-	public void postSave(NBTTagCompound nbt,EntityPlayer player,CapabilityContainer container);
+	public void preSave(NBTTagCompound nbt,EntityPlayer player,PCapabilityContainer container);
+	public void postSave(NBTTagCompound nbt,EntityPlayer player,PCapabilityContainer container);
 	
-	public void preRead(NBTTagCompound nbt,EntityPlayer player,CapabilityContainer container);
-	public void postRead(NBTTagCompound nbt,EntityPlayer player,CapabilityContainer container);
+	public void preRead(NBTTagCompound nbt,EntityPlayer player,PCapabilityContainer container);
+	public void postRead(NBTTagCompound nbt,EntityPlayer player,PCapabilityContainer container);
 }

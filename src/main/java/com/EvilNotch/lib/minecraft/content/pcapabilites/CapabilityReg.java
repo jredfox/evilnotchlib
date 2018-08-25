@@ -15,11 +15,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class CapabilityReg {
 	
-	public static HashMap<String,CapabilityContainer> capabilities = new HashMap();
+	public static HashMap<String,PCapabilityContainer> capabilities = new HashMap();
 	public static ArrayList<ICapabilityProvider> reg = new ArrayList();
 	
 	/**
-	 * call this in pre-init this is a registerer for all your capabilities
+	 * call this in pre-init this is a registered for all your capabilities
 	 */
 	public static void registerCapProvider(ICapabilityProvider toReg)
 	{
@@ -29,16 +29,16 @@ public class CapabilityReg {
 	/**
 	 * may return null
 	 */
-	public static CapabilityContainer getCapabilityConatainer(EntityPlayer p)
+	public static PCapabilityContainer getCapabilityConatainer(EntityPlayer p)
 	{
 		return capabilities.get(getUsername(p) );
 	}
 	
 	public static void read(EntityPlayer p, NBTTagCompound nbt) 
 	{
-		CapabilityContainer caps = getCapabilityConatainer(p);
+		PCapabilityContainer caps = getCapabilityConatainer(p);
 		caps.preRead(nbt, p,caps);
-		Iterator<Map.Entry<ResourceLocation,ICapability> > it = caps.capabilities.entrySet().iterator();
+		Iterator<Map.Entry<ResourceLocation,IPCapability> > it = caps.capabilities.entrySet().iterator();
 		while(it.hasNext())
 		{
 			it.next().getValue().readFromNBT(nbt,p,caps);
@@ -48,9 +48,9 @@ public class CapabilityReg {
 	
 	public static void save(EntityPlayer p, NBTTagCompound nbt) 
 	{
-		CapabilityContainer caps = getCapabilityConatainer(p);
+		PCapabilityContainer caps = getCapabilityConatainer(p);
 		caps.preSave(nbt, p,caps);
-		Iterator<Map.Entry<ResourceLocation,ICapability> > it = caps.capabilities.entrySet().iterator();
+		Iterator<Map.Entry<ResourceLocation,IPCapability> > it = caps.capabilities.entrySet().iterator();
 		while(it.hasNext())
 		{
 			it.next().getValue().writeToNBT(nbt,p,caps);
@@ -62,9 +62,9 @@ public class CapabilityReg {
 	{	
 		String name = getUsername(p);
 		if(!capabilities.containsKey(name))
-			CapabilityReg.capabilities.put(name, new CapabilityContainer() );
+			CapabilityReg.capabilities.put(name, new PCapabilityContainer() );
 		
-		CapabilityContainer container = getCapabilityConatainer(p);
+		PCapabilityContainer container = getCapabilityConatainer(p);
 		for(ICapabilityProvider provider : reg)
 		{
 			provider.register(p,container);
@@ -74,12 +74,12 @@ public class CapabilityReg {
 	/**
 	 * may return null get capability from player name and resoruce location
 	 */
-	public static ICapability getCapability(EntityPlayer p, ResourceLocation loc) 
+	public static IPCapability getCapability(EntityPlayer p, ResourceLocation loc) 
 	{
 		if(p == null || loc == null)
 			return null;
 		
-		CapabilityContainer container = getCapabilityConatainer(p);
+		PCapabilityContainer container = getCapabilityConatainer(p);
 		if(container == null)
 			return null;
 		return container.getCapability(loc);
@@ -93,11 +93,11 @@ public class CapabilityReg {
 	 * only use if your know what your doing USE PLAYER.GETPROFILE.GETNAME() not player.getName()
 	 */
 	@Deprecated
-	public static ICapability getCapability(String username, ResourceLocation loc) 
+	public static IPCapability getCapability(String username, ResourceLocation loc) 
 	{
 		if(Strings.isNullOrEmpty(username) || loc == null)
 			return null;
-		CapabilityContainer c = capabilities.get(username);
+		PCapabilityContainer c = capabilities.get(username);
 		if(c == null)
 			return null;
 		return c.getCapability(loc);

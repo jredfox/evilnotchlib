@@ -4,5 +4,5 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public interface ITick {
 	
-	public void tick(EntityPlayer player,CapabilityContainer container);
+	public void tick(EntityPlayer player,PCapabilityContainer container);
 }
