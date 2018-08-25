@@ -7,6 +7,8 @@ import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUIDHandler;
 
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -18,8 +20,8 @@ public class NetWorkHandler {
 	public static void init()
 	{
 		INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(MainJava.MODID);
-		INSTANCE.registerMessage(PacketUUIDHandler.class, PacketUUID.class, networkid++, Side.CLIENT);
-		INSTANCE.registerMessage(PacketClipBoardHandler.class, PacketClipBoard.class, networkid++, Side.CLIENT);
+		registerMessage(PacketUUIDHandler.class, PacketUUID.class, Side.CLIENT);
+		registerMessage(PacketClipBoardHandler.class, PacketClipBoard.class, Side.CLIENT);
 	}
 	public static void registerMessage(Class handler, Class packet, Side side)
 	{

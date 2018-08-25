@@ -31,7 +31,6 @@ import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityInfo;
 import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
-import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.LineBase;
@@ -40,7 +39,6 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
@@ -63,16 +61,13 @@ import net.minecraft.entity.monster.EntityElderGuardian;
 import net.minecraft.entity.monster.EntityEndermite;
 import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.monster.EntityGuardian;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntityPolarBear;
 import net.minecraft.entity.monster.EntityShulker;
-import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntityVex;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAmbientCreature;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityFlying;
 import net.minecraft.entity.passive.EntityTameable;
@@ -99,6 +94,7 @@ import net.minecraft.network.play.server.SPacketSetPassengers;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.util.ClassInheritanceMultiMap;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -359,7 +355,11 @@ public class EntityUtil {
 	 */
 	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn) 
 	{	
-        Entity entity = getEntity(compound,worldIn,new BlockPos(x,y,z),useInterface);
+		return getEntityJockey(compound,worldIn,x,y,z,useInterface,attemptSpawn,null);
+	}
+	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic) 
+	{	
+        Entity entity = getEntity(compound,worldIn,new BlockPos(x,y,z),useInterface,logic);
         if(entity == null)
         	return null;
         
@@ -377,7 +377,7 @@ public class EntityUtil {
              NBTTagList nbttaglist = compound.getTagList("Passengers", 10);
              for (int i = 0; i < nbttaglist.tagCount(); ++i)
              {
-                 Entity entity1 = getEntityJockey(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z,useInterface,attemptSpawn);
+                 Entity entity1 = getEntityJockey(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z,useInterface,attemptSpawn,logic);
                   if (entity1 != null)
                   {
                       entity1.startRiding(entity, true);
@@ -391,13 +391,14 @@ public class EntityUtil {
 	/**
 	 * first index is to determine if your on the first part of the opening of the nbt if so treat nbt like normal
 	 */
-	public static Entity getEntity(NBTTagCompound nbt,World world,BlockPos pos,boolean useInterface) {
+	public static Entity getEntity(NBTTagCompound nbt,World world,BlockPos pos,boolean useInterface,MobSpawnerBaseLogic logic) {
 		Entity e = null;
 		if(getEntityProps(nbt).getSize() > 0)
 			e = EntityUtil.createEntityFromNBTQuietly(new ResourceLocation(nbt.getString("id")), nbt, world);
 		else{
 			e = EntityUtil.createEntityByNameQuietly(new ResourceLocation(nbt.getString("id")),world);
 			if(e instanceof EntityLiving && useInterface)
+				if (!net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn((EntityLiving)e, world, JavaUtil.castFloat(e.posX), JavaUtil.castFloat(e.posY), JavaUtil.castFloat(e.posZ), logic))
 				((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(pos), (IEntityLivingData)null);
 		}
 		return e;

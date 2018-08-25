@@ -18,15 +18,20 @@ public class TileStackSyncEvent extends Event{
 	public EntityPlayer player;
 	public World world;
 	/**
+	 * you can filter out if it's a vanilla or modded event by looking at this boolean true when using BlockEntityTag
+	 */
+	public boolean isBlockData;
+	/**
 	 * the base class for all the tile stack sync events do not use this directly
 	 */
-	public TileStackSyncEvent(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w)
+	public TileStackSyncEvent(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data)
 	{
 		this.stack = stack;
 		this.pos = pos;
 		this.tile = tile;
 		this.player = player;
 		this.world = w;
+		this.isBlockData = data;
 	}
 	
 	/**
@@ -38,9 +43,9 @@ public class TileStackSyncEvent extends Event{
 		public boolean opsOnly;
 		public boolean canUseCommand;
 		
-		public Permissions(ItemStack item,BlockPos pos,TileEntity tile,EntityPlayer player,World w)
+		public Permissions(ItemStack item,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data)
 		{
-			super(item,pos,tile,player,w);
+			super(item,pos,tile,player,w,data);
 			this.opsOnly = tile.onlyOpsCanSetNbt();
 			this.canUseCommand = player != null && player.canUseCommand(2, "");
 		}
@@ -53,11 +58,11 @@ public class TileStackSyncEvent extends Event{
 		public NBTTagCompound tileData;
 		public NBTTagCompound nbt;
 		
-		public Pre(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w,NBTTagCompound tileData,NBTTagCompound stackNBT)
+		public Pre(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data,NBTTagCompound tileData,NBTTagCompound stackNBT)
 		{
-			super(stack,pos,tile,player,w);
-			this.nbt = stackNBT;
+			super(stack,pos,tile,player,w,data);
 			this.tileData = tileData;
+			this.nbt = stackNBT;
 		}
 	}
 	/**
@@ -66,9 +71,9 @@ public class TileStackSyncEvent extends Event{
 	 */
 	public static class Post extends TileStackSyncEvent
 	{
-		public Post(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w)
+		public Post(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data)
 		{
-			super(stack,pos,tile,player,w);
+			super(stack,pos,tile,player,w,data);
 		}
 	}
 
