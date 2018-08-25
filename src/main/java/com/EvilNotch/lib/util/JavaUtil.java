@@ -42,6 +42,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
 import com.EvilNotch.lib.util.Line.LineBase;
 import com.EvilNotch.lib.util.Line.LineItemStackBase;
 import com.EvilNotch.lib.util.primitive.LongObj;
@@ -1118,4 +1119,10 @@ public class JavaUtil {
 			return null;
 		}
 	}
+	public static boolean isClassExtending(Class<? extends Object> base, Class<? extends Object> toCompare) 
+	{
+		return base.isAssignableFrom(toCompare);
+	}
+	
+	
 }
