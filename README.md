@@ -43,6 +43,7 @@ Json model generation(Basic MC Lib)
 Lang generation(Basic MC Lib)
 Dyanmic Tranlsation Event(let's you override ItemStack#getDisplayName())
 TileStackSync Events fires on both client and server allows for denial of permissions
+Adds the seed to f3 again per world
 
 Future:
 Font Renderer
