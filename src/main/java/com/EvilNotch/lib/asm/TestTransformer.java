@@ -64,8 +64,6 @@ public class TestTransformer
 	{
 		for (MethodNode method : classNode.methods)
 		{
-			if(method.name.equals(method_name))
-				System.out.println(method.name + " descriptor:" + method.desc);
 			if (method.name.equals(method_name) && method.desc.equals(method_desc))
 			{
 				return method;
