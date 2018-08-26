@@ -22,11 +22,11 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
  */
 public class IItemRendererAPI {
 
-	private static Method registerIItemRenderer;
+	public static Method registerIItemRenderer;
 
 	static {
 		try {
-			registerIItemRenderer = Class.forName("zdoctor.lazymodder.client.render.itemrender.IItemRendererHandler").getMethod("registerIItemRenderer", Item.class, IItemRenderer.class);
+			registerIItemRenderer = Class.forName("com.elix_x.itemrender.IItemRendererHandler").getMethod("registerIItemRenderer", Item.class, IItemRenderer.class);
 		} catch(Exception e){
 			e.printStackTrace();
 			FMLCommonHandler.instance().exitJava(-1, true);
