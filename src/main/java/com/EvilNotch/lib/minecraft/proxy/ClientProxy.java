@@ -82,11 +82,9 @@ public class ClientProxy extends ServerProxy{
 	public static String getSeed(WorldClient world) 
 	{
 		int dim = world.provider.getDimension();
-//		System.out.println("seed:" + seeds.get(dim));
 		if(!ClientProxy.seeds.containsKey(dim))
 		{
 			ClientProxy.seeds.put(dim,"pending...");
-			System.out.println("seed requesting");
 			NetWorkHandler.INSTANCE.sendToServer(new PacketRequestSeed(dim));
 		}
 		return ClientProxy.seeds.get(dim);

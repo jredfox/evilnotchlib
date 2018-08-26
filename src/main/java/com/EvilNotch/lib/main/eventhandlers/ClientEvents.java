@@ -44,7 +44,7 @@ public class ClientEvents {
 	public void seedText(RenderGameOverlayEvent.Text e)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		if(!mc.gameSettings.showDebugInfo)
+		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo)
 			return;
 		List<String> f3 = e.getLeft();
 		int index = 0;
