@@ -18,7 +18,7 @@ public abstract class MessegeBase<REQ extends IMessage> implements IMessageHandl
         {
             handleServerSide(message, ctx.getServerHandler().player);
         } 
-        else 
+        else
         {
             handleClientSide(message, ClientProxy.getPlayer() );
         }

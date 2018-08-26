@@ -19,6 +19,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
@@ -28,6 +30,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -70,7 +73,6 @@ public class ItemBlock extends Item
                 worldIn.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                 itemstack.shrink(1);
             }
-
             return EnumActionResult.SUCCESS;
         }
         else
@@ -115,14 +117,21 @@ public class ItemBlock extends Item
 
                  if (!tileData.equals(copyTile))
                  {
-                    tileentity.readFromNBT(tileData);
-                    tileentity.markDirty();
                     if(tileentity instanceof TileEntityMobSpawner && !stack.hasKey("SpawnPotentials"))
                     {
-                    	TileEntityMobSpawner spawner = (TileEntityMobSpawner)tileentity;
-                    	List list = (List) ReflectionUtil.getObject(spawner.getSpawnerBaseLogic(), MobSpawnerBaseLogic.class, FieldAcess.potentialSpawns);
-                     	list.clear();
+                       NBTTagList list = new NBTTagList();
+                       NBTTagCompound nbt = new WeightedSpawnerEntity(1, stack.getCompoundTag("SpawnData")).toCompoundTag();
+                       list.appendTag(nbt);
+                       tileData.setTag("SpawnPotentials", list);
                     }
+                	 
+                	tileentity.setPos(pos);
+                	tileentity.setWorld(worldIn);
+                    tileentity.readFromNBT(tileData);
+                    tileentity.markDirty();
+                    IBlockState state = worldIn.getBlockState(pos);
+                    worldIn.notifyBlockUpdate(pos, state.getBlock().getDefaultState(), state, 3);
+                    
                     TileStackSyncEvent.Post event = new TileStackSyncEvent.Post(stackIn,pos,tileentity,player,worldIn,blockData);
                     MinecraftForge.EVENT_BUS.post(event);
                     if(worldIn.isRemote)

@@ -14,6 +14,7 @@ import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.TileEntityUtil;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
+import com.EvilNotch.lib.minecraft.network.packets.PacketSeed;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
 import com.EvilNotch.lib.util.simple.PointId;
@@ -25,6 +26,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -44,6 +46,8 @@ public class LibEvents {
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void join(PlayerLoggedInEvent e)
 	{
+		if(e.player.world.isRemote)
+			return;
 		if(playerFlags.contains(e.player.getName()))
 		{
 			System.out.println("Server Sending UUID To:" + e.player.getName() );
@@ -53,11 +57,12 @@ public class LibEvents {
 			playerFlags.remove(e.player.getName());
 		}
 	}
-	 public static int mTick = 0;
-	 public static final List<String> msgs = new ArrayList();
-	 @SubscribeEvent
-	 public void mTick(ServerTickEvent e)
-	 {
+	
+	public static int mTick = 0;
+	public static final List<String> msgs = new ArrayList();
+	@SubscribeEvent
+	public void mTick(ServerTickEvent e)
+	{
 		 if(e.phase != Phase.END || msgs.isEmpty())
 			 return;
 		 Set<String> toRemove = new HashSet();
@@ -113,12 +118,11 @@ public class LibEvents {
 	 public void worldload(WorldEvent.Load e)
 	 {
 		 World ew = e.getWorld();
-		 if(!EntityUtil.cached || ew.isRemote || cachedEnts)
+		 if(!EntityUtil.cached || ew.isRemote || cachedEnts || EntityUtil.ent_blacklist.isEmpty() && EntityUtil.ent_blacklist_nbt.isEmpty() && EntityUtil.ent_blacklist_nbt.isEmpty())
 			 return;
-		 System.out.println("WorldLoadEvent firing!");
 		 cachedEnts = true;
 		 World w = e.getWorld();
-		 System.out.println("Attempting to Repair Cache From Re-Instantiating Broken Entities");
+		 System.out.println("Attempting to Repair Cache From Re-Instantiating Broken Entities. This gives modders debug onWorldLoad if the exception still occurs");
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_nbt,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_commandsender,w);

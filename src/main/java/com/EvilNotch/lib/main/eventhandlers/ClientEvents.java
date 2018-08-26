@@ -1,6 +1,7 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.EvilNotch.lib.main.ConfigMenu;
@@ -12,6 +13,8 @@ import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.EvilNotch.lib.minecraft.events.ClientBlockPlaceEvent;
 import com.EvilNotch.lib.minecraft.events.DynamicTranslationEvent;
+import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
+import com.EvilNotch.lib.minecraft.network.packets.PacketRequestSeed;
 import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.simple.RomanNumerals;
@@ -19,6 +22,7 @@ import com.EvilNotch.lib.util.simple.RomanNumerals;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,6 +31,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -34,6 +40,36 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientEvents {
 	
+	@SubscribeEvent
+	public void seedText(RenderGameOverlayEvent.Text e)
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo)
+			return;
+		List<String> f3 = e.getLeft();
+		int index = 0;
+		for(String s : f3)
+		{
+			if(s.toLowerCase().contains("biome"))
+			{
+				f3.add(index+1, "Seed:" + getSeed(mc.world));
+				break;
+			}
+			index++;
+		}
+	}
+	
+	public String getSeed(WorldClient world) 
+	{
+		int dim = world.provider.getDimension();
+		if(!ClientProxy.seeds.containsKey(dim))
+		{
+			ClientProxy.seeds.put(dim,"pending...");
+			NetWorkHandler.INSTANCE.sendToServer(new PacketRequestSeed(dim));
+		}
+		return ClientProxy.seeds.get(dim);
+	}
+
 	@SubscribeEvent
 	public void onGuiDisconnect(GuiOpenEvent e)
 	{

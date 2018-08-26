@@ -74,11 +74,20 @@ public class ClientProxy extends ServerProxy{
 	public static Map<String, String> langlistClient = null;
 	public static  Map<String,String> langlist = null;
 	public static File root = null;
+	
+	public static HashMap<Integer,String> seeds = new HashMap();
 
 	@Override
 	public void proxypreinit()
 	{
 		MainJava.isClient = true;
+	}
+	
+	@Override
+	public void onServerStopping()
+	{
+		seeds.clear();
+		super.onServerStopping();
 	}
 	
 	@Override
