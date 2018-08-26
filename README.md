@@ -17,6 +17,8 @@ GuiFurnace(fixed gui going out of bounds of integer thus displaying data wrong)
 notch drops apples again
 ItemToolTip Enchantment Fix(if text breaks manually uses enchantment name and roman numeral generator or integer)
 BlockEntityTag fix(sync client changes on the same tick rather then later,don't have to be in creative)
+BlockEntityTag fix(make sure client that placed the spawner ignores the next packet sent to it in case stuff is random)
+BlockEntityTag fix(no more pig spawners after one spawnage)
 ```
 
 Features:
