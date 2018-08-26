@@ -30,6 +30,8 @@ import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.EvilNotch.lib.minecraft.content.items.BasicItem;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
+import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
+import com.EvilNotch.lib.minecraft.network.packets.PacketRequestSeed;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.Comment;
 import com.EvilNotch.lib.util.Line.ConfigBase;
@@ -43,6 +45,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.resources.LanguageManager;
@@ -75,7 +78,19 @@ public class ClientProxy extends ServerProxy{
 	public static  Map<String,String> langlist = null;
 	public static File root = null;
 	
-	public static HashMap<Integer,String> seeds = new HashMap();
+	public static Map<Integer,String> seeds = new HashMap();
+	public static String getSeed(WorldClient world) 
+	{
+		int dim = world.provider.getDimension();
+//		System.out.println("seed:" + seeds.get(dim));
+		if(!ClientProxy.seeds.containsKey(dim))
+		{
+			ClientProxy.seeds.put(dim,"pending...");
+			System.out.println("seed requesting");
+			NetWorkHandler.INSTANCE.sendToServer(new PacketRequestSeed(dim));
+		}
+		return ClientProxy.seeds.get(dim);
+	}
 
 	@Override
 	public void proxypreinit()
@@ -514,6 +529,10 @@ public class ClientProxy extends ServerProxy{
 
 	public static EntityPlayer getPlayer() {
 		return FMLClientHandler.instance().getClientPlayerEntity();
+	}
+
+	public static void setSeed(int dim, long seed) {
+		seeds.put(dim, "" + seed);
 	}
 
 	/*public static int getBurn(IInventory tileFurnace, int pixels) 

@@ -5,8 +5,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketSeed implements IMessage{
 
-	public long seed;
 	public int dim;
+	public long seed;
 	
 	public PacketSeed(int d, long s)
 	{
@@ -22,9 +22,10 @@ public class PacketSeed implements IMessage{
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeLong(this.seed);
+	public void toBytes(ByteBuf buf) 
+	{
 		buf.writeInt(this.dim);
+		buf.writeLong(this.seed);
 	}
 
 }

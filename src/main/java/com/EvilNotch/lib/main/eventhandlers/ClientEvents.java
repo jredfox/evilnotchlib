@@ -44,7 +44,7 @@ public class ClientEvents {
 	public void seedText(RenderGameOverlayEvent.Text e)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo)
+		if(!mc.gameSettings.showDebugInfo)
 			return;
 		List<String> f3 = e.getLeft();
 		int index = 0;
@@ -52,22 +52,11 @@ public class ClientEvents {
 		{
 			if(s.toLowerCase().contains("biome"))
 			{
-				f3.add(index+1, "Seed:" + getSeed(mc.world));
+				f3.add(index+1, "Seed:" + ClientProxy.getSeed(mc.world));
 				break;
 			}
 			index++;
 		}
-	}
-	
-	public String getSeed(WorldClient world) 
-	{
-		int dim = world.provider.getDimension();
-		if(!ClientProxy.seeds.containsKey(dim))
-		{
-			ClientProxy.seeds.put(dim,"pending...");
-			NetWorkHandler.INSTANCE.sendToServer(new PacketRequestSeed(dim));
-		}
-		return ClientProxy.seeds.get(dim);
 	}
 
 	@SubscribeEvent

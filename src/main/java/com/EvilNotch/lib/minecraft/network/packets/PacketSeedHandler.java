@@ -14,7 +14,7 @@ public class PacketSeedHandler extends MessegeBase<PacketSeed>{
 	{
 		Minecraft.getMinecraft().addScheduledTask(() -> 
 		{
-			ClientProxy.seeds.put(message.dim,"" + message.seed);
+			ClientProxy.setSeed(message.dim,message.seed);
 		});
 	}
 
