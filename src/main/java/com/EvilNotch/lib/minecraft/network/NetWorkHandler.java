@@ -2,13 +2,13 @@ package com.EvilNotch.lib.minecraft.network;
 
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
-import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoardHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketRequestSeed;
-import com.EvilNotch.lib.minecraft.network.packets.PacketRequestSeedHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketSeed;
-import com.EvilNotch.lib.minecraft.network.packets.PacketSeedHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
-import com.EvilNotch.lib.minecraft.network.packets.PacketUUIDHandler;
+import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketClipBoardHandler;
+import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketRequestSeedHandler;
+import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketSeedHandler;
+import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketUUIDHandler;
 
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;

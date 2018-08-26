@@ -1,7 +1,9 @@
-package com.EvilNotch.lib.minecraft.network.packets;
+package com.EvilNotch.lib.minecraft.network.packets.handlers;
 
 import com.EvilNotch.lib.minecraft.network.MessegeBase;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
+import com.EvilNotch.lib.minecraft.network.packets.PacketRequestSeed;
+import com.EvilNotch.lib.minecraft.network.packets.PacketSeed;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -97,10 +97,10 @@ public class ClientProxy extends ServerProxy{
 	}
 	
 	@Override
-	public void onServerStopping()
+	public void onClientDisconect()
 	{
 		seeds.clear();
-		super.onServerStopping();
+		super.onClientDisconect();
 	}
 	
 	@Override

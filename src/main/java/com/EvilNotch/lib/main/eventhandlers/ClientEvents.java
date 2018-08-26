@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.EvilNotch.lib.main.ConfigMenu;
+import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.EnumChatFormatting;
 import com.EvilNotch.lib.minecraft.NBTUtil;
@@ -37,9 +38,17 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class ClientEvents {
-	
+	/**
+	 * this is so data get's cleared on client side only that needs to not be stored all the time or is attatched per world
+	 */
+	@SubscribeEvent
+	public void disconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent e)
+	{
+		MainJava.proxy.onClientDisconect();
+	}
 	@SubscribeEvent
 	public void seedText(RenderGameOverlayEvent.Text e)
 	{
@@ -186,16 +195,5 @@ public class ClientEvents {
         }
         return s;
     }
-    
-	@SubscribeEvent (priority = EventPriority.HIGH)
-	public void blockplace(ClientBlockPlaceEvent e)
-	{
-//		System.out.print("fireing:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
-	}
-	@SubscribeEvent (priority = EventPriority.HIGH)
-	public void blockplace(BlockEvent.PlaceEvent e)
-	{
-//		System.out.print("server:" + e.getBlockSnapshot().getCurrentBlock().getBlock().getRegistryName() + " replaced:" + e.getBlockSnapshot().getReplacedBlock().getBlock().getRegistryName() + " state:" + e.getState().getBlock().getRegistryName() + "\n");
-	}
 	
 }

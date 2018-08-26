@@ -22,6 +22,6 @@ public class ServerProxy {
 	public void jsonGen() throws Exception {}
 
 	public void onLoadComplete() {}
-	public void onServerStopping() {}
+	public void onClientDisconect() {}
 
 }

@@ -67,6 +67,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -331,7 +332,6 @@ public class MainJava {
 		LibEvents.isKickerIterating = false;
 		LibEvents.msgs.clear();
 	}
-	
 	@Mod.EventHandler
 	public void commandRegister(FMLServerStartingEvent e)
 	{

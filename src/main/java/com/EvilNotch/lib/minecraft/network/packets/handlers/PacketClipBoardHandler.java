@@ -1,6 +1,7 @@
-package com.EvilNotch.lib.minecraft.network.packets;
+package com.EvilNotch.lib.minecraft.network.packets.handlers;
 
 import com.EvilNotch.lib.minecraft.network.MessegeBase;
+import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
 import com.EvilNotch.lib.util.JavaUtil;
 
 import net.minecraft.client.Minecraft;

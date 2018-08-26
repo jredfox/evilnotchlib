@@ -1,7 +1,8 @@
-package com.EvilNotch.lib.minecraft.network.packets;
+package com.EvilNotch.lib.minecraft.network.packets.handlers;
 
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
 import com.EvilNotch.lib.minecraft.network.MessegeBase;
+import com.EvilNotch.lib.minecraft.network.packets.PacketSeed;
 import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
 
 import net.minecraft.client.Minecraft;
