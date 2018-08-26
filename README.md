@@ -4,6 +4,7 @@ this is a library with minecraft and some forge bug fixes. It allows modders to 
 Embeded Libraries:
 ```
 Simple JSON(With Modifications): https://github.com/fangyidong/json-simple
+IItemRenderer by elix_x found here: https://github.com/Elix-x/IItem-Renderer
 ```
 
 Bug Fixes:
