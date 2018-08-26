@@ -1,13 +1,13 @@
 package com.EvilNotch.lib.minecraft.content.capabilites.registry;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.EvilNotch.lib.util.JavaUtil;
 
 public class CapRegHandler {
 	
-	public static List<ICapRegistry> regs = new ArrayList();
+	public static Set<ICapRegistry> regs = new HashSet();
 	
 	public static void registerRegistry(ICapRegistry reg)
 	{

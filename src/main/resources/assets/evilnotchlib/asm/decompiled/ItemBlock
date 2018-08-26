@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
@@ -80,13 +81,18 @@ public class ItemBlock extends Item
 
     public static boolean setTileEntityNBT(World worldIn, @Nullable EntityPlayer player, BlockPos pos, ItemStack stackIn)
     {
-        NBTTagCompound stack = stackIn.getSubCompound("BlockEntityTag");
+    	NBTTagCompound stack = stackIn.getSubCompound("BlockEntityTag");
+    	return setTileNBT(worldIn,player,pos,stackIn,stack,true);
+    }
+    public static boolean setTileNBT(World worldIn, @Nullable EntityPlayer player, BlockPos pos, ItemStack stackIn,NBTTagCompound stack,boolean blockData)
+    {
         if (stack != null)
         {
+        	stack = stack.copy();//prevents this from being modified on the itemstack's nbt when firing the pre event
             TileEntity tileentity = worldIn.getTileEntity(pos);
             if (tileentity != null)
             {
-            	 TileStackSyncEvent.Permissions permissions = new TileStackSyncEvent.Permissions(stackIn,pos,tileentity,player,worldIn);
+            	 TileStackSyncEvent.Permissions permissions = new TileStackSyncEvent.Permissions(stackIn,pos,tileentity,player,worldIn,blockData);
             	 MinecraftForge.EVENT_BUS.post(permissions);
                  //allow mods to override the tile entity ops only as well as player can use command
             	 if (permissions.opsOnly && !permissions.canUseCommand)
@@ -97,7 +103,7 @@ public class ItemBlock extends Item
                  NBTTagCompound tileData = tileentity.writeToNBT(new NBTTagCompound());
                  NBTTagCompound copyTile = tileData.copy();
                  
-                 TileStackSyncEvent.Pre mergeEvent = new TileStackSyncEvent.Pre(stackIn,pos,tileentity,player,worldIn,tileData,stack);
+                 TileStackSyncEvent.Pre mergeEvent = new TileStackSyncEvent.Pre(stackIn,pos,tileentity,player,worldIn,blockData,tileData,stack);
                  MinecraftForge.EVENT_BUS.post(mergeEvent);
                  tileData = mergeEvent.tileData;
                  stack = mergeEvent.nbt;
@@ -117,8 +123,10 @@ public class ItemBlock extends Item
                     	List list = (List) ReflectionUtil.getObject(spawner.getSpawnerBaseLogic(), MobSpawnerBaseLogic.class, FieldAcess.potentialSpawns);
                      	list.clear();
                     }
-                    TileStackSyncEvent.Post event = new TileStackSyncEvent.Post(stackIn,pos,tileentity,player,worldIn);
+                    TileStackSyncEvent.Post event = new TileStackSyncEvent.Post(stackIn,pos,tileentity,player,worldIn,blockData);
                     MinecraftForge.EVENT_BUS.post(event);
+                    if(worldIn.isRemote)
+                    	SPacketUpdateTileEntity.toIgnore.add(pos);//tells your client to ignore the next tile entity packet sent to you
                     return true;
                  }
             }

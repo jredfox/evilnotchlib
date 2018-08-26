@@ -64,6 +64,8 @@ public class TestTransformer
 	{
 		for (MethodNode method : classNode.methods)
 		{
+			if(method.name.equals(method_name))
+				System.out.println(method.name + " descriptor:" + method.desc);
 			if (method.name.equals(method_name) && method.desc.equals(method_desc))
 			{
 				return method;
@@ -125,5 +127,38 @@ public class TestTransformer
 
 	public static void clearCacheNodes() {
 		cacheNodes.clear();
+	}
+
+	/**
+	 * try not to use this replacing methods adding feilds and imports is more acceptable rather then replacing classes thus throwing out other people's asm
+	 * @param inputStream
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] replaceClass(String inputStream) throws IOException {
+		InputStream initialStream = TestTransformer.class.getClassLoader().getResourceAsStream(inputStream);
+		return IOUtils.toByteArray(initialStream);
+	}
+
+	/**
+	 * add a method no obfuscated checks you have to do that yourself if you got a deob compiled class
+	 */
+	public static void addMethod(ClassNode classNode, String name, String inputStream, String method_name, String descriptor) throws IOException 
+	{
+		MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
+		Class c = method.getClass();
+		classNode.methods.add(method);
+	}
+	/**
+	 * remove a method don't remove ones that are going to get exicuted unless you imediatly add the same method and descriptor back
+	 * @throws IOException 
+	 */
+	public static void removeMethod(ClassNode classNode, String name, String inputStream, String method_name, String descriptor) throws IOException
+	{
+		MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
+		if(method != null)
+		{
+			classNode.methods.remove(method);
+		}
 	}
 }

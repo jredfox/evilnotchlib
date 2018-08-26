@@ -1,6 +1,6 @@
 package com.EvilNotch.lib.minecraft.content.capabilites.registry;
 
-public interface ICapRegistry<T> {
+public interface ICapRegistry<T extends ICapProvider> {
 	
 	/**
 	 * allows you to determine whether or not the object should have the capability registered

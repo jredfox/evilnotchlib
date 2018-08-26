@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 public class PCapabilityContainer {
 	
 	public HashMap<ResourceLocation,IPCapability> capabilities = null;
-	public ArrayList<IListener> listeners;
+	public ArrayList<IPListener> listeners;
 	public ArrayList<ITick> ticks;
 	
 	public PCapabilityContainer(){
@@ -26,20 +26,20 @@ public class PCapabilityContainer {
 	}
 	
 	public void preSave(NBTTagCompound nbt, EntityPlayer player, PCapabilityContainer c){
-		for(IListener li : this.listeners)
+		for(IPListener li : this.listeners)
 			li.preSave(nbt,player,c);
 	}
 	public void postSave(NBTTagCompound nbt, EntityPlayer player, PCapabilityContainer c){
-		for(IListener li : this.listeners)
+		for(IPListener li : this.listeners)
 			li.postSave(nbt,player,c);
 	}
 	
 	public void preRead(NBTTagCompound nbt, EntityPlayer player, PCapabilityContainer c){
-		for(IListener li : this.listeners)
+		for(IPListener li : this.listeners)
 			li.preRead(nbt,player,c);
 	}
 	public void postRead(NBTTagCompound nbt, EntityPlayer player, PCapabilityContainer c){
-		for(IListener li : this.listeners)
+		for(IPListener li : this.listeners)
 			li.postRead(nbt,player,c);
 	}
 	

@@ -24,7 +24,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.tileentity.TileEntityFurnace",
     	"net.minecraft.client.gui.inventory.GuiFurnace",
     	"net.minecraft.item.ItemStack",
-    	"net.minecraft.item.ItemBlock"
+    	"net.minecraft.item.ItemBlock",
+    	"net.minecraft.network.play.server.SPacketUpdateTileEntity"
     });
     
     @Override
@@ -103,6 +104,14 @@ public class Transformer implements IClassTransformer
                 	if(!ConfigCore.asm_setTileNBTFix || !FMLCorePlugin.isObf)
                 		return classToTransform;
                 	TestTransformer.transformMethod(classNode, name, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "a", "(Lamu;Laed;Let;Laip;)Z", "func_179224_a");
+            		TestTransformer.addMethod(classNode,name,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
+                break;
+                
+                case 5:
+                	if(!FMLCorePlugin.isObf)
+                		return classToTransform;
+                	else if (FMLCorePlugin.isObf)
+                		return TestTransformer.replaceClass(inputBase + "SPacketUpdateTileEntity");
                 break;
             }
             

@@ -2,6 +2,7 @@ package com.EvilNotch.lib.Api;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.util.JavaUtil;
@@ -12,8 +13,8 @@ public class MCPMappings {
 	
 	//MCPMAPPINGS API hashmaps cached here only on pre-init
     public static File dirmappings = null;
-	public static ArrayList<MCPEntry> fields = new ArrayList();
-	public static ArrayList<MCPEntry> methods = new ArrayList();
+	public static List<MCPEntry> fields = new ArrayList();
+	public static List<MCPEntry> methods = new ArrayList();
 	public static boolean isCached = false;
 	
 	/**
@@ -70,7 +71,7 @@ public class MCPMappings {
 		}
 		return null;
 	}
-	public static MCPEntry getEntry(Class clazz,String field,ArrayList<MCPEntry> list)
+	public static MCPEntry getEntry(Class clazz,String field,List<MCPEntry> list)
 	{
 		for(MCPEntry e : list)
 		{
