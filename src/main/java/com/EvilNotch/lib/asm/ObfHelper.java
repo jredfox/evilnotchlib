@@ -7,10 +7,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
-*since this was open-source I am free to take this as forge itself should have already written a class writer for mc
-*@author squeek502
-*/
 public class ObfHelper
 {
 	private static Boolean obfuscated = null;

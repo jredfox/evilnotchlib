@@ -8,6 +8,7 @@ import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -46,6 +47,10 @@ public class CMDSeedGet extends CommandBase {
      */
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
+    	if(!(sender instanceof EntityPlayerMP))
+    	{
+    		throw new WrongUsageException("sender isn't player",new Object[0]);
+    	}
         World world = (World)(sender instanceof EntityPlayer ? ((EntityPlayer)sender).world : server.getWorld(0));
         EntityUtil.sendClipBoard(EnumChatFormatting.WHITE,EnumChatFormatting.WHITE, (EntityPlayer)sender, "Seed:","" + world.getSeed(),false);
         EntityUtil.sendToClientClipBoard((EntityPlayerMP)sender,  "Seed:" + world.getSeed());

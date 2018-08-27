@@ -31,6 +31,7 @@ import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityInfo;
 import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
+import com.EvilNotch.lib.minecraft.network.packets.PacketYawOffset;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.LineBase;
@@ -1216,14 +1217,19 @@ public class EntityUtil {
         player.setWorld(targetWorld);
 
         playerList.preparePlayer(player, sourceWorld);
-        player.connection.setPlayerLocation(xCoord, yCoord, zCoord, yaw, pitch);
+        if(player.posX != xCoord || player.posY != yCoord|| player.posZ != zCoord || player.rotationYaw != yaw || player.rotationPitch != pitch)
+        {
+        	System.out.println("mod incompatiblity detected overriding it!");
+        	player.connection.setPlayerLocation(xCoord, yCoord, zCoord, yaw, pitch);
+        }
         EntityUtil.captureCoords(player);
+        NetWorkHandler.INSTANCE.sendTo(new PacketYawOffset(yaw), player);//straighten those shoulders
         player.interactionManager.setWorld(targetWorld);
         player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
         
         //additions to brandon's core
         player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
-//        player.setHealth(player.getHealth());
+        player.setHealth(player.getHealth());
         
         playerList.updateTimeAndWeatherForPlayer(player, targetWorld);
         playerList.syncPlayerInventory(player);
@@ -1349,6 +1355,7 @@ public class EntityUtil {
             player.setLocationAndAngles(chunkX, y, chunkZ, yaw, pitch);
             player.connection.setPlayerLocation(x, y, z, yaw, pitch, set);
             EntityUtil.captureCoords(player);
+            NetWorkHandler.INSTANCE.sendTo(new PacketYawOffset(yaw), player);
         }
         else
         {
