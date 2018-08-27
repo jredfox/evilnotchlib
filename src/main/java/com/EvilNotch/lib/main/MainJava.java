@@ -169,15 +169,6 @@ public class MainJava {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent e) throws Exception
 	{
-		proxy.lang();
-		try
-		{
-			proxy.jsonGen();
-		}
-		catch(Exception ee)
-		{
-			ee.printStackTrace();
-		}
 		proxy.initMod();
 		NetWorkHandler.init();
 	}
@@ -190,6 +181,15 @@ public class MainJava {
 	@Mod.EventHandler
 	public void post(FMLPostInitializationEvent e)
 	{
+		proxy.lang();
+		try
+		{
+			proxy.jsonGen();
+		}
+		catch(Exception ee)
+		{
+			ee.printStackTrace();
+		}
 	    proxy.postinit();//generate lang,generate shadow sizes
 		
 		if(!Config.isDev)

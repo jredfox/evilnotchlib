@@ -7,9 +7,11 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -109,7 +111,6 @@ public class TestTransformer
 					min.owner=className.replaceAll("\\.", "/");
 					System.out.println("Patched: " + min.owner);
 				}
-				
 			}
 			else if(ain instanceof FieldInsnNode)
 			{
@@ -128,7 +129,8 @@ public class TestTransformer
 	}
 
 	/**
-	 * try not to use this replacing methods adding feilds and imports is more acceptable rather then replacing classes thus throwing out other people's asm
+	 * try not to use this replacing methods adding fields is more acceptable rather then replacing classes thus throwing out other people's asm
+	 * and causing mod incompatibilities
 	 * @param inputStream
 	 * @return
 	 * @throws IOException
@@ -137,9 +139,26 @@ public class TestTransformer
 		InputStream initialStream = TestTransformer.class.getClassLoader().getResourceAsStream(inputStream);
 		return IOUtils.toByteArray(initialStream);
 	}
+	/**
+	 * add an interface to a class
+	 */
+	public static void addInterface(ClassNode node,String theInterface)
+	{
+		node.interfaces.add(theInterface);
+	}
+	/**
+	 * add a object field to the class
+	 */
+	public static void addFeild(ClassNode node,String feildName,String desc,String signature)
+	{
+		//TODO:
+//		FieldNode field = new FieldNode(Opcodes.AALOAD, feildName, desc, signature, null);
+//		node.fields.add(field);
+	}
 
 	/**
 	 * add a method no obfuscated checks you have to do that yourself if you got a deob compiled class
+	 * no checks for patching the local variables nor the instructions
 	 */
 	public static void addMethod(ClassNode classNode, String name, String inputStream, String method_name, String descriptor) throws IOException 
 	{
@@ -148,7 +167,7 @@ public class TestTransformer
 		classNode.methods.add(method);
 	}
 	/**
-	 * remove a method don't remove ones that are going to get exicuted unless you imediatly add the same method and descriptor back
+	 * remove a method don't remove ones that are going to get executed unless you immediately add the same method and descriptor back
 	 * @throws IOException 
 	 */
 	public static void removeMethod(ClassNode classNode, String name, String inputStream, String method_name, String descriptor) throws IOException
