@@ -5,6 +5,7 @@ Embeded Libraries:
 ```
 Simple JSON(With Modifications): https://github.com/fangyidong/json-simple
 IItemRenderer by elix_x found here: https://github.com/Elix-x/IItem-Renderer
+ObfHelper & MCWriter: by squeek502 found here:https://github.com/squeek502/ASMHelper/tree/1.10.x/raw/squeek/asmhelper
 ```
 
 Bug Fixes:
