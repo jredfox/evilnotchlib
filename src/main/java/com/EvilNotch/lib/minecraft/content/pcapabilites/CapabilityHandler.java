@@ -29,7 +29,6 @@ public class CapabilityHandler {
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void capabilityReader(PlayerEvent.LoadFromFile e)
 	{
-		System.out.println("FIRING PLAYEREVENT.LOADFROMFILE()");
 		if(CapabilityReg.reg.size() == 0)
 			return;
 		EntityPlayerMP p = (EntityPlayerMP) e.getEntityPlayer();

@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.minecraft.NBTUtil;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
@@ -62,7 +63,8 @@ public class CapabilityReg {
 		CapContainer c = getCapabilityConatainer(p);
 		if(c == null)
 		{
-			System.out.println("player already saved?:" + p.getName());
+			if(Config.debug)
+				System.out.println("player already saved?:" + p.getName());
 			return;
 		}
 		c.writeToNBT(p,nbt);

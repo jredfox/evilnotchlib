@@ -38,7 +38,6 @@ import com.EvilNotch.lib.minecraft.content.items.BasicItemMeta;
 import com.EvilNotch.lib.minecraft.content.items.IBasicArmor;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.content.items.ItemBasicPickaxe;
-import com.EvilNotch.lib.minecraft.content.pcapabilites.TickSaver;
 import com.EvilNotch.lib.minecraft.content.tick.TickReg;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityHandler;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
@@ -138,8 +137,6 @@ public class MainJava {
 		GeneralRegistry.registerCommand(new CMDDim());
 		GeneralRegistry.registerCommand(new CMDStack());
 		GeneralRegistry.registerCommand(new CMDKick());
-		
-		TickReg.regServer(new TickSaver());
 		
 		GeneralRegistry.replaceVanillaCommand("seed", new CMDSeedGet());
 		if(Config.replaceTP)
@@ -311,7 +308,6 @@ public class MainJava {
 	{
 		if(CapabilityReg.reg.size() == 0)
 			return;
-		
 		System.out.println("Server is stopping. Saving capabilities");
 		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		List<EntityPlayerMP> players = server.getPlayerList().getPlayers();
