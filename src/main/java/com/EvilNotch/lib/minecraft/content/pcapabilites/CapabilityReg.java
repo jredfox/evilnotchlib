@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.minecraft.NBTUtil;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.google.common.base.Strings;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,13 +19,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class CapabilityReg {
 	
-	public static HashMap<String,PCapabilityContainer> capabilities = new HashMap();
-	public static ArrayList<ICapabilityProvider> reg = new ArrayList();
+	public static HashMap<String,CapContainer<EntityPlayer>> capabilities = new HashMap();
+	public static ArrayList<IPCapabilityReg> reg = new ArrayList();
 	
 	/**
 	 * call this in pre-init this is a registered for all your capabilities
 	 */
-	public static void registerCapProvider(ICapabilityProvider toReg)
+	public static void registerCapProvider(IPCapabilityReg toReg)
 	{
 		reg.add(toReg);
 	}
@@ -32,7 +33,7 @@ public class CapabilityReg {
 	/**
 	 * may return null
 	 */
-	public static PCapabilityContainer getCapabilityConatainer(EntityPlayer p)
+	public static CapContainer getCapabilityConatainer(EntityPlayer p)
 	{
 		return capabilities.get(getUsername(p) );
 	}
@@ -49,8 +50,8 @@ public class CapabilityReg {
 			nbt = new NBTTagCompound();
 			System.out.println("Unable to get nbt tag data creating blank tag data will wipe");
 		}
-		PCapabilityContainer c = getCapabilityConatainer(p);
-		c.readFromNBT(nbt, p);
+		CapContainer c = getCapabilityConatainer(p);
+		c.readFromNBT(p,nbt);
 	}
 	/**
 	 * save capabilities to a file
@@ -58,27 +59,28 @@ public class CapabilityReg {
 	public static void saveToFile(EntityPlayer p) 
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
-		PCapabilityContainer c = getCapabilityConatainer(p);
+		CapContainer c = getCapabilityConatainer(p);
 		if(c == null)
 		{
 			System.out.println("player already saved?:" + p.getName());
 			return;
 		}
-		c.writeToNBT(nbt, p);
+		c.writeToNBT(p,nbt);
 		File f = new File(LibEvents.playerDataDir,"caps/" + p.getUniqueID().toString() + ".dat");
 		NBTUtil.updateNBTFileSafley(f, nbt);
 		System.out.print("saved player:" + p.getName() + " toFile:" + f.getName() + ".dat\n");
 	}
+	
 	public static void registerEntity(EntityPlayer p) 
 	{	
 		String name = getUsername(p);
 		if(!capabilities.containsKey(name))
-			CapabilityReg.capabilities.put(name, new PCapabilityContainer() );
+			CapabilityReg.capabilities.put(name, new CapContainer() );
 		
-		PCapabilityContainer container = getCapabilityConatainer(p);
-		for(ICapabilityProvider provider : reg)
+		CapContainer<EntityPlayer> container = getCapabilityConatainer(p);
+		for(IPCapabilityReg registry : reg)
 		{
-			provider.register(p,container);
+			registry.register(p,container);
 		}
 	}
 
@@ -90,10 +92,10 @@ public class CapabilityReg {
 		if(p == null || loc == null)
 			return null;
 		
-		PCapabilityContainer container = getCapabilityConatainer(p);
+		CapContainer<EntityPlayer> container = getCapabilityConatainer(p);
 		if(container == null)
 			return null;
-		return container.getCapability(loc);
+		return (IPCapability) container.getCapability(loc);
 	}
 
 	public static String getUsername(EntityPlayer p) {
@@ -108,10 +110,10 @@ public class CapabilityReg {
 	{
 		if(Strings.isNullOrEmpty(username) || loc == null)
 			return null;
-		PCapabilityContainer c = capabilities.get(username);
+		CapContainer c = capabilities.get(username);
 		if(c == null)
 			return null;
-		return c.getCapability(loc);
+		return (IPCapability) c.getCapability(loc);
 	}
 
 	public static void removeCapailityContainer(EntityPlayer player) {

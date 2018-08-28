@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.NBTUtil;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -52,10 +53,9 @@ public class CapabilityHandler {
 	{
 		if(e.phase != Phase.END)
 			return;
-		PCapabilityContainer c = CapabilityReg.getCapabilityConatainer(e.player);
+		CapContainer c = CapabilityReg.getCapabilityConatainer(e.player);
 		if(c == null || c.ticks.size() == 0)
 			return;
-		
 		c.tick(e.player);
 	}
 	

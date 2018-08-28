@@ -5,7 +5,7 @@ public interface ICapRegistry<T> {
 	/**
 	 * allows you to determine whether or not the object should have the capability registered
 	 */
-	public void register(CapContainer c,T object);
+	public void register(T object,CapContainer c);
 	/**
 	 * if is entity return Entity.class to be as generic as possible
 	 * unless you only want a specific entity having the capability or extending that entity 

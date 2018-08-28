@@ -50,6 +50,10 @@ public class CapContainer<T> {
 		this.postRead(nbt, object);
 	}
 	
+	public ICapability getCapability(ResourceLocation loc)
+	{
+		return caps.get(loc);
+	}
 	
 	public void preSave(NBTTagCompound nbt, T obj){
 		for(IListener li : this.listeners)

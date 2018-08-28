@@ -2,6 +2,7 @@ package com.EvilNotch.lib.minecraft.content.pcapabilites;
 
 import java.util.ArrayList;
 
+import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
 import com.EvilNotch.lib.util.simple.ICopy;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,8 +13,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
  * and are not apart of the capabilities from both forge and the lib. The data gets written to a separate playerdata files
  * @author jredfox
  */
-public interface IPCapability{
+public interface IPCapability extends ICapability<EntityPlayer>{
 	
-	public void readFromNBT(NBTTagCompound nbt,EntityPlayer player,PCapabilityContainer container);
-	public void writeToNBT(NBTTagCompound nbt,EntityPlayer player,PCapabilityContainer container);
 }

@@ -23,7 +23,7 @@ public class CapRegHandler {
 		{
 			if(JavaUtil.isClassExtending(reg.getObjectClass(),obj.getClass()))
 			{
-				reg.register(obj.getCapContainer(), obj);
+				reg.register(obj,obj.getCapContainer());
 			}
 		}
 	}

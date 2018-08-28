@@ -26,7 +26,6 @@ public class TickSaver implements ITickServer{
 			for(EntityPlayerMP p : players)
 			{
 				CapabilityReg.saveToFile(p);
-				CapabilityReg.removeCapailityContainer(p);
 			}
 		}
 	}
