@@ -24,12 +24,12 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class NetWorkHandler {
 	
-	public static NetworkWrapper INSTANCE;
+	public static NetWorkWrapper INSTANCE;
 	public static int networkid = 0;
 	
 	public static void init()
 	{
-		INSTANCE = new NetworkWrapper(MainJava.MODID);
+		INSTANCE = new NetWorkWrapper(MainJava.MODID);
 		
 		//to client
 		registerMessage(PacketUUIDHandler.class, PacketUUID.class, Side.CLIENT);
@@ -42,30 +42,8 @@ public class NetWorkHandler {
 		//to server
 		registerMessage(PacketRequestSeedHandler.class, PacketRequestSeed.class, Side.SERVER);
 	}
-	public static void registerMessage(Class handler, Class packet, Side side)
+	protected static void registerMessage(Class handler, Class packet, Side side)
 	{
 		INSTANCE.registerMessage(handler, packet,networkid++, side);
-	}
-	public static class NetworkWrapper extends SimpleNetworkWrapper
-	{
-		public NetworkWrapper(String channelName) 
-		{
-			super(channelName);
-		}
-		
-		public void sendToTrackingAndPlayer(IMessage msg,EntityPlayerMP player)
-		{
-			this.sendTo(msg, player);
-			this.sendToTracking(msg, player);
-		}
-		
-		public void sendToTracking(IMessage msg,EntityPlayerMP player)
-		{
-            for(EntityPlayer p : player.getServerWorld().getEntityTracker().getTrackingPlayers(player) )
-            {
-            	this.sendTo(msg, (EntityPlayerMP) p);
-            }
-		}
-		
 	}
 }
