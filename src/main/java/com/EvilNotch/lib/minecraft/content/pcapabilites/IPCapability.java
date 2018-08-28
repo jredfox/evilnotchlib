@@ -6,6 +6,7 @@ import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
 import com.EvilNotch.lib.util.simple.ICopy;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 /**
@@ -13,6 +14,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
  * and are not apart of the capabilities from both forge and the lib. The data gets written to a separate playerdata files
  * @author jredfox
  */
-public interface IPCapability extends ICapability<EntityPlayer>{
+public interface IPCapability extends ICapability<EntityPlayerMP>{
 	
 }

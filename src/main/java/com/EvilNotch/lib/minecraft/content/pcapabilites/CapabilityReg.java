@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class CapabilityReg {
 	
-	public static HashMap<String,CapContainer<EntityPlayer>> capabilities = new HashMap();
+	public static HashMap<String,CapContainer<EntityPlayerMP>> capabilities = new HashMap();
 	public static ArrayList<IPCapabilityReg> reg = new ArrayList();
 	
 	/**
@@ -75,12 +75,12 @@ public class CapabilityReg {
 	{	
 		String name = getUsername(p);
 		if(!capabilities.containsKey(name))
-			CapabilityReg.capabilities.put(name, new CapContainer() );
+			CapabilityReg.capabilities.put(name, new CapContainer<EntityPlayerMP>() );
 		
 		CapContainer<EntityPlayer> container = getCapabilityConatainer(p);
 		for(IPCapabilityReg registry : reg)
 		{
-			registry.register(p,container);
+			registry.register((EntityPlayerMP) p,container);
 		}
 	}
 
