@@ -9,10 +9,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public interface IListener {
 	
-	public void preSave(NBTTagCompound nbt,ICapProvider player,CapContainer container);
-	public void postSave(NBTTagCompound nbt,ICapProvider player,CapContainer container);
+	public void preSave(NBTTagCompound nbt,ICapProvider object,CapContainer container);
+	public void postSave(NBTTagCompound nbt,ICapProvider object,CapContainer container);
 	
-	public void preRead(NBTTagCompound nbt,ICapProvider player,CapContainer container);
-	public void postRead(NBTTagCompound nbt,ICapProvider player,CapContainer container);
+	public void preRead(NBTTagCompound nbt,ICapProvider object,CapContainer container);
+	public void postRead(NBTTagCompound nbt,ICapProvider object,CapContainer container);
 
 }

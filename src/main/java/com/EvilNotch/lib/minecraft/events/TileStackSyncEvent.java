@@ -53,12 +53,12 @@ public class TileStackSyncEvent extends Event{
 	/**
 	 * allows you to edit the nbttagcompounds before the tileData merges with the nbt tag compound to cancle an event use permissions
 	 */
-	public static class Pre extends TileStackSyncEvent
+	public static class Merge extends TileStackSyncEvent
 	{	
 		public NBTTagCompound tileData;
 		public NBTTagCompound nbt;
 		
-		public Pre(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data,NBTTagCompound tileData,NBTTagCompound stackNBT)
+		public Merge(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data,NBTTagCompound tileData,NBTTagCompound stackNBT)
 		{
 			super(stack,pos,tile,player,w,data);
 			this.tileData = tileData;

@@ -23,7 +23,6 @@ import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.LangLine;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
-import com.EvilNotch.lib.minecraft.content.client.ClientDebug;
 import com.EvilNotch.lib.minecraft.content.client.ClientUUID;
 import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
 import com.EvilNotch.lib.minecraft.content.client.block.StateMapperSupreme;
@@ -115,7 +114,6 @@ public class ClientProxy extends ServerProxy{
 		MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
 		if(Config.debug)
 			ClientCommandHandler.instance.registerCommand(new ClientUUID());
-		ClientCommandHandler.instance.registerCommand(new ClientDebug());
 	}
 	@Override
 	public void onLoadComplete()

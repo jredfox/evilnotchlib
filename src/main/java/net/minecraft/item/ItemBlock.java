@@ -86,6 +86,7 @@ public class ItemBlock extends Item
     	NBTTagCompound stack = stackIn.getSubCompound("BlockEntityTag");
     	return setTileNBT(worldIn,player,pos,stackIn,stack,true);
     }
+    public static TileEntity lastTile = null;
     public static boolean setTileNBT(World worldIn, @Nullable EntityPlayer player, BlockPos pos, ItemStack stackIn,NBTTagCompound stack,boolean blockData)
     {
         if (stack != null)
@@ -105,7 +106,7 @@ public class ItemBlock extends Item
                  NBTTagCompound tileData = tileentity.writeToNBT(new NBTTagCompound());
                  NBTTagCompound copyTile = tileData.copy();
                  
-                 TileStackSyncEvent.Pre mergeEvent = new TileStackSyncEvent.Pre(stackIn,pos,tileentity,player,worldIn,blockData,tileData,stack);
+                 TileStackSyncEvent.Merge mergeEvent = new TileStackSyncEvent.Merge(stackIn,pos,tileentity,player,worldIn,blockData,tileData,stack);
                  MinecraftForge.EVENT_BUS.post(mergeEvent);
                  tileData = mergeEvent.tileData;
                  stack = mergeEvent.nbt;
@@ -125,10 +126,10 @@ public class ItemBlock extends Item
                        tileData.setTag("SpawnPotentials", list);
                     }
                 	 
-                	tileentity.setPos(pos);
-                	tileentity.setWorld(worldIn);
                     tileentity.readFromNBT(tileData);
                     tileentity.markDirty();
+                    lastTile = tileentity;
+
                     IBlockState state = worldIn.getBlockState(pos);
                     worldIn.notifyBlockUpdate(pos, state.getBlock().getDefaultState(), state, 3);
                     
@@ -136,6 +137,7 @@ public class ItemBlock extends Item
                     MinecraftForge.EVENT_BUS.post(event);
                     if(worldIn.isRemote)
                     	SPacketUpdateTileEntity.toIgnore.add(pos);//tells your client to ignore the next tile entity packet sent to you
+                    
                     return true;
                  }
             }

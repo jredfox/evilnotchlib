@@ -1,41 +1,35 @@
 package com.EvilNotch.lib.main.eventhandlers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.EnumChatFormatting;
 import com.EvilNotch.lib.minecraft.NBTUtil;
+import com.EvilNotch.lib.minecraft.TileEntityUtil;
 import com.EvilNotch.lib.minecraft.content.client.gui.GuiFakeMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
-import com.EvilNotch.lib.minecraft.events.ClientBlockPlaceEvent;
-import com.EvilNotch.lib.minecraft.events.DynamicTranslationEvent;
-import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
-import com.EvilNotch.lib.minecraft.network.packets.PacketRequestSeed;
 import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
-import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.simple.RomanNumerals;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -55,6 +49,10 @@ public class ClientEvents {
 		Minecraft mc = Minecraft.getMinecraft();
 		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo)
 			return;
+//		World w = Minecraft.getMinecraft().world;
+//		TileEntity old = ItemBlock.lastTile;
+//		TileEntity n = w.getTileEntity(ItemBlock.lastTile.getPos() );
+////		System.out.println("old:" + (old == n) );
 		List<String> f3 = e.getLeft();
 		int index = 0;
 		for(String s : f3)

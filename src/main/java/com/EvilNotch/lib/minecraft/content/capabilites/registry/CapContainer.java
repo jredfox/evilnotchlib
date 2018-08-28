@@ -11,7 +11,7 @@ import com.EvilNotch.lib.minecraft.content.capabilites.IListener;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
-public class CapContainer<T extends ICapProvider> {
+public class CapContainer<T> {
 	
 	public HashMap<ResourceLocation,ICapability> caps = new HashMap();
 	public HashMap<ResourceLocation,ICapTick> ticks = new HashMap();
@@ -53,20 +53,20 @@ public class CapContainer<T extends ICapProvider> {
 	
 	public void preSave(NBTTagCompound nbt, T obj){
 		for(IListener li : this.listeners)
-			li.preSave(nbt,obj,this);
+			li.preSave(nbt,(ICapProvider)obj,this);
 	}
 	public void postSave(NBTTagCompound nbt, T obj){
 		for(IListener li : this.listeners)
-			li.postSave(nbt,obj,this);
+			li.postSave(nbt,(ICapProvider)obj,this);
 	}
 	
 	public void preRead(NBTTagCompound nbt, T obj){
 		for(IListener li : this.listeners)
-			li.preRead(nbt,obj,this);
+			li.preRead(nbt,(ICapProvider)obj,this);
 	}
 	public void postRead(NBTTagCompound nbt, T obj){
 		for(IListener li : this.listeners)
-			li.postRead(nbt,obj,this);
+			li.postRead(nbt,(ICapProvider)obj,this);
 	}
 
 }

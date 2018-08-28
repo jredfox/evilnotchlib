@@ -2,7 +2,7 @@ package com.EvilNotch.lib.minecraft.content.capabilites.registry;
 
 import net.minecraft.tileentity.TileEntity;
 
-public abstract class CapRegTileEntity implements ICapRegistry{
+public abstract class CapRegTileEntity implements ICapRegistry<TileEntity>{
 	
 	@Override
 	public Class getObjectClass() {

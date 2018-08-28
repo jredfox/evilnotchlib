@@ -2,7 +2,7 @@ package com.EvilNotch.lib.minecraft.content.capabilites.registry;
 
 import net.minecraft.entity.Entity;
 
-public abstract class CapRegEntity implements ICapRegistry{
+public abstract class CapRegEntity implements ICapRegistry<Entity>{
 
 	@Override
 	public Class getObjectClass() {

@@ -208,8 +208,8 @@ public abstract class MobSpawnerBaseLogic
 
     public void readFromNBT(NBTTagCompound nbt)
     {
-//    	if(this.getSpawnerWorld() != null)
-//    		System.out.println("readingFromNBT:" + this.getSpawnerWorld().isRemote);
+    	if(this.getSpawnerWorld() != null)
+    		System.out.println("readingFromNBT:" + this.getSpawnerWorld().isRemote);
         this.spawnDelay = nbt.getShort("Delay");
         this.potentialSpawns.clear();
 

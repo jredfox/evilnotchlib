@@ -32,6 +32,7 @@ import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
 import com.EvilNotch.lib.minecraft.network.packets.PacketYawOffset;
+import com.EvilNotch.lib.minecraft.network.packets.PacketYawPitch;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
 import com.EvilNotch.lib.util.Line.LineBase;
@@ -1223,7 +1224,15 @@ public class EntityUtil {
         	player.connection.setPlayerLocation(xCoord, yCoord, zCoord, yaw, pitch);
         }
         EntityUtil.captureCoords(player);
-        NetWorkHandler.INSTANCE.sendTo(new PacketYawOffset(yaw), player);//straighten those shoulders
+        
+        //update yaw/pitch and sync shoulders
+        player.renderYawOffset = yaw;
+        player.prevRenderYawOffset = yaw;
+        PacketYawOffset packet = new PacketYawOffset(yaw,player.getEntityId());
+        PacketYawPitch packet2 = new PacketYawPitch(yaw,pitch,player.getEntityId());
+        NetWorkHandler.INSTANCE.sendTo(packet, player);
+        NetWorkHandler.INSTANCE.sendToTracking(packet2, player);
+        
         player.interactionManager.setWorld(targetWorld);
         player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
         
@@ -1355,7 +1364,13 @@ public class EntityUtil {
             player.setLocationAndAngles(chunkX, y, chunkZ, yaw, pitch);
             player.connection.setPlayerLocation(x, y, z, yaw, pitch, set);
             EntityUtil.captureCoords(player);
-            NetWorkHandler.INSTANCE.sendTo(new PacketYawOffset(yaw), player);
+            
+            player.renderYawOffset = yaw;
+            player.prevRenderYawOffset = yaw;
+            PacketYawOffset packet = new PacketYawOffset(yaw,player.getEntityId());
+            PacketYawPitch packet2 = new PacketYawPitch(yaw,pitch,player.getEntityId());
+            NetWorkHandler.INSTANCE.sendTo(packet, player);
+            NetWorkHandler.INSTANCE.sendToTracking(packet2, player);
         }
         else
         {

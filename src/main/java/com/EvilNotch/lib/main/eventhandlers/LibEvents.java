@@ -16,6 +16,7 @@ import com.EvilNotch.lib.minecraft.TileEntityUtil;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketSeed;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
+import com.EvilNotch.lib.minecraft.network.packets.PacketYawHead;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
 import com.EvilNotch.lib.util.simple.PointId;
 
@@ -27,6 +28,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -56,6 +58,17 @@ public class LibEvents {
 			NetWorkHandler.INSTANCE.sendTo(id, playerIn);
 			playerFlags.remove(e.player.getName());
 		}
+	}
+	/**
+	 * fix heads being on backwards when you start tracking a player
+	 */
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void headFix(PlayerEvent.StartTracking e)
+	{
+		if(!(e.getTarget() instanceof EntityPlayerMP))
+			return;
+		EntityPlayerMP targ = (EntityPlayerMP) e.getTarget();
+		NetWorkHandler.INSTANCE.sendTo(new PacketYawHead(targ.getRotationYawHead(),targ.getEntityId()), (EntityPlayerMP)e.getEntityPlayer());
 	}
 	
 	public static int mTick = 0;

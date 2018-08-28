@@ -3,27 +3,28 @@ package com.EvilNotch.lib.minecraft.network.packets;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-public class PacketYawOffset implements IMessage{
-	
-	public float yawOffsetRender = 0.0F;
+public class PacketYawHead implements IMessage{
+
+	public float head;
 	public int id;
 	
-	public PacketYawOffset(){}
-	public PacketYawOffset(float yaw,int id)
+	public PacketYawHead(){}
+	
+	public PacketYawHead(float head,int id)
 	{
-		this.yawOffsetRender = yaw;
+		this.head = head;
 		this.id = id;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.yawOffsetRender = buf.readFloat();
+		this.head = buf.readFloat();
 		this.id = buf.readInt();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeFloat(this.yawOffsetRender);
+		buf.writeFloat(this.head);
 		buf.writeInt(this.id);
 	}
 
