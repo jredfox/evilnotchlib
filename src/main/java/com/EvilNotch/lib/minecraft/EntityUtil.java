@@ -1226,12 +1226,7 @@ public class EntityUtil {
         EntityUtil.captureCoords(player);
         
         //update yaw/pitch and sync shoulders
-        player.renderYawOffset = yaw;
-        player.prevRenderYawOffset = yaw;
-        PacketYawOffset packet = new PacketYawOffset(yaw,player.getEntityId());
-        PacketYawPitch packet2 = new PacketYawPitch(yaw,pitch,player.getEntityId());
-        NetWorkHandler.INSTANCE.sendTo(packet, player);
-        NetWorkHandler.INSTANCE.sendToTracking(packet2, player);
+        sysncShoulders(player,yaw,pitch);
         
         player.interactionManager.setWorld(targetWorld);
         player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
@@ -1251,7 +1246,16 @@ public class EntityUtil {
         
         return player;
     }
-    public static Entity teleportEntityInterdimentional(Entity entity, MinecraftServer server, int sourceDim, int targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) throws WrongUsageException 
+    public static void sysncShoulders(EntityPlayerMP player, float yaw, float pitch) {
+        player.renderYawOffset = yaw;
+        player.prevRenderYawOffset = yaw;
+        PacketYawOffset packet = new PacketYawOffset(yaw,player.getEntityId());
+        PacketYawPitch packet2 = new PacketYawPitch(yaw,pitch,player.getEntityId());
+        NetWorkHandler.INSTANCE.sendTo(packet, player);
+        NetWorkHandler.INSTANCE.sendToTracking(packet2, player);
+	}
+
+	public static Entity teleportEntityInterdimentional(Entity entity, MinecraftServer server, int sourceDim, int targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) throws WrongUsageException 
     {
         if (entity == null || entity.isDead || entity.world == null || entity.world.isRemote) 
         {
@@ -1364,13 +1368,7 @@ public class EntityUtil {
             player.setLocationAndAngles(chunkX, y, chunkZ, yaw, pitch);
             player.connection.setPlayerLocation(x, y, z, yaw, pitch, set);
             EntityUtil.captureCoords(player);
-            
-            player.renderYawOffset = yaw;
-            player.prevRenderYawOffset = yaw;
-            PacketYawOffset packet = new PacketYawOffset(yaw,player.getEntityId());
-            PacketYawPitch packet2 = new PacketYawPitch(yaw,pitch,player.getEntityId());
-            NetWorkHandler.INSTANCE.sendTo(packet, player);
-            NetWorkHandler.INSTANCE.sendToTracking(packet2, player);
+            sysncShoulders(player,yaw,pitch);
         }
         else
         {

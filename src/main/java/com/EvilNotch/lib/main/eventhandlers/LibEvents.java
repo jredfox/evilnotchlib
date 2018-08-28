@@ -9,27 +9,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.TileEntityUtil;
+import com.EvilNotch.lib.minecraft.content.tick.TickReg;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
-import com.EvilNotch.lib.minecraft.network.packets.PacketSeed;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.network.packets.PacketYawHead;
-import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
 import com.EvilNotch.lib.util.simple.PointId;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -139,5 +131,12 @@ public class LibEvents {
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_nbt,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_commandsender,w);
+	 }
+	 @SubscribeEvent
+	 public void tickServer(ServerTickEvent e)
+	 {
+		 if(e.phase != Phase.END)
+			 return;
+		 TickReg.tickServer();
 	 }
 }

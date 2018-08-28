@@ -39,6 +39,8 @@ import com.EvilNotch.lib.minecraft.content.items.IBasicArmor;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.content.items.ItemBasicPickaxe;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.PCapabilityContainer;
+import com.EvilNotch.lib.minecraft.content.pcapabilites.TickSaver;
+import com.EvilNotch.lib.minecraft.content.tick.TickReg;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityHandler;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
@@ -137,6 +139,8 @@ public class MainJava {
 		GeneralRegistry.registerCommand(new CMDDim());
 		GeneralRegistry.registerCommand(new CMDStack());
 		GeneralRegistry.registerCommand(new CMDKick());
+		
+		TickReg.regServer(new TickSaver());
 		
 		GeneralRegistry.replaceVanillaCommand("seed", new CMDSeedGet());
 		if(Config.replaceTP)
@@ -308,24 +312,18 @@ public class MainJava {
 	{
 		if(CapabilityReg.reg.size() == 0)
 			return;
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		List<EntityPlayerMP> players = server.getPlayerList().getPlayers();
 		
 		System.out.println("Server is stopping. Saving capabilities");
-		Iterator<Map.Entry<String,PCapabilityContainer>> it = CapabilityReg.capabilities.entrySet().iterator();
-		while(it.hasNext())
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		List<EntityPlayerMP> players = server.getPlayerList().getPlayers();
+		for(EntityPlayerMP p : players)
 		{
-			Map.Entry<String,PCapabilityContainer> pair = it.next();
-			String name = pair.getKey();
-			EntityPlayerMP player = server.getPlayerList().getPlayerByUsername(name);
-			File f = new File(LibEvents.playerDataDir,"caps/" + player.getUniqueID().toString() + ".dat");
-			NBTTagCompound nbt = new NBTTagCompound();
-			CapabilityReg.save(player,nbt);
-			NBTUtil.updateNBTFileSafley(f, nbt);
-			System.out.print("saved player:" + name + " toFile:" + f.getName() + ".dat\n");
-			it.remove();
+			CapabilityReg.saveToFile(p);
+			CapabilityReg.removeCapailityContainer(p);
 		}
+		
 		//prevent memory leaks
+		TickReg.garbageCollectServer();
 		EntityUtil.nbts.clear();
 		LibEvents.playerFlags.clear();
 		LibEvents.kicker.clear();

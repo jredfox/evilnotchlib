@@ -20,6 +20,7 @@ public class Config {
 	public static boolean isDev = false;
 	public static boolean tpAllowCrossDim = false;
 	public static boolean replaceTP = true;
+	public static int pcapSaveTime = 180;
 	
 	public static void loadConfig(File d)
 	{
@@ -31,6 +32,7 @@ public class Config {
 		isDev = config.get("general", "isDev", false).getBoolean();
 		tpAllowCrossDim = config.get("general","tpAllowCrossDim",true).getBoolean();
 		replaceTP = config.get("general","tpReplace",true).getBoolean();
+		pcapSaveTime = config.get("general","pcapSaveTime",180).getInt() * 20;
 		config.save();
 	}
 

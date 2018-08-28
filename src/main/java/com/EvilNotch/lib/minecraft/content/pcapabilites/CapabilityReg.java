@@ -1,11 +1,14 @@
 package com.EvilNotch.lib.minecraft.content.pcapabilites;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.EvilNotch.lib.main.eventhandlers.LibEvents;
+import com.EvilNotch.lib.minecraft.NBTUtil;
 import com.google.common.base.Strings;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,30 +37,38 @@ public class CapabilityReg {
 		return capabilities.get(getUsername(p) );
 	}
 	
-	public static void read(EntityPlayer p, NBTTagCompound nbt) 
+	/**
+	 * parse capabilities from a file
+	 */
+	public static void readFromFile(EntityPlayer p)
 	{
-		PCapabilityContainer caps = getCapabilityConatainer(p);
-		caps.preRead(nbt, p,caps);
-		Iterator<Map.Entry<ResourceLocation,IPCapability> > it = caps.capabilities.entrySet().iterator();
-		while(it.hasNext())
+		File caps = new File(LibEvents.playerDataDir,"caps/" + p.getUniqueID().toString() + ".dat");
+		NBTTagCompound nbt = NBTUtil.getFileNBTSafley(caps);
+		if(nbt == null)
 		{
-			it.next().getValue().readFromNBT(nbt,p,caps);
+			nbt = new NBTTagCompound();
+			System.out.println("Unable to get nbt tag data creating blank tag data will wipe");
 		}
-		caps.postRead(nbt, p,caps);
+		PCapabilityContainer c = getCapabilityConatainer(p);
+		c.readFromNBT(nbt, p);
 	}
-	
-	public static void save(EntityPlayer p, NBTTagCompound nbt) 
+	/**
+	 * save capabilities to a file
+	 */
+	public static void saveToFile(EntityPlayer p) 
 	{
-		PCapabilityContainer caps = getCapabilityConatainer(p);
-		caps.preSave(nbt, p,caps);
-		Iterator<Map.Entry<ResourceLocation,IPCapability> > it = caps.capabilities.entrySet().iterator();
-		while(it.hasNext())
+		NBTTagCompound nbt = new NBTTagCompound();
+		PCapabilityContainer c = getCapabilityConatainer(p);
+		if(c == null)
 		{
-			it.next().getValue().writeToNBT(nbt,p,caps);
+			System.out.println("player already saved?:" + p.getName());
+			return;
 		}
-		caps.postSave(nbt, p,caps);
+		c.writeToNBT(nbt, p);
+		File f = new File(LibEvents.playerDataDir,"caps/" + p.getUniqueID().toString() + ".dat");
+		NBTUtil.updateNBTFileSafley(f, nbt);
+		System.out.print("saved player:" + p.getName() + " toFile:" + f.getName() + ".dat\n");
 	}
-	
 	public static void registerEntity(EntityPlayer p) 
 	{	
 		String name = getUsername(p);
@@ -101,6 +112,10 @@ public class CapabilityReg {
 		if(c == null)
 			return null;
 		return c.getCapability(loc);
+	}
+
+	public static void removeCapailityContainer(EntityPlayer player) {
+		capabilities.remove(getUsername(player));
 	}
 
 }

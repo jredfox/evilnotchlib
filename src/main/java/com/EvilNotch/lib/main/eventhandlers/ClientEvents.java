@@ -10,6 +10,7 @@ import com.EvilNotch.lib.minecraft.TileEntityUtil;
 import com.EvilNotch.lib.minecraft.content.client.gui.GuiFakeMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
+import com.EvilNotch.lib.minecraft.content.tick.TickReg;
 import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
 import com.EvilNotch.lib.util.simple.RomanNumerals;
 
@@ -32,6 +33,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class ClientEvents {
@@ -42,6 +45,14 @@ public class ClientEvents {
 	public void disconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent e)
 	{
 		MainJava.proxy.onClientDisconect();
+		TickReg.garbageCollectClient();
+	}
+	@SubscribeEvent
+	public void tickClient(ClientTickEvent e)
+	{
+		 if(e.phase != Phase.END)
+			 return;
+		 TickReg.tickClient();
 	}
 	@SubscribeEvent
 	public void seedText(RenderGameOverlayEvent.Text e)

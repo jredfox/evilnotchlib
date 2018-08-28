@@ -2,6 +2,8 @@ package com.EvilNotch.lib.minecraft.content.pcapabilites;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -25,22 +27,44 @@ public class PCapabilityContainer {
 		return this.capabilities.get(loc);
 	}
 	
-	public void preSave(NBTTagCompound nbt, EntityPlayer player, PCapabilityContainer c){
-		for(IPListener li : this.listeners)
-			li.preSave(nbt,player,c);
-	}
-	public void postSave(NBTTagCompound nbt, EntityPlayer player, PCapabilityContainer c){
-		for(IPListener li : this.listeners)
-			li.postSave(nbt,player,c);
+	public void writeToNBT(NBTTagCompound nbt,EntityPlayer p)
+	{
+		this.preSave(nbt, p);
+		Iterator<Map.Entry<ResourceLocation,IPCapability> > it = this.capabilities.entrySet().iterator();
+		while(it.hasNext())
+		{
+			it.next().getValue().writeToNBT(nbt,p,this);
+		}
+		this.postSave(nbt, p);
 	}
 	
-	public void preRead(NBTTagCompound nbt, EntityPlayer player, PCapabilityContainer c){
-		for(IPListener li : this.listeners)
-			li.preRead(nbt,player,c);
+	public void readFromNBT(NBTTagCompound nbt,EntityPlayer p)
+	{
+		this.preRead(nbt, p);
+		Iterator<Map.Entry<ResourceLocation,IPCapability> > it = this.capabilities.entrySet().iterator();
+		while(it.hasNext())
+		{
+			it.next().getValue().readFromNBT(nbt,p,this);
+		}
+		this.postRead(nbt, p);
 	}
-	public void postRead(NBTTagCompound nbt, EntityPlayer player, PCapabilityContainer c){
+	
+	public void preSave(NBTTagCompound nbt, EntityPlayer player){
 		for(IPListener li : this.listeners)
-			li.postRead(nbt,player,c);
+			li.preSave(nbt,player,this);
+	}
+	public void postSave(NBTTagCompound nbt, EntityPlayer player){
+		for(IPListener li : this.listeners)
+			li.postSave(nbt,player,this);
+	}
+	
+	public void preRead(NBTTagCompound nbt, EntityPlayer player){
+		for(IPListener li : this.listeners)
+			li.preRead(nbt,player,this);
+	}
+	public void postRead(NBTTagCompound nbt, EntityPlayer player){
+		for(IPListener li : this.listeners)
+			li.postRead(nbt,player,this);
 	}
 	
 	public void tick(EntityPlayer player){

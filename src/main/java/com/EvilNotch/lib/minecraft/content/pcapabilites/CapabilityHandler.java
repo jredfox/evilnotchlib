@@ -33,14 +33,7 @@ public class CapabilityHandler {
 			return;
 		EntityPlayerMP p = (EntityPlayerMP) e.getEntityPlayer();
 		CapabilityReg.registerEntity(p);
-		File caps = new File(LibEvents.playerDataDir,"caps/" + e.getEntityPlayer().getUniqueID().toString() + ".dat");
-		NBTTagCompound nbt = NBTUtil.getFileNBTSafley(caps);
-		if(nbt == null)
-		{
-			nbt = new NBTTagCompound();
-			System.out.println("Unable to get nbt tag data creating blank tag data will wipe");
-		}
-		CapabilityReg.read(p,nbt);
+		CapabilityReg.readFromFile(p);
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGH)
@@ -48,18 +41,8 @@ public class CapabilityHandler {
 	{
 		if(CapabilityReg.reg.size() == 0 || !(e.player instanceof EntityPlayerMP))
 			return;
-		if(CapabilityReg.getCapabilityConatainer(e.player) == null)
-		{
-			System.out.println("returning player already saved:" + CapabilityReg.getUsername(e.player));
-			return;
-		}
-		File f = new File(LibEvents.playerDataDir,"caps/" + e.player.getUniqueID().toString() + ".dat");
-		NBTTagCompound nbt = new NBTTagCompound();
-		EntityPlayerMP p = (EntityPlayerMP) e.player;
-		CapabilityReg.save(p,nbt);
-		NBTUtil.updateNBTFileSafley(f, nbt);
-		CapabilityReg.capabilities.remove(CapabilityReg.getUsername(p) );
-		System.out.println("saved player from logout:" + CapabilityReg.getUsername(p) + " toFile:" + f);
+		CapabilityReg.saveToFile(e.player);
+		CapabilityReg.removeCapailityContainer(e.player);
 	}
 	/**
 	 * used for capabilities that require on tick but, don't want to be unoptimized and grab the container every time
