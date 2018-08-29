@@ -177,13 +177,6 @@ public class MainJava {
 	@Mod.EventHandler
 	public void post(FMLPostInitializationEvent e)
 	{
-		if(!Config.isDev)
-		{
-			cfgArmors.updateConfig(true, false, true);
-			cfgTools.updateConfig(true, false, true);
-			cfgBlockProps.updateConfig(true, false, true);
-		}
-		proxy.lang();
 		try
 		{
 			proxy.jsonGen();
@@ -192,6 +185,15 @@ public class MainJava {
 		{
 			ee.printStackTrace();
 		}
+		proxy.lang();
+		
+		if(!Config.isDev)
+		{
+			cfgArmors.updateConfig(true, false, true);
+			cfgTools.updateConfig(true, false, true);
+			cfgBlockProps.updateConfig(true, false, true);
+		}
+		
 	    proxy.postinit();//generate lang,generate shadow sizes
 	}
 	@SubscribeEvent

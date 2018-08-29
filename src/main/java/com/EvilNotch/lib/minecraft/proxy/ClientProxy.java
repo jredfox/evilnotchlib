@@ -23,6 +23,7 @@ import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.LangLine;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
+import com.EvilNotch.lib.minecraft.content.blocks.BasicMetaBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.client.ClientUUID;
 import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
@@ -127,6 +128,7 @@ public class ClientProxy extends ServerProxy{
 			System.out.println("json generation only occurs on the client side in dev enviorment");
 			return;
 		}
+		checkRootFile();
 		boolean flag = false;
 		for(IBasicItem i : MainJava.items)
 		{
@@ -352,9 +354,7 @@ public class ClientProxy extends ServerProxy{
 		joinLang(BasicItem.itemlangs);
 		joinLang(BasicCreativeTab.creativeTabLang);
 		
-		root  = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
-		if(!root.exists())
-			root.mkdirs();
+		checkRootFile();
 		HashMap<File,ConfigLang> cfgs = new HashMap();
 		populateLang(root,langs,cfgs);
 		
@@ -370,8 +370,15 @@ public class ClientProxy extends ServerProxy{
 			LanguageMap manager = (LanguageMap) ReflectionUtil.getObject(null, I18n.class, FieldAcess.lang_localizedName);
 			langlist = (Map<String, String>) ReflectionUtil.getObject(manager, LanguageMap.class, MCPMappings.getField(LanguageMap.class, "languageList"));
 		}
+		currentLang = getCurrentLang();
+		
 		for(ConfigLang cfg : cfgs.values())
 		{
+			if(!cfg.cfgfile.getName().startsWith(currentLang))
+			{
+				System.out.println("skipping cfgFile:" + cfg.cfgfile.getName() );
+				continue;
+			}
 			for(ILine line : cfg.lines)
 			{
 				String key = line.getModPath();
@@ -391,6 +398,14 @@ public class ClientProxy extends ServerProxy{
 			}
 		}
 	}
+	protected void checkRootFile() {
+		if(root != null)
+			return;
+		root = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
+		if(!root.exists())
+			root.mkdirs();
+	}
+
 	public static void joinLang(List<LangEntry> itemlangs) {
 		for(LangEntry lang : itemlangs)
 			langs.add(lang);
