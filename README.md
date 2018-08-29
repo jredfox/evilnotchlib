@@ -20,7 +20,8 @@ notch drops apples again
 ItemToolTip Enchantment Fix(if text breaks manually uses enchantment name and roman numeral generator or integer)
 Fixed Player Head Being on backwards when teleporting to them
 Fixed Player shoulders not syning when using /tp,teleport,tpdim
-Fixed Packets of blockstates being sent to the client from the main hand when placing a block in the offhand causing pig issues with silkspawners, and any other tile entities like signs
+Fixed Packets of blockstates being sent to the client from the main hand when 
+placing a block in the offhand causing pig issues with silkspawners, and any other tile entities like signs
 
 BlockEntityTag fixes:
 sync client changes on the same tick rather then later,don't have to be in creative
