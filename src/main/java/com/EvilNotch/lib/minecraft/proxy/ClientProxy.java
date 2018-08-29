@@ -18,6 +18,7 @@ import com.EvilNotch.lib.main.Config;
 import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
+import com.EvilNotch.lib.minecraft.MinecraftUtil;
 import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.LangLine;
@@ -47,10 +48,8 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.Locale;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
@@ -73,6 +72,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends ServerProxy{
 	
+	public static final List<LangEntry> langs = new ArrayList();
 	public static String currentLang = null;
 	public static Map<String, String> langlistClient = null;
 	public static  Map<String,String> langlist = null;
@@ -135,6 +135,16 @@ public class ClientProxy extends ServerProxy{
 				System.out.println("skipping model gen:" + i.getRegistryName());
 				continue;
 			}
+			String domain = i.getRegistryName().getResourceDomain();
+			if(!compiledTracker.containsKey(domain))
+				compiledTracker.put(domain, MinecraftUtil.isModCompiled(domain));
+			boolean compiled = compiledTracker.get(domain);
+			if(compiled)
+			{
+				System.out.println("skipping model gen for:" + i.getRegistryName());
+				continue;
+			}
+			
 			JSONObject json = null;
 			ResourceLocation loc = i.getRegistryName();
 			if(i instanceof ItemAxe || i instanceof ItemHoe || i instanceof ItemPickaxe || i instanceof ItemSpade || i instanceof ItemSword)
@@ -174,6 +184,16 @@ public class ClientProxy extends ServerProxy{
 				continue;
 			}
 			ResourceLocation loc = b.getRegistryName();
+			
+			String domain = loc.getResourceDomain();
+			if(!compiledTracker.containsKey(domain))
+				compiledTracker.put(domain, MinecraftUtil.isModCompiled(domain));
+			boolean compiled = compiledTracker.get(domain);
+			if(compiled)
+			{
+				System.out.println("skipping model gen for:" + loc);
+				continue;
+			}
 			
 			//blockstate gen
 			List<String> names = b.getBlockStatesNames();
@@ -328,13 +348,15 @@ public class ClientProxy extends ServerProxy{
 			System.out.println("lan generation only occurs in dev enviorment on client:");
 			return;
 		}
+		joinLang(BasicBlock.blocklangs);
+		joinLang(BasicItem.itemlangs);
+		joinLang(BasicCreativeTab.creativeTabLang);
+		
 		root  = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
 		if(!root.exists())
 			root.mkdirs();
 		HashMap<File,ConfigLang> cfgs = new HashMap();
-		populateLang(root,BasicBlock.blocklangs,cfgs);
-		populateLang(root,BasicItem.itemlangs,cfgs);
-		populateLang(root,BasicCreativeTab.creativeTabLang,cfgs);
+		populateLang(root,langs,cfgs);
 		
 		if(langlistClient == null)
 		{
@@ -369,15 +391,29 @@ public class ClientProxy extends ServerProxy{
 			}
 		}
 	}
+	public static void joinLang(List<LangEntry> itemlangs) {
+		for(LangEntry lang : itemlangs)
+			langs.add(lang);
+	}
+
 	/**
 	 * generate lang files here
 	 */
-	public void populateLang(File root, ArrayList<LangEntry> li,HashMap<File,ConfigLang> map) 
+	public static final HashMap<String,Boolean> compiledTracker = new HashMap();
+	public void populateLang(File root, List<LangEntry> li,HashMap<File,ConfigLang> map) 
 	{
-		String currentLang = getCurrentLang();
 		for(LangEntry lang : li)
 		{
-			File file = new File(root,lang.loc.getResourceDomain() + "/lang/" + currentLang + ".lang");
+			String domain = lang.loc.getResourceDomain();
+			if(!compiledTracker.containsKey(domain))
+				compiledTracker.put(domain, MinecraftUtil.isModCompiled(domain));
+			boolean compiled = compiledTracker.get(domain);
+			if(compiled)
+			{
+				System.out.println("skipping lang entry as mod is compiled:" + lang);
+				continue;
+			}
+			File file = new File(root,domain + "/lang/" + lang.langType + ".lang");
 			ConfigLang cfg = map.get(file);
 			if(cfg == null)
 			{

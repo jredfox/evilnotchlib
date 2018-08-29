@@ -25,7 +25,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.client.gui.inventory.GuiFurnace",
     	"net.minecraft.item.ItemStack",
     	"net.minecraft.item.ItemBlock",
-    	"net.minecraft.network.play.server.SPacketUpdateTileEntity"
+    	"net.minecraft.network.play.server.SPacketUpdateTileEntity",
+    	"net.minecraft.network.NetHandlerPlayServer"
     });
     
     @Override
@@ -113,6 +114,11 @@ public class Transformer implements IClassTransformer
                 	else if (FMLCorePlugin.isObf)
                 		return TestTransformer.replaceClass(inputBase + "SPacketUpdateTileEntity");
                 break;
+                case 6:
+                	if(!FMLCorePlugin.isObf)
+                		return classToTransform;
+                	TestTransformer.transformMethod(classNode, name, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "a", "(Lma;)V", "func_184337_a");
+                break;
             }
             
         	TestTransformer.clearCacheNodes();
@@ -120,7 +126,7 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-//          if(index == 4)
+//          if(index == 6)
 //        	FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
             
             return classWriter.toByteArray();

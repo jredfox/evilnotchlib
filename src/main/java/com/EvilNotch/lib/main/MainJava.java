@@ -2,9 +2,9 @@ package com.EvilNotch.lib.main;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +13,6 @@ import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
 import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.NBTUtil;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
 import com.EvilNotch.lib.minecraft.content.FakeWorld;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
@@ -38,9 +37,9 @@ import com.EvilNotch.lib.minecraft.content.items.BasicItemMeta;
 import com.EvilNotch.lib.minecraft.content.items.IBasicArmor;
 import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.content.items.ItemBasicPickaxe;
-import com.EvilNotch.lib.minecraft.content.tick.TickReg;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityHandler;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
+import com.EvilNotch.lib.minecraft.content.tick.TickReg;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.proxy.ServerProxy;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
@@ -54,20 +53,17 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.command.ICommand;
-import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -181,6 +177,12 @@ public class MainJava {
 	@Mod.EventHandler
 	public void post(FMLPostInitializationEvent e)
 	{
+		if(!Config.isDev)
+		{
+			cfgArmors.updateConfig(true, false, true);
+			cfgTools.updateConfig(true, false, true);
+			cfgBlockProps.updateConfig(true, false, true);
+		}
 		proxy.lang();
 		try
 		{
@@ -191,13 +193,6 @@ public class MainJava {
 			ee.printStackTrace();
 		}
 	    proxy.postinit();//generate lang,generate shadow sizes
-		
-		if(!Config.isDev)
-		{
-			cfgArmors.updateConfig(true, false, true);
-			cfgTools.updateConfig(true, false, true);
-			cfgBlockProps.updateConfig(true, false, true);
-		}
 	}
 	@SubscribeEvent
 	public void registerItems(RegistryEvent.Register<Item> event)

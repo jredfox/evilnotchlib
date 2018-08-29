@@ -1,5 +1,6 @@
 package com.EvilNotch.lib.minecraft;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
@@ -21,6 +22,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameRules.ValueType;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
 public class MinecraftUtil {
 	
@@ -71,6 +74,22 @@ public class MinecraftUtil {
 		   t.printStackTrace();
 	   }
 	   return false;
+   }
+   /**
+    * tells whether or not a mod is compiled goes through the entire process so use a cache or something don't check this alot
+    */
+   public static boolean isModCompiled(String modid)
+   {
+	   File source = Loader.instance().getIndexedModList().get(modid).getSource();
+	   boolean isJar = source == null ? false : source.isFile() && isModExtension(source.getName());
+	   return isJar;
+   }
+   /**
+    * supports 1.7.10 .zip and .jar mods
+    */
+   public static boolean isModExtension(String name) 
+   {
+	   return name.endsWith(".jar") || name.endsWith(".zip");
    }
 
 }
