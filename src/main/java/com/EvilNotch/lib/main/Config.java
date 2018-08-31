@@ -1,17 +1,11 @@
 package com.EvilNotch.lib.main;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
-import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.Line.LineBase;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 public class Config {
 

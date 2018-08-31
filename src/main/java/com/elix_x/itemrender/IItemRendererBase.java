@@ -14,6 +14,7 @@ import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 @Mod(modid = IItemRendererBase.MODID, name = IItemRendererBase.NAME, version = IItemRendererBase.VERSION, clientSideOnly = true)

@@ -3,6 +3,7 @@ package com.EvilNotch.lib.minecraft;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -33,5 +34,8 @@ public class TileEntityUtil {
 		IBlockState state = w.getBlockState(pos);
 		tile.markDirty();
 		w.notifyBlockUpdate(pos, state, w.getBlockState(pos), 3);
+	}
+	public static ResourceLocation getResoureLocation(TileEntity te) {
+		return TileEntity.getKey(te.getClass());
 	}
 }
