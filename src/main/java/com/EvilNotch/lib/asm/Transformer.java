@@ -115,6 +115,8 @@ public class Transformer implements IClassTransformer
                 break;
                 //custom capability system to the Entity.class
                 case 7:
+                	for(FieldNode n : classNode.fields)
+                		System.out.println("FieldNode:" + getFieldNodeString(n));
                 	TestTransformer.addFeild(classNode, "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer<Lnet/minecraft/entity/Entity;>;");
                 	
                 	//add interface and implement methods
@@ -137,8 +139,8 @@ public class Transformer implements IClassTransformer
             
           if(index == 7)
           {
-        	System.out.println(classNode.interfaces);
-        	FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+        	  System.out.println(classNode.interfaces);
+        	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
           }
             
             return classWriter.toByteArray();

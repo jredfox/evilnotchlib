@@ -23,7 +23,7 @@ import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.property.PropertyMetaEnum;
 import com.EvilNotch.lib.minecraft.content.blocks.test.EnumCheese;
 import com.EvilNotch.lib.minecraft.content.blocks.test.MultiSidedGrass;
-import com.EvilNotch.lib.minecraft.content.capabilites.CapString;
+import com.EvilNotch.lib.minecraft.content.capabilites.primitive.CapString;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
@@ -176,9 +176,9 @@ public class MainJava {
 	{
 		Entity ee = new EntityCreeper(null);
 		ICapProvider provider = (ICapProvider)ee;
-		CapContainer c = provider.getCapContainer();
+		/*CapContainer c = provider.getCapContainer();
 		c.registerCapability(new ResourceLocation("minecraft:test"), new CapString<Entity>("this is a test") );
-		System.out.println(c.getCapability(new ResourceLocation("minecraft:test")) );
+		System.out.println(c.getCapability(new ResourceLocation("minecraft:test")) );*/
 		proxy.onLoadComplete();
 	}
 	
