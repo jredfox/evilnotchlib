@@ -29,7 +29,7 @@ public class TestTransformer
 		MethodNode method = FMLCorePlugin.isObf ? getMethodNode(classToTransform,c,v) : getMethodNode(classToTransform,method_name,method_desc);
 		try
 		{
-			MethodNode mn = getCachedMethodNode(inputStream, obMethod, method_desc);
+			MethodNode mn = getCachedMethodNode(inputStream, FMLCorePlugin.isObf ? obMethod : method_name, method_desc);
 			method.localVariables.clear();
 			method.instructions = mn.instructions;
 			method.localVariables = getLocalVar(mn,className);
