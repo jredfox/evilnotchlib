@@ -2,9 +2,7 @@ package com.EvilNotch.lib.main;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +23,9 @@ import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.property.PropertyMetaEnum;
 import com.EvilNotch.lib.minecraft.content.blocks.test.EnumCheese;
 import com.EvilNotch.lib.minecraft.content.blocks.test.MultiSidedGrass;
+import com.EvilNotch.lib.minecraft.content.capabilites.CapString;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
 import com.EvilNotch.lib.minecraft.content.commands.CMDKick;
@@ -52,8 +53,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -172,6 +174,11 @@ public class MainJava {
 	@Mod.EventHandler
 	public void init(FMLLoadCompleteEvent e) throws Exception
 	{
+		Entity ee = new EntityCreeper(null);
+		ICapProvider provider = (ICapProvider)ee;
+		CapContainer c = provider.getCapContainer();
+		c.registerCapability(new ResourceLocation("minecraft:test"), new CapString<Entity>("this is a test") );
+		System.out.println(c.getCapability(new ResourceLocation("minecraft:test")) );
 		proxy.onLoadComplete();
 	}
 	

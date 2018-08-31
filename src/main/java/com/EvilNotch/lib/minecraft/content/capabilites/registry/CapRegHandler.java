@@ -16,8 +16,9 @@ public class CapRegHandler {
 	/**
 	 * this attaches your caps to the object on construction
 	 */
-	public static void registerCapsToObj(ICapProvider obj)
+	public static void registerCapsToObj(Object o)
 	{
+		ICapProvider obj = (ICapProvider)o;
 		obj.setCapcontainer(new CapContainer());//reset the data each time the registry event fires
 		for(ICapRegistry reg : regs)
 		{

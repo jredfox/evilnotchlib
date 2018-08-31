@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.util.JavaUtil;
 
 public class TestTransformer 
@@ -85,19 +86,30 @@ public class TestTransformer
 
 	public static List<LocalVariableNode> getLocalVar(MethodNode method, String name) throws IOException 
 	{
-		name = name.replaceAll("\\.", "/") + ";";
+		name = name.replaceAll("\\.", "/");
 		List<LocalVariableNode> l = method.localVariables;
 		for(LocalVariableNode lvn : l)
 		{
 			if(lvn.name.equals("this"))
 			{
-				lvn.desc = "L" + name;
+				lvn.desc = "L" + name + ";";
 			}
 		}
 		return l;
 	}
+	public static void patchLocals(MethodNode method,String name)
+	{
+		List<LocalVariableNode> l = method.localVariables;
+		for(LocalVariableNode lvn : l)
+		{
+			if(lvn.name.equals("this"))
+			{
+				lvn.desc = "L" + name.replace('.', '/') + ";";
+			}
+		}
+	}
 	
-	public static void patchInstructions(MethodNode mn, String className, String NewClassName) 
+	public static void patchInstructions(MethodNode mn, String className, String oldClassName) 
 	{
 		InsnList il = mn.instructions;
 		AbstractInsnNode[] al = il.toArray();
@@ -105,20 +117,21 @@ public class TestTransformer
 		{
 			if(ain instanceof MethodInsnNode)
 			{
-				MethodInsnNode min = (MethodInsnNode)ain;				
-				if(min.owner.equals(NewClassName))
+				MethodInsnNode min = (MethodInsnNode)ain;
+				System.out.println(min.owner);
+				if(min.owner.equals(oldClassName))
 				{
 					min.owner=className.replaceAll("\\.", "/");
-					System.out.println("Patched: " + min.owner);
+//					System.out.println("Patched: " + min.owner);
 				}
 			}
 			else if(ain instanceof FieldInsnNode)
 			{
 				FieldInsnNode fin = (FieldInsnNode)ain;
-				if(fin.owner.equals(NewClassName))
+				if(fin.owner.equals(oldClassName))
 				{
 					fin.owner=className.replaceAll("\\.", "/");
-					System.out.println("Patched: " + fin.owner);
+//					System.out.println("Patched: " + fin.owner);
 				}
 			}
 		}
@@ -146,25 +159,33 @@ public class TestTransformer
 	{
 		node.interfaces.add(theInterface);
 	}
+	
 	/**
 	 * add a object field to the class
 	 */
+	public static void addFeild(ClassNode node,String feildName,String desc)
+	{
+		addFeild(node,feildName,desc,null);
+	}
+	/**
+	 * add a object field to the class with optional signature
+	 */
 	public static void addFeild(ClassNode node,String feildName,String desc,String signature)
 	{
-		//TODO:
-//		FieldNode field = new FieldNode(Opcodes.AALOAD, feildName, desc, signature, null);
-//		node.fields.add(field);
+		FieldNode field = new FieldNode(Opcodes.ACC_PUBLIC, feildName, desc, signature, null);
+		node.fields.add(field);
 	}
 
 	/**
 	 * add a method no obfuscated checks you have to do that yourself if you got a deob compiled class
 	 * no checks for patching the local variables nor the instructions
 	 */
-	public static void addMethod(ClassNode classNode, String name, String inputStream, String method_name, String descriptor) throws IOException 
+	public static MethodNode addMethod(ClassNode classNode, String name, String inputStream, String method_name, String descriptor) throws IOException 
 	{
 		MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
 		Class c = method.getClass();
 		classNode.methods.add(method);
+		return method;
 	}
 	/**
 	 * remove a method don't remove ones that are going to get executed unless you immediately add the same method and descriptor back
@@ -175,6 +196,7 @@ public class TestTransformer
 		MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
 		if(method != null)
 		{
+			System.out.println("removing method:" + method_name);
 			classNode.methods.remove(method);
 		}
 	}

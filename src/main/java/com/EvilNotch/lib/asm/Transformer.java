@@ -8,10 +8,14 @@ import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import com.EvilNotch.lib.main.Config;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.util.JavaUtil;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -26,7 +30,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.item.ItemStack",
     	"net.minecraft.item.ItemBlock",
     	"net.minecraft.network.play.server.SPacketUpdateTileEntity",
-    	"net.minecraft.network.NetHandlerPlayServer"
+    	"net.minecraft.network.NetHandlerPlayServer",
+    	"net.minecraft.entity.Entity"//capabilities start here
     });
     
     @Override
@@ -47,7 +52,7 @@ public class Transformer implements IClassTransformer
             ClassReader classReader = new ClassReader(classToTransform);
             classReader.accept(classNode, 0);
             String inputBase = "assets/evilnotchlib/asm/" + (obfuscated ? "srg/" : "deob/");
-
+            String origin = "assets/evilnotchlib/asm/";
             switch(index)
             {
                 case 0:
@@ -98,6 +103,7 @@ public class Transformer implements IClassTransformer
                 	if(!ConfigCore.asm_setTileNBTFix)
                 		return classToTransform;
                 	TestTransformer.transformMethod(classNode, name, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "a", "(Lamu;Laed;Let;Laip;)Z", "func_179224_a");
+//                	TestTransformer.removeMethod(classNode,name,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
                 	if(obfuscated)
                 		TestTransformer.addMethod(classNode,name,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
                 break;
@@ -107,6 +113,21 @@ public class Transformer implements IClassTransformer
                 case 6:
                 	TestTransformer.transformMethod(classNode, name, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "a", "(Lma;)V", "func_184337_a");
                 break;
+                //custom capability system to the Entity.class
+                case 7:
+                	TestTransformer.addFeild(classNode, "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer<Lnet/minecraft/entity/Entity;>;");
+                	
+                	//add interface and implement methods
+                	TestTransformer.addInterface(classNode, "com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider");
+                	MethodNode getCap = TestTransformer.addMethod(classNode, name,"com/EvilNotch/lib/asm/Caps.class", "getCapContainer", "()Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;");
+                	TestTransformer.patchLocals(getCap, name);
+                	TestTransformer.patchInstructions(getCap, name, "com/EvilNotch/lib/asm/Caps");
+                	
+                	MethodNode setCap = TestTransformer.addMethod(classNode, name,"com/EvilNotch/lib/asm/Caps.class", "setCapContainer", "(Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;)V");
+                	TestTransformer.patchLocals(setCap, name);
+                	TestTransformer.patchInstructions(setCap, name, "com/EvilNotch/lib/asm/Caps");
+
+                break;
             }
             
         	TestTransformer.clearCacheNodes();
@@ -114,8 +135,11 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-//          if(index == 6)
-//        	FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+          if(index == 7)
+          {
+        	System.out.println(classNode.interfaces);
+        	FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+          }
             
             return classWriter.toByteArray();
         }
@@ -125,5 +149,9 @@ public class Transformer implements IClassTransformer
         }
         return classToTransform;
     }
+
+	public static String getFieldNodeString(FieldNode node) {
+		return node.name + " desc:" + node.desc + " signature:" + node.signature + " access:" + node.access;
+ 	}
 
 }
