@@ -51,11 +51,18 @@ Lang generation(Basic MC Lib)
 Dyanmic Tranlsation Event(let's you override ItemStack#getDisplayName())
 TileStackSync Events fires on both client and server allows for denial of permissions
 Adds the seed to f3 again per world
+PCapabilities an external capability system for the entity player on server side
+TestTransformer(ASMHelper) allows you to replace methods,classes,remove methods,add methods, add fields, remove fields
 
 Future:
 Font Renderer
 NBTPathAPI
 Lan Skin Host Fix
+TestTransFormer line injections assistor
+Capabilities(Evil Notch Lib) A replacement for forge's if you choose to do so.
+All you have to do is readFromNBT() writeToNBT() and there is a tickable version as well.(not fully implemented yet)
+Midle click block event allow you to override what the block think's you should have and any additional tiledata
+TESR ItemStack API just like forges but, always uses the tile entity rather then null and meta to render and also uses a special interface.
 ```
 
 Instalation This as a Dependancy:
