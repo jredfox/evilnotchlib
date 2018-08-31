@@ -2,8 +2,9 @@ package com.EvilNotch.lib.asm;
 
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 
-public class Caps {
+public class Caps implements ICapProvider{
 	
 	public CapContainer capContainer = new CapContainer();
 	
@@ -13,13 +14,7 @@ public class Caps {
 	 */
 	public CapContainer getCapContainer()
 	{
-		CapContainer c = this.capContainer;
-		if(c == null)
-		{
-			this.setCapContainer(new CapContainer());
-			c = this.capContainer;
-		}
-		return c;
+		return this.capContainer;
 	}
 	/**
 	 * this method is injected into all ICapProvider Objects then patched and repaired

@@ -19,7 +19,7 @@ public class CapRegHandler {
 	public static void registerCapsToObj(Object o)
 	{
 		ICapProvider obj = (ICapProvider)o;
-		obj.setCapcontainer(new CapContainer());//reset the data each time the registry event fires
+		obj.setCapContainer(new CapContainer());//reset the data each time the registry event fires
 		for(ICapRegistry reg : regs)
 		{
 			if(JavaUtil.isClassExtending(reg.getObjectClass(),obj.getClass()))

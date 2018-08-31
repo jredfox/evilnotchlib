@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 import com.EvilNotch.lib.minecraft.content.tick.TickReg;
 import com.EvilNotch.lib.minecraft.events.TileStackSyncEvent;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
@@ -17,6 +19,7 @@ import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.network.packets.PacketYawHead;
 import com.EvilNotch.lib.util.simple.PointId;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -28,6 +31,7 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -88,6 +92,15 @@ public class LibEvents {
         	if(e.tile instanceof TileEntityMobSpawner)
         		SPacketUpdateTileEntity.toIgnore.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
         }
+	}
+	/**
+	 * entity capabilities
+	 */
+	@SubscribeEvent
+	public void cap(EntityConstructing e)
+	{
+		ICapProvider provider = (ICapProvider)e.getEntity();
+		CapRegHandler.registerCapsToObj(provider);
 	}
 	
 	public static int mTick = 0;

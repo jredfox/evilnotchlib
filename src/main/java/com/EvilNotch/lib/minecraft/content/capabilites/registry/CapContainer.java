@@ -13,8 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class CapContainer<T> {
 	
-	public HashMap<ResourceLocation,ICapability> caps = new HashMap();
-	public HashMap<ResourceLocation,ICapTick> ticks = new HashMap();
+	public HashMap<ResourceLocation,ICapability<T>> caps = new HashMap();
+	public HashMap<ResourceLocation,ICapTick<T>> ticks = new HashMap();
 	public Set<IListener> listeners = new HashSet();
 	
 	public void registerCapability(ResourceLocation loc,ICapability cap)

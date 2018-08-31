@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
+import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
 import com.EvilNotch.lib.minecraft.EntityUtil;
@@ -174,11 +175,6 @@ public class MainJava {
 	@Mod.EventHandler
 	public void init(FMLLoadCompleteEvent e) throws Exception
 	{
-		Entity ee = new EntityCreeper(null);
-		ICapProvider provider = (ICapProvider)ee;
-		/*CapContainer c = provider.getCapContainer();
-		c.registerCapability(new ResourceLocation("minecraft:test"), new CapString<Entity>("this is a test") );
-		System.out.println(c.getCapability(new ResourceLocation("minecraft:test")) );*/
 		proxy.onLoadComplete();
 	}
 	

@@ -115,9 +115,7 @@ public class Transformer implements IClassTransformer
                 break;
                 //custom capability system to the Entity.class
                 case 7:
-                	for(FieldNode n : classNode.fields)
-                		System.out.println("FieldNode:" + getFieldNodeString(n));
-                	TestTransformer.addFeild(classNode, "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer<Lnet/minecraft/entity/Entity;>;");
+                	TestTransformer.addFeild(classNode, "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;","Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer<Lnet/minecraft/entity/Entity;>;");
                 	
                 	//add interface and implement methods
                 	TestTransformer.addInterface(classNode, "com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider");
@@ -134,7 +132,7 @@ public class Transformer implements IClassTransformer
             
         	TestTransformer.clearCacheNodes();
 
-            ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
           if(index == 7)

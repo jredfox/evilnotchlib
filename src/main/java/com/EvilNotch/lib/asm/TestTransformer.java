@@ -20,6 +20,8 @@ import org.objectweb.asm.tree.MethodNode;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.util.JavaUtil;
 
+import net.minecraft.entity.Entity;
+
 public class TestTransformer 
 {	
 	public static HashMap<String,ClassNode> cacheNodes = new HashMap();
@@ -168,11 +170,11 @@ public class TestTransformer
 		addFeild(node,feildName,desc,null);
 	}
 	/**
-	 * add a object field to the class with optional signature
+	 * add a object field to the class with optional signature. The paramDesc is a descriptor of the types of a class HashMap<key,value>
 	 */
-	public static void addFeild(ClassNode node,String feildName,String desc,String signature)
+	public static void addFeild(ClassNode node,String feildName,String desc,String paramDesc)
 	{
-		FieldNode field = new FieldNode(Opcodes.ACC_PUBLIC, feildName, desc, signature, null);
+		FieldNode field = new FieldNode(Opcodes.ACC_PUBLIC, feildName, desc, paramDesc,null);
 		node.fields.add(field);
 	}
 
