@@ -52,7 +52,7 @@ Dyanmic Tranlsation Event(let's you override ItemStack#getDisplayName())
 TileStackSync Events fires on both client and server allows for denial of permissions
 Adds the seed to f3 again per world
 PCapabilities an external capability system for the entity player on server side
-TestTransformer(ASMHelper) allows you to: replace methods,replace classes,
+TestTransformer(ASMHelper) allows you to: replace methods,replace classes, and other usefull stuffs
 remove methods,add methods, add fields, remove fields
 
 Future:
