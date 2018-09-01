@@ -25,20 +25,5 @@ public class Caps implements ICapProvider{
 	{
 		this.capContainer = c;
 	}
-	public int a(NBTTagCompound nbt){
-		this.readFromNBT(nbt);
-		int a = 1;int b=2;
-		return -1;
-	}
-	public void b(NBTTagCompound nbt)
-	{
-		this.writeToNBTTagCompound(nbt);
-	}
-	private void readFromNBT(NBTTagCompound nbt) {
-		this.capContainer.readFromNBT(null, nbt);
-		
-	}
-	private void writeToNBTTagCompound(NBTTagCompound nbt) {
-	}
 	
 }

@@ -8,16 +8,16 @@ import com.EvilNotch.lib.minecraft.content.tick.ITick;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class CapTickTest implements ICapability,ICapTick<Entity> {
+public class CapTickTest implements ICapability<Entity>,ICapTick<Entity> {
 
 	@Override
-	public void writeToNBT(Object object, NBTTagCompound nbt, CapContainer c) {
+	public void writeToNBT(Entity object, NBTTagCompound nbt, CapContainer c) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void readFromNBT(Object object, NBTTagCompound nbt, CapContainer c) {
+	public void readFromNBT(Entity object, NBTTagCompound nbt, CapContainer c) {
 		// TODO Auto-generated method stub
 
 	}
@@ -27,5 +27,4 @@ public class CapTickTest implements ICapability,ICapTick<Entity> {
 	{
 		
 	}
-
 }

@@ -8,6 +8,7 @@ import com.EvilNotch.lib.minecraft.content.capabilites.ICapTick;
 import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
 import com.EvilNotch.lib.minecraft.content.capabilites.IListener;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
@@ -42,8 +43,11 @@ public class CapContainer<T> {
 		}
 		this.postSave(nbt, object);
 	}
+
 	public void readFromNBT(T object,NBTTagCompound nbt)
 	{
+		if(nbt == null && object instanceof ItemStack)
+			return;
 		this.preRead(nbt, object);
 		for(ICapability cap : this.caps.values())
 			cap.readFromNBT(object,nbt,this);

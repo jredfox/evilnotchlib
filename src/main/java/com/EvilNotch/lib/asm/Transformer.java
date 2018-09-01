@@ -4,6 +4,7 @@ import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +45,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.item.ItemBlock",
     	"net.minecraft.network.play.server.SPacketUpdateTileEntity",
     	"net.minecraft.network.NetHandlerPlayServer",
-    	"net.minecraft.entity.Entity"//capabilities start here
+    	"net.minecraft.entity.Entity",//capabilities start here
+    	"net.minecraft.tileentity.TileEntity"
     });
     
     @Override
@@ -101,15 +103,9 @@ public class Transformer implements IClassTransformer
                 		System.out.println("returning bytes ITEMSTACK");
                 		return classToTransform;
                 	}
-                	if(true)
-                	{
-                		TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "onItemUse", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Lnet/minecraft/util/EnumActionResult;", "a", "(Laed;Lamu;Let;Lub;Lfa;FFF)Lud;", "func_179546_a");
-                		TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "getDisplayName", "()Ljava/lang/String;", "r", "()Ljava/lang/String;", "func_82833_r");
-                		ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-                		classNode.accept(classWriter);
-//                		FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
-                		return classWriter.toByteArray();
-                	}
+                	TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "onItemUse", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Lnet/minecraft/util/EnumActionResult;", "a", "(Laed;Lamu;Let;Lub;Lfa;FFF)Lud;", "func_179546_a");
+                	TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "getDisplayName", "()Ljava/lang/String;", "r", "()Ljava/lang/String;", "func_82833_r");
+                	CapTransformer.transformItemStack(name, classNode, obfuscated);
                 break;
                 
                 case 4:
@@ -118,7 +114,7 @@ public class Transformer implements IClassTransformer
                 	TestTransformer.transformMethod(classNode, name, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "a", "(Lamu;Laed;Let;Laip;)Z", "func_179224_a");
 //                	TestTransformer.removeMethod(classNode,name,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
                 	if(obfuscated)
-                		TestTransformer.addMethod(classNode,name,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
+                		TestTransformer.addMethod(classNode,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
                 break;
                 
                 case 5:
@@ -128,54 +124,10 @@ public class Transformer implements IClassTransformer
                 break;
                 //custom capability system to the Entity.class
                 case 7:
-                	TestTransformer.addFeild(classNode, "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;","Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer<Lnet/minecraft/entity/Entity;>;");
-                	
-                	//add interface and implement methods
-                	TestTransformer.addInterface(classNode, "com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider");
-                	MethodNode getCap = TestTransformer.addMethod(classNode, name,"com/EvilNotch/lib/asm/Caps.class", "getCapContainer", "()Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;");
-                	TestTransformer.patchLocals(getCap, name);
-                	TestTransformer.patchInstructions(getCap, name, "com/EvilNotch/lib/asm/Caps");
-                	
-                	MethodNode setCap = TestTransformer.addMethod(classNode, name,"com/EvilNotch/lib/asm/Caps.class", "setCapContainer", "(Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;)V");
-                	TestTransformer.patchLocals(setCap, name);
-                	TestTransformer.patchInstructions(setCap, name, "com/EvilNotch/lib/asm/Caps");
-                	
-                	//serealization and ticks
-                	MethodNode readFromNBT = TestTransformer.getMethodNode(classNode, new MCPSidedString("readFromNBT","f").toString(), new MCPSidedString("(Lnet/minecraft/nbt/NBTTagCompound;)V","(Lfy;)V").toString());
-				
-                	String readDesc = new MCPSidedString("(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V","(Ljava/lang/Object;Lfy;)V").toString();
-
-                	//readFromNBT
-                	InsnList toInsert1 = new InsnList();
-                	toInsert1.add(new VarInsnNode(ALOAD,0));
-                	toInsert1.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/Entity", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
-                	toInsert1.add(new VarInsnNode(ALOAD,0));
-                	toInsert1.add(new VarInsnNode(ALOAD,1));
-                	toInsert1.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
-                	AbstractInsnNode spotNode = TestTransformer.getFirstInstruction(readFromNBT, false, Opcodes.ALOAD);
-                	readFromNBT.instructions.insertBefore(spotNode,toInsert1);
-                	
-                    MethodNode writeToNBT = TestTransformer.getMethodNode(classNode, new MCPSidedString("writeToNBT","f").toString(), new MCPSidedString("(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;","(Lfy;)Lnet/minecraft/nbt/NBTTagCompound;").toString());
-    				
-                    //writeToNBT
-                    InsnList toInsert2 = new InsnList();
-                    toInsert2.add(new VarInsnNode(ALOAD,0));
-                    toInsert2.add(new FieldInsnNode(Opcodes.GETFIELD,  "net/minecraft/entity/Entity", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
-                    toInsert2.add(new VarInsnNode(ALOAD,0));
-                    toInsert2.add(new VarInsnNode(ALOAD,1));
-               	    toInsert2.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "writeToNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V",false));
-               	    AbstractInsnNode spotWriteNode = TestTransformer.getFirstInstruction(writeToNBT, false, Opcodes.ALOAD);
-               	    writeToNBT.instructions.insertBefore(spotWriteNode,toInsert2);
-
-               	    //tick injection
-               	    MethodNode tick = TestTransformer.getMethodNode(classNode, new MCPSidedString("onEntityUpdate","f").toString(), "()V");
-               	    InsnList isntick = new InsnList();
-               	    isntick.add(new VarInsnNode(ALOAD,0));
-               	    isntick.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/entity/Entity", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
-               	    isntick.add(new VarInsnNode(ALOAD,0));
-               	    isntick.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
-               	    AbstractInsnNode spotTickNode = TestTransformer.getFirstInstruction(tick, true, -1);
-             	    tick.instructions.insert(spotTickNode,isntick);
+                	CapTransformer.transFormEntityCaps(name,classNode,obfuscated);
+                break;
+                case 8:
+                	CapTransformer.transFormTileEntityCaps(name, classNode, obfuscated);
                 break;
             }
             
@@ -184,9 +136,8 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-          if(index == 7)
+          if(index == 3)
           {
-        	  System.out.println(classNode.interfaces);
         	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
           }
             

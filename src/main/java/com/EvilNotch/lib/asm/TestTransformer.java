@@ -124,11 +124,10 @@ public class TestTransformer
 			if(ain instanceof MethodInsnNode)
 			{
 				MethodInsnNode min = (MethodInsnNode)ain;
-				System.out.println(min.owner);
 				if(min.owner.equals(oldClassName))
 				{
 					min.owner=className.replaceAll("\\.", "/");
-//					System.out.println("Patched: " + min.owner);
+					System.out.println("Patched: " + min.owner);
 				}
 			}
 			else if(ain instanceof FieldInsnNode)
@@ -137,7 +136,7 @@ public class TestTransformer
 				if(fin.owner.equals(oldClassName))
 				{
 					fin.owner=className.replaceAll("\\.", "/");
-//					System.out.println("Patched: " + fin.owner);
+					System.out.println("Patched: " + fin.owner);
 				}
 			}
 		}
@@ -186,9 +185,11 @@ public class TestTransformer
 	 * add a method no obfuscated checks you have to do that yourself if you got a deob compiled class
 	 * no checks for patching the local variables nor the instructions
 	 */
-	public static MethodNode addMethod(ClassNode classNode, String name, String inputStream, String method_name, String descriptor) throws IOException 
+	public static MethodNode addMethod(ClassNode classNode, String inputStream, String method_name, String descriptor) throws IOException 
 	{
-		MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
+		InputStream stream = TestTransformer.class.getClassLoader().getResourceAsStream(inputStream);
+		ClassNode otherNode = getClassNode(stream);
+		MethodNode method = getMethodNode(otherNode, method_name, descriptor);
 		Class c = method.getClass();
 		classNode.methods.add(method);
 		return method;
@@ -205,16 +206,6 @@ public class TestTransformer
 			System.out.println("removing method:" + method_name);
 			classNode.methods.remove(method);
 		}
-	}
-	/**
-	 * used by capability system so I don't completely overwrite everything
-	 */
-	public static void injectFirstMethodCall(MethodNode method,String clazz, String name,String desc,int loadIndex,boolean label,int findOpCode) 
-	{
-		 InsnList toInsert = new InsnList();
-		 toInsert.add(new VarInsnNode(ALOAD,loadIndex));
-         toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz, name, desc, false));
-         method.instructions.insert(getFirstInstruction(method,label,findOpCode), toInsert);
 	}
 	/**
 	 * find the first instruction to inject
