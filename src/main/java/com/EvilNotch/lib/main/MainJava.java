@@ -26,6 +26,7 @@ import com.EvilNotch.lib.minecraft.content.blocks.test.EnumCheese;
 import com.EvilNotch.lib.minecraft.content.blocks.test.MultiSidedGrass;
 import com.EvilNotch.lib.minecraft.content.capabilites.primitive.CapString;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
@@ -144,6 +145,7 @@ public class MainJava {
 			GeneralRegistry.replaceVanillaCommand("tp",new CMDTP());
 			GeneralRegistry.replaceVanillaCommand("teleport",new CMDTeleport());
 		}
+		CapRegHandler.registerRegistry(new CapRegEnt());
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
 

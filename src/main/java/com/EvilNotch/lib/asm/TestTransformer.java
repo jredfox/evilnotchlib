@@ -1,5 +1,7 @@
 package com.EvilNotch.lib.asm;
 
+import static org.objectweb.asm.Opcodes.ALOAD;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -13,9 +15,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.util.JavaUtil;
@@ -201,5 +205,46 @@ public class TestTransformer
 			System.out.println("removing method:" + method_name);
 			classNode.methods.remove(method);
 		}
+	}
+	/**
+	 * used by capability system so I don't completely overwrite everything
+	 */
+	public static void injectFirstMethodCall(MethodNode method,String clazz, String name,String desc,int loadIndex,boolean label,int findOpCode) 
+	{
+		 InsnList toInsert = new InsnList();
+		 toInsert.add(new VarInsnNode(ALOAD,loadIndex));
+         toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, clazz, name, desc, false));
+         method.instructions.insert(getFirstInstruction(method,label,findOpCode), toInsert);
+	}
+	/**
+	 * find the first instruction to inject
+	 */
+	public static AbstractInsnNode getFirstInstruction(MethodNode method,boolean label,int opcode) 
+	{
+		for(AbstractInsnNode node : method.instructions.toArray())
+		{
+			if(label && node instanceof LabelNode)
+				return node;
+			else if(!label && node.getOpcode() == opcode)
+			{
+				return node;
+			}
+		}
+		return null;
+	}
+	/**
+	 * get's the first local var with the same name use a descriptor to be safer. Returns -1 if doesn't exist
+	 */
+	public static int getLocalVarIndex(MethodNode node,String varName)
+	{
+		for(LocalVariableNode n : node.localVariables)
+		{
+			System.out.println(n.name + " desc:" + n.desc + " index:" + n.index + " debug:" + (n.name.equals(varName)) );
+			if(n.name.equals(varName))
+			{
+				return n.index;
+			}
+		}
+		return -1;
 	}
 }
