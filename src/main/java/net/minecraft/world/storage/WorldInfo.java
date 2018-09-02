@@ -1,6 +1,5 @@
 package net.minecraft.world.storage;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
 import com.google.common.collect.Maps;
 import java.util.Map;
@@ -91,7 +90,6 @@ public class WorldInfo
     private final Map<Integer, NBTTagCompound> dimensionData = Maps.newHashMap();
     private GameRules gameRules = new GameRules();
     private java.util.Map<String, net.minecraft.nbt.NBTBase> additionalProperties;
-	private CapContainer<WorldInfo> capContainer2 = new CapContainer();
 
     protected WorldInfo()
     {
@@ -115,8 +113,6 @@ public class WorldInfo
 
     public WorldInfo(NBTTagCompound nbt)
     {
-//    	CapRegHandler.registerCapsToObj(o);
-//        this.capContainer2.readFromNBT(this,nbt);
         if (nbt.hasKey("Version", 10))
         {
             NBTTagCompound nbttagcompound = nbt.getCompoundTag("Version");
@@ -341,11 +337,6 @@ public class WorldInfo
         this.borderDamagePerBlock = worldInformation.borderDamagePerBlock;
         this.borderWarningTime = worldInformation.borderWarningTime;
         this.borderWarningDistance = worldInformation.borderWarningDistance;
-        /**
-         * make the capContainer also get cloned
-         */
-//        CapRegHandler.registerCapsToObj(this);
-//        this.capContainer2.readFromNBT(worldInformation, worldInformation.cloneNBTCompound(null));
     }
 
     /**

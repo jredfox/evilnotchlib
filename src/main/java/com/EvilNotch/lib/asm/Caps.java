@@ -47,6 +47,10 @@ public class Caps implements ICapProvider{
         for(TileEntity tile : this.field_147482_g)
             ((com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider)tile).getCapContainer().tick(tile);
 	}
+    public void tst()
+    {
+    	this.capContainer.tick(this);
+    }
 
 	
 }

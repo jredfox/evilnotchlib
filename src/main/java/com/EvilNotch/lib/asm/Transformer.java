@@ -131,6 +131,8 @@ public class Transformer implements IClassTransformer
                 	CapTransformer.transFormTileEntityCaps(name, classNode, obfuscated);
                 break;
                 case 9:
+                	//replace forgecaps method safe to replace the instructions upon
+                	TestTransformer.transformMethod(classNode, name, inputBase + "World", "initCapabilities", "()V", "initCapabilities", "()V", "initCapabilities");
                 	CapTransformer.transformWorld(name, classNode, obfuscated);
                 	CapTransformer.injectWorldTickers(name, classNode, obfuscated);
                 break;
@@ -144,7 +146,7 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-          if(index == 10)
+          if(index == 9)
           {
         	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
           }
