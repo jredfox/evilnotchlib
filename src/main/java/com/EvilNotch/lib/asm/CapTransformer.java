@@ -9,6 +9,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
@@ -167,30 +168,73 @@ public class CapTransformer {
 		write.instructions.insert(spoteWriteNode,toInsert2);
 	}
 	/**
-	 * inject the line to make tile entities caps tick safer then screwing around with other people's classes
+	 * add world capabilities
+	 * @throws IOException 
 	 */
-	public static void injectWorldTickers(String name, ClassNode classNode, boolean obfuscated)
+	public static void transformWorld(String name,ClassNode classNode,boolean obfuscated) throws IOException
 	{
+		implementICapProvider(classNode, name, "Lnet/minecraft/world/World;");
+	}
+	/**
+	 * inject the line to make tile entities caps tick safer then screwing around with other people's classes
+	 * @throws IOException 
+	 */
+	public static void injectWorldTickers(String name, ClassNode classNode, boolean obfuscated) throws IOException
+	{
+		//add a sided method to tickTileCaps ob/deob to the world.class
+		MethodNode tickTileCaps = TestTransformer.addMethod(classNode, "com/EvilNotch/lib/asm/Caps.class", new MCPSidedString("tickTileCapsDeOb","tickTileCapsOb").toString(), "()V");
+    	TestTransformer.patchLocals(tickTileCaps, name);
+    	TestTransformer.patchInstructions(tickTileCaps, name, "com/EvilNotch/lib/asm/Caps");
+    	
+    	//look for first instanceof tickabletiles and the first instance it calls upon an iterator
 		MethodNode method = TestTransformer.getMethodNode(classNode, "updateEntities", "()V");
+		String fname = new MCPSidedString("tickableTileEntities","field_175730_i").toString();
 		for(AbstractInsnNode obj : method.instructions.toArray())
 		{
-			if(obj.getOpcode() == Opcodes.CHECKCAST && obj instanceof TypeInsnNode)
+			if(obj instanceof FieldInsnNode)
 			{
-				TypeInsnNode isn = (TypeInsnNode)obj;
-				if(isn.desc.equals("net/minecraft/util/ITickable"))
+				FieldInsnNode isn = (FieldInsnNode)obj;
+				if(isn.name.equals(fname))
 				{
-					System.out.println("found injection point for ticking tile caps:");
-					AbstractInsnNode point = isn.getPrevious();
-					System.out.println((point.getOpcode() == Opcodes.ALOAD) + " clazz:" + point.getClass());
-
+					AbstractInsnNode point = isn.getNext();
+					if(point instanceof MethodInsnNode)
+					{
+						MethodInsnNode mnode = (MethodInsnNode)point;
+						if(mnode.getOpcode() == Opcodes.INVOKEINTERFACE && mnode.name.equals("iterator"))
+						{
+							System.out.println("found injection point for ticking tile caps:" + point.getClass());
+							InsnList toInsert = new InsnList();
+							toInsert.add(new VarInsnNode(ALOAD,0));
+							toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/world/World", tickTileCaps.name, "()V", false));
+							method.instructions.insert(point.getNext(),toInsert);
+						}
+					}
+				}	
+			}
+		}
+		
+		//put both world tickers here
+		int count = 0;
+		for(AbstractInsnNode obj : method.instructions.toArray())
+		{
+			if(obj instanceof MethodInsnNode)
+			{
+				if(count == 1)
+				{	
+					System.out.println("found injection for ticking point on WorldInfo");
+					//inject ((ICapProvider)this.worldInfo).getCapContainer().tick(this.worldInfo); right after the profilers start
 					InsnList toInsert = new InsnList();
-					toInsert.add(new VarInsnNode(ALOAD,2));
+					toInsert.add(new VarInsnNode(ALOAD,0));
+					toInsert.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", "worldInfo", "Lnet/minecraft/world/storage/WorldInfo;"));
 					toInsert.add(new TypeInsnNode(Opcodes.CHECKCAST,"com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider"));
 					toInsert.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE,"com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider", "getCapContainer", "()Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;", true));
-					toInsert.add(new VarInsnNode(ALOAD,2));
+					toInsert.add(new VarInsnNode(ALOAD,0));
+					toInsert.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", "worldInfo", "Lnet/minecraft/world/storage/WorldInfo;"));
 					toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
-					method.instructions.insertBefore(point,toInsert);
+					method.instructions.insert(obj,toInsert);
+					break;
 				}
+				count++;
 			}
 		}
 	}

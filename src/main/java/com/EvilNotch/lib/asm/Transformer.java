@@ -131,6 +131,7 @@ public class Transformer implements IClassTransformer
                 	CapTransformer.transFormTileEntityCaps(name, classNode, obfuscated);
                 break;
                 case 9:
+                	CapTransformer.transformWorld(name, classNode, obfuscated);
                 	CapTransformer.injectWorldTickers(name, classNode, obfuscated);
                 break;
                 case 10:
