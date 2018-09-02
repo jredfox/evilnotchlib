@@ -46,12 +46,17 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.network.play.server.SPacketUpdateTileEntity",
     	"net.minecraft.network.NetHandlerPlayServer",
     	"net.minecraft.entity.Entity",//capabilities start here
-    	"net.minecraft.tileentity.TileEntity"
+    	"net.minecraft.tileentity.TileEntity",
+    	"net.minecraft.world.World",
+    	"net.minecraft.world.WorldInfo"
     });
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {
+    	if(name.equals("aym"))
+    		for(int i=0;i<100;i++)
+        		System.out.println("Transforming: " + transformedName);
         int index = classesBeingTransformed.indexOf(transformedName);
         return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
     }
@@ -59,7 +64,9 @@ public class Transformer implements IClassTransformer
     public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
     	String name = classesBeingTransformed.get(index);
-   		System.out.println("Transforming: " + name);
+    	if(name.equals("net.minecraft.world.WorldInfo"))
+    		for(int i=0;i<100;i++)
+    		System.out.println("Transforming: " + name);
     	
         try
         {
@@ -113,8 +120,7 @@ public class Transformer implements IClassTransformer
                 		return classToTransform;
                 	TestTransformer.transformMethod(classNode, name, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "a", "(Lamu;Laed;Let;Laip;)Z", "func_179224_a");
 //                	TestTransformer.removeMethod(classNode,name,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
-                	if(obfuscated)
-                		TestTransformer.addMethod(classNode,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
+                	TestTransformer.addMethod(classNode,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
                 break;
                 
                 case 5:
@@ -129,6 +135,12 @@ public class Transformer implements IClassTransformer
                 case 8:
                 	CapTransformer.transFormTileEntityCaps(name, classNode, obfuscated);
                 break;
+                case 9:
+                	CapTransformer.injectTileTickToWorld(name, classNode, obfuscated);
+                break;
+                case 10:
+                	CapTransformer.transformWorld(classNode, name, obfuscated);
+                break;
             }
             
         	TestTransformer.clearCacheNodes();
@@ -136,7 +148,7 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-          if(index == 3)
+          if(index == 10)
           {
         	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
           }

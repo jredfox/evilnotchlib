@@ -67,6 +67,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -115,6 +116,7 @@ public class MainJava {
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
 	{	
+		Class clazz = WorldInfo.class;
 		proxy.proxypreinit();
 		logger = e.getModLog();
 	  	

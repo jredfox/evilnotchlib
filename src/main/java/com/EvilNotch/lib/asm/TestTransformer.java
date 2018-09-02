@@ -16,6 +16,7 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -127,7 +128,7 @@ public class TestTransformer
 				if(min.owner.equals(oldClassName))
 				{
 					min.owner=className.replaceAll("\\.", "/");
-					System.out.println("Patched: " + min.owner);
+//					System.out.println("Patched: " + min.owner);
 				}
 			}
 			else if(ain instanceof FieldInsnNode)
@@ -136,7 +137,7 @@ public class TestTransformer
 				if(fin.owner.equals(oldClassName))
 				{
 					fin.owner=className.replaceAll("\\.", "/");
-					System.out.println("Patched: " + fin.owner);
+//					System.out.println("Patched: " + fin.owner);
 				}
 			}
 		}
@@ -237,5 +238,19 @@ public class TestTransformer
 			}
 		}
 		return -1;
+	}
+
+	public static LineNumberNode getLineNumberNode(InsnList li) {
+		for(AbstractInsnNode obj : li.toArray())
+			if(obj instanceof LineNumberNode)
+				return (LineNumberNode) obj;
+		return null;
+	}
+
+	public static MethodNode getConstructionNode(ClassNode classNode, String desc) {
+		for(MethodNode node : classNode.methods)
+			if(node.name.equals("<init>") && node.desc.equals(desc))
+				return node;
+		return null;
 	}
 }

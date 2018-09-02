@@ -1,11 +1,17 @@
 package com.EvilNotch.lib.asm;
 
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 
 import net.minecraft.nbt.NBTTagCompound;
 
 public class Caps implements ICapProvider{
+	
+	public Caps()
+	{
+		CapRegHandler.registerCapsToObj(this);
+	}
 	
 	public CapContainer capContainer = new CapContainer();
 	
