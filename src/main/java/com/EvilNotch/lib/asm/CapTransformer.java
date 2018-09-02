@@ -4,12 +4,15 @@ import static org.objectweb.asm.Opcodes.ALOAD;
 
 import java.io.IOException;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -166,7 +169,7 @@ public class CapTransformer {
 	/**
 	 * inject the line to make tile entities caps tick safer then screwing around with other people's classes
 	 */
-	public static void injectTileTickToWorld(String name, ClassNode classNode, boolean obfuscated)
+	public static void injectWorldTickers(String name, ClassNode classNode, boolean obfuscated)
 	{
 		MethodNode method = TestTransformer.getMethodNode(classNode, "updateEntities", "()V");
 		for(AbstractInsnNode obj : method.instructions.toArray())
@@ -192,11 +195,77 @@ public class CapTransformer {
 		}
 	}
 	/**
-	 * add world caps that tick attatched to directly the WorldInfo.class
+	 * add world caps to WorldInfo.class yes there is alot of line injections blame there being no default constructor
 	 */
-	public static void transformWorld(ClassNode classNode,String name, boolean obfuscated) throws IOException
+	public static void transformWorldInfo(ClassNode classNode,String name, boolean obfuscated) throws IOException
 	{
-		implementICapProvider(classNode,name,"Lnet/minecraft/world/WorldInfo;");
+		implementICapProvider(classNode,name,"Lnet/minecraft/world/storage/WorldInfo;");
+		
+		//inject caps to default constructor
+		MethodNode defaultConstruct = TestTransformer.getConstructionNode(classNode, "()V");
+		InsnList toInsertDefault = new InsnList();
+		//make it visit a line so the decompiler loads right
+		LabelNode labelnode = new LabelNode(new Label());
+		LineNumberNode lineNode = new LineNumberNode(97,labelnode);
+		toInsertDefault.add(labelnode);
+		toInsertDefault.add(lineNode);
+		toInsertDefault.add(new VarInsnNode(ALOAD,0));
+		toInsertDefault.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+		defaultConstruct.instructions.insert(TestTransformer.getLastPutField(defaultConstruct),toInsertDefault);
+		
+		//inject readFromNBT constructor
+		MethodNode constructNBT = TestTransformer.getConstructionNode(classNode, "(Lnet/minecraft/nbt/NBTTagCompound;)V");
+		for(AbstractInsnNode obj : constructNBT.instructions.toArray())
+		{
+			if(obj instanceof LdcInsnNode)
+			{
+				LdcInsnNode ldc = (LdcInsnNode)obj;
+				if(ldc.cst.toString().equals("Version"))
+				{
+					System.out.println("found injection point for constructor worldinfo(NBTTagCompound)");
+					AbstractInsnNode spot = ldc.getPrevious().getPrevious();
+					InsnList toInsert = new InsnList();
+					
+					//inject line this.capContainer.readFromNBT(this,nbt);
+					toInsert.add(new VarInsnNode(ALOAD,0));
+					toInsert.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/storage/WorldInfo", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
+					toInsert.add(new VarInsnNode(ALOAD,0));
+					toInsert.add(new VarInsnNode(ALOAD,1));
+					toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+					
+					constructNBT.instructions.insert(spot,toInsert);
+					break;
+				}
+			}
+		 }
+		
+		//writeToNBT
+		MethodNode writeToNBT = TestTransformer.getMethodNode(classNode, "updateTagCompound", "(Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/nbt/NBTTagCompound;)V");
+		AbstractInsnNode spot = TestTransformer.getFirstInstruction(writeToNBT, true, -1);
+		//inject line this.capContainer.writeToNBT(this,nbt);
+		InsnList toInsert = new InsnList();
+		toInsert.add(new VarInsnNode(ALOAD,0));
+		toInsert.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/storage/WorldInfo", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
+		toInsert.add(new VarInsnNode(ALOAD,0));
+		toInsert.add(new VarInsnNode(ALOAD,1));
+		toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "writeToNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+		writeToNBT.instructions.insert(spot,toInsert);
+		
+		//patch the clone the cap container
+		MethodNode constructCopy = TestTransformer.getConstructionNode(classNode, "(Lnet/minecraft/world/storage/WorldInfo;)V");
+		AbstractInsnNode injectionPoint = TestTransformer.getLastPutField(constructCopy);
+		
+		//inject CapRegHandler.registerCapsToObj(this);
+		InsnList toCopy = new InsnList();
+		//inject this.capContainer.readFromNBT(worldinfo,worldinfo.cloneNBT(null));
+		toCopy.add(new VarInsnNode(ALOAD,0));
+		toCopy.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/storage/WorldInfo", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
+		toCopy.add(new VarInsnNode(ALOAD,1));
+		toCopy.add(new VarInsnNode(ALOAD,1));
+		toCopy.add(new InsnNode(Opcodes.ACONST_NULL));
+		toCopy.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"net/minecraft/world/storage/WorldInfo", "cloneNBTCompound", "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", false));
+		toCopy.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+		constructCopy.instructions.insert(injectionPoint,toCopy);
 	}
 
 	/**

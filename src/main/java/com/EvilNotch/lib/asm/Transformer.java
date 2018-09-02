@@ -48,15 +48,12 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.entity.Entity",//capabilities start here
     	"net.minecraft.tileentity.TileEntity",
     	"net.minecraft.world.World",
-    	"net.minecraft.world.WorldInfo"
+    	"net.minecraft.world.storage.WorldInfo"
     });
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {
-    	if(name.equals("aym"))
-    		for(int i=0;i<100;i++)
-        		System.out.println("Transforming: " + transformedName);
         int index = classesBeingTransformed.indexOf(transformedName);
         return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
     }
@@ -64,9 +61,7 @@ public class Transformer implements IClassTransformer
     public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
     	String name = classesBeingTransformed.get(index);
-    	if(name.equals("net.minecraft.world.WorldInfo"))
-    		for(int i=0;i<100;i++)
-    		System.out.println("Transforming: " + name);
+    	System.out.println("Transforming: " + name);
     	
         try
         {
@@ -136,10 +131,10 @@ public class Transformer implements IClassTransformer
                 	CapTransformer.transFormTileEntityCaps(name, classNode, obfuscated);
                 break;
                 case 9:
-                	CapTransformer.injectTileTickToWorld(name, classNode, obfuscated);
+                	CapTransformer.injectWorldTickers(name, classNode, obfuscated);
                 break;
                 case 10:
-                	CapTransformer.transformWorld(classNode, name, obfuscated);
+                	CapTransformer.transformWorldInfo(classNode, name, obfuscated);
                 break;
             }
             

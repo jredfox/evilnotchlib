@@ -36,6 +36,8 @@ public class CapContainer<T> {
 	}
 	public void writeToNBT(T object,NBTTagCompound nbt)
 	{
+		if(nbt == null && object instanceof ItemStack)
+			return;
 		this.preSave(nbt, object);
 		for(ICapability cap : this.caps.values())
 		{

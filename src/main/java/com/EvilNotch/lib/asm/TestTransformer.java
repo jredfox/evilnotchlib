@@ -215,7 +215,7 @@ public class TestTransformer
 	{
 		for(AbstractInsnNode node : method.instructions.toArray())
 		{
-			if(label && node instanceof LabelNode)
+			if(label && node instanceof LineNumberNode)
 				return node;
 			else if(!label && node.getOpcode() == opcode)
 			{
@@ -251,6 +251,22 @@ public class TestTransformer
 		for(MethodNode node : classNode.methods)
 			if(node.name.equals("<init>") && node.desc.equals(desc))
 				return node;
+		return null;
+	}
+	/**
+	 * helpful for finding injection point to the end of constructors
+	 * @return
+	 */
+	public static AbstractInsnNode getLastPutField(MethodNode constructCopy) {
+		AbstractInsnNode[] arr = constructCopy.instructions.toArray();
+		for(int i=arr.length-1;i>=0;i--)
+		{
+			AbstractInsnNode node = arr[i];
+			if(node.getOpcode() == Opcodes.PUTFIELD)
+			{
+				return node;
+			}
+		}
 		return null;
 	}
 }
