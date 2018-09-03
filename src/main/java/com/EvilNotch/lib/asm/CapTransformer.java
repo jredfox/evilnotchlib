@@ -21,6 +21,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.EvilNotch.lib.Api.MCPSidedString;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 
 
 public class CapTransformer {
@@ -371,9 +372,45 @@ public class CapTransformer {
 	 */
 	public static void transformAnvilChunkLoader(ClassNode classNode, String name, boolean obfuscated) 
 	{
+		//class org.objectweb.asm.tree.InsnNode
+		MethodNode read = TestTransformer.getMethodNode(classNode, "readChunkFromNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;");
+		//inject line ((ICapProvider)chunk).getCapContainer().readFromNBT(chunk, compound); right before the return statement
+		InsnList toInsert = new InsnList();
+		toInsert.add(new VarInsnNode(ALOAD,5));
+		toInsert.add(new TypeInsnNode(Opcodes.CHECKCAST,"com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider"));
+		toInsert.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE,"com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider", "getCapContainer", "()Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;", true));			
+		toInsert.add(new VarInsnNode(ALOAD,5));
+		toInsert.add(new VarInsnNode(ALOAD,2));
+		toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+		AbstractInsnNode readSpot = null;
 		
-	}
+		//find the last end of an if statement
+		AbstractInsnNode[] arr = read.instructions.toArray();
+		for(int i=arr.length-1;i>=0;i--)
+		{
+			AbstractInsnNode node = arr[i];
+			if(node.getOpcode() == Opcodes.ALOAD)
+			{
+				System.out.println("found injection point for AnvilChunk.readChunkFromNBT()");
+				readSpot = node;
+				break;
+			}
+		}
+		read.instructions.insertBefore(readSpot,toInsert);
 
+		//writeToNBT inject this line ((ICapProvider)chunkIn).getCapContainer().writeToNBT(chunkIn, compound);
+		MethodNode write = TestTransformer.getMethodNode(classNode, "writeChunkToNBT", "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V");
+		InsnList writeIsn = new InsnList();
+		writeIsn.add(new VarInsnNode(ALOAD,1));
+		writeIsn.add(new TypeInsnNode(Opcodes.CHECKCAST, "com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider"));
+		writeIsn.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE,"com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider", "getCapContainer", "()Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;", true));
+		writeIsn.add(new VarInsnNode(ALOAD,1));
+		writeIsn.add(new VarInsnNode(ALOAD,3));
+		writeIsn.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "writeToNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+		
+		AbstractInsnNode insertPoint = TestTransformer.getLastInstruction(write, Opcodes.RETURN);
+		write.instructions.insertBefore(insertPoint, writeIsn);
+	}
 
 	/**
 	 * make a class automatically implement ICapProvider without readFromNBT(),writeToNBT(), or tick() implementations

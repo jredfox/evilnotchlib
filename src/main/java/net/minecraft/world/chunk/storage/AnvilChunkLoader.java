@@ -508,8 +508,7 @@ public class AnvilChunkLoader implements IChunkLoader, IThreadedFileIO
         if (chunk.getCapabilities() != null && compound.hasKey("ForgeCaps")) {
             chunk.getCapabilities().deserializeNBT(compound.getCompoundTag("ForgeCaps"));
         }
-        ((ICapProvider)chunk).getCapContainer().readFromNBT(chunk, compound);
-
+//        ((ICapProvider)chunk).getCapContainer().readFromNBT(chunk, compound);
         // End this method here and split off entity loading to another method
         return chunk;
     }

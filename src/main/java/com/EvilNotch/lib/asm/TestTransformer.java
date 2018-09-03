@@ -269,4 +269,16 @@ public class TestTransformer
 		}
 		return null;
 	}
+
+	public static AbstractInsnNode getLastInstruction(MethodNode method, int opCode) 
+	{
+		AbstractInsnNode[] arr = method.instructions.toArray();
+		for(int i=arr.length-1;i>=0;i--)
+		{
+			AbstractInsnNode node = arr[i];
+			if(node.getOpcode() == opCode)
+				return node;
+		}
+		return null;
+	}
 }
