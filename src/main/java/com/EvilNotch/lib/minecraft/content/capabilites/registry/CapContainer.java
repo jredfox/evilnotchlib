@@ -56,13 +56,9 @@ public class CapContainer<T> {
 		this.postRead(nbt, object);
 	}
 	
-	public ICapability getCapability(ResourceLocation loc)
+	public <E extends ICapability> E getCapability(ResourceLocation loc)
 	{
-		return caps.get(loc);
-	}
-	public <E extends ICapability> E getCastedCapability(ResourceLocation loc)
-	{
-		return (E)caps.get(loc);
+		return (E) caps.get(loc);
 	}
 	
 	public void preSave(NBTTagCompound nbt, T obj){

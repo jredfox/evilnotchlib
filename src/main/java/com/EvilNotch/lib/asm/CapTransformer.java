@@ -190,36 +190,27 @@ public class CapTransformer {
 		MethodNode method = TestTransformer.getMethodNode(classNode, "updateEntities", "()V");
     	
 		//put both world tickers here
-		int count = 0;
-		for(AbstractInsnNode obj : method.instructions.toArray())
-		{
-			if(obj instanceof MethodInsnNode)
-			{
-				if(count == 1)
-				{	
-					System.out.println("found injection for ticking point on WorldInfo");
-					//inject ((ICapProvider)this.worldInfo).getCapContainer().tick(this.worldInfo); right after the profilers start
-					InsnList toInsert = new InsnList();
-					toInsert.add(new VarInsnNode(ALOAD,0));
-					toInsert.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", "worldInfo", "Lnet/minecraft/world/storage/WorldInfo;"));
-					toInsert.add(new TypeInsnNode(Opcodes.CHECKCAST,"com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider"));
-					toInsert.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE,"com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider", "getCapContainer", "()Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;", true));
-					toInsert.add(new VarInsnNode(ALOAD,0));
-					toInsert.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", "worldInfo", "Lnet/minecraft/world/storage/WorldInfo;"));
-					toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
-					
-					//inject line this.capContainer.tick(this);
-					toInsert.add(new VarInsnNode(ALOAD,0));
-					toInsert.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
-					toInsert.add(new VarInsnNode(ALOAD,0));
-					toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
-					
-					method.instructions.insert(obj,toInsert);
-					break;
-				}
-				count++;
-			}
-		}
+		MethodNode tick = TestTransformer.getMethodNode(classNode, "tick", "()V");
+		AbstractInsnNode tickPoint = TestTransformer.getFirstInstruction(tick, false, Opcodes.ALOAD);
+		System.out.println("found injection for ticking point on WorldInfo");
+		
+		InsnList toTick = new InsnList();
+		
+		//inject line this.capContainer.tick(this);
+		toTick.add(new VarInsnNode(ALOAD,0));
+		toTick.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
+		toTick.add(new VarInsnNode(ALOAD,0));
+		toTick.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
+		//inject ((ICapProvider)this.worldInfo).getCapContainer().tick(this.worldInfo); right after the profilers start
+		toTick.add(new VarInsnNode(ALOAD,0));
+		toTick.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", "worldInfo", "Lnet/minecraft/world/storage/WorldInfo;"));
+		toTick.add(new TypeInsnNode(Opcodes.CHECKCAST,"com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider"));
+		toTick.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE,"com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider", "getCapContainer", "()Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;", true));
+		toTick.add(new VarInsnNode(ALOAD,0));
+		toTick.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", "worldInfo", "Lnet/minecraft/world/storage/WorldInfo;"));
+		toTick.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
+		
+		method.instructions.insert(tickPoint,toTick);
     	
     	//look for first instanceof tickabletiles and the first instance it calls upon an iterator
 		String fname = new MCPSidedString("tickableTileEntities","field_175730_i").toString();

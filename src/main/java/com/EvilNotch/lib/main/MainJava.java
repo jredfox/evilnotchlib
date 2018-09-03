@@ -8,9 +8,13 @@ import org.apache.logging.log4j.Logger;
 
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
-import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
+import com.EvilNotch.lib.main.testing.CapRegChunkTest;
+import com.EvilNotch.lib.main.testing.CapRegEnt;
+import com.EvilNotch.lib.main.testing.CapRegTile;
+import com.EvilNotch.lib.main.testing.CapRegWorldTest;
+import com.EvilNotch.lib.main.testing.EventHandler;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
 import com.EvilNotch.lib.minecraft.content.FakeWorld;
@@ -24,10 +28,7 @@ import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.property.PropertyMetaEnum;
 import com.EvilNotch.lib.minecraft.content.blocks.test.EnumCheese;
 import com.EvilNotch.lib.minecraft.content.blocks.test.MultiSidedGrass;
-import com.EvilNotch.lib.minecraft.content.capabilites.primitive.CapString;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
 import com.EvilNotch.lib.minecraft.content.commands.CMDKick;
@@ -56,8 +57,6 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.command.ICommand;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -135,6 +134,7 @@ public class MainJava {
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
 		
 		GeneralRegistry.registerCommand(new CMDDim());
@@ -147,7 +147,13 @@ public class MainJava {
 			GeneralRegistry.replaceVanillaCommand("tp",new CMDTP());
 			GeneralRegistry.replaceVanillaCommand("teleport",new CMDTeleport());
 		}
+		
 		CapRegHandler.registerRegistry(new CapRegEnt());
+		CapRegHandler.registerRegistry(new CapRegTile());
+		CapRegHandler.registerRegistry(new CapRegWorldInfo());
+		CapRegHandler.registerRegistry(new CapRegWorldTest());
+		CapRegHandler.registerRegistry(new CapRegChunkTest());
+		
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
 

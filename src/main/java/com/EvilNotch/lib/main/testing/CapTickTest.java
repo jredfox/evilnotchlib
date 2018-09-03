@@ -1,0 +1,56 @@
+package com.EvilNotch.lib.main.testing;
+
+import com.EvilNotch.lib.minecraft.content.capabilites.ICapTick;
+import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.storage.WorldInfo;
+
+public class CapTickTest implements ICapability<Object>,ICapTick<Object> {
+
+	@Override
+	public void writeToNBT(Object object, NBTTagCompound nbt, CapContainer c) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void readFromNBT(Object object, NBTTagCompound nbt, CapContainer c) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void tick(Object object, CapContainer c) 
+	{
+		if(object instanceof TileEntity)
+		{
+			TileEntity tile = (TileEntity)object;
+//			System.out.println(tile.getWorld().isRemote);
+		}
+		else if(object instanceof Entity)
+		{
+			Entity p = (Entity)object;
+//			System.out.println(p.world.isRemote);
+		}
+		else if(object instanceof WorldInfo)
+		{
+//			System.out.println("tick world info");
+		}
+		else if(object instanceof World)
+		{
+			World w = (World)object;
+//			System.out.println(w.isRemote);
+		}
+		else if(object instanceof Chunk)
+		{
+//			System.out.println("here chunk tick");
+		}
+	}
+}
