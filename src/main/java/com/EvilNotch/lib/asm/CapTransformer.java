@@ -336,6 +336,44 @@ public class CapTransformer {
 		AbstractInsnNode constructSpot = TestTransformer.getLastPutField(construct);
 		construct.instructions.insert(constructSpot, toConstruct);
 	}
+	/**
+	 * injects registering of the caps to chunk and capContainer with interface the rest is handled via forge event since chunks really don't self serialize
+	 * @param classNode
+	 * @param name
+	 * @param obfuscated
+	 * @throws IOException
+	 */
+	public static void transformChunk(ClassNode classNode,String name,boolean obfuscated) throws IOException
+	{
+		implementICapProvider(classNode, name, "Lnet/minecraft/world/chunk/Chunk;");
+		
+		MethodNode constructor = TestTransformer.getConstructionNode(classNode, "(Lnet/minecraft/world/World;II)V");
+		AbstractInsnNode spot = TestTransformer.getLastPutField(constructor);
+		//inject CapRegHandler.registerCapToObj(this);
+		InsnList toInsert = new InsnList();
+		toInsert.add(new VarInsnNode(ALOAD,0));
+		toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+		constructor.instructions.insert(spot,toInsert);
+		
+		//make the caps tick
+		MethodNode ticknode = TestTransformer.getMethodNode(classNode, "onTick", "(Z)V");
+		InsnList toInsert2 = new InsnList();
+		toInsert2.add(new VarInsnNode(ALOAD,0));
+		toInsert2.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/chunk/Chunk", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
+		toInsert2.add(new VarInsnNode(ALOAD,0));
+		toInsert2.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
+		AbstractInsnNode spotTick = TestTransformer.getFirstInstruction(ticknode, true, -1);
+		ticknode.instructions.insert(spotTick,toInsert2);
+	}
+	
+	/**
+	 * we are not done patching the chunks until serialization is patched as well
+	 */
+	public static void transformAnvilChunkLoader(ClassNode classNode, String name, boolean obfuscated) 
+	{
+		
+	}
+
 
 	/**
 	 * make a class automatically implement ICapProvider without readFromNBT(),writeToNBT(), or tick() implementations
@@ -355,5 +393,4 @@ public class CapTransformer {
     	TestTransformer.patchLocals(setCap, name);
     	TestTransformer.patchInstructions(setCap, name, "com/EvilNotch/lib/asm/Caps");
 	}
-
 }

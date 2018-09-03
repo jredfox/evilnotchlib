@@ -48,7 +48,9 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.entity.Entity",//capabilities start here
     	"net.minecraft.tileentity.TileEntity",
     	"net.minecraft.world.World",
-    	"net.minecraft.world.storage.WorldInfo"
+    	"net.minecraft.world.storage.WorldInfo",
+    	"net.minecraft.world.chunk.Chunk",
+    	"net.minecraft.world.chunk.storage.AnvilChunkLoader"//caps for chunks need readFromNBT() and writeToNBT()
     });
     
     @Override
@@ -139,6 +141,12 @@ public class Transformer implements IClassTransformer
                 case 10:
                 	CapTransformer.transformWorldInfo(classNode, name, obfuscated);
                 break;
+                case 11:
+                	CapTransformer.transformChunk(classNode, name, obfuscated);
+                break;
+                case 12:
+                	CapTransformer.transformAnvilChunkLoader(classNode,name,obfuscated);
+                break;
             }
             
         	TestTransformer.clearCacheNodes();
@@ -146,7 +154,7 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-          if(index == 9)
+          if(index == 11)
           {
         	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
           }

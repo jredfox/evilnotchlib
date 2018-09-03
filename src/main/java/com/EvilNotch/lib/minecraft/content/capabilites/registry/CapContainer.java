@@ -60,6 +60,10 @@ public class CapContainer<T> {
 	{
 		return caps.get(loc);
 	}
+	public <E extends ICapability> E getCastedCapability(ResourceLocation loc)
+	{
+		return (E)caps.get(loc);
+	}
 	
 	public void preSave(NBTTagCompound nbt, T obj){
 		for(IListener li : this.listeners)

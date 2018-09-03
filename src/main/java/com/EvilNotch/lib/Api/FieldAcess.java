@@ -66,7 +66,6 @@ public class FieldAcess {
 	public static String gameProfileId = null;
 	public static String blockstate = null;
 	public static String gameRuleMap = null;
-	public static String shadowSize = null;
 	public static String potentialSpawns = null;
 	
 	public static void cacheFields()
@@ -95,7 +94,6 @@ public class FieldAcess {
 		gameProfileId = MCPMappings.getField(GameProfile.class, "id");
 		blockstate = MCPMappings.getField(Block.class, "blockState");
 		gameRuleMap =  MCPMappings.getField(GameRules.class, "rules");
-		shadowSize = MCPMappings.getField(Render.class, "shadowSize");
 		potentialSpawns = MCPMappings.getField(MobSpawnerBaseLogic.class,"potentialSpawns");
 		
 		try 
