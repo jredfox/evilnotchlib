@@ -32,6 +32,7 @@ no more pig spawners after one spawnage
 
 Features:
 ```
+CapabilitySystem unlike forges mine is easy to use and understand as well as an ICapTick version for all objects that can tick
 MCPMappings and ReflectionUtil API: ability to get and set objects with ease
 Menu Lib: allows for modders to register their menu for multiple menu browsing
 BlockAPI: set objects in blocks for coders
