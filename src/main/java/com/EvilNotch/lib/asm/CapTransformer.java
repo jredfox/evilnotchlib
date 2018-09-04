@@ -175,6 +175,11 @@ public class CapTransformer {
 	public static void transformWorld(String name,ClassNode classNode,boolean obfuscated) throws IOException
 	{
 		implementICapProvider(classNode, name, "Lnet/minecraft/world/World;");
+		
+    	//add the method of World#tickChunkOb/Deob
+    	MethodNode method = TestTransformer.addMethod(classNode, "com/EvilNotch/lib/asm/Caps.class", !obfuscated ? "tickChunksDeOb" : "tickChunksOb", "()V");
+    	TestTransformer.patchInstructions(method, name, "com/EvilNotch/lib/asm/Caps");
+    	TestTransformer.patchLocals(method, name);
 	}
 	/**
 	 * inject the line to make tile entities caps tick safer then screwing around with other people's classes
@@ -209,6 +214,10 @@ public class CapTransformer {
 		toTick.add(new VarInsnNode(ALOAD,0));
 		toTick.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", "worldInfo", "Lnet/minecraft/world/storage/WorldInfo;"));
 		toTick.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
+		//inject this.tickChunkOb/Deob
+		String ob = obfuscated ? "Ob" : "DeOb";
+		toTick.add(new VarInsnNode(ALOAD,0));
+		toTick.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"net/minecraft/world/World", "tickChunks" + ob, "()V", false));
 		
 		method.instructions.insert(tickPoint,toTick);
     	
@@ -346,16 +355,6 @@ public class CapTransformer {
 		toInsert.add(new VarInsnNode(ALOAD,0));
 		toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
 		constructor.instructions.insert(spot,toInsert);
-		
-		//make the caps tick
-		MethodNode ticknode = TestTransformer.getMethodNode(classNode, "onTick", "(Z)V");
-		InsnList toInsert2 = new InsnList();
-		toInsert2.add(new VarInsnNode(ALOAD,0));
-		toInsert2.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/chunk/Chunk", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
-		toInsert2.add(new VarInsnNode(ALOAD,0));
-		toInsert2.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
-		AbstractInsnNode spotTick = TestTransformer.getFirstInstruction(ticknode, true, -1);
-		ticknode.instructions.insert(spotTick,toInsert2);
 	}
 	
 	/**

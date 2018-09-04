@@ -25,34 +25,11 @@ public class OtherTransformer
 		 final String method_name = obfuscated ? "g" : "createPlayerForUser";
 		 final String method_desc = obfuscated ? "(Lcom/mojang/authlib/GameProfile;)Loq;" : "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;";
 		 
-		 int count = 0;
-		 for (MethodNode method : playerList.methods)
-		 {
-			 if (method.name.equals(method_name) && method.desc.equals(method_desc))
-			 {
-				 AbstractInsnNode targetNode = null;
-				 for (AbstractInsnNode instruction : method.instructions.toArray())
-				 {
-					 if (instruction instanceof LabelNode)
-					 {
-						targetNode = instruction;
-						System.out.println("found abstractIsnNode for uuidpatcher");
-						break;
-					 }
-				 }
-				 if (targetNode != null)
-				 {
-					 InsnList toInsert = new InsnList();
-	                 toInsert.add(new VarInsnNode(ALOAD,1));
-	                 toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/EvilNotch/lib/minecraft/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
-	                 method.instructions.insert(method.instructions.getFirst(),toInsert);
-				 }
-				 else
-				 {
-					 System.out.println("Error Asming UUIDPatcher REPORT THIS TO MOD AUTHOR");
-				 }
-			 }
-		 }
+		 MethodNode method = TestTransformer.getMethodNode(playerList, method_name, method_desc);
+		 InsnList toInsert = new InsnList();
+         toInsert.add(new VarInsnNode(ALOAD,1));
+         toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/EvilNotch/lib/minecraft/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
+         method.instructions.insertBefore(TestTransformer.getFirstInstruction(method, false, Opcodes.ALOAD),toInsert);
 	}
 
 	private static String getNodeString(LocalVariableNode node) {

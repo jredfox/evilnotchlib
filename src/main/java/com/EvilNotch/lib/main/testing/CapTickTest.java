@@ -15,16 +15,10 @@ import net.minecraft.world.storage.WorldInfo;
 public class CapTickTest implements ICapability<Object>,ICapTick<Object> {
 
 	@Override
-	public void writeToNBT(Object object, NBTTagCompound nbt, CapContainer c) {
-		// TODO Auto-generated method stub
-
-	}
+	public void writeToNBT(Object object, NBTTagCompound nbt, CapContainer c) {}
 
 	@Override
-	public void readFromNBT(Object object, NBTTagCompound nbt, CapContainer c) {
-		// TODO Auto-generated method stub
-
-	}
+	public void readFromNBT(Object object, NBTTagCompound nbt, CapContainer c) {}
 
 	@Override
 	public void tick(Object object, CapContainer c) 
@@ -50,7 +44,7 @@ public class CapTickTest implements ICapability<Object>,ICapTick<Object> {
 		}
 		else if(object instanceof Chunk)
 		{
-//			System.out.println("here chunk tick");
+			
 		}
 	}
 }

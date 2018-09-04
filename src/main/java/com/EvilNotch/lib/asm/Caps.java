@@ -1,13 +1,18 @@
 package com.EvilNotch.lib.asm;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 
+import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.ChunkProviderServer;
 
 public class Caps implements ICapProvider{
 	
@@ -46,6 +51,47 @@ public class Caps implements ICapProvider{
     {
         for(TileEntity tile : this.field_147482_g)
             ((com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider)tile).getCapContainer().tick(tile);
+	}
+    
+	private IChunkProvider chunkProvider = null;
+    public void tickChunksDeOb() {
+        if(this.chunkProvider instanceof ChunkProviderServer)
+        {
+        	ChunkProviderServer cp = (ChunkProviderServer)this.chunkProvider;
+        	Collection<Chunk> loadedChunks = cp.getLoadedChunks();
+        	for(Chunk c : loadedChunks)
+        	{
+        		((com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider)c).getCapContainer().tick(c);
+        	}
+        }
+        else if(this.chunkProvider instanceof ChunkProviderClient)
+        {
+        	ChunkProviderClient cp = (ChunkProviderClient)this.chunkProvider;
+        	for(Chunk c : cp.chunkMapping.values())
+        	{
+        		((com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider)c).getCapContainer().tick(c);
+        	}
+        }
+	}
+    private IChunkProvider field_73236_b = null;
+    public void tickChunksOb() {
+        if(this.field_73236_b instanceof ChunkProviderServer)
+        {
+        	ChunkProviderServer cp = (ChunkProviderServer)this.chunkProvider;
+        	Collection<Chunk> loadedChunks = cp.getLoadedChunks();
+        	for(Chunk c : loadedChunks)
+        	{
+        		((com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider)c).getCapContainer().tick(c);
+        	}
+        }
+        else if(this.field_73236_b instanceof ChunkProviderClient)
+        {
+        	ChunkProviderClient cp = (ChunkProviderClient)this.chunkProvider;
+        	for(Chunk c : cp.chunkMapping.values())
+        	{
+        		((com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider)c).getCapContainer().tick(c);
+        	}
+        }
 	}
 
 	
