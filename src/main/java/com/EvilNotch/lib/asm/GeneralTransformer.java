@@ -1,25 +1,43 @@
 package com.EvilNotch.lib.asm;
 
 import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import com.EvilNotch.lib.Api.MCPSidedString;
 
-public class OtherTransformer 
-{
+public class GeneralTransformer {
+	/**
+	 * changes the exicution of where the invoking static method takes the middle click to my method
+	 * @param classNode
+	 */
+	public static void transformMC(ClassNode classNode) 
+	{
+    	MethodNode mnode = TestTransformer.getMethodNode(classNode, new MCPSidedString("middleClickMouse","aH").toString(), "()V");
+    	for(AbstractInsnNode node : mnode.instructions.toArray())
+    	{
+    		if(node.getOpcode() == Opcodes.INVOKESTATIC && node instanceof MethodInsnNode)
+    		{
+    			MethodInsnNode n = (MethodInsnNode)node;
+    			n.name = "pickBlock";
+    			n.owner = "com/EvilNotch/lib/asm/PickBlock";
+    			System.out.println("patched Minecraft#middleClickMouse()");
+    			break;
+    		}
+    	}
+	}
+	/**
+	 * injects line EntityUtil.patchUUID(profile); into the classNode
+	 * @param playerList
+	 * @param obfuscated
+	 */
 	public static void injectUUIDPatcher(ClassNode playerList, boolean obfuscated) 
 	{
 		 final String method_name = obfuscated ? "g" : "createPlayerForUser";
@@ -32,7 +50,4 @@ public class OtherTransformer
          method.instructions.insertBefore(TestTransformer.getFirstInstruction(method, false, Opcodes.ALOAD),toInsert);
 	}
 
-	private static String getNodeString(LocalVariableNode node) {
-		return node.name + " desc:" + node.desc + " index:"+ node.index + " signature" + node.signature;
-	}
 }

@@ -62,7 +62,7 @@ public class TestTransformer
 		cacheNodes.put(inputStream, node);
 		return getMethodNode(node,obMethod,method_desc);
 	}
-	public static MethodNode GetMethodNode(Class ourClass, String method_name,String method_desc) throws IOException 
+	public static MethodNode getMethodNode(Class ourClass, String method_name,String method_desc) throws IOException 
 	{
 		String className = ourClass.getName();
 		String classAsPath = className.replaceAll("\\.", "/") + ".class";

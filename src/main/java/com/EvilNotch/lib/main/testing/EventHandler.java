@@ -4,13 +4,15 @@ import com.EvilNotch.lib.minecraft.content.capabilites.primitive.CapBoolean;
 import com.EvilNotch.lib.minecraft.content.capabilites.primitive.CapString;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
+import com.EvilNotch.lib.minecraft.events.PickBlockEvent;
 
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class EventHandler {
@@ -37,6 +39,15 @@ public class EventHandler {
 			CapContainer c = provider.getCapContainer();
 			CapString str = (CapString) c.getCapability(new ResourceLocation("a:b"));
 			str.str = "jredfox";
+		}
+	}
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void pick(PickBlockEvent e)
+	{
+		if(e.state.getBlock() == Blocks.MOB_SPAWNER)
+		{
+			System.out.println("here pickblock:" + e.canPick);
+			e.result = new ItemStack(Blocks.MOB_SPAWNER);
 		}
 	}
 

@@ -50,7 +50,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.world.World",
     	"net.minecraft.world.storage.WorldInfo",
     	"net.minecraft.world.chunk.Chunk",
-    	"net.minecraft.world.chunk.storage.AnvilChunkLoader"//caps for chunks need readFromNBT() and writeToNBT()
+    	"net.minecraft.world.chunk.storage.AnvilChunkLoader",//caps for chunks need readFromNBT() and writeToNBT()
+    	"net.minecraft.client.Minecraft"
     });
     
     @Override
@@ -81,7 +82,7 @@ public class Transformer implements IClassTransformer
                 	}
                 	TestTransformer.transformMethod(classNode, name, inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
                 	TestTransformer.transformMethod(classNode, name, inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
-                	OtherTransformer.injectUUIDPatcher(classNode, obfuscated);
+                	GeneralTransformer.injectUUIDPatcher(classNode, obfuscated);
                 break;
                 
                 case 1:
@@ -145,6 +146,9 @@ public class Transformer implements IClassTransformer
                 break;
                 case 12:
                 	CapTransformer.transformAnvilChunkLoader(classNode,name,obfuscated);
+                break;
+                case 13:
+                	GeneralTransformer.transformMC(classNode);
                 break;
             }
             
