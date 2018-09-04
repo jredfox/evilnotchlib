@@ -43,7 +43,6 @@ public class WorldStorageCap extends WorldSavedData{
 	{
 		if(this.saveHandler == null)
 		{
-			System.out.println("returning save hanlder is null:" + this.world.provider.getDimension() + " isRemote:" + this.world.isRemote);
 			return;
 		}
 		 File file1 = this.saveHandler.getMapFileFromName(this.mapName);

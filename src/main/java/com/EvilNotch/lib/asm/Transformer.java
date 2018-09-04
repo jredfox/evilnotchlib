@@ -71,7 +71,6 @@ public class Transformer implements IClassTransformer
             ClassReader classReader = new ClassReader(classToTransform);
             classReader.accept(classNode, 0);
             String inputBase = "assets/evilnotchlib/asm/" + (obfuscated ? "srg/" : "deob/");
-            String origin = "assets/evilnotchlib/asm/";
             switch(index)
             {
                 case 0:
@@ -154,7 +153,7 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-          if(index == 9)
+          if(index == 12)
           {
         	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
           }
