@@ -55,6 +55,8 @@ Adds the seed to f3 again per world
 PCapabilities an external capability system for the entity player on server side
 TestTransformer(ASMHelper) allows you to: replace methods,replace classes, and other usefull stuffs
 remove methods,add methods, add fields, remove fields
+PickBlockEvent(allows you to override what the block returns via middle click)
+PickEntityEvent(allows you to override what the entity returns via middle click)
 
 Future:
 Font Renderer
