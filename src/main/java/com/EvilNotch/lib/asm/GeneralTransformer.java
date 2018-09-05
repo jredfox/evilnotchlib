@@ -20,7 +20,7 @@ public class GeneralTransformer {
 	 */
 	public static void transformMC(ClassNode classNode) 
 	{
-    	MethodNode mnode = TestTransformer.getMethodNode(classNode, new MCPSidedString("middleClickMouse","func_147112_ai").toString(), "()V");
+    	MethodNode mnode = ASMHelper.getMethodNode(classNode, new MCPSidedString("middleClickMouse","func_147112_ai").toString(), "()V");
     	for(AbstractInsnNode node : mnode.instructions.toArray())
     	{
     		if(node.getOpcode() == Opcodes.INVOKESTATIC && node instanceof MethodInsnNode)
@@ -38,19 +38,17 @@ public class GeneralTransformer {
 	}
 	/**
 	 * injects line EntityUtil.patchUUID(profile); into the classNode
-	 * @param playerList
-	 * @param obfuscated
 	 */
 	public static void injectUUIDPatcher(ClassNode playerList, boolean obfuscated) 
 	{
 		 final String method_name = obfuscated ? "func_148545_a" : "createPlayerForUser";
 		 final String method_desc = "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;";
 		 
-		 MethodNode method = TestTransformer.getMethodNode(playerList, method_name, method_desc);
+		 MethodNode method = ASMHelper.getMethodNode(playerList, method_name, method_desc);
 		 InsnList toInsert = new InsnList();
          toInsert.add(new VarInsnNode(ALOAD,1));
          toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/EvilNotch/lib/minecraft/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
-         method.instructions.insertBefore(TestTransformer.getFirstInstruction(method, Opcodes.ALOAD),toInsert);
+         method.instructions.insertBefore(ASMHelper.getFirstInstruction(method, Opcodes.ALOAD),toInsert);
 	}
 
 }
