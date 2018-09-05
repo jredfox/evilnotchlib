@@ -75,8 +75,9 @@ Instalation This as a Dependancy:
 Install forge mdk mc version
 Create a libs folder and put the version of EvilNotch Lib you need
 Go into eclipse java build path and add the jar
-Installl the build.gradle to your mdk as it has support for UTF-8 compiliation
+Installl the build.gradle and remove the jar section if the lib is compiled
 Go into EvilNotLib jar > src > main > resources > evilnotchlib > asm > decompiled
 Drag and drop what patched decompiled classes you need and rename to acess any new method/feilds. Decompiled asm is now supported
 When compiling your mod make sure you delete the net/minecraft folder as it's not needed because in compiled it's done using asm
+That's it your all setup and ready to use all of the features and new forge events :)
 ```
