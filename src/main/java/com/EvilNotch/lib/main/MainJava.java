@@ -152,11 +152,11 @@ public class MainJava {
 			GeneralRegistry.replaceVanillaCommand("teleport",new CMDTeleport());
 		}
 		
-		CapRegHandler.registerRegistry(new CapRegEnt());
-		CapRegHandler.registerRegistry(new CapRegTile());
-		CapRegHandler.registerRegistry(new CapRegWorldInfo());
-		CapRegHandler.registerRegistry(new CapRegWorldTest());
-		CapRegHandler.registerRegistry(new CapRegChunkTest());
+//		CapRegHandler.registerRegistry(new CapRegEnt());
+//		CapRegHandler.registerRegistry(new CapRegTile());
+//		CapRegHandler.registerRegistry(new CapRegWorldInfo());
+//		CapRegHandler.registerRegistry(new CapRegWorldTest());
+//		CapRegHandler.registerRegistry(new CapRegChunkTest());
 		
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
