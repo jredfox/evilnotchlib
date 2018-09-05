@@ -155,9 +155,11 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-          if(index == 7)
+          if(index == ConfigCore.cfgIndex)
           {
-        	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+        	  String[] a = name.split("\\.");
+        	  File f = new File(System.getProperty("user.home") + "/Desktop/" + a[a.length-1] + ".class");
+        	  FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
           }
             return classWriter.toByteArray();
         }

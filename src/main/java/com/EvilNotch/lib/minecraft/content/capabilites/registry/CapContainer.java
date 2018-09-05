@@ -58,7 +58,7 @@ public class CapContainer<T> {
 	
 	public ICapability getCapability(ResourceLocation loc)
 	{
-		return this.getCapability(loc);
+		return this.caps.get(loc);
 	}
 	
 	public void preSave(NBTTagCompound nbt, T obj){

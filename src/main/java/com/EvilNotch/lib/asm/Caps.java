@@ -46,12 +46,6 @@ public class Caps implements ICapProvider{
 	{
 		return this.capContainer.getCapability(loc);
 	}
-	public void a()
-	{
-		boolean b = EntityUtil.cached;
-		EntityUtil.cached = false;
-		PickBlock.pickBlock(null, null, null);
-	}
 	
     public void tickTileCapsDeOb() 
     {
