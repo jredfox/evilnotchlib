@@ -24,7 +24,6 @@ public class PickBlock {
 	
 	/**
 	 * a replaced version of forge's hooks for pickblock that allows for event overrides
-	 * @return
 	 */
 	public static boolean pickBlock(RayTraceResult target, EntityPlayer player, World world)
 	{

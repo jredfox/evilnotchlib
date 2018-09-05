@@ -9,6 +9,9 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 public class PickEntityEvent extends Event{
 	
 	public final ItemStack initStack;
+	/**
+	 * the itemstack from the entity returned 
+	 */
 	public ItemStack current;
 	public RayTraceResult targ;
 	public EntityPlayer player;

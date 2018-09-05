@@ -6,6 +6,9 @@ import java.util.Map;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
+@IFMLLoadingPlugin.Name("evilnotchlib-transformer_fixes")
+@IFMLLoadingPlugin.SortingIndex(1001)
+@IFMLLoadingPlugin.MCVersion("1.12.2")
 public class FMLCorePlugin implements IFMLLoadingPlugin
 {
 	public static boolean isObf;

@@ -114,7 +114,7 @@ public class MainJava {
 
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
-	{	
+	{
 		Class clazz = WorldInfo.class;
 		proxy.proxypreinit();
 		logger = e.getModLog();

@@ -15,7 +15,7 @@ import com.EvilNotch.lib.Api.MCPSidedString;
 
 public class GeneralTransformer {
 	/**
-	 * changes the exicution of where the invoking static method takes the middle click to my method
+	 * changes the execution of where the invoking static method takes the middle click to my method
 	 * @param classNode
 	 */
 	public static void transformMC(ClassNode classNode) 
@@ -26,10 +26,13 @@ public class GeneralTransformer {
     		if(node.getOpcode() == Opcodes.INVOKESTATIC && node instanceof MethodInsnNode)
     		{
     			MethodInsnNode n = (MethodInsnNode)node;
-    			n.name = "pickBlock";
-    			n.owner = "com/EvilNotch/lib/asm/PickBlock";
-    			System.out.println("patched Minecraft#middleClickMouse()");
-    			break;
+    			if(n.owner.equals("net/minecraftforge/common/ForgeHooks"))
+    			{
+    				n.name = "pickBlock";
+    				n.owner = "com/EvilNotch/lib/asm/PickBlock";
+    				System.out.println("patched Minecraft#middleClickMouse()");
+    				break;
+    			}
     		}
     	}
 	}

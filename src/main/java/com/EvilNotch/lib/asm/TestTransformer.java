@@ -30,7 +30,45 @@ import net.minecraft.entity.Entity;
 public class TestTransformer 
 {	
 	public static HashMap<String,ClassNode> cacheNodes = new HashMap();
+	/**
+	 * srg support doesn't patch local vars nor instructions
+	 */
+	public static MethodNode transformMethod(ClassNode classNode,String className,String inputStream,String method_name,String method_desc,String srgname,boolean patchIsn)
+	{
+		long time = System.currentTimeMillis();
+		MethodNode origin = FMLCorePlugin.isObf ? getMethodNode(classNode,srgname,method_desc) : getMethodNode(classNode,method_name,method_desc);
+		try
+		{
+			MethodNode toReplace = getCachedMethodNode(inputStream, FMLCorePlugin.isObf ? srgname : method_name, method_desc);
+			origin.localVariables.clear();
+			origin.instructions = toReplace.instructions;
+			origin.localVariables = toReplace.localVariables;
+			origin.access = toReplace.access;
+			origin.annotationDefault = toReplace.annotationDefault;
+			origin.tryCatchBlocks = toReplace.tryCatchBlocks;
+			origin.visibleAnnotations = toReplace.visibleAnnotations;
+			origin.visibleLocalVariableAnnotations = toReplace.visibleLocalVariableAnnotations;
+			origin.visibleTypeAnnotations = toReplace.visibleTypeAnnotations;
+			return origin;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * patch a method you can call this directly after replacing it
+	 */
+	public static void patchMethod(MethodNode node,String className,String oldClassName)
+	{
+		patchInstructions(node, className, oldClassName);
+		patchLocals(node, className);
+	}
 	
+	/**
+	 * notch name support with srg method being optional for the last
+	 */
 	public static void transformMethod(ClassNode classToTransform,String className,String inputStream,String method_name,String method_desc,String c,String v,String obMethod) 
 	{
 		long time = System.currentTimeMillis();
@@ -90,7 +128,10 @@ public class TestTransformer
 		classReader.accept(classNode,0);
 		return classNode;
 	}
-
+	/**
+	 * get and patch local varibles used when replacing a method
+	 * @throws IOException
+	 */
 	public static List<LocalVariableNode> getLocalVar(MethodNode method, String name) throws IOException 
 	{
 		name = name.replaceAll("\\.", "/");
@@ -181,6 +222,29 @@ public class TestTransformer
 		FieldNode field = new FieldNode(Opcodes.ACC_PUBLIC, feildName, desc, paramDesc,null);
 		node.fields.add(field);
 	}
+	/**
+	 * don't add the method if it's already has it
+	 */
+	public static void addIfMethod(ClassNode classNode, String inputStream, String method_name, String descriptor) throws IOException
+	{
+		InputStream stream = TestTransformer.class.getClassLoader().getResourceAsStream(inputStream);
+		ClassNode otherNode = getClassNode(stream);
+		MethodNode method = getMethodNode(otherNode, method_name, descriptor);
+		Class c = method.getClass();
+		if(containsMethod(classNode,method_name,descriptor))
+			return;
+		classNode.methods.add(method);
+	}
+	/**
+	 * search from the class node if it contains the method
+	 * @return
+	 */
+	public static boolean containsMethod(ClassNode classNode, String method_name, String descriptor) {
+		for(MethodNode node : classNode.methods)
+			if(node.name.equals(method_name) && node.desc.equals(descriptor))
+				return true;
+		return false;
+	}
 
 	/**
 	 * add a method no obfuscated checks you have to do that yourself if you got a deob compiled class
@@ -199,13 +263,12 @@ public class TestTransformer
 	 * remove a method don't remove ones that are going to get executed unless you immediately add the same method and descriptor back
 	 * @throws IOException 
 	 */
-	public static void removeMethod(ClassNode classNode, String name, String inputStream, String method_name, String descriptor) throws IOException
+	public static void removeMethod(ClassNode classNode, String method_name, String method_desc) throws IOException
 	{
-		MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
+		MethodNode method = getMethodNode(classNode, method_name, method_desc);
 		if(method != null)
 		{
-			System.out.println("removing method:" + method_name);
-			classNode.methods.remove(method);
+			System.out.println("removing method:" + classNode.methods.remove(method));
 		}
 	}
 	/**
