@@ -55,10 +55,19 @@ public class CapContainer<T> {
 			cap.readFromNBT(object,nbt,this);
 		this.postRead(nbt, object);
 	}
-	
+	/**
+	 * get any capability in this container
+	 */
 	public ICapability getCapability(ResourceLocation loc)
 	{
 		return this.caps.get(loc);
+	}
+	/**
+	 * get a tickable capability from the ticking map as it's faster if your going to call this on tick
+	 */
+	public ICapability getTickableCapability(ResourceLocation loc)
+	{
+		return (ICapability) this.ticks.get(loc);
 	}
 	
 	public void preSave(NBTTagCompound nbt, T obj){

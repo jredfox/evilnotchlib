@@ -36,7 +36,6 @@ public class ASMHelper
 	 */
 	public static MethodNode replaceMethod(ClassNode classNode,String inputStream,String method_name,String method_desc,String srgname)
 	{
-		long time = System.currentTimeMillis();
 		MethodNode origin = FMLCorePlugin.isObf ? getMethodNode(classNode,srgname,method_desc) : getMethodNode(classNode,method_name,method_desc);
 		try
 		{
@@ -93,7 +92,9 @@ public class ASMHelper
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * get a method node from a possble cached classnode
+	 */
 	public static MethodNode getCachedMethodNode(String inputStream, String obMethod, String method_desc) throws IOException 
 	{
 		if(cacheNodes.containsKey(inputStream))
@@ -149,8 +150,7 @@ public class ASMHelper
 	 */
 	public static void patchLocals(MethodNode method,String name)
 	{
-		List<LocalVariableNode> l = method.localVariables;
-		for(LocalVariableNode lvn : l)
+		for(LocalVariableNode lvn : method.localVariables)
 		{
 			if(lvn.name.equals("this"))
 			{
@@ -183,17 +183,23 @@ public class ASMHelper
 			}
 		}
 	}
-	
+	/**
+	 * this will determine if the node is static or not
+	 */
 	public static boolean isStaticMethodNode(MethodInsnNode min) {
 		int opcode = min.getOpcode();
 		return Opcodes.INVOKESTATIC == opcode;
 	}
-	
+	/**
+	 *this will determine if the node is static or not
+	 */
 	public static boolean isStaticFeild(FieldInsnNode fin) {
 		int opcode = fin.getOpcode();
 		return Opcodes.GETSTATIC == opcode || Opcodes.PUTSTATIC == opcode;
 	}
-
+	/**
+	 * after editing one class call this for cleanup
+	 */
 	public static void clearCacheNodes() {
 		cacheNodes.clear();
 	}
