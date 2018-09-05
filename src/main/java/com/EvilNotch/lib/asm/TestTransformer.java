@@ -227,9 +227,7 @@ public class TestTransformer
 	 */
 	public static void addIfMethod(ClassNode classNode, String inputStream, String method_name, String descriptor) throws IOException
 	{
-		InputStream stream = TestTransformer.class.getClassLoader().getResourceAsStream(inputStream);
-		ClassNode otherNode = getClassNode(stream);
-		MethodNode method = getMethodNode(otherNode, method_name, descriptor);
+		MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
 		Class c = method.getClass();
 		if(containsMethod(classNode,method_name,descriptor))
 			return;
@@ -252,9 +250,7 @@ public class TestTransformer
 	 */
 	public static MethodNode addMethod(ClassNode classNode, String inputStream, String method_name, String descriptor) throws IOException 
 	{
-		InputStream stream = TestTransformer.class.getClassLoader().getResourceAsStream(inputStream);
-		ClassNode otherNode = getClassNode(stream);
-		MethodNode method = getMethodNode(otherNode, method_name, descriptor);
+		MethodNode method = getCachedMethodNode(inputStream, method_name, descriptor);
 		Class c = method.getClass();
 		classNode.methods.add(method);
 		return method;

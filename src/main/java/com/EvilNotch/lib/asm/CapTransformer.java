@@ -196,8 +196,7 @@ public class CapTransformer {
 		
     	//add the method of World#tickChunkOb/Deob
     	MethodNode method = TestTransformer.addMethod(classNode, "com/EvilNotch/lib/asm/Caps.class", !obfuscated ? "tickChunksDeOb" : "tickChunksOb", "()V");
-    	TestTransformer.patchInstructions(method, name, "com/EvilNotch/lib/asm/Caps");
-    	TestTransformer.patchLocals(method, name);
+    	TestTransformer.patchMethod(method, name, "com/EvilNotch/lib/asm/Caps");
 	}
 	/**
 	 * inject the line to make tile entities caps tick safer then screwing around with other people's classes
@@ -207,8 +206,7 @@ public class CapTransformer {
 	{
 		//add a sided method to tickTileCaps ob/deob to the world.class
 		MethodNode tickTileCaps = TestTransformer.addMethod(classNode, "com/EvilNotch/lib/asm/Caps.class", new MCPSidedString("tickTileCapsDeOb","tickTileCapsOb").toString(), "()V");
-    	TestTransformer.patchLocals(tickTileCaps, name);
-    	TestTransformer.patchInstructions(tickTileCaps, name, "com/EvilNotch/lib/asm/Caps");
+    	TestTransformer.patchMethod(tickTileCaps, name, "com/EvilNotch/lib/asm/Caps");
     	
 		MethodNode updateEnts = TestTransformer.getMethodNode(classNode, new MCPSidedString("updateEntities","func_72939_s").toString(), "()V");
     	
@@ -438,11 +436,12 @@ public class CapTransformer {
 		
     	TestTransformer.addInterface(classNode, "com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider");
     	MethodNode getCap = TestTransformer.addMethod(classNode,"com/EvilNotch/lib/asm/Caps.class", "getCapContainer", "()Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;");
-    	TestTransformer.patchLocals(getCap, name);
-    	TestTransformer.patchInstructions(getCap, name, "com/EvilNotch/lib/asm/Caps");
+    	TestTransformer.patchMethod(getCap, name, "com/EvilNotch/lib/asm/Caps");
     	
     	MethodNode setCap = TestTransformer.addMethod(classNode,"com/EvilNotch/lib/asm/Caps.class", "setCapContainer", "(Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;)V");
-    	TestTransformer.patchLocals(setCap, name);
-    	TestTransformer.patchInstructions(setCap, name, "com/EvilNotch/lib/asm/Caps");
+    	TestTransformer.patchMethod(setCap, name, "com/EvilNotch/lib/asm/Caps");
+    	
+    	MethodNode get = TestTransformer.addMethod(classNode,"com/EvilNotch/lib/asm/Caps.class", "getCapability", "(Lnet/minecraft/util/ResourceLocation;)Lcom/EvilNotch/lib/minecraft/content/capabilites/ICapability;");
+    	TestTransformer.patchMethod(get, name, "com/EvilNotch/lib/asm/Caps");
 	}
 }

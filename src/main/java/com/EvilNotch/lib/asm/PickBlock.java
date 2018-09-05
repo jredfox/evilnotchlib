@@ -1,7 +1,6 @@
 package com.EvilNotch.lib.asm;
 
-import com.EvilNotch.lib.minecraft.events.PickBlockEvent;
-import com.EvilNotch.lib.minecraft.events.PickEntityEvent;
+import com.EvilNotch.lib.minecraft.events.PickEvent;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -41,10 +40,10 @@ public class PickBlock {
             }
 
             result = state.getBlock().getPickBlock(state, target, world, target.getBlockPos(), player);
-            PickBlockEvent event = new PickBlockEvent(result,state,target,world,player);
+            PickEvent.Block event = new PickEvent.Block(result,target,player,world,state);
             MinecraftForge.EVENT_BUS.post(event);
             isCreative = event.canPick;
-            result = event.result;
+            result = event.current;
             boolean copyTe = event.copyTE;
             
             if (isCreative && copyTe)
@@ -57,7 +56,7 @@ public class PickBlock {
                 return false;
             }
             result = target.entityHit.getPickedResult(target);
-            PickEntityEvent event = new PickEntityEvent(result,target,player,world);
+            PickEvent.Entity event = new PickEvent.Entity(result,target,player,world);
             MinecraftForge.EVENT_BUS.post(event);
             result = event.current;
             isCreative = event.canPick;

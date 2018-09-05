@@ -4,7 +4,7 @@ import com.EvilNotch.lib.minecraft.content.capabilites.primitive.CapBoolean;
 import com.EvilNotch.lib.minecraft.content.capabilites.primitive.CapString;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
-import com.EvilNotch.lib.minecraft.events.PickBlockEvent;
+import com.EvilNotch.lib.minecraft.events.PickEvent;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -42,12 +42,12 @@ public class EventHandler {
 		}
 	}
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void pick(PickBlockEvent e)
+	public void pick(PickEvent.Block e)
 	{
 		if(e.state.getBlock() == Blocks.MOB_SPAWNER)
 		{
 			System.out.println("here pickblock:" + e.canPick);
-			e.result = new ItemStack(Blocks.MOB_SPAWNER);
+			e.current = new ItemStack(Blocks.MOB_SPAWNER);
 		}
 	}
 
