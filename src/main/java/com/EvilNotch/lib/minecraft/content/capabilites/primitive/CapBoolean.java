@@ -24,8 +24,6 @@ public class CapBoolean<T> extends CapBase<T>{
 	public void readFromNBT(T object, NBTTagCompound nbt, CapContainer c) 
 	{
 		this.value = nbt.getBoolean(this.key);
-		World w = ((TileEntity)object).getWorld();
-		System.out.println(object.getClass() + " " + this.value);
 	}
 
 }
