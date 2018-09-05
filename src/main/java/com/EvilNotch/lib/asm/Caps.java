@@ -3,6 +3,7 @@ package com.EvilNotch.lib.asm;
 import java.util.Collection;
 import java.util.List;
 
+import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
 import com.EvilNotch.lib.minecraft.content.capabilites.primitive.CapBoolean;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
@@ -17,11 +18,6 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderServer;
 
 public class Caps implements ICapProvider{
-	
-	public Caps()
-	{
-		CapRegHandler.registerCapsToObj(this);
-	}
 	
 	public CapContainer capContainer = new CapContainer();
 	private List<TileEntity> loadedTileEntityList = null;
@@ -49,6 +45,12 @@ public class Caps implements ICapProvider{
 	public ICapability getCapability(ResourceLocation loc)
 	{
 		return this.capContainer.getCapability(loc);
+	}
+	public void a()
+	{
+		boolean b = EntityUtil.cached;
+		EntityUtil.cached = false;
+		PickBlock.pickBlock(null, null, null);
 	}
 	
     public void tickTileCapsDeOb() 

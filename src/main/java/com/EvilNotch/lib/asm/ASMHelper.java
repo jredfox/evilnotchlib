@@ -159,7 +159,7 @@ public class ASMHelper
 		}
 	}
 	/**
-	 * patch previous object owner instructions to new owner currently it doesn't filter out statics
+	 * patch previous object owner instructions to new owner with filtering out static fields/method calls
 	 */
 	public static void patchInstructions(MethodNode mn, String className, String oldClassName) 
 	{
@@ -168,7 +168,7 @@ public class ASMHelper
 			if(ain instanceof MethodInsnNode)
 			{
 				MethodInsnNode min = (MethodInsnNode)ain;
-				if(min.owner.equals(oldClassName))
+				if(min.owner.equals(oldClassName) && !isStaticMethodNode(min))
 				{
 					min.owner=className.replaceAll("\\.", "/");
 				}
@@ -176,12 +176,22 @@ public class ASMHelper
 			else if(ain instanceof FieldInsnNode)
 			{
 				FieldInsnNode fin = (FieldInsnNode)ain;
-				if(fin.owner.equals(oldClassName))
+				if(fin.owner.equals(oldClassName) && !isStaticFeild(fin))
 				{
 					fin.owner=className.replaceAll("\\.", "/");
 				}
 			}
 		}
+	}
+	
+	public static boolean isStaticMethodNode(MethodInsnNode min) {
+		int opcode = min.getOpcode();
+		return Opcodes.INVOKESTATIC == opcode;
+	}
+	
+	public static boolean isStaticFeild(FieldInsnNode fin) {
+		int opcode = fin.getOpcode();
+		return Opcodes.GETSTATIC == opcode || Opcodes.PUTSTATIC == opcode;
 	}
 
 	public static void clearCacheNodes() {
