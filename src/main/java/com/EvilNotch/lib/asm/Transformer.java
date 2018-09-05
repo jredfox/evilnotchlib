@@ -63,7 +63,6 @@ public class Transformer implements IClassTransformer
     
     public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
-    	long s = System.currentTimeMillis();
     	String name = classesBeingTransformed.get(index);
     	System.out.println("Transforming: " + name);
     	
@@ -160,7 +159,6 @@ public class Transformer implements IClassTransformer
           {
         	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
           }
-            JavaUtil.printTime(s, name + " ms:");
             return classWriter.toByteArray();
         }
         catch (Exception e)

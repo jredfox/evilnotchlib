@@ -69,7 +69,8 @@ public class TestTransformer
 	/**
 	 * notch name support with srg method being optional for the last
 	 */
-	public static void transformMethod(ClassNode classToTransform,String className,String inputStream,String method_name,String method_desc,String c,String v,String obMethod) 
+	@Deprecated
+	public static void replaceMethodNotch(ClassNode classToTransform,String className,String inputStream,String method_name,String method_desc,String c,String v,String obMethod) 
 	{
 		long time = System.currentTimeMillis();
 		MethodNode method = FMLCorePlugin.isObf ? getMethodNode(classToTransform,c,v) : getMethodNode(classToTransform,method_name,method_desc);
@@ -284,13 +285,12 @@ public class TestTransformer
 		return null;
 	}
 	/**
-	 * get's the first local var with the same name use a descriptor to be safer. Returns -1 if doesn't exist
+	 * use this if you ever are adding local variables to the table to dynamically get them
 	 */
 	public static int getLocalVarIndex(MethodNode node,String varName)
 	{
 		for(LocalVariableNode n : node.localVariables)
 		{
-			System.out.println(n.name + " desc:" + n.desc + " index:" + n.index + " debug:" + (n.name.equals(varName)) );
 			if(n.name.equals(varName))
 			{
 				return n.index;
@@ -299,34 +299,22 @@ public class TestTransformer
 		return -1;
 	}
 
-	public static LineNumberNode getLineNumberNode(InsnList li) {
-		for(AbstractInsnNode obj : li.toArray())
+	public static LineNumberNode getLineNumberNode(MethodNode method) {
+		for(AbstractInsnNode obj : method.instructions.toArray())
 			if(obj instanceof LineNumberNode)
 				return (LineNumberNode) obj;
 		return null;
 	}
 
 	public static MethodNode getConstructionNode(ClassNode classNode, String desc) {
-		for(MethodNode node : classNode.methods)
-			if(node.name.equals("<init>") && node.desc.equals(desc))
-				return node;
-		return null;
+		return getMethodNode(classNode, "<init>", desc);
 	}
 	/**
 	 * helpful for finding injection point to the end of constructors
 	 * @return
 	 */
-	public static AbstractInsnNode getLastPutField(MethodNode constructCopy) {
-		AbstractInsnNode[] arr = constructCopy.instructions.toArray();
-		for(int i=arr.length-1;i>=0;i--)
-		{
-			AbstractInsnNode node = arr[i];
-			if(node.getOpcode() == Opcodes.PUTFIELD)
-			{
-				return node;
-			}
-		}
-		return null;
+	public static AbstractInsnNode getLastPutField(MethodNode mn) {
+		return getLastInstruction(mn, Opcodes.PUTFIELD);
 	}
 
 	public static AbstractInsnNode getLastInstruction(MethodNode method, int opCode) 
