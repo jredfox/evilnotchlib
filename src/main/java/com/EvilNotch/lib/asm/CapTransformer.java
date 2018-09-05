@@ -45,7 +45,7 @@ public class CapTransformer {
     	toInsert1.add(new VarInsnNode(ALOAD,0));
     	toInsert1.add(new VarInsnNode(ALOAD,1));
     	toInsert1.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", readDesc, false));
-    	AbstractInsnNode spotNode = TestTransformer.getFirstInstruction(readFromNBT, false, Opcodes.ALOAD);
+    	AbstractInsnNode spotNode = TestTransformer.getFirstInstruction(readFromNBT, Opcodes.ALOAD);
     	readFromNBT.instructions.insertBefore(spotNode,toInsert1);
     	
     	String method_writeToNBT = new MCPSidedString("writeToNBT","func_189511_e").toString();
@@ -58,7 +58,7 @@ public class CapTransformer {
         toInsert2.add(new VarInsnNode(ALOAD,0));
         toInsert2.add(new VarInsnNode(ALOAD,1));
    	    toInsert2.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "writeToNBT", readDesc,false));
-   	    AbstractInsnNode spotWriteNode = TestTransformer.getFirstInstruction(writeToNBT, false, Opcodes.ALOAD);
+   	    AbstractInsnNode spotWriteNode = TestTransformer.getFirstInstruction(writeToNBT, Opcodes.ALOAD);
    	    writeToNBT.instructions.insertBefore(spotWriteNode,toInsert2);
 
    	    //tick injection
@@ -106,7 +106,7 @@ public class CapTransformer {
     	toInsert1.add(new VarInsnNode(ALOAD,0));
     	toInsert1.add(new VarInsnNode(ALOAD,1));
     	toInsert1.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", readDesc, false));
-    	AbstractInsnNode spotNode = TestTransformer.getFirstInstruction(readFromNBT, false, Opcodes.ALOAD);
+    	AbstractInsnNode spotNode = TestTransformer.getFirstInstruction(readFromNBT, Opcodes.ALOAD);
     	readFromNBT.instructions.insertBefore(spotNode,toInsert1);
     	
     	String method_writeToNBT = new MCPSidedString("writeToNBT","func_189515_b").toString();
@@ -119,7 +119,7 @@ public class CapTransformer {
         toInsert2.add(new VarInsnNode(ALOAD,0));
         toInsert2.add(new VarInsnNode(ALOAD,1));
    	    toInsert2.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "writeToNBT", readDesc,false));
-   	    AbstractInsnNode spotWriteNode = TestTransformer.getFirstInstruction(writeToNBT, false, Opcodes.ALOAD);
+   	    AbstractInsnNode spotWriteNode = TestTransformer.getFirstInstruction(writeToNBT, Opcodes.ALOAD);
    	    writeToNBT.instructions.insertBefore(spotWriteNode,toInsert2);
    	    
    	    //Constructor cap initiation
@@ -171,7 +171,7 @@ public class CapTransformer {
 		toInsert2.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "writeToNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		
 		MethodNode write = TestTransformer.getMethodNode(classNode, new MCPSidedString("writeToNBT","func_77955_b").toString(), "(" + desc_nbt + ")" + desc_nbt);
-		AbstractInsnNode spoteWriteNode = TestTransformer.getFirstInstruction(write, false,Opcodes.GETSTATIC);
+		AbstractInsnNode spoteWriteNode = TestTransformer.getFirstInstruction(write,Opcodes.GETSTATIC);
 		write.instructions.insertBefore(spoteWriteNode,toInsert2);
 		
 		//patch ItemStack#onCopy() by injecting this.capContainer.readFromNBT(this,this.stackCompound);
@@ -213,7 +213,7 @@ public class CapTransformer {
 		//put both world tickers here
 		String worldInfo = new MCPSidedString("worldInfo","field_72986_A").toString();
 		MethodNode tick = TestTransformer.getMethodNode(classNode, new MCPSidedString("tick","func_72835_b").toString(), "()V");
-		AbstractInsnNode tickPoint = TestTransformer.getFirstInstruction(tick, false, Opcodes.ALOAD);
+		AbstractInsnNode tickPoint = TestTransformer.getFirstInstruction(tick, Opcodes.ALOAD);
 		System.out.println("found injection for ticking point on WorldInfo");
 		
 		InsnList toTick = new InsnList();
@@ -318,7 +318,7 @@ public class CapTransformer {
 		
 		//writeToNBT
 		MethodNode writeToNBT = TestTransformer.getMethodNode(classNode, new MCPSidedString("updateTagCompound","func_76064_a").toString(), "(Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/nbt/NBTTagCompound;)V");
-		AbstractInsnNode spot = TestTransformer.getFirstInstruction(writeToNBT, true, -1);
+		AbstractInsnNode spot = TestTransformer.getLineNumberNode(writeToNBT);
 		//inject line this.capContainer.writeToNBT(this,nbt);
 		InsnList toInsert = new InsnList();
 		toInsert.add(new VarInsnNode(ALOAD,0));
@@ -421,7 +421,7 @@ public class CapTransformer {
 		writeIsn.add(new VarInsnNode(ALOAD,3));
 		writeIsn.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "writeToNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		
-		AbstractInsnNode insertPoint = TestTransformer.getFirstInstruction(write, false, Opcodes.ALOAD);
+		AbstractInsnNode insertPoint = TestTransformer.getFirstInstruction(write, Opcodes.ALOAD);
 		write.instructions.insertBefore(insertPoint, writeIsn);
 	}
 

@@ -22,6 +22,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import com.EvilNotch.lib.Api.MCPSidedString;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.EvilNotch.lib.util.JavaUtil;
 
@@ -33,7 +34,7 @@ public class TestTransformer
 	/**
 	 * srg support doesn't patch local vars nor instructions
 	 */
-	public static MethodNode replaceMethod(ClassNode classNode,String className,String inputStream,String method_name,String method_desc,String srgname)
+	public static MethodNode replaceMethod(ClassNode classNode,String inputStream,String method_name,String method_desc,String srgname)
 	{
 		long time = System.currentTimeMillis();
 		MethodNode origin = FMLCorePlugin.isObf ? getMethodNode(classNode,srgname,method_desc) : getMethodNode(classNode,method_name,method_desc);
@@ -57,6 +58,7 @@ public class TestTransformer
 		}
 		return null;
 	}
+	
 	/**
 	 * patch a method you can call this directly after replacing it
 	 */
@@ -67,25 +69,29 @@ public class TestTransformer
 	}
 	
 	/**
-	 * notch name support with srg method being optional for the last
+	 * notch name version of replacing a method don't recommend it at all since you can use regular replace method to do so
 	 */
-	@Deprecated
-	public static void replaceMethodNotch(ClassNode classToTransform,String className,String inputStream,String method_name,String method_desc,String c,String v,String obMethod) 
+	public static void replaceMethodNotch(ClassNode classToTransform,String inputStream,MCPSidedString method_name,MCPSidedString method_desc,MCPSidedString methodNameInject) 
 	{
 		long time = System.currentTimeMillis();
-		MethodNode method = FMLCorePlugin.isObf ? getMethodNode(classToTransform,c,v) : getMethodNode(classToTransform,method_name,method_desc);
+		MethodNode origin = getMethodNode(classToTransform,method_name.toString(),method_desc.toString());
 		try
 		{
-			MethodNode mn = getCachedMethodNode(inputStream, FMLCorePlugin.isObf ? obMethod : method_name, method_desc);
-			method.localVariables.clear();
-			method.instructions = mn.instructions;
-			method.localVariables = getLocalVar(mn,className);
+			MethodNode toReplace = getCachedMethodNode(inputStream,methodNameInject.toString(), method_desc.toString());
+			origin.localVariables.clear();
+			origin.instructions = toReplace.instructions;
+			origin.localVariables = toReplace.localVariables;
+			origin.access = toReplace.access;
+			origin.annotationDefault = toReplace.annotationDefault;
+			origin.tryCatchBlocks = toReplace.tryCatchBlocks;
+			origin.visibleAnnotations = toReplace.visibleAnnotations;
+			origin.visibleLocalVariableAnnotations = toReplace.visibleLocalVariableAnnotations;
+			origin.visibleTypeAnnotations = toReplace.visibleTypeAnnotations;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		JavaUtil.printTime(time, "Done Patching " + className + "." + method_name + "() :");
 	}
 	
 	public static MethodNode getCachedMethodNode(String inputStream, String obMethod, String method_desc) throws IOException 
@@ -120,32 +126,27 @@ public class TestTransformer
 		}
 		return null;
 	}
-	
+	/**
+	 * get a ClassNode from an input stream
+	 * @throws IOException
+	 */
 	public static ClassNode getClassNode(InputStream stream) throws IOException 
 	{
 		byte[] newbyte = IOUtils.toByteArray(stream);
+		return getClassNode(newbyte);
+	}
+	/**
+	 * if you already have the bytes and you don't need the class reader
+	 */
+	public static ClassNode getClassNode(byte[] newbyte) {
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(newbyte);
 		classReader.accept(classNode,0);
 		return classNode;
 	}
 	/**
-	 * get and patch local varibles used when replacing a method
-	 * @throws IOException
+	 * patch all references on the local variable table instanceof of this to a new class
 	 */
-	public static List<LocalVariableNode> getLocalVar(MethodNode method, String name) throws IOException 
-	{
-		name = name.replaceAll("\\.", "/");
-		List<LocalVariableNode> l = method.localVariables;
-		for(LocalVariableNode lvn : l)
-		{
-			if(lvn.name.equals("this"))
-			{
-				lvn.desc = "L" + name + ";";
-			}
-		}
-		return l;
-	}
 	public static void patchLocals(MethodNode method,String name)
 	{
 		List<LocalVariableNode> l = method.localVariables;
@@ -157,7 +158,9 @@ public class TestTransformer
 			}
 		}
 	}
-	
+	/**
+	 * patch previous object owner instructions to new owner currently it doesn't filter out statics
+	 */
 	public static void patchInstructions(MethodNode mn, String className, String oldClassName) 
 	{
 		InsnList il = mn.instructions;
@@ -170,7 +173,6 @@ public class TestTransformer
 				if(min.owner.equals(oldClassName))
 				{
 					min.owner=className.replaceAll("\\.", "/");
-//					System.out.println("Patched: " + min.owner);
 				}
 			}
 			else if(ain instanceof FieldInsnNode)
@@ -179,7 +181,6 @@ public class TestTransformer
 				if(fin.owner.equals(oldClassName))
 				{
 					fin.owner=className.replaceAll("\\.", "/");
-//					System.out.println("Patched: " + fin.owner);
 				}
 			}
 		}
@@ -271,13 +272,11 @@ public class TestTransformer
 	/**
 	 * find the first instruction to inject
 	 */
-	public static AbstractInsnNode getFirstInstruction(MethodNode method,boolean label,int opcode) 
+	public static AbstractInsnNode getFirstInstruction(MethodNode method,int opcode) 
 	{
 		for(AbstractInsnNode node : method.instructions.toArray())
 		{
-			if(label && node instanceof LineNumberNode)
-				return node;
-			else if(!label && node.getOpcode() == opcode)
+			if(node.getOpcode() == opcode)
 			{
 				return node;
 			}
@@ -285,7 +284,18 @@ public class TestTransformer
 		return null;
 	}
 	/**
+	 * getting the first instanceof of this will usually tell you where the initial injection point should be after
+	 */
+	public static LineNumberNode getLineNumberNode(MethodNode method) {
+		for(AbstractInsnNode obj : method.instructions.toArray())
+			if(obj instanceof LineNumberNode)
+				return (LineNumberNode) obj;
+		return null;
+	}
+	
+	/**
 	 * use this if you ever are adding local variables to the table to dynamically get them
+	 * @return -1 if doesn't exist
 	 */
 	public static int getLocalVarIndex(MethodNode node,String varName)
 	{
@@ -298,25 +308,21 @@ public class TestTransformer
 		}
 		return -1;
 	}
-
-	public static LineNumberNode getLineNumberNode(MethodNode method) {
-		for(AbstractInsnNode obj : method.instructions.toArray())
-			if(obj instanceof LineNumberNode)
-				return (LineNumberNode) obj;
-		return null;
-	}
-
+	/**
+	 * get a constructor since they are MethodNodes
+	 */
 	public static MethodNode getConstructionNode(ClassNode classNode, String desc) {
 		return getMethodNode(classNode, "<init>", desc);
 	}
 	/**
 	 * helpful for finding injection point to the end of constructors
-	 * @return
 	 */
 	public static AbstractInsnNode getLastPutField(MethodNode mn) {
 		return getLastInstruction(mn, Opcodes.PUTFIELD);
 	}
-
+	/**
+	 * optimized way of getting a last instruction
+	 */
 	public static AbstractInsnNode getLastInstruction(MethodNode method, int opCode) 
 	{
 		AbstractInsnNode[] arr = method.instructions.toArray();

@@ -50,7 +50,7 @@ public class GeneralTransformer {
 		 InsnList toInsert = new InsnList();
          toInsert.add(new VarInsnNode(ALOAD,1));
          toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/EvilNotch/lib/minecraft/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
-         method.instructions.insertBefore(TestTransformer.getFirstInstruction(method, false, Opcodes.ALOAD),toInsert);
+         method.instructions.insertBefore(TestTransformer.getFirstInstruction(method, Opcodes.ALOAD),toInsert);
 	}
 
 }
