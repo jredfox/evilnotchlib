@@ -56,12 +56,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.client.gui.inventory.GuiFurnace;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
@@ -116,6 +118,8 @@ public class MainJava {
 	public void preinit(FMLPreInitializationEvent e)
 	{
 		Class clazz = WorldInfo.class;
+		Class clazz2 = GuiFurnace.class;
+		Class clazz3 = SPacketUpdateTileEntity.class;
 		proxy.proxypreinit();
 		logger = e.getModLog();
 	  	

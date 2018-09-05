@@ -33,7 +33,7 @@ public class TestTransformer
 	/**
 	 * srg support doesn't patch local vars nor instructions
 	 */
-	public static MethodNode transformMethod(ClassNode classNode,String className,String inputStream,String method_name,String method_desc,String srgname,boolean patchIsn)
+	public static MethodNode replaceMethod(ClassNode classNode,String className,String inputStream,String method_name,String method_desc,String srgname)
 	{
 		long time = System.currentTimeMillis();
 		MethodNode origin = FMLCorePlugin.isObf ? getMethodNode(classNode,srgname,method_desc) : getMethodNode(classNode,method_name,method_desc);

@@ -20,7 +20,7 @@ public class GeneralTransformer {
 	 */
 	public static void transformMC(ClassNode classNode) 
 	{
-    	MethodNode mnode = TestTransformer.getMethodNode(classNode, new MCPSidedString("middleClickMouse","aH").toString(), "()V");
+    	MethodNode mnode = TestTransformer.getMethodNode(classNode, new MCPSidedString("middleClickMouse","func_147112_ai").toString(), "()V");
     	for(AbstractInsnNode node : mnode.instructions.toArray())
     	{
     		if(node.getOpcode() == Opcodes.INVOKESTATIC && node instanceof MethodInsnNode)
@@ -43,8 +43,8 @@ public class GeneralTransformer {
 	 */
 	public static void injectUUIDPatcher(ClassNode playerList, boolean obfuscated) 
 	{
-		 final String method_name = obfuscated ? "g" : "createPlayerForUser";
-		 final String method_desc = obfuscated ? "(Lcom/mojang/authlib/GameProfile;)Loq;" : "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;";
+		 final String method_name = obfuscated ? "func_148545_a" : "createPlayerForUser";
+		 final String method_desc = "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;";
 		 
 		 MethodNode method = TestTransformer.getMethodNode(playerList, method_name, method_desc);
 		 InsnList toInsert = new InsnList();

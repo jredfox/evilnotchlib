@@ -32,10 +32,10 @@ public class CapTransformer {
     	
     	//Serialization and ticks
     	String owner = "net/minecraft/entity/Entity";
-    	String desc_nbt = new MCPSidedString("Lnet/minecraft/nbt/NBTTagCompound;","Lfy;").toString();
+    	String desc_nbt = "Lnet/minecraft/nbt/NBTTagCompound;";
     	String readDesc = "(Ljava/lang/Object;" + desc_nbt + ")V";
     	
-     	String method_readFromNBT = new MCPSidedString("readFromNBT","f").toString();
+     	String method_readFromNBT = new MCPSidedString("readFromNBT","func_70020_e").toString();
     	MethodNode readFromNBT = TestTransformer.getMethodNode(classNode, method_readFromNBT, "(" + desc_nbt + ")V");
     	
     	//readFromNBT
@@ -48,8 +48,8 @@ public class CapTransformer {
     	AbstractInsnNode spotNode = TestTransformer.getFirstInstruction(readFromNBT, false, Opcodes.ALOAD);
     	readFromNBT.instructions.insertBefore(spotNode,toInsert1);
     	
-    	String method_writeToNBT = new MCPSidedString("writeToNBT","f").toString();
-        MethodNode writeToNBT = TestTransformer.getMethodNode(classNode,method_writeToNBT, "(" + desc_nbt + ")" + desc_nbt);
+    	String method_writeToNBT = new MCPSidedString("writeToNBT","func_189511_e").toString();
+        MethodNode writeToNBT = TestTransformer.getMethodNode(classNode,method_writeToNBT, "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;");
 		
         //writeToNBT
         InsnList toInsert2 = new InsnList();
@@ -62,7 +62,7 @@ public class CapTransformer {
    	    writeToNBT.instructions.insertBefore(spotWriteNode,toInsert2);
 
    	    //tick injection
-   	    MethodNode tick = TestTransformer.getMethodNode(classNode, new MCPSidedString("onEntityUpdate","Y").toString(), "()V");
+   	    MethodNode tick = TestTransformer.getMethodNode(classNode, new MCPSidedString("onEntityUpdate","func_70030_z").toString(), "()V");
    	    InsnList isntick = new InsnList();
    	    isntick.add(new VarInsnNode(ALOAD,0));
    	    isntick.add(new FieldInsnNode(Opcodes.GETFIELD,owner, "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
@@ -70,7 +70,7 @@ public class CapTransformer {
    	    isntick.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
    	    AbstractInsnNode spotTickNode = null;
    	    AbstractInsnNode[] arr = tick.instructions.toArray();
-   	    String startSection = new MCPSidedString("startSection","a").toString();
+   	    String startSection = new MCPSidedString("startSection","func_76320_a").toString();
    	    for(AbstractInsnNode node : arr)
     	{
     		if(node.getOpcode() == Opcodes.INVOKEVIRTUAL && node instanceof MethodInsnNode)
@@ -93,10 +93,10 @@ public class CapTransformer {
     	
     	//Serialization
     	String owner = "net/minecraft/tileentity/TileEntity";
-    	String desc_nbt = new MCPSidedString("Lnet/minecraft/nbt/NBTTagCompound;","Lfy;").toString();
+    	String desc_nbt = "Lnet/minecraft/nbt/NBTTagCompound;";
     	String readDesc = "(Ljava/lang/Object;" + desc_nbt + ")V";
     	
-     	String method_readFromNBT = new MCPSidedString("readFromNBT","a").toString();
+     	String method_readFromNBT = new MCPSidedString("readFromNBT","func_145839_a").toString();
     	MethodNode readFromNBT = TestTransformer.getMethodNode(classNode, method_readFromNBT, "(" + desc_nbt + ")V");
     	
     	//readFromNBT
@@ -109,7 +109,7 @@ public class CapTransformer {
     	AbstractInsnNode spotNode = TestTransformer.getFirstInstruction(readFromNBT, false, Opcodes.ALOAD);
     	readFromNBT.instructions.insertBefore(spotNode,toInsert1);
     	
-    	String method_writeToNBT = new MCPSidedString("writeToNBT","f").toString();
+    	String method_writeToNBT = new MCPSidedString("writeToNBT","func_189515_b").toString();
         MethodNode writeToNBT = TestTransformer.getMethodNode(classNode,method_writeToNBT, "(" + desc_nbt + ")" + desc_nbt);
 		
         //writeToNBT
@@ -140,8 +140,8 @@ public class CapTransformer {
 	 */
 	public static void transformItemStack(String name, ClassNode classNode, boolean obfuscated) throws IOException
 	{
-		String desc_nbt = new MCPSidedString("Lnet/minecraft/nbt/NBTTagCompound;","Lfy;").toString();
-		String stackCompound = new MCPSidedString("stackTagCompound","f").toString();
+		String desc_nbt = "Lnet/minecraft/nbt/NBTTagCompound;";
+		String stackCompound = new MCPSidedString("stackTagCompound","field_77990_d").toString();
 		implementICapProvider(classNode,name,"Lnet/minecraft/item/ItemStack;");
 		
 		InsnList toInsert1 = new InsnList();
@@ -170,12 +170,12 @@ public class CapTransformer {
 		toInsert2.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/item/ItemStack", stackCompound, "Lnet/minecraft/nbt/NBTTagCompound;"));
 		toInsert2.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "writeToNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		
-		MethodNode write = TestTransformer.getMethodNode(classNode, new MCPSidedString("writeToNBT","a").toString(), "(" + desc_nbt + ")" + desc_nbt);
+		MethodNode write = TestTransformer.getMethodNode(classNode, new MCPSidedString("writeToNBT","func_77955_b").toString(), "(" + desc_nbt + ")" + desc_nbt);
 		AbstractInsnNode spoteWriteNode = TestTransformer.getFirstInstruction(write, false,Opcodes.GETSTATIC);
 		write.instructions.insertBefore(spoteWriteNode,toInsert2);
 		
 		//patch ItemStack#onCopy() by injecting this.capContainer.readFromNBT(this,this.stackCompound);
-		MethodNode copy = TestTransformer.getMethodNode(classNode, new MCPSidedString("copy","l").toString(), new MCPSidedString("()Lnet/minecraft/item/ItemStack;","()Laip").toString());
+		MethodNode copy = TestTransformer.getMethodNode(classNode, new MCPSidedString("copy","func_77946_l").toString(), "()Lnet/minecraft/item/ItemStack;");
 		InsnList toInsert3 = new InsnList();
 		toInsert3.add(new VarInsnNode(ALOAD,0));
 		toInsert3.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/item/ItemStack", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
@@ -210,11 +210,11 @@ public class CapTransformer {
     	TestTransformer.patchLocals(tickTileCaps, name);
     	TestTransformer.patchInstructions(tickTileCaps, name, "com/EvilNotch/lib/asm/Caps");
     	
-		MethodNode updateEnts = TestTransformer.getMethodNode(classNode, new MCPSidedString("updateEntities","k").toString(), "()V");
+		MethodNode updateEnts = TestTransformer.getMethodNode(classNode, new MCPSidedString("updateEntities","func_72939_s").toString(), "()V");
     	
 		//put both world tickers here
-		String worldInfo = new MCPSidedString("worldInfo","x").toString();
-		MethodNode tick = TestTransformer.getMethodNode(classNode, new MCPSidedString("tick","d").toString(), "()V");
+		String worldInfo = new MCPSidedString("worldInfo","field_72986_A").toString();
+		MethodNode tick = TestTransformer.getMethodNode(classNode, new MCPSidedString("tick","func_72835_b").toString(), "()V");
 		AbstractInsnNode tickPoint = TestTransformer.getFirstInstruction(tick, false, Opcodes.ALOAD);
 		System.out.println("found injection for ticking point on WorldInfo");
 		
@@ -241,7 +241,7 @@ public class CapTransformer {
 		tick.instructions.insertBefore(tickPoint,toTick);
     	
     	//look for first instanceof tickabletiles and the first instance it calls upon an iterator
-		String fname = new MCPSidedString("tickableTileEntities","h").toString();
+		String fname = new MCPSidedString("tickableTileEntities","field_175730_i").toString();
 		for(AbstractInsnNode obj : updateEnts.instructions.toArray())
 		{
 			if(obj instanceof FieldInsnNode)
@@ -319,7 +319,7 @@ public class CapTransformer {
 		 }
 		
 		//writeToNBT
-		MethodNode writeToNBT = TestTransformer.getMethodNode(classNode, new MCPSidedString("updateTagCompound","a").toString(), new MCPSidedString("(Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/nbt/NBTTagCompound;)V","(Lfy;Lfy;)V").toString());
+		MethodNode writeToNBT = TestTransformer.getMethodNode(classNode, new MCPSidedString("updateTagCompound","func_76064_a").toString(), "(Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/nbt/NBTTagCompound;)V");
 		AbstractInsnNode spot = TestTransformer.getFirstInstruction(writeToNBT, true, -1);
 		//inject line this.capContainer.writeToNBT(this,nbt);
 		InsnList toInsert = new InsnList();
@@ -345,7 +345,7 @@ public class CapTransformer {
 		toCopy.add(new VarInsnNode(ALOAD,1));
 		toCopy.add(new VarInsnNode(ALOAD,1));
 		toCopy.add(new InsnNode(Opcodes.ACONST_NULL));
-		toCopy.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"net/minecraft/world/storage/WorldInfo", "cloneNBTCompound", "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", false));
+		toCopy.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"net/minecraft/world/storage/WorldInfo", new MCPSidedString("cloneNBTCompound","func_76082_a").toString(), "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", false));
 		toCopy.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		constructCopy.instructions.insert(injectionPoint,toCopy);
 		
@@ -382,7 +382,7 @@ public class CapTransformer {
 	 */
 	public static void transformAnvilChunkLoader(ClassNode classNode, String name, boolean obfuscated) 
 	{
-		MethodNode read = TestTransformer.getMethodNode(classNode, new MCPSidedString("readChunkFromNBT","a").toString(), new MCPSidedString("(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;","(Lamu;Lfy;)Laxw;").toString());
+		MethodNode read = TestTransformer.getMethodNode(classNode, new MCPSidedString("readChunkFromNBT","func_75823_a").toString(),"(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/world/chunk/Chunk;");
 		//inject line ((ICapProvider)chunk).getCapContainer().readFromNBT(chunk, compound); right before the return statement
 		InsnList toInsert = new InsnList();
 		toInsert.add(new VarInsnNode(ALOAD,5));
@@ -393,7 +393,7 @@ public class CapTransformer {
 		toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		AbstractInsnNode readSpot = null;
 		boolean nextALOAD = false;
-		String chunkClass = new MCPSidedString("net/minecraft/world/chunk/Chunk","axw").toString();
+		String chunkClass = "net/minecraft/world/chunk/Chunk";
 		for(AbstractInsnNode node : read.instructions.toArray())
 		{
 			if(node.getOpcode() == Opcodes.INVOKESPECIAL && node instanceof MethodInsnNode)
@@ -414,7 +414,7 @@ public class CapTransformer {
 		read.instructions.insertBefore(readSpot,toInsert);
 
 		//writeToNBT inject this line ((ICapProvider)chunkIn).getCapContainer().writeToNBT(chunkIn, compound);
-		MethodNode write = TestTransformer.getMethodNode(classNode, new MCPSidedString("writeChunkToNBT","a").toString(), new MCPSidedString("(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V","(Laxw;Lamu;Lfy;)V").toString());
+		MethodNode write = TestTransformer.getMethodNode(classNode, new MCPSidedString("writeChunkToNBT","func_75820_a").toString(), "(Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)V");
 		InsnList writeIsn = new InsnList();
 		writeIsn.add(new VarInsnNode(ALOAD,1));
 		writeIsn.add(new TypeInsnNode(Opcodes.CHECKCAST, "com/EvilNotch/lib/minecraft/content/capabilites/registry/ICapProvider"));

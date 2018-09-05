@@ -80,8 +80,8 @@ public class Transformer implements IClassTransformer
                 		System.out.println("returning default class:" + name + " ob:" + obfuscated + " cfg:" + ConfigCore.asm_playerlist);
                 		return classToTransform;
                 	}
-                	TestTransformer.transformMethod(classNode, name, inputBase + "PlayerList", "getPlayerNBT",  "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT","(Loq;)Lfy;","getPlayerNBT");
-                	TestTransformer.transformMethod(classNode, name, inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "a", "(Loq;)Lfy;","func_72380_a");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "PlayerList", "getPlayerNBT", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "func_72380_a");
                 	GeneralTransformer.injectUUIDPatcher(classNode, obfuscated);
                 break;
                 
@@ -91,14 +91,14 @@ public class Transformer implements IClassTransformer
                 		System.out.println("returning default class:" + name);
                 		return classToTransform;
                 	}
-                	TestTransformer.transformMethod(classNode, name, inputBase + "TileEntityFurnace", "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V", "a", "(Lfy;)V", "func_145839_a");
-                	TestTransformer.transformMethod(classNode, name, inputBase + "TileEntityFurnace", "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", "b", "(Lfy;)Lfy;", "func_189515_b");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "TileEntityFurnace", "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V", "func_145839_a");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "TileEntityFurnace", "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", "func_189515_b");
                 break;
                 
                 case 2:
                 	if(!ConfigCore.asm_furnace)
                 		return classToTransform;
-                	TestTransformer.transformMethod(classNode, name, inputBase + "GuiFurnace", "getBurnLeftScaled", "(I)I", "i", "(I)I", "func_175382_i");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "GuiFurnace", "getBurnLeftScaled", "(I)I", "func_175382_i");
                 break;
                 
                 case 3:
@@ -107,23 +107,22 @@ public class Transformer implements IClassTransformer
                 		System.out.println("returning bytes ITEMSTACK");
                 		return classToTransform;
                 	}
-                	TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "onItemUse", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Lnet/minecraft/util/EnumActionResult;", "a", "(Laed;Lamu;Let;Lub;Lfa;FFF)Lud;", "func_179546_a");
-                	TestTransformer.transformMethod(classNode, name, inputBase + "ItemStack", "getDisplayName", "()Ljava/lang/String;", "r", "()Ljava/lang/String;", "func_82833_r");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "ItemStack", "onItemUse", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Lnet/minecraft/util/EnumActionResult;", "func_179546_a");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "ItemStack", "getDisplayName", "()Ljava/lang/String;", "func_82833_r");
                 	CapTransformer.transformItemStack(name, classNode, obfuscated);
                 break;
                 
                 case 4:
                 	if(!ConfigCore.asm_setTileNBTFix)
                 		return classToTransform;
-                	
-                	TestTransformer.transformMethod(classNode, name, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "a", "(Lamu;Laed;Let;Laip;)Z", "func_179224_a");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "func_179224_a");
                 	TestTransformer.addIfMethod(classNode,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
                 break;
                 
                 case 5:
-                		return TestTransformer.replaceClass(inputBase + "SPacketUpdateTileEntity");
+                	return TestTransformer.replaceClass(inputBase + "SPacketUpdateTileEntity");
                 case 6:
-                	TestTransformer.transformMethod(classNode, name, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "a", "(Lma;)V", "func_184337_a");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "func_184337_a");
                 break;
                 //custom capability system to the Entity.class
                 case 7:
@@ -133,8 +132,7 @@ public class Transformer implements IClassTransformer
                 	CapTransformer.transFormTileEntityCaps(name, classNode, obfuscated);
                 break;
                 case 9:
-                	//replace forgecaps method safe to replace the instructions upon
-                	TestTransformer.transformMethod(classNode, name, inputBase + "World", "initCapabilities", "()V", "initCapabilities", "()V", "initCapabilities");
+                	TestTransformer.replaceMethod(classNode, name, inputBase + "World", "initCapabilities", "()V", "initCapabilities");
                 	CapTransformer.transformWorld(name, classNode, obfuscated);
                 	CapTransformer.injectWorldTickers(name, classNode, obfuscated);
                 break;
@@ -157,10 +155,10 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-          if(index == 12)
-          {
-        	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
-          }
+//          if(index == ConfigCore.cfgIndex)
+//          {
+//        	  FileUtils.writeByteArrayToFile(new File("C:/Users/jredfox/Desktop/test.class"), classWriter.toByteArray());
+//          }
             
             return classWriter.toByteArray();
         }

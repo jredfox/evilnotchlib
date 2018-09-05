@@ -73,20 +73,20 @@ public class Caps implements ICapProvider{
         	}
         }
 	}
-    private IChunkProvider field_73236_b = null;
+    private IChunkProvider field_73020_y = null;
     public void tickChunksOb() {
-        if(this.field_73236_b instanceof ChunkProviderServer)
+        if(this.field_73020_y instanceof ChunkProviderServer)
         {
-        	ChunkProviderServer cp = (ChunkProviderServer)this.chunkProvider;
+        	ChunkProviderServer cp = (ChunkProviderServer)this.field_73020_y;
         	Collection<Chunk> loadedChunks = cp.getLoadedChunks();
         	for(Chunk c : loadedChunks)
         	{
         		((com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider)c).getCapContainer().tick(c);
         	}
         }
-        else if(this.field_73236_b instanceof ChunkProviderClient)
+        else if(this.field_73020_y instanceof ChunkProviderClient)
         {
-        	ChunkProviderClient cp = (ChunkProviderClient)this.chunkProvider;
+        	ChunkProviderClient cp = (ChunkProviderClient)this.field_73020_y;
         	for(Chunk c : cp.chunkMapping.values())
         	{
         		((com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider)c).getCapContainer().tick(c);
