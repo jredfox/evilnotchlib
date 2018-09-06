@@ -185,28 +185,38 @@ public class CapTransformer {
 		toInsert3.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		AbstractInsnNode lastSpot = ASMHelper.getLastInstruction(copy, Opcodes.ALOAD);
 		copy.instructions.insertBefore(lastSpot,toInsert3);
+		
+		//patch ItemStack#setTagCompound() by injecting this.capContainer.readFromNBT(this,nbt);
+		InsnList toInsert4 = new InsnList();
+		toInsert4.add(new VarInsnNode(ALOAD,0));
+		toInsert4.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/item/ItemStack", "capContainer", "Lcom/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer;"));
+		toInsert4.add(new VarInsnNode(ALOAD,0));
+		toInsert4.add(new VarInsnNode(ALOAD,1));
+		toInsert4.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+		MethodNode set = ASMHelper.getMethodNode(classNode, new MCPSidedString("setTagCompound","func_77982_d").toString(), "(Lnet/minecraft/nbt/NBTTagCompound;)V");
+		set.instructions.insertBefore(ASMHelper.getFirstInstruction(set, Opcodes.ALOAD), toInsert4);
 	}
 	/**
 	 * add world capabilities
 	 * @throws IOException 
 	 */
-	public static void transformWorld(String name,ClassNode classNode,boolean obfuscated) throws IOException
+	public static void transformWorld(String name,ClassNode classNode,String inputBase,boolean obfuscated) throws IOException
 	{
 		implementICapProvider(classNode, name, "Lnet/minecraft/world/World;");
 		
     	//add the method of World#tickChunkOb/Deob
-    	MethodNode method = ASMHelper.addMethod(classNode, "com/EvilNotch/lib/asm/Caps.class", !obfuscated ? "tickChunksDeOb" : "tickChunksOb", "()V");
-    	ASMHelper.patchMethod(method, name, "com/EvilNotch/lib/asm/Caps");
+    	MethodNode method = ASMHelper.addMethod(classNode, inputBase + "WorldEdits", new MCPSidedString("tickChunksDeOb","tickChunksOb").toString(), "()V");
+    	ASMHelper.patchMethod(method, name, "com/EvilNotch/lib/asm/WorldEdits");
 	}
 	/**
 	 * inject the line to make tile entities caps tick safer then screwing around with other people's classes
 	 * @throws IOException 
 	 */
-	public static void injectWorldTickers(String name, ClassNode classNode, boolean obfuscated) throws IOException
+	public static void injectWorldTickers(String name, ClassNode classNode,String inputBase, boolean obfuscated) throws IOException
 	{
 		//add a sided method to tickTileCaps ob/deob to the world.class
-		MethodNode tickTileCaps = ASMHelper.addMethod(classNode, "com/EvilNotch/lib/asm/Caps.class", new MCPSidedString("tickTileCapsDeOb","tickTileCapsOb").toString(), "()V");
-    	ASMHelper.patchMethod(tickTileCaps, name, "com/EvilNotch/lib/asm/Caps");
+		MethodNode tickTileCaps = ASMHelper.addMethod(classNode, inputBase + "WorldEdits", new MCPSidedString("tickTileCapsDeOb","tickTileCapsOb").toString(), "()V");
+    	ASMHelper.patchMethod(tickTileCaps, name, "com/EvilNotch/lib/asm/WorldEdits");
     	
 		MethodNode updateEnts = ASMHelper.getMethodNode(classNode, new MCPSidedString("updateEntities","func_72939_s").toString(), "()V");
     	

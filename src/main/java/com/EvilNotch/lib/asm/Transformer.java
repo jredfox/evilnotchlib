@@ -133,8 +133,8 @@ public class Transformer implements IClassTransformer
                 break;
                 case 9:
                 	ASMHelper.replaceMethod(classNode, inputBase + "World", "initCapabilities", "()V", "initCapabilities");
-                	CapTransformer.transformWorld(name, classNode, obfuscated);
-                	CapTransformer.injectWorldTickers(name, classNode, obfuscated);
+                	CapTransformer.transformWorld(name, classNode,inputBase, obfuscated);
+                	CapTransformer.injectWorldTickers(name, classNode,inputBase, obfuscated);
                 break;
                 case 10:
                 	CapTransformer.transformWorldInfo(classNode, name, obfuscated);
