@@ -9,7 +9,7 @@ import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.WorldInfo;
 
-public class CapRegWorldInfo implements ICapRegistry<WorldInfo> {
+public class CapRegWorldInfoTst implements ICapRegistry<WorldInfo> {
 
 	@Override
 	public void register(WorldInfo wi, CapContainer c) 

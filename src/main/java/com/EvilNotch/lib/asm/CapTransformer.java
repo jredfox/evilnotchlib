@@ -38,6 +38,13 @@ public class CapTransformer {
      	String method_readFromNBT = new MCPSidedString("readFromNBT","func_70020_e").toString();
     	MethodNode readFromNBT = ASMHelper.getMethodNode(classNode, method_readFromNBT, "(" + desc_nbt + ")V");
     	
+    	//Entity Constructor since forge events appear to be unreliable somehow someway
+    	MethodNode constructor = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
+    	InsnList toInsert0 = new InsnList();
+    	toInsert0.add(new VarInsnNode(ALOAD,0));
+    	toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+    	constructor.instructions.insert(ASMHelper.getLastPutField(constructor),toInsert0);
+    	
     	//readFromNBT
     	InsnList toInsert1 = new InsnList();
     	toInsert1.add(new VarInsnNode(ALOAD,0));

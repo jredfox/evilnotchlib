@@ -93,15 +93,6 @@ public class LibEvents {
         		SPacketUpdateTileEntity.toIgnore.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
         }
 	}
-	/**
-	 * entity capabilities
-	 */
-	@SubscribeEvent
-	public void cap(EntityConstructing e)
-	{
-		ICapProvider provider = (ICapProvider)e.getEntity();
-		CapRegHandler.registerCapsToObj(provider);
-	}
 	
 	public static int mTick = 0;
 	public static final List<String> msgs = new ArrayList();

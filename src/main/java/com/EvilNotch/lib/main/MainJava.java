@@ -10,14 +10,9 @@ import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
-import com.EvilNotch.lib.main.testing.CapRegChunkTest;
-import com.EvilNotch.lib.main.testing.CapRegEnt;
-import com.EvilNotch.lib.main.testing.CapRegTile;
-import com.EvilNotch.lib.main.testing.CapRegWorldTest;
 import com.EvilNotch.lib.main.testing.EventHandler;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
-import com.EvilNotch.lib.minecraft.content.FakeWorld;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.ToolMat;
 import com.EvilNotch.lib.minecraft.content.ToolSet;
@@ -28,7 +23,6 @@ import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.property.PropertyMetaEnum;
 import com.EvilNotch.lib.minecraft.content.blocks.test.EnumCheese;
 import com.EvilNotch.lib.minecraft.content.blocks.test.MultiSidedGrass;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
 import com.EvilNotch.lib.minecraft.content.commands.CMDKick;
@@ -44,6 +38,7 @@ import com.EvilNotch.lib.minecraft.content.items.ItemBasicPickaxe;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityHandler;
 import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
 import com.EvilNotch.lib.minecraft.content.tick.TickReg;
+import com.EvilNotch.lib.minecraft.content.world.FakeWorld;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.proxy.ServerProxy;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
@@ -56,19 +51,19 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.client.gui.inventory.GuiFurnace;
 import net.minecraft.command.ICommand;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -109,17 +104,10 @@ public class MainJava {
 	public static Logger logger;
 	public static int recipeIndex = 0;
 	public static World fake_world = null;
-	/**
-	 * A valid world reference once the game starts could be any dim
-	 */
-	public static World worldServer = null;
 
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
 	{
-		Class clazz = WorldInfo.class;
-		Class clazz2 = GuiFurnace.class;
-		Class clazz3 = SPacketUpdateTileEntity.class;
 		proxy.proxypreinit();
 		logger = e.getModLog();
 	  	
@@ -154,7 +142,7 @@ public class MainJava {
 		
 //		CapRegHandler.registerRegistry(new CapRegEnt());
 //		CapRegHandler.registerRegistry(new CapRegTile());
-//		CapRegHandler.registerRegistry(new CapRegWorldInfo());
+//		CapRegHandler.registerRegistry(new CapRegWorldInfoTst());
 //		CapRegHandler.registerRegistry(new CapRegWorldTest());
 //		CapRegHandler.registerRegistry(new CapRegChunkTest());
 		

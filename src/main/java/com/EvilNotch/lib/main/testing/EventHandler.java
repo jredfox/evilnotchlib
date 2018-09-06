@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class EventHandler {
 	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void pick(PickEvent.Block e)
 	{
 		if(e.tile instanceof TileEntityMobSpawner)
