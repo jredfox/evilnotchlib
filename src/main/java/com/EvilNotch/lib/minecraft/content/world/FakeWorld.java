@@ -1,20 +1,37 @@
 package com.EvilNotch.lib.minecraft.content.world;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+
 import javax.annotation.Nullable;
 
 import com.EvilNotch.lib.main.MainJava;
+import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.GameType;
+import net.minecraft.world.MinecraftException;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldSettings;
@@ -25,6 +42,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -65,21 +83,10 @@ public class FakeWorld extends World{
 	    return Biome.getBiome(1);
 	}
 	@Override
-    public MinecraftServer getMinecraftServer()
-    {
-		return null;
-//    	return new FakeServer();
-    }
-	@Override
     public IBlockState getGroundAboveSeaLevel(BlockPos pos)
     {
     	 return this.getBlockState(new BlockPos(0,4,0));
     }
-	@Override
-	public IBlockState getBlockState(BlockPos pos)
-	{
-		return Blocks.GRASS.getDefaultState();
-	}
 	@Override
     public boolean isBlockLoaded(BlockPos pos)
     {
@@ -200,6 +207,17 @@ public class FakeWorld extends World{
     	
     }
 	@Override
+	public void onEntityAdded(Entity par1Entity) 
+	{
+		
+	}
+	@Override
+	public void onEntityRemoved(Entity par1Entity) 
+	{
+		
+	}
+	   
+	@Override
     public void removeEntityDangerously(Entity entityIn)
     {
     	
@@ -210,10 +228,105 @@ public class FakeWorld extends World{
     	return new BlockPos(0,64,0);
     }
 	@Override
-    public BlockPos getTopSolidOrLiquidBlock(BlockPos pos)
+	public void immediateBlockTick(BlockPos pos, IBlockState state, Random random)
+	{
+		   
+	}
+	@Override
+	public void tick()
+	{
+		
+	}
+	@Override
+    public void updateEntity(Entity ent)
     {
-    	return pos;
+    	
     }
+	@Override
+	public void updateEntityWithOptionalForce(Entity par1Entity, boolean par2) 
+	{
+		
+	}
+	@Override
+	public boolean checkNoEntityCollision(AxisAlignedBB par1AxisAlignedBB)
+	{
+	  return true;
+	}
+	@Override
+	public boolean checkNoEntityCollision(AxisAlignedBB par1AxisAlignedBB, Entity par2Entity) {
+	     return true;
+	}
+	@Override
+	public boolean checkBlockCollision(AxisAlignedBB par1AxisAlignedBB) {
+	     return false;
+	}
+	@Override
+    public boolean containsAnyLiquid(AxisAlignedBB bb)
+    {
+    	return false;
+    }
+	@Override
+	public boolean isFlammableWithin(AxisAlignedBB bb)
+	{
+	   return false;
+	}
+	@Override
+    public boolean handleMaterialAcceleration(AxisAlignedBB bb, Material materialIn, Entity entityIn)
+    {
+    	return false;
+    }
+	@Override
+	public boolean isMaterialInBB(AxisAlignedBB par1AxisAlignedBB, Material par2Material) 
+	{
+	   return false;
+	}
+	@Override
+    public List<Entity> getEntitiesInAABBexcluding(@Nullable Entity entityIn, AxisAlignedBB boundingBox, @Nullable Predicate <? super Entity > predicate)
+    {
+    	return new ArrayList(0);
+    }
+	@Override
+    public boolean extinguishFire(@Nullable EntityPlayer player, BlockPos pos, EnumFacing side)
+    {
+    	return true;
+    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public String getDebugLoadedEntities() {
+	    return "";
+	}
+	@Override
+	public TileEntity getTileEntity(BlockPos pos) {
+	     return null;
+	}
+	@Override
+	public void setTileEntity(BlockPos pos, TileEntity tileEntityIn)
+	{
+		
+	}
+	@Override
+	public void removeTileEntity(BlockPos pos) 
+	{
+		
+	}
+	@Override
+	public void markTileEntityForRemoval(TileEntity tileEntityIn) {
+	}
+	@Override
+	public boolean isBlockFullCube(BlockPos pos) {
+	     return false;
+	}
+	@Override
+    public boolean isBlockNormalCube(BlockPos pos, boolean _default)
+    {
+		return true;
+    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public String getProviderName() {
+	   return "";
+	}
+	   
 	@Override
     public boolean isUpdateScheduled(BlockPos pos, Block blk)
     {
@@ -229,7 +342,396 @@ public class FakeWorld extends World{
     {
     	return false;
     }
+	@Override
+    public boolean isBlockTickPending(BlockPos pos, Block blockType)
+    {
+    	return false;
+    }
+	@Override
+    public boolean canBlockSeeSky(BlockPos pos)
+    {
+    	return pos.getY() > 62;
+    }
+	@Override
+    public int getChunksLowestHorizon(int x, int z)
+    {
+    	return 0;
+    }
+	@Override
+    public int getLightFor(EnumSkyBlock type, BlockPos pos)
+    {
+		return 14;
+    }
+	@Override
+    public void setLightFor(EnumSkyBlock type, BlockPos pos, int lightValue)
+    {
+		
+    }
+	@Override
+	public void updateWeather() {
+	}
+	@Override
+	public void updateWeatherBody() {
+	}
 	   
+	@Override
+    public void notifyLightSet(BlockPos pos)
+    {
+    	
+    }
+	@Override
+    public int getLight(BlockPos pos)
+    {
+    	return 14;
+    }
+	@Override
+    public int getLightFromNeighbors(BlockPos pos)
+    {
+		return 14;
+    }
+	@Override
+    public int getLight(BlockPos pos, boolean checkNeighbors)
+    {
+    	return 14;
+    }
+	@Override
+    public boolean isDaytime()
+    {
+    	return true;
+    }
+	@Override
+    public int getHeight(int x, int z)
+    {
+    	return 63;
+    }
+	@Override
+    public int getSeaLevel()
+    {
+    	return 2;
+    }
+	@Override
+    public RayTraceResult rayTraceBlocks(Vec3d start, Vec3d end)
+    {
+    	return null;
+    }
+	@Override
+    public RayTraceResult rayTraceBlocks(Vec3d start, Vec3d end, boolean stopOnLiquid)
+    {
+    	return null;
+    }
+	@Override
+    public RayTraceResult rayTraceBlocks(Vec3d vec31, Vec3d vec32, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock)
+    {
+    	return null;
+    }
+	@Override
+    public void playSound(@Nullable EntityPlayer player, BlockPos pos, SoundEvent soundIn, SoundCategory category, float volume, float pitch)
+    {
+    	
+    }
+	@Override
+    public void playSound(@Nullable EntityPlayer player, double x, double y, double z, SoundEvent soundIn, SoundCategory category, float volume, float pitch)
+    {
+    	
+    }
+	@Override
+	public void playRecord(BlockPos blockPositionIn, @Nullable SoundEvent soundEventIn)
+	{
+		   
+	}
+	@Override
+	public int calculateSkylightSubtracted(float partialTicks)
+	{
+	   	return 4;
+	}
+	@Override
+    public BlockPos getTopSolidOrLiquidBlock(BlockPos pos)
+    {
+    	return new BlockPos(0,63,0);
+    }
+	@Override
+    public boolean canBlockFreezeBody(BlockPos pos, boolean noWaterAdj)
+    {
+    	return false;
+    }
+	@Override
+    public boolean canBlockFreeze(BlockPos pos, boolean noWaterAdj)
+    {
+    	return false;
+    }
+	@Override
+    public boolean canBlockFreezeNoWater(BlockPos pos)
+    {
+    	return false;
+    }
+	@Override
+	public boolean canBlockFreezeWater(BlockPos pos)
+	{
+		return false;
+	}
+	@Override
+	public boolean canSnowAt(BlockPos pos, boolean checkLight) {
+	     return false;
+	}
+	@Override
+	public boolean canSnowAtBody(BlockPos pos, boolean checkLight) {
+	     return false;
+	}
+   @Override
+   public boolean tickUpdates(boolean par1) {
+      return false;
+   }
+   @Override
+   public List getPendingBlockUpdates(Chunk par1Chunk, boolean par2) {
+      return null;
+   }
+   @Override
+   public <T extends Entity> T findNearestEntityWithinAABB(Class <? extends T > entityType, AxisAlignedBB aabb, T closestTo)
+   {
+	   return null;
+   }
+   @Override
+   public void markChunkDirty(BlockPos pos, TileEntity unusedTileEntity)
+   {
+	   
+   }
+   @Override
+   public int countEntities(Class<?> entityType)
+   {
+	   return 0;
+   }
+   @Override
+   public void loadEntities(Collection<Entity> entityCollection)
+   {
+	   
+   }
+   @Override
+   public void unloadEntities(Collection<Entity> entityCollection)
+   {
+	   
+   }
+   @Override
+   public boolean mayPlace(Block blockIn, BlockPos pos, boolean skipCollisionCheck, EnumFacing sidePlacedOn, @Nullable Entity placer)
+   {
+	   return true;
+   }
+   @Override
+   public void checkSessionLock() throws MinecraftException
+   {
+	   
+   }
+   @Override
+   public void setTotalWorldTime(long worldTime)
+   {
+	   
+   }
+   @Override
+   public long getSeed() 
+   {
+	  return 1L;
+   }
+   @Override
+   public long getTotalWorldTime() 
+   {
+	   return 1L;
+   }
+   @Override
+   public long getWorldTime() {
+	   return 1L;
+	}
+   @Override
+   public void setWorldTime(long par1) {
+   }
+   @Override
+   public BlockPos getSpawnPoint()
+   {
+	   return new BlockPos(0,64,0);
+   }
+   @Override
+   @SideOnly(Side.CLIENT)
+   public void joinEntityInSurroundings(Entity entityIn)
+   {
+	   
+   }
+   @Override
+   public boolean isBlockModifiable(EntityPlayer player, BlockPos pos)
+   {
+	   return false;
+   }
+   @Override
+   public boolean canMineBlockBody(EntityPlayer player, BlockPos pos)
+   {
+       return false;
+   }
+   @Override
+   public void setEntityState(Entity par1Entity, byte par2) {
+   }
+   @Override
+   public void addBlockEvent(BlockPos pos, Block blockIn, int eventID, int eventParam)
+   {
+	   
+   }
+   @Override
+   public void updateAllPlayersSleepingFlag() {
+   }
+   @Override
+   public float getThunderStrength(float delta)
+   {
+	   return 0.0F;
+   }
+   @Override
+   @SideOnly(Side.CLIENT)
+   public void setThunderStrength(float strength)
+   {
+	   
+   }
+   @Override
+   public float getRainStrength(float par1) {
+	  return 0.0F;
+   }
+   @Override
+   @SideOnly(Side.CLIENT)
+   public void setRainStrength(float par1) {
+   }
+   @Override
+   public boolean isThundering()
+   {
+	   return false;
+   }
+   @Override
+   public boolean isRaining()
+   {
+	   return false;
+   }
+   @Override
+   public boolean isRainingAt(BlockPos position)
+   {
+	   return false;
+   }
+   @Override
+   public boolean isBlockinHighHumidity(BlockPos pos)
+   {
+	   return false;
+   }
+   @Override
+   public void setData(String dataID, WorldSavedData worldSavedDataIn)
+   {
+	   
+   }
+   @Override
+   public void playBroadcastSound(int id, BlockPos pos, int data)
+   {
+	   
+   }
+   @Override
+   public void playEvent(int type, BlockPos pos, int data)
+   {
+	   
+   }
+   @Override
+   public void playEvent(@Nullable EntityPlayer player, int type, BlockPos pos, int data)
+   {
+	   
+   }
+   @Override
+   public int getHeight()
+   {
+	   return 255;
+   }
+   @Override
+   public int getActualHeight()
+   {
+	   return 255;
+   }
+   @Override
+   public void sendBlockBreakProgress(int breakerId, BlockPos pos, int progress)
+   {
+	   
+   }
+   @Override
+   public void updateComparatorOutputLevel(BlockPos pos, Block blockIn)
+   {
+	   
+   }
+   @Override
+   public DifficultyInstance getDifficultyForLocation(BlockPos pos)
+   {
+	   return new DifficultyInstance(EnumDifficulty.NORMAL, 1L, 0L, 0L);
+   }
+   @Override
+   public EnumDifficulty getDifficulty()
+   {
+	   return EnumDifficulty.NORMAL;
+   }
+   @Override
+   public IBlockState getBlockState(BlockPos pos)
+   {
+	   if(pos.getY() <= 63)
+		   return Blocks.GRASS.getDefaultState();
+	   return Blocks.AIR.getDefaultState();
+   }
+	/**
+	 * this is commentded out when porting bpkrscore but, no particles?????
+	 */
+	@Deprecated
+	@Override
+    @SideOnly(Side.CLIENT)
+    public void spawnParticle(EnumParticleTypes particleType, boolean ignoreRange, double xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double zSpeed, int... parameters)
+    {
+    	
+    }
+	@Override
+    @Nullable
+    public Entity getEntityByID(int id)
+    {
+    	return null;
+    }
+	@Override
+	public Chunk getChunkFromChunkCoords(int x, int z) {
+		return this.chunkProvider.getLoadedChunk(x, z);
+	}
+	@Override
+    public int getStrongPower(BlockPos pos)
+    {
+    	return 0;
+    }
+	@Override
+    public boolean isSidePowered(BlockPos pos, EnumFacing side)
+    {
+    	return false;
+    }
+	@Override
+	public int getRedstonePower(BlockPos pos, EnumFacing facing)
+	{
+	  return 0;
+	}
+	@Override
+    public boolean isBlockPowered(BlockPos pos)
+    {
+    	return false;
+    }
+	@Override
+    public void markTileEntitiesInChunkForRemoval(Chunk chunk)
+    {
+    	
+    }
+	
+	@Override
+    public int isBlockIndirectlyGettingPowered(BlockPos pos)
+    {
+    	return 0;
+    }
+	@Override
+    public boolean addWeatherEffect(Entity entityIn)
+    {
+    	return false;
+    }
+	@Override
+    @SideOnly(Side.CLIENT)
+    public int getLightFromNeighborsFor(EnumSkyBlock type, BlockPos pos)
+    {
+    	return 14;
+    }
 	public static IChunkProvider chunkP = null;
 	@Override
 	protected IChunkProvider createChunkProvider() {
