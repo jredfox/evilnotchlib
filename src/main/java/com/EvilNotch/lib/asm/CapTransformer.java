@@ -210,21 +210,26 @@ public class CapTransformer {
 	public static void transformWorld(String name,ClassNode classNode,String inputBase,boolean obfuscated) throws IOException
 	{
 		implementICapProvider(classNode, name, "Lnet/minecraft/world/World;");
-		
-    	//add the method of World#tickChunkOb/Deob
-    	MethodNode method = ASMHelper.addMethod(classNode, inputBase + "WorldEdits", new MCPSidedString("tickChunksDeOb","tickChunksOb").toString(), "()V");
-    	ASMHelper.patchMethod(method, name, "com/EvilNotch/lib/asm/WorldEdits");
+    	
+		ASMHelper.addMethod(classNode, inputBase + "World", "initWorldCaps", "()V");
+    	
+    	//add the method of World#tickChunks
+    	MethodNode tickChunks = ASMHelper.addMethod(classNode, inputBase + "World", "tickChunks", "()V");
+		MethodNode tickTileCaps = ASMHelper.addMethod(classNode, inputBase + "World", "tickTileCaps", "()V");
+    	
+    	//inject line this.initWorldCaps();
+    	InsnList toInject = new InsnList();
+    	toInject.add(new VarInsnNode(ALOAD,0));
+    	toInject.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/world/World", "initWorldCaps", "()V", false));
+    	MethodNode caps = ASMHelper.getMethodNode(classNode, "initCapabilities", "()V");
+    	caps.instructions.insertBefore(ASMHelper.getFirstInstruction(caps, Opcodes.ALOAD),toInject);
 	}
 	/**
 	 * inject the line to make tile entities caps tick safer then screwing around with other people's classes
 	 * @throws IOException 
 	 */
 	public static void injectWorldTickers(String name, ClassNode classNode,String inputBase, boolean obfuscated) throws IOException
-	{
-		//add a sided method to tickTileCaps ob/deob to the world.class
-		MethodNode tickTileCaps = ASMHelper.addMethod(classNode, inputBase + "WorldEdits", new MCPSidedString("tickTileCapsDeOb","tickTileCapsOb").toString(), "()V");
-    	ASMHelper.patchMethod(tickTileCaps, name, "com/EvilNotch/lib/asm/WorldEdits");
-    	
+	{	
 		MethodNode updateEnts = ASMHelper.getMethodNode(classNode, new MCPSidedString("updateEntities","func_72939_s").toString(), "()V");
     	
 		//put both world tickers here
@@ -249,9 +254,8 @@ public class CapTransformer {
 		toTick.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/world/World", worldInfo, "Lnet/minecraft/world/storage/WorldInfo;"));
 		toTick.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/EvilNotch/lib/minecraft/content/capabilites/registry/CapContainer", "tick", "(Ljava/lang/Object;)V", false));
 		//inject this.tickChunkOb/Deob
-		String ob = obfuscated ? "Ob" : "DeOb";
 		toTick.add(new VarInsnNode(ALOAD,0));
-		toTick.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"net/minecraft/world/World", "tickChunks" + ob, "()V", false));
+		toTick.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"net/minecraft/world/World", "tickChunks", "()V", false));
 		
 		tick.instructions.insertBefore(tickPoint,toTick);
     	
@@ -273,7 +277,7 @@ public class CapTransformer {
 							System.out.println("found injection point for ticking tile caps:" + point.getClass());
 							InsnList toInsert = new InsnList();
 							toInsert.add(new VarInsnNode(ALOAD,0));
-							toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/world/World", tickTileCaps.name, "()V", false));
+							toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/world/World", "tickTileCaps", "()V", false));
 		
 							point = point.getNext();
 							updateEnts.instructions.insert(point,toInsert);

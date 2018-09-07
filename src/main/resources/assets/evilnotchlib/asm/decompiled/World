@@ -1,0 +1,69 @@
+package net.minecraft.world;
+
+import java.util.Collection;
+import java.util.List;
+
+import com.EvilNotch.lib.minecraft.content.capabilites.WorldStorageCap;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
+
+import net.minecraft.client.multiplayer.ChunkProviderClient;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.MapStorage;
+import net.minecraftforge.common.capabilities.CapabilityDispatcher;
+import net.minecraftforge.common.util.WorldCapabilityData;
+
+public class World {
+	
+	 public final WorldProvider provider = null;
+	 public CapContainer capContainer;
+	 protected MapStorage mapStorage;
+	 private CapabilityDispatcher capabilities;
+	 private WorldCapabilityData capabilityData;
+	 protected final ISaveHandler saveHandler = null;
+	  
+	 public void initWorldCaps()
+	 {
+		 CapRegHandler.registerCapsToObj(this);
+		 String lvlname = "caps_" + this.provider.getDimension() + ".dat";
+		 this.mapStorage.setData(lvlname, new WorldStorageCap(lvlname, this.capContainer, this, this.saveHandler));
+	 }
+	  
+	 private List<TileEntity> loadedTileEntityList = null;
+	 private IChunkProvider chunkProvider = null;
+	  
+	 public void tickTileCaps()
+	 {
+	 	for (TileEntity tile : this.loadedTileEntityList) 
+	  	{
+		  ((ICapProvider)tile).getCapContainer().tick(tile);
+	  	}
+	}
+	 
+	public void tickChunks()
+	{
+	    if ((this.chunkProvider instanceof ChunkProviderServer))
+	   	{
+	   		ChunkProviderServer cp = (ChunkProviderServer)this.chunkProvider;
+	   		Collection<Chunk> loadedChunks = cp.getLoadedChunks();
+	   		for (Chunk c : loadedChunks)
+	   		{
+	   			((ICapProvider)c).getCapContainer().tick(c);
+	   		}
+	   	}
+	   	else if ((this.chunkProvider instanceof ChunkProviderClient))
+	   	{
+	   		ChunkProviderClient cp2 = (ChunkProviderClient)this.chunkProvider;
+	   		for (Chunk c2 : cp2.chunkMapping.values()) 
+	   		{
+	   			((ICapProvider)c2).getCapContainer().tick(c2);
+	   		}
+	   	}
+	}
+
+}

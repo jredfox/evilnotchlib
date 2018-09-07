@@ -132,7 +132,6 @@ public class Transformer implements IClassTransformer
                 	CapTransformer.transFormTileEntityCaps(name, classNode, obfuscated);
                 break;
                 case 9:
-                	ASMHelper.replaceMethod(classNode, inputBase + "World", "initCapabilities", "()V", "initCapabilities");
                 	CapTransformer.transformWorld(name, classNode,inputBase, obfuscated);
                 	CapTransformer.injectWorldTickers(name, classNode,inputBase, obfuscated);
                 break;

@@ -2,7 +2,6 @@ package com.EvilNotch.lib.main;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
@@ -12,6 +11,7 @@ import com.EvilNotch.lib.Api.MCPMappings;
 import com.EvilNotch.lib.asm.FMLCorePlugin;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
+import com.EvilNotch.lib.main.testing.CapRegWorldTest;
 import com.EvilNotch.lib.main.testing.EventHandler;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
@@ -25,6 +25,7 @@ import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.property.PropertyMetaEnum;
 import com.EvilNotch.lib.minecraft.content.blocks.test.EnumCheese;
 import com.EvilNotch.lib.minecraft.content.blocks.test.MultiSidedGrass;
+import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
 import com.EvilNotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.EvilNotch.lib.minecraft.content.commands.CMDDim;
 import com.EvilNotch.lib.minecraft.content.commands.CMDKick;
@@ -55,16 +56,13 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -81,7 +79,6 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import scala.actors.threadpool.Arrays;
 
 
@@ -146,7 +143,7 @@ public class MainJava {
 //		CapRegHandler.registerRegistry(new CapRegEnt());
 //		CapRegHandler.registerRegistry(new CapRegTile());
 //		CapRegHandler.registerRegistry(new CapRegWorldInfoTst());
-//		CapRegHandler.registerRegistry(new CapRegWorldTest());
+		CapRegHandler.registerRegistry(new CapRegWorldTest());
 //		CapRegHandler.registerRegistry(new CapRegChunkTest());
 		
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");

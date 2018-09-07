@@ -67,7 +67,8 @@ public class FakeWorld extends World{
         this.chunkProvider = this.createChunkProvider();
         this.mapStorage = this.perWorldStorage;
         this.villageCollection = new VillageCollection(this);
-//        this.initCapabilities();
+        this.villageCollection.setWorldsForAll(this);
+        this.initCapabilities();//forge capability support my caps are linked directly to the constructor
 	}
 
 	public static WorldInfo getInfo() {
