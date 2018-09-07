@@ -63,12 +63,6 @@ Future:
 Font Renderer
 NBTPathAPI
 Lan Skin Host Fix
-TestTransFormer line injections assistor
-Capabilities(Evil Notch Lib) A replacement for forge's if you choose to do so.
-All you have to do is readFromNBT() writeToNBT() and there is a tickable version as well.(not fully implemented yet)
-Midle click block event allow you to override what the block think's you should have and any additional tiledata
-TESR ItemStack API just like forges but, always uses the tile entity rather then null 
-and meta to render and also uses a special interface.
 ```
 
 Instalation This as a Dependancy:
