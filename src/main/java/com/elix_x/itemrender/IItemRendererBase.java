@@ -22,12 +22,16 @@ public class IItemRendererBase {
 
 	public static final String MODID = "iitemrenderer";
 	public static final String NAME = "IItem Renderer";
-	public static final String VERSION = "1.0";
+	public static final String VERSION = "1.1";
 
+	/**
+	 * asm is now used to inject the ittemrenderer utils so two or more libs can work together
+	 * @param event
+	 */
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		IReloadableResourceManager mcResourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+		/*IReloadableResourceManager mcResourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
 
 		if(mcResourceManager instanceof SimpleReloadableResourceManager){
 			List<IResourceManagerReloadListener> reloadListeners = ReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, (SimpleReloadableResourceManager) mcResourceManager, "reloadListeners", "field_110546_b");
@@ -52,7 +56,7 @@ public class IItemRendererBase {
 
 		RenderGlobal renderGlobal = new RenderGlobal(Minecraft.getMinecraft());
 		mcResourceManager.registerReloadListener(renderGlobal);
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderGlobal, "renderGlobal", "field_71438_f");
+		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderGlobal, "renderGlobal", "field_71438_f");*/
 	}
 
 }

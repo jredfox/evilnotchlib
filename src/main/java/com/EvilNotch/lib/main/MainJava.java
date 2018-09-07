@@ -143,7 +143,7 @@ public class MainJava {
 //		CapRegHandler.registerRegistry(new CapRegEnt());
 //		CapRegHandler.registerRegistry(new CapRegTile());
 //		CapRegHandler.registerRegistry(new CapRegWorldInfoTst());
-		CapRegHandler.registerRegistry(new CapRegWorldTest());
+//		CapRegHandler.registerRegistry(new CapRegWorldTest());
 //		CapRegHandler.registerRegistry(new CapRegChunkTest());
 		
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
@@ -167,18 +167,6 @@ public class MainJava {
 		BasicItemMeta i2 = new BasicItemMeta(new ResourceLocation(MODID + ":" + "ingot"), 4,tab,
 				new LangEntry("Purple Ingot","en_us","0"),new LangEntry("Yellow Ingot","en_us","1"),new LangEntry("Tropical Ingot","en_us","2"),new LangEntry("Blue Ingot","en_us","3"),
 				new LangEntry("Cloud Ingot","en_us","4"));
-	}
-	public void teleport(Entity base,int x, int y, int z)
-	{
-		List<Entity> stack = Arrays.asList(base.getRecursivePassengers().toArray());
-		stack.add(0,base);
-		for(Entity e : stack)
-		{
-			e.dismountRidingEntity();
-			if(e instanceof EntityPlayerMP)
-				((EntityPlayerMP)e).connection.setPlayerLocation(x, y, z, e.rotationYaw, e.rotationPitch);
-			e.setLocationAndAngles(x, y, z, e.rotationYaw, e.rotationPitch);
-		}
 	}
 	
 	@Mod.EventHandler

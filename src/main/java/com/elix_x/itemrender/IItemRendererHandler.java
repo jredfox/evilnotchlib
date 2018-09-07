@@ -15,7 +15,6 @@ import net.minecraft.item.ItemStack;
 public class IItemRendererHandler {
 
 	private static Map<Item, IItemRenderer> renderers = new HashMap<>();
-
 	private static TransformType currentTransformType;
 
 	public static IItemRenderer getIItemRenderer(Item item){
