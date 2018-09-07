@@ -2,6 +2,7 @@ package com.EvilNotch.lib.main;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
@@ -53,6 +54,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.command.ICommand;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -80,6 +82,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import scala.actors.threadpool.Arrays;
 
 
 @Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION)
@@ -108,14 +111,13 @@ public class MainJava {
 
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
-	{
+	{	
 		isDeObfuscated = !FMLCorePlugin.isObf;
 		proxy.proxypreinit();
 		logger = e.getModLog();
 	  	
 		MCPMappings.cacheMCPApplicable(e.getModConfigurationDirectory());
 		FieldAcess.cacheFields();
-		fake_world = new FakeWorld();
 		Config.loadConfig(e.getModConfigurationDirectory());
 		proxy.preinit(e);
 		GeneralRegistry.load();
@@ -169,21 +171,33 @@ public class MainJava {
 				new LangEntry("Purple Ingot","en_us","0"),new LangEntry("Yellow Ingot","en_us","1"),new LangEntry("Tropical Ingot","en_us","2"),new LangEntry("Blue Ingot","en_us","3"),
 				new LangEntry("Cloud Ingot","en_us","4"));
 	}
+	public void teleport(Entity base,int x, int y, int z)
+	{
+		List<Entity> stack = Arrays.asList(base.getRecursivePassengers().toArray());
+		stack.add(0,base);
+		for(Entity e : stack)
+		{
+			e.dismountRidingEntity();
+			if(e instanceof EntityPlayerMP)
+				((EntityPlayerMP)e).connection.setPlayerLocation(x, y, z, e.rotationYaw, e.rotationPitch);
+			e.setLocationAndAngles(x, y, z, e.rotationYaw, e.rotationPitch);
+		}
+	}
+	
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent e) throws Exception
 	{
 		proxy.initMod();
 		NetWorkHandler.init();
 	}
-	@Mod.EventHandler
-	public void init(FMLLoadCompleteEvent e) throws Exception
-	{
-		proxy.onLoadComplete();
-	}
 	
 	@Mod.EventHandler
 	public void post(FMLPostInitializationEvent e)
 	{
+		/**
+		 * if world capabilties are still not registered by init that is a mod's issue for the world and not mine
+		 */
+		fake_world = new FakeWorld();
 		try
 		{
 			proxy.jsonGen();
@@ -203,6 +217,13 @@ public class MainJava {
 		
 	    proxy.postinit();//generate lang,generate shadow sizes
 	}
+	
+	@Mod.EventHandler
+	public void loadComplete(FMLLoadCompleteEvent e) throws Exception
+	{
+		proxy.onLoadComplete();
+	}
+	
 	@SubscribeEvent
 	public void registerItems(RegistryEvent.Register<Item> event)
 	{

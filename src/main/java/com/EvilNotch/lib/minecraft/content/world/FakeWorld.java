@@ -2,6 +2,7 @@ package com.EvilNotch.lib.minecraft.content.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.village.VillageCollection;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
@@ -63,6 +65,9 @@ public class FakeWorld extends World{
         FakeWorldProvider pro = (FakeWorldProvider) this.provider;
         pro.init(this);
         this.chunkProvider = this.createChunkProvider();
+        this.mapStorage = this.perWorldStorage;
+        this.villageCollection = new VillageCollection(this);
+//        this.initCapabilities();
 	}
 
 	public static WorldInfo getInfo() {
@@ -911,6 +916,11 @@ public class FakeWorld extends World{
     public boolean addWeatherEffect(Entity entityIn)
     {
     	return false;
+    }
+	@Override
+    public Iterator<Chunk> getPersistentChunkIterable(Iterator<Chunk> chunkIterator)
+    {
+    	return super.getPersistentChunkIterable(chunkIterator);
     }
 	@Override
     @SideOnly(Side.CLIENT)
