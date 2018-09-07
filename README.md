@@ -57,6 +57,7 @@ TestTransformer(ASMHelper) allows you to: replace methods,replace classes, and o
 remove methods,add methods, add fields, remove fields
 PickBlockEvent(allows you to override what the block returns via middle click)
 PickEntityEvent(allows you to override what the entity returns via middle click)
+FakeWorld allows you to instatiate entities before a main world is even loaded you will have to exception handle for broken entities
 
 Future:
 Font Renderer
