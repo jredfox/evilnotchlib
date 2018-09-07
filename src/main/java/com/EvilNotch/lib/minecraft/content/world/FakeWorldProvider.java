@@ -1,9 +1,13 @@
 package com.EvilNotch.lib.minecraft.content.world;
 
+import com.EvilNotch.lib.main.MainJava;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
@@ -11,17 +15,36 @@ import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class FakeWorldProvider extends WorldProvider{
 	
+	public FakeChunkGenerator gen = null;
+	
 	public FakeWorldProvider()
 	{
 		super();
 		this.biomeProvider = new BiomeProvider(FakeWorld.getInfo());
 	}
+    public void init(World w)
+    {
+    	super.init();
+    	this.world = w;
+    	this.gen = new FakeChunkGenerator(this.world);
+    }
+	@Override
+    public int getRespawnDimension(net.minecraft.entity.player.EntityPlayerMP player)
+    {
+    	return 0;
+    }
+	@Override
+    public IChunkGenerator createChunkGenerator()
+    {
+    	return this.gen;
+    }
 	
 	@Override
 	public void generateLightBrightnessTable()
@@ -73,12 +96,8 @@ public class FakeWorldProvider extends WorldProvider{
         return false;
      }
      @Override
-     public int getRespawnDimension(EntityPlayerMP player) {
-        return 0;
-     }
-     @Override
      public Biome getBiomeForCoords(BlockPos pos) {
-        return Biome.REGISTRY.getObjectById(1);
+        return Biomes.PLAINS;
      }
      @Override
      public boolean isDaytime() {
@@ -152,6 +171,11 @@ public class FakeWorldProvider extends WorldProvider{
      public int getDimension()
      {
     	 return 0;
+     }
+     @Override
+     public boolean canDropChunk(int x, int z)
+     {
+    	 return false;
      }
 
 }

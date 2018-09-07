@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import com.EvilNotch.lib.main.MainJava;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSetMultimap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -31,6 +34,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.GameType;
+import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -55,12 +59,17 @@ public class FakeWorld extends World{
 		super(new FakeSaveHandler(), getInfo(), new FakeWorldProvider(), getProfiler(), true);
         this.worldInfo.setDifficulty(EnumDifficulty.NORMAL);
         this.provider.setWorld(this);
+        FakeWorldProvider pro = (FakeWorldProvider) this.provider;
+        pro.init(this);
         this.chunkProvider = this.createChunkProvider();
 	}
 
 	public static WorldInfo getInfo() {
+		if(world_info != null)
+			return world_info;
 		WorldInfo info = new WorldInfo(getSettings(),"fake_world");
-		return info;
+		world_info = info;
+		return world_info;
 	}
 
 	public static WorldSettings getSettings() {
@@ -85,7 +94,7 @@ public class FakeWorld extends World{
 	@Override
     public IBlockState getGroundAboveSeaLevel(BlockPos pos)
     {
-    	 return this.getBlockState(new BlockPos(0,4,0));
+    	 return this.getBlockState(new BlockPos(0,64,0));
     }
 	@Override
     public boolean isBlockLoaded(BlockPos pos)
@@ -207,15 +216,40 @@ public class FakeWorld extends World{
     	
     }
 	@Override
+    public boolean collidesWithAnyBlock(AxisAlignedBB bbox)
+    {
+    	return false;
+    }
+	@Override
+    public List<AxisAlignedBB> getCollisionBoxes(@Nullable Entity entityIn, AxisAlignedBB aabb)
+    {
+    	return new ArrayList();
+    }
+	@Override
 	public void onEntityAdded(Entity par1Entity) 
 	{
 		
 	}
 	@Override
+    public void removeEventListener(IWorldEventListener listener)
+    {
+    	
+    }
+	@Override
+    public boolean isInsideWorldBorder(Entity entityToCheck)
+    {
+    	return true;
+    }
+	@Override
 	public void onEntityRemoved(Entity par1Entity) 
 	{
 		
 	}
+	@Override
+    public void addEventListener(IWorldEventListener listener)
+    {
+    	
+    }
 	   
 	@Override
     public void removeEntityDangerously(Entity entityIn)
@@ -237,6 +271,16 @@ public class FakeWorld extends World{
 	{
 		
 	}
+	@Override
+    public void calculateInitialWeatherBody()
+    {
+    	
+    }
+	@Override
+    protected void calculateInitialWeather()
+    {
+    	
+    }
 	@Override
     public void updateEntity(Entity ent)
     {
@@ -296,6 +340,12 @@ public class FakeWorld extends World{
 	    return "";
 	}
 	@Override
+    @SideOnly(Side.CLIENT)
+    public String getProviderName()
+    {
+    	return "fake_chunk_provider";
+    }
+	@Override
 	public TileEntity getTileEntity(BlockPos pos) {
 	     return null;
 	}
@@ -322,11 +372,10 @@ public class FakeWorld extends World{
 		return true;
     }
 	@Override
-	@SideOnly(Side.CLIENT)
-	public String getProviderName() {
-	   return "";
+	public void calculateInitialSkylight()
+	{
+		   
 	}
-	   
 	@Override
     public boolean isUpdateScheduled(BlockPos pos, Block blk)
     {
@@ -343,14 +392,24 @@ public class FakeWorld extends World{
     	return false;
     }
 	@Override
-    public boolean isBlockTickPending(BlockPos pos, Block blockType)
+    public void addTileEntities(Collection<TileEntity> tileEntityCollection)
     {
-    	return false;
+    	
+    }
+	@Override
+    public boolean canSeeSky(BlockPos pos)
+    {
+		 return pos.getY() > 62;
     }
 	@Override
     public boolean canBlockSeeSky(BlockPos pos)
     {
     	return pos.getY() > 62;
+    }
+	@Override
+    public boolean isBlockTickPending(BlockPos pos, Block blockType)
+    {
+    	return false;
     }
 	@Override
     public int getChunksLowestHorizon(int x, int z)
@@ -373,7 +432,47 @@ public class FakeWorld extends World{
 	@Override
 	public void updateWeatherBody() {
 	}
-	   
+	@Override
+    @SideOnly(Side.CLIENT)
+    protected void playMoodSoundAndCheckLight(int x, int z, Chunk chunkIn)
+    {
+    	
+    }
+	@Override
+    public <T extends Entity> List<T> getEntitiesWithinAABB(Class <? extends T > clazz, AxisAlignedBB aabb, @Nullable Predicate <? super T > filter)
+    {
+    	return new ArrayList(0);
+    }
+	@Override
+    public <T extends Entity> List<T> getEntitiesWithinAABB(Class <? extends T > classEntity, AxisAlignedBB bb)
+    {
+    	return new ArrayList(0);
+    }
+	@Override
+    public <T extends Entity> List<T> getEntities(Class <? extends T > entityType, Predicate <? super T > filter)
+    {
+    	return new ArrayList<T>(0);
+    }
+	@Override
+    public <T extends Entity> List<T> getPlayers(Class <? extends T > playerType, Predicate <? super T > filter)
+    {
+    	return new ArrayList(0);
+    }
+	@Override
+    public List<Entity> getEntitiesWithinAABBExcludingEntity(@Nullable Entity entityIn, AxisAlignedBB bb)
+    {
+    	return new ArrayList(0);
+    }
+	@Override
+    public boolean checkLightFor(EnumSkyBlock lightType, BlockPos pos)
+    {
+    	return false;
+    }
+	@Override
+    public boolean checkLight(BlockPos pos)
+    {
+    	return false;
+    }
 	@Override
     public void notifyLightSet(BlockPos pos)
     {
@@ -442,8 +541,13 @@ public class FakeWorld extends World{
 	@Override
 	public int calculateSkylightSubtracted(float partialTicks)
 	{
-	   	return 4;
+	   	return 6;
 	}
+	@Override
+    public float getSunBrightnessFactor(float partialTicks)
+    {
+    	return 0.7F;
+    }
 	@Override
     public BlockPos getTopSolidOrLiquidBlock(BlockPos pos)
     {
@@ -522,6 +626,11 @@ public class FakeWorld extends World{
    }
    @Override
    public void setTotalWorldTime(long worldTime)
+   {
+	   
+   }
+   @Override
+   public void setSpawnPoint(BlockPos pos)
    {
 	   
    }
@@ -614,11 +723,6 @@ public class FakeWorld extends World{
 	   return false;
    }
    @Override
-   public void setData(String dataID, WorldSavedData worldSavedDataIn)
-   {
-	   
-   }
-   @Override
    public void playBroadcastSound(int id, BlockPos pos, int data)
    {
 	   
@@ -644,6 +748,11 @@ public class FakeWorld extends World{
 	   return 255;
    }
    @Override
+   public BlockPos getHeight(BlockPos pos)
+   {
+	   return new BlockPos(0,64,0);
+   }
+   @Override
    public void sendBlockBreakProgress(int breakerId, BlockPos pos, int progress)
    {
 	   
@@ -657,6 +766,18 @@ public class FakeWorld extends World{
    public DifficultyInstance getDifficultyForLocation(BlockPos pos)
    {
 	   return new DifficultyInstance(EnumDifficulty.NORMAL, 1L, 0L, 0L);
+   }
+   @Override
+   public boolean isSideSolid(BlockPos pos, EnumFacing side)
+   {
+	   if(pos.getY() > 63)
+		   return false;
+	   return true;
+   }
+   @Override
+   public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default)
+   {
+	   return this.isSideSolid(pos, side);
    }
    @Override
    public EnumDifficulty getDifficulty()
@@ -691,6 +812,11 @@ public class FakeWorld extends World{
 		return this.chunkProvider.getLoadedChunk(x, z);
 	}
 	@Override
+    public int getStrongPower(BlockPos pos, EnumFacing direction)
+    {
+    	return 0;
+    }
+	@Override
     public int getStrongPower(BlockPos pos)
     {
     	return 0;
@@ -720,6 +846,65 @@ public class FakeWorld extends World{
     public int isBlockIndirectlyGettingPowered(BlockPos pos)
     {
     	return 0;
+    }
+    @Nullable
+    @Override
+    public EntityPlayer getClosestPlayerToEntity(Entity entityIn, double distance)
+    {
+    	return null;
+    }
+    @Nullable
+    @Override
+    public EntityPlayer getNearestPlayerNotCreative(Entity entityIn, double distance)
+    {
+    	return null;
+    }
+    @Nullable
+    @Override
+    public EntityPlayer getClosestPlayer(double posX, double posY, double posZ, double distance, boolean spectator)
+    {
+    	return null;
+    }
+    @Override
+    @Nullable
+    public EntityPlayer getClosestPlayer(double x, double y, double z, double distance, Predicate<Entity> predicate)
+    {
+    	return null;
+    }
+    @Override
+    public boolean isAnyPlayerWithinRangeAt(double x, double y, double z, double range)
+    {
+    	return false;
+    }
+    @Nullable
+    @Override
+    public EntityPlayer getNearestAttackablePlayer(Entity entityIn, double maxXZDistance, double maxYDistance)
+    {
+    	return null;
+    }
+    @Nullable
+    @Override
+    public EntityPlayer getNearestAttackablePlayer(BlockPos pos, double maxXZDistance, double maxYDistance)
+    {
+    	return null;
+    }
+    @Nullable
+    @Override
+    public EntityPlayer getNearestAttackablePlayer(double posX, double posY, double posZ, double maxXZDistance, double maxYDistance, @Nullable Function<EntityPlayer, Double> playerToDouble, @Nullable Predicate<EntityPlayer> predicate)
+    {
+    	return null;
+    }
+    @Nullable
+    @Override
+    public EntityPlayer getPlayerEntityByName(String name)
+    {
+    	return null;
+    }
+    @Nullable
+    @Override
+    public EntityPlayer getPlayerEntityByUUID(UUID uuid)
+    {
+    	return null;
     }
 	@Override
     public boolean addWeatherEffect(Entity entityIn)

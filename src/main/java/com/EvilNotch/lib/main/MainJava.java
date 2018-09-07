@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.Api.MCPMappings;
+import com.EvilNotch.lib.asm.FMLCorePlugin;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
 import com.EvilNotch.lib.main.testing.EventHandler;
@@ -108,11 +109,11 @@ public class MainJava {
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
 	{
+		isDeObfuscated = !FMLCorePlugin.isObf;
 		proxy.proxypreinit();
 		logger = e.getModLog();
 	  	
 		MCPMappings.cacheMCPApplicable(e.getModConfigurationDirectory());
-		isDeObfuscated = isDeObfucscated();
 		FieldAcess.cacheFields();
 		fake_world = new FakeWorld();
 		Config.loadConfig(e.getModConfigurationDirectory());
@@ -346,15 +347,5 @@ public class MainJava {
 		LibEvents.playerDataDir = new File(LibEvents.worlDir,"playerdata");
 		LibEvents.playerDataNames = new File(LibEvents.worlDir,"playerdata/names");
 	}
-
-	public static boolean isDeObfucscated()
-    {
-    	try
-    	{
-    		ReflectionHelper.findField(Block.class, MCPMappings.getFieldOb(Block.class,"blockHardness"));
-    		return false;//return false since obfuscated field had no exceptions
-    	}
-    	catch(Exception e){return true;}
-    }
 
 }
