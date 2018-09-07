@@ -18,6 +18,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
@@ -85,11 +86,11 @@ public class FakeWorld extends World{
 	@Override
     public Biome getBiome(final BlockPos pos)
     {
-    	return Biome.getBiome(1);
+    	return Biomes.PLAINS;
     }
 	@Override
 	public Biome getBiomeForCoordsBody(BlockPos pos) {
-	    return Biome.getBiome(1);
+	    return Biomes.PLAINS;
 	}
 	@Override
     public IBlockState getGroundAboveSeaLevel(BlockPos pos)
