@@ -109,6 +109,11 @@ public class MainJava {
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
 	{
+		for(int i=0;i<100;i++)
+		{
+			File f =  new File("./config/fake_world");
+			System.out.println(f.getAbsolutePath());
+		}
 		isDeObfuscated = !FMLCorePlugin.isObf;
 		proxy.proxypreinit();
 		logger = e.getModLog();

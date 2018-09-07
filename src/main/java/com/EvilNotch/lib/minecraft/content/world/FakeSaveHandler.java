@@ -50,7 +50,13 @@ public class FakeSaveHandler implements ISaveHandler{
 
 	@Override
 	public IPlayerFileData getPlayerNBTManager() {
-		return null;
+		return getPlayerManager();
+	}
+	public static IPlayerFileData manager = null;
+	public static IPlayerFileData getPlayerManager() {
+		if(manager == null)
+			manager = new FakePlayerFileData();
+		return manager;
 	}
 
 	@Override
@@ -66,7 +72,9 @@ public class FakeSaveHandler implements ISaveHandler{
 	public File getMapFileFromName(String mapName) {
 		return null;
 	}
-
+	/**
+	 * null is allowed here
+	 */
 	@Override
 	public TemplateManager getStructureTemplateManager() {
 		return null;

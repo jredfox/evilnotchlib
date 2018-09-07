@@ -30,7 +30,7 @@ public class FakeChunkProvider implements IChunkProvider{
 
 	@Override
 	public String makeString() {
-		return null;
+		return "stopUsingThisOnConstruction";
 	}
 
 	@Override

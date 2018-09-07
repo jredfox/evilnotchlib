@@ -142,11 +142,11 @@ public class FakeWorldProvider extends WorldProvider{
      }
      @Override
      public int getHeight() {
-        return 256;
+        return 255;
      }
      @Override
      public int getActualHeight() {
-        return 256;
+        return 255;
      }
      @Override
      public void resetRainAndThunder() {
