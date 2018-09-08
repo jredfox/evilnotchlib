@@ -25,6 +25,9 @@ public class IItemRendererHandler {
 	public static IItemRenderer getIItemRenderer(ItemStack itemstack){
 		return itemstack != null ? getIItemRenderer(itemstack.getItem()) : null;
 	}
+	public static boolean hasKey(ItemStack stack){
+		return stack != null ? renderers.containsKey(stack.getItem()) : false;
+	}
 
 	public static void registerIItemRenderer(Item item, IItemRenderer renderer){
 		renderers.put(item, renderer);
