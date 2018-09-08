@@ -2,6 +2,7 @@ package com.elix_x.itemrender.mod;
 
 import java.util.List;
 
+import com.EvilNotch.lib.Api.MCPSidedString;
 import com.elix_x.itemrender.IItemRendererRenderItem;
 
 import net.minecraft.client.Minecraft;
@@ -16,7 +17,6 @@ import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 @Mod(modid = IItemRendererMod.MODID, name = IItemRendererMod.NAME, version = IItemRendererMod.VERSION, clientSideOnly = true)
@@ -39,22 +39,22 @@ public class IItemRendererMod {
 		}
 
 		RenderItem renderItem = new IItemRendererRenderItem(Minecraft.getMinecraft().getRenderItem(), Minecraft.getMinecraft().renderEngine, Minecraft.getMinecraft().getItemColors());
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderItem, "renderItem", "field_175621_X");
+		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderItem, new MCPSidedString("renderItem", "field_175621_X").toString());
 
 		RenderManager renderManager = new RenderManager(Minecraft.getMinecraft().renderEngine, renderItem);
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderManager, "renderManager", "field_175616_W");
+		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderManager, new MCPSidedString("renderManager", "field_175616_W").toString());
 
 		ItemRenderer itemRenderer = new ItemRenderer(Minecraft.getMinecraft());
 		mcResourceManager.registerReloadListener(renderItem);
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), itemRenderer, "itemRenderer", "field_175620_Y");
+		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), itemRenderer, new MCPSidedString("itemRenderer", "field_175620_Y").toString());
 
 		EntityRenderer entityRenderer = new EntityRenderer(Minecraft.getMinecraft(), mcResourceManager);
 		mcResourceManager.registerReloadListener(entityRenderer);
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), entityRenderer, "entityRenderer", "field_71460_t");
+		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), entityRenderer, new MCPSidedString("entityRenderer", "field_71460_t").toString());
 
 		RenderGlobal renderGlobal = new RenderGlobal(Minecraft.getMinecraft());
 		mcResourceManager.registerReloadListener(renderGlobal);
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderGlobal, "renderGlobal", "field_71438_f");
+		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderGlobal, new MCPSidedString("renderGlobal", "field_71438_f").toString());
 	}
 
 }

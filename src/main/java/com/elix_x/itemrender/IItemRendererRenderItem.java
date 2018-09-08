@@ -26,7 +26,7 @@ public class IItemRendererRenderItem extends RenderItem {
 			Field modifiers = Field.class.getDeclaredField("modifiers");
 			modifiers.setAccessible(true);
 			Field itemModelMesher = ReflectionHelper.findField(RenderItem.class, "itemModelMesher", "field_175059_m");
-			itemModelMesher.setAccessible(true);;
+			itemModelMesher.setAccessible(true);
 			modifiers.set(itemModelMesher, itemModelMesher.getModifiers() & (~Modifier.FINAL));
 			itemModelMesher.set(this, renderItem.getItemModelMesher());
 		} catch(Exception e){
