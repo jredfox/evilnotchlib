@@ -43,7 +43,7 @@ public class ASMHelper
 			origin.localVariables.clear();
 			origin.instructions = toReplace.instructions;
 			origin.localVariables = toReplace.localVariables;
-			origin.access = toReplace.access;
+//			origin.access = toReplace.access;//Temporarily commented out till further testing is done doing this isn't safe without checks
 			origin.annotationDefault = toReplace.annotationDefault;
 			origin.tryCatchBlocks = toReplace.tryCatchBlocks;
 			origin.visibleAnnotations = toReplace.visibleAnnotations;
@@ -80,7 +80,7 @@ public class ASMHelper
 			origin.localVariables.clear();
 			origin.instructions = toReplace.instructions;
 			origin.localVariables = toReplace.localVariables;
-			origin.access = toReplace.access;
+//			origin.access = toReplace.access;
 			origin.annotationDefault = toReplace.annotationDefault;
 			origin.tryCatchBlocks = toReplace.tryCatchBlocks;
 			origin.visibleAnnotations = toReplace.visibleAnnotations;
