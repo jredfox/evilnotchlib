@@ -84,4 +84,18 @@ public class IItemRendererRenderItem extends RenderItem {
 		else
 			this.child.renderItemModelIntoGUI(stack,x,y,bakedmodel);
 	}
+<<<<<<< HEAD
+=======
+	//attempt to add jei compat
+	@Override
+    	public void renderModel(IBakedModel model, ItemStack stack)
+    	{
+		IItemRendererHandler.handleCameraTransforms(TransformType.GUI);
+		if(IItemRendererHandler.renderPre(this, stack,model))
+		{
+			this.child.renderModel(model, stack);
+			IItemRendererHandler.renderPost(this, stack, model);
+		}
+    	}
+>>>>>>> f7a3e2254c3b05a7737c08dc63be5d30988a3af3
 }
