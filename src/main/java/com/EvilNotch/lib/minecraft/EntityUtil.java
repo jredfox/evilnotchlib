@@ -925,10 +925,12 @@ public class EntityUtil {
 			}
 			if(!ent_blacklist.contains(loc) && !ent_blacklist_nbt.contains(loc))
 			{
-				String[] names = new String[3];
-				names[0] = EntityUtil.getUnlocalizedName(e);
-				names[1] = I18n.translateToLocal(names[0]);
-				names[2] = EntityUtil.getColor(e);
+				try
+				{
+					String[] names = new String[3];
+					names[0] = EntityUtil.getUnlocalizedName(e);
+					names[1] = I18n.translateToLocal(names[0]);
+					names[2] = EntityUtil.getColor(e);
 				
 				if(living)
 					EntityUtil.living.put(loc,names);
@@ -936,6 +938,13 @@ public class EntityUtil {
 					EntityUtil.livingbase.put(loc,names);
 				else if(nonliving)
 					EntityUtil.nonliving.put(loc,names);
+				}
+				catch(Throwable t)
+				{
+					System.out.println("An Entity has thrown an exception when trying to get it's colored text/translating unlocal name:" + loc);
+					ent_blacklist.add(loc);
+					continue;
+				}
 			}
 		}
 		

@@ -2,6 +2,7 @@ package com.elix_x.itemrender;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -24,6 +26,9 @@ public class IItemRendererHandler {
 
 	public static IItemRenderer getIItemRenderer(ItemStack itemstack){
 		return itemstack != null ? getIItemRenderer(itemstack.getItem()) : null;
+	}
+	public static Set<Item> getItems() {
+		return renderers.keySet();
 	}
 	public static boolean hasKey(ItemStack stack){
 		return stack != null ? renderers.containsKey(stack.getItem()) : false;

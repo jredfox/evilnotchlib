@@ -84,5 +84,4 @@ public class IItemRendererRenderItem extends RenderItem {
 		else
 			this.child.renderItemModelIntoGUI(stack,x,y,bakedmodel);
 	}
-
 }

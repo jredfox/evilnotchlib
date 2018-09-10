@@ -41,7 +41,9 @@ import com.EvilNotch.lib.util.Line.IHead;
 import com.EvilNotch.lib.util.Line.ILine;
 import com.EvilNotch.lib.util.Line.LineItemStack;
 import com.EvilNotch.lib.util.simple.PairString;
+import com.elix_x.itemrender.IItemRendererHandler;
 
+import mezz.jei.render.IngredientListBatchRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
@@ -479,6 +481,13 @@ public class ClientProxy extends ServerProxy{
 	@Override
 	public void postinit()
 	{
+		if(Loader.isModLoaded("jei"))
+		{
+			for(Item i : IItemRendererHandler.getItems())
+			{
+				IngredientListBatchRenderer.addSlowRenderer(i);
+			}
+		}
 		super.postinit();
 	}
 
