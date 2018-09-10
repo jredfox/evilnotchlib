@@ -10,8 +10,9 @@ public interface IBasicArmor {
 	public ArmorSet getArmorSet();
 	public void setArmorSet(ArmorSet set);
 	public boolean hasFullArmorSet(ItemStack boots,ItemStack leggings,ItemStack chestplate,ItemStack helmet);
-	default public boolean hasPotionEffect(){
-		return getPotionEffect() != null;
+	default public boolean hasPotionEffects(){
+		return getPotionEffects() != null;
 	}
-	public PotionEffect getPotionEffect();
+	public PotionEffect[] getPotionEffects();
+	public boolean containsPotionEffect(PotionEffect p);
 }

@@ -156,8 +156,10 @@ public class ClientProxy extends ServerProxy{
 				json = getJSONItem("item/handheld", i);
 				File file = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
 				if(!file.exists())
+				{
 					flag = true;
-				JavaUtil.saveJSONSafley(json, file);
+					JavaUtil.saveJSONSafley(json, file);
+				}
 			}
 			else if(i.isMeta())
 			{
@@ -166,8 +168,10 @@ public class ClientProxy extends ServerProxy{
 					json = getJSONItem("item/generated", i,index);
 					File file = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + index + ".json");
 					if(!file.exists())
+					{
 						flag = true;
-					JavaUtil.saveJSONSafley(json, file);
+						JavaUtil.saveJSONSafley(json, file);
+					}
 				}
 			}
 			else
@@ -176,8 +180,10 @@ public class ClientProxy extends ServerProxy{
 				json = getJSONItem("item/generated", i);
 				File file = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
 				if(!file.exists())
+				{
 					flag = true;
-				JavaUtil.saveJSONSafley(json, file);
+					JavaUtil.saveJSONSafley(json, file);
+				}
 			}
 		}
 		for(IBasicBlock b : MainJava.blocks)
@@ -226,8 +232,10 @@ public class ClientProxy extends ServerProxy{
 					JSONObject item = getJSONBlockItem(b,prop);
 					File itemFile = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + prop + ".json");
 					if(!itemFile.exists())
+					{
 						flag = true;
-					JavaUtil.saveJSONSafley(item, itemFile);
+						JavaUtil.saveJSONSafley(item, itemFile);
+					}
 				}
 			}
 			else
@@ -236,17 +244,19 @@ public class ClientProxy extends ServerProxy{
 				File bmodel = new File(root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
 				
 				if(!bmodel.exists())
+				{
 					flag = true;
-				
-				JavaUtil.saveJSONSafley(block, bmodel);
+					JavaUtil.saveJSONSafley(block, bmodel);
+				}
 				
 				JSONObject item = getJSONBlockItem(b,names.get(0));
 				File itemFile = new File(root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
 				
 				if(!itemFile.exists())
+				{
 					flag = true;
-				
-				JavaUtil.saveJSONSafley(item, itemFile);
+					JavaUtil.saveJSONSafley(item, itemFile);
+				}
 			}
 		}
 		if(flag)
@@ -483,9 +493,16 @@ public class ClientProxy extends ServerProxy{
 	{
 		if(Loader.isModLoaded("jei"))
 		{
-			for(Item i : IItemRendererHandler.getItems())
+			try
 			{
-				IngredientListBatchRenderer.addSlowRenderer(i);
+				for(Item i : IItemRendererHandler.getItems())
+				{
+					IngredientListBatchRenderer.addSlowRenderer(i);
+				}
+			}
+			catch(Throwable e)
+			{
+				System.out.println("JEI Build Is Outdated IItemRenderer Comptability isn't possible");
 			}
 		}
 		super.postinit();

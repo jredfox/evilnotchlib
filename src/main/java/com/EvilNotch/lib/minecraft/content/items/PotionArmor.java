@@ -23,21 +23,35 @@ public class PotionArmor extends BasicArmor{
 		this(materialIn,id, renderIndexIn, equipmentSlotIn,(CreativeTabs)null,langlist);
 	}
 	public PotionArmor(ArmorMat mat,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot slot,CreativeTabs tab,LangEntry... langlist){
-		this(mat,id, renderIndexIn, slot,tab,null,true,true,true,true,langlist);
+		this(mat,id, renderIndexIn, slot,tab,new PotionEffect[0],true,true,true,true,langlist);
 	}
-	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect potion, LangEntry...langList) 
+	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect[] potion, LangEntry...langList) 
 	{
 		this(mat,id,renderIndexIn,slot,potion,(CreativeTabs)null,langList);
 	}
-	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect potion,CreativeTabs tab, LangEntry...langList) 
+	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect[] potion,CreativeTabs tab, LangEntry...langList) 
 	{
 		this(mat,id,renderIndexIn,slot,tab,potion,true,true,true,true,langList);
 	}
+	
+	/**
+	 * legacy support and also if you only wanted one potion effect applied
+	 */
+	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect potion, LangEntry...langList) 
+	{
+		this(mat,id,renderIndexIn,slot,new PotionEffect[]{potion},(CreativeTabs)null,langList);
+	}
+	/**
+	 * legacy support and also if you only wanted one potion effect applied
+	 */
+	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect potion,CreativeTabs tab, LangEntry...langList) 
+	{
+		this(mat,id,renderIndexIn,slot,tab,new PotionEffect[]{potion},true,true,true,true,langList);
+	}
 
 	public PotionArmor(ArmorMat materialIn,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn,CreativeTabs tab,
-			PotionEffect potion,boolean model,boolean register,boolean lang, boolean config,LangEntry... langlist) {
-		
-		super(materialIn,id, renderIndexIn, equipmentSlotIn,tab,potion,model,register,lang, config,langlist);
+			PotionEffect[] potions,boolean model,boolean register,boolean lang, boolean config,LangEntry... langlist) {
+		super(materialIn,id, renderIndexIn, equipmentSlotIn,tab,potions,model,register,lang, config,langlist);
 	}
 
 	/**
@@ -55,10 +69,21 @@ public class PotionArmor extends BasicArmor{
 		IBasicArmor c = (IBasicArmor) chest.getItem();
 		IBasicArmor h = (IBasicArmor) head.getItem();
 		
-		if(!b.hasPotionEffect() || !p.hasPotionEffect() || !c.hasPotionEffect() || !h.hasPotionEffect())
+		if(!b.hasPotionEffects() || !p.hasPotionEffects() || !c.hasPotionEffects() || !h.hasPotionEffects())
 			return super.hasFullArmorSet(boots, pants, chest, head);
 		
-		Potion pot = this.getPotionEffect().getPotion();
-		return b.getPotionEffect().getPotion() == pot && p.getPotionEffect().getPotion() == pot && c.getPotionEffect().getPotion() == pot && h.getPotionEffect().getPotion() == pot;
+		return hasPotionEffects(b,p,c,h);
+	}
+	/**
+	 * compares if all potions from this is in objects boots,pants,chest,helmet
+	 */
+	public boolean hasPotionEffects(IBasicArmor b, IBasicArmor p, IBasicArmor c, IBasicArmor h) 
+	{
+		for(PotionEffect potion : this.effects)
+		{
+			if(!b.containsPotionEffect(potion) || !p.containsPotionEffect(potion) || !c.containsPotionEffect(potion) || !h.containsPotionEffect(potion))
+				return false;
+		}
+		return true;
 	}
 }
