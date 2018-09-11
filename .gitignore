@@ -1,2 +1,7 @@
 
 src/main/java/com/EvilNotch/lib/minecraft/content/client/ClientDebug.java
+src/main/java/net/minecraft/item/ItemBlock.java
+src/main/java/net/minecraft/tileentity/MobSpawnerBaseLogic.java
+src/main/java/net/minecraft/tileentity/WeightedSpawnerEntry.java
+src/main/resources/assets/iitemrenderer/asm/deob/IngredientListBatchRenderer
+src/main/resources/assets/iitemrenderer/asm/srg/IngredientListBatchRenderer

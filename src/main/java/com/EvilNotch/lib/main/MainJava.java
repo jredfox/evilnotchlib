@@ -12,7 +12,6 @@ import com.EvilNotch.lib.asm.FMLCorePlugin;
 import com.EvilNotch.lib.main.eventhandlers.LibEvents;
 import com.EvilNotch.lib.main.eventhandlers.VanillaBugFixes;
 import com.EvilNotch.lib.main.testing.CapRegWorldTest;
-import com.EvilNotch.lib.main.testing.EventHandler;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.ArmorSet;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
@@ -126,7 +125,6 @@ public class MainJava {
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
 		
 		GeneralRegistry.registerCommand(new CMDDim());
@@ -250,22 +248,27 @@ public class MainJava {
 	    	if(h.getItem() instanceof IBasicArmor)
 	    	{
 	    		IBasicArmor basic = (IBasicArmor)h.getItem();
-	    		basic.setArmorSet(set);
+	    		//check before overriding the armor set
+	    		if(basic.getArmorSet() == null)
+	    			basic.setArmorSet(set);
 	    	}
 	    	if(c.getItem() instanceof IBasicArmor)
 	    	{
 	    		IBasicArmor basic = (IBasicArmor)c.getItem();
-	    		basic.setArmorSet(set);
+	    		if(basic.getArmorSet() == null)
+	    			basic.setArmorSet(set);
 	    	}
 	    	if(l.getItem() instanceof IBasicArmor)
 	    	{
 	    		IBasicArmor basic = (IBasicArmor)l.getItem();
-	    		basic.setArmorSet(set);
+	    		if(basic.getArmorSet() == null)
+	    			basic.setArmorSet(set);
 	    	}
 	    	if(b.getItem() instanceof IBasicArmor)
 	    	{
 	    		IBasicArmor basic = (IBasicArmor)b.getItem();
-	    		basic.setArmorSet(set);
+	    		if(basic.getArmorSet() == null)
+	    			basic.setArmorSet(set);
 	    	}
 	    	
 	    	if(!set.hasRecipe)

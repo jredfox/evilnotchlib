@@ -3,6 +3,9 @@ package com.elix_x.itemrender.compat.asm;
 import java.io.IOException;
 import java.util.List;
 
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
+
 import com.EvilNotch.lib.asm.ASMHelper;
 import com.EvilNotch.lib.asm.FMLCorePlugin;
 import com.EvilNotch.lib.util.JavaUtil;
@@ -31,6 +34,9 @@ public class JEITransformer  implements IClassTransformer{
 		System.out.println("Transforming JEI to Accept IItemRenderer");
 		try 
 		{
+			ClassNode classNode = ASMHelper.getClassNode(basicClass);
+			MethodNode test = ASMHelper.getMethodNode(classNode, "<clinit>", "()V");
+			System.out.println("Class Initializer is methodNode:" + (test != null));
 			String inputBase = "assets/" + IItemRendererMod.MODID + "/asm/" + (obfuscated ? "srg/" : "deob/");
 			return ASMHelper.replaceClass(inputBase + "IngredientListBatchRenderer");
 		} 

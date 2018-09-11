@@ -13,14 +13,17 @@ import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
 import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 import com.EvilNotch.lib.minecraft.content.tick.TickReg;
+import com.EvilNotch.lib.minecraft.events.PickEvent;
 import com.EvilNotch.lib.minecraft.events.TileStackSyncEvent;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
 import com.EvilNotch.lib.minecraft.network.packets.PacketYawHead;
 import com.EvilNotch.lib.util.simple.PointId;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -92,6 +95,19 @@ public class LibEvents {
         	if(e.tile instanceof TileEntityMobSpawner)
         		SPacketUpdateTileEntity.toIgnore.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
         }
+	}
+	/**
+	 * fix mob spawner returning null stack
+	 * @param e
+	 */
+	@SubscribeEvent(priority=EventPriority.HIGH)
+	public void pick(PickEvent.Block e)
+	{
+		if(e.tile instanceof TileEntityMobSpawner)
+		{
+			Block b = e.state.getBlock();
+			e.current = new ItemStack(b,1,b.getMetaFromState(e.state));
+		}
 	}
 	
 	public static int mTick = 0;

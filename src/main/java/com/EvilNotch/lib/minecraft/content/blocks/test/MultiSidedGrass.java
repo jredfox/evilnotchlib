@@ -50,12 +50,6 @@ public class MultiSidedGrass extends BasicMetaBlock{
 	{
 		super(mat,mc,id,tab,model,register,lang,config,itemblock,props,prop,langlist);
 	}
-	@Override
-    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
-    {
-		List<ItemStack> list = new ArrayList();
-    	return list;
-    }
 	
 	@Override
 	public ModelPart getModelPart(){
