@@ -1,8 +1,11 @@
 package com.elix_x.itemrender.mod;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import com.EvilNotch.lib.Api.MCPSidedString;
+import com.EvilNotch.lib.Api.ReflectionUtil;
+import com.elix_x.itemrender.IItemRendererHandler;
 import com.elix_x.itemrender.IItemRendererRenderItem;
 
 import net.minecraft.client.Minecraft;
@@ -14,9 +17,14 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
+import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 @Mod(modid = IItemRendererMod.MODID, name = IItemRendererMod.NAME, version = IItemRendererMod.VERSION, clientSideOnly = true)
@@ -24,7 +32,7 @@ public class IItemRendererMod {
 
 	public static final String MODID = "iitemrenderer";
 	public static final String NAME = "IItem Renderer";
-	public static final String VERSION = "1.0";
+	public static final String VERSION = "1.2";
 
 	@EventHandler
 	public void init(FMLInitializationEvent event)
@@ -55,6 +63,29 @@ public class IItemRendererMod {
 		RenderGlobal renderGlobal = new RenderGlobal(Minecraft.getMinecraft());
 		mcResourceManager.registerReloadListener(renderGlobal);
 		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderGlobal, new MCPSidedString("renderGlobal", "field_71438_f").toString());
+	}
+	/**
+	 * add jei support to the tabs
+	 */
+	@EventHandler
+	public void postinit(FMLPostInitializationEvent event)
+	{
+		if(Loader.isModLoaded("jei"))
+		{
+			Method addSlowRenderer = ReflectionUtil.getMethod(ReflectionUtil.classForName("mezz.jei.render.IngredientListBatchRenderer"),"addSlowRenderer",Item.class);
+			try
+			{
+				for(Item i : IItemRendererHandler.getItems())
+				{
+					addSlowRenderer.invoke(null,i);
+				}
+			}
+			catch(Throwable e)
+			{
+				System.out.println("JEI Patcher Isn't working with the current Build of JEI Report to EvilNotchLib issue on github");
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

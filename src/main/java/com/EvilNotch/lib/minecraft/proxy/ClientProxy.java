@@ -43,7 +43,6 @@ import com.EvilNotch.lib.util.Line.LineItemStack;
 import com.EvilNotch.lib.util.simple.PairString;
 import com.elix_x.itemrender.IItemRendererHandler;
 
-import mezz.jei.render.IngredientListBatchRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
@@ -491,20 +490,6 @@ public class ClientProxy extends ServerProxy{
 	@Override
 	public void postinit()
 	{
-		if(Loader.isModLoaded("jei"))
-		{
-			try
-			{
-				for(Item i : IItemRendererHandler.getItems())
-				{
-					IngredientListBatchRenderer.addSlowRenderer(i);
-				}
-			}
-			catch(Throwable e)
-			{
-				System.out.println("JEI Build Is Outdated IItemRenderer Comptability isn't possible");
-			}
-		}
 		super.postinit();
 	}
 

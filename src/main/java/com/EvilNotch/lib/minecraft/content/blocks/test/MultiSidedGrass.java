@@ -1,5 +1,8 @@
 package com.EvilNotch.lib.minecraft.content.blocks.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicMetaBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.BlockProperties;
@@ -8,9 +11,13 @@ import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 public class MultiSidedGrass extends BasicMetaBlock{
 	
@@ -43,6 +50,12 @@ public class MultiSidedGrass extends BasicMetaBlock{
 	{
 		super(mat,mc,id,tab,model,register,lang,config,itemblock,props,prop,langlist);
 	}
+	@Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+		List<ItemStack> list = new ArrayList();
+    	return list;
+    }
 	
 	@Override
 	public ModelPart getModelPart(){

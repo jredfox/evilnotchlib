@@ -180,7 +180,7 @@ public class MainJava {
 	public void post(FMLPostInitializationEvent e)
 	{
 		/**
-		 * if world capabilties are still not registered by init that is a mod's issue for the world and not mine
+		 * if world capabilities are still not registered by init that is a mod's issue for the world and not mine
 		 */
 		fake_world = new FakeWorld();
 		try

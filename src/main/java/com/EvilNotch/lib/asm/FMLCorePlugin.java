@@ -22,7 +22,7 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
     		ConfigCore.load();
     		configGenerated = true;
     	}
-        return new String[] {"com.EvilNotch.lib.asm.Transformer"};
+        return new String[] {"com.EvilNotch.lib.asm.Transformer","com.elix_x.itemrender.compat.asm.JEITransformer"};
     }
 
     @Override

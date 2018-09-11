@@ -51,5 +51,37 @@ public class ReflectionUtil {
 		}
 		
 	}
+	/**
+	 * get a method safley from a class
+	 * @return
+	 */
+	public static Method getMethod(Class clazz,String name, Class...params) 
+	{
+		try 
+		{
+			Method m = clazz.getDeclaredMethod(name, params);
+			m.setAccessible(true);
+			return m;
+		} 
+		catch (Exception e) 
+		{
+		}
+		return null;
+	}
+	/**
+	 * get a class from string safley
+	 */
+	public static Class classForName(String name) 
+	{
+		try
+		{
+			return Class.forName(name);
+		}
+		catch(Throwable t)
+		{
+			
+		}
+		return null;
+	}
 
 }

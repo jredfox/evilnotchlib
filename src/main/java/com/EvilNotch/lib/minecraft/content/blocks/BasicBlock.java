@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.EvilNotch.lib.Api.BlockApi;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
@@ -228,7 +230,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 		cacheStates = list;
 		return list;
 	}
-
+	@Nullable
 	@Override
 	public IProperty getStateProperty() {
 		return null;

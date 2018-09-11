@@ -887,7 +887,6 @@ public class EntityUtil {
 				MainJava.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod autoher:" + loc);
 				continue;
 			}
-			
 			Entity e = EntityUtil.createEntityByNameQuietly(loc, world,true);
 			if(e instanceof EntityEndermite || e instanceof EntityShulker)
 				end_ents.add(loc);
@@ -895,6 +894,9 @@ public class EntityUtil {
 			boolean living = e instanceof EntityLiving; 
 			boolean base = e instanceof EntityLivingBase && !(e instanceof EntityLiving);
 			boolean nonliving = !(e instanceof EntityLivingBase);
+			//allow mods like jc mod that are stupid and work after post init to pass by the exception finder for entities
+			if(Config.cacheEntAllow.contains(loc.getResourceDomain()) && !nonliving)
+				continue;
 			String translation = TransLateEntity(e, world);
 			if(e == null || translation == null)
 			{
