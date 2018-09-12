@@ -15,51 +15,42 @@ public class ArmorSet {
 	public ItemStack block;
 	public boolean allMetaBlock = true;
 	public boolean hasRecipe = true;
+	public static final ItemStack air = new ItemStack(Blocks.AIR);
 	
 	/**
 	 * use this constructor if you don't want recipes automated
 	 */
 	public ArmorSet(Item h, Item c, Item l,Item b)
 	{
-		this(h,c,l,b,new ItemStack(Blocks.AIR),false,false,true);
+		this(h,c,l,b,air);
+	}
+	public ArmorSet(Item h, Item c, Item l,Item b,ItemStack block)
+	{
+		this(h,c,l,b,block,false);
+	}
+	public ArmorSet(Item h, Item c, Item l,Item b,ItemStack block, boolean allMeta)
+	{
+		this(h,c,l,b,block,allMeta,true);
+	}
+	public ArmorSet(Item h, Item c, Item l,Item b,ItemStack block, boolean allMeta,boolean register)
+	{
+		this(new ItemStack(h),new ItemStack(c),new ItemStack(l),new ItemStack(b),block,allMeta,register);
 	}
 	
-	public ArmorSet(Item h, Item c, Item l,Item b,ItemStack block,boolean recipe)
-	{
-		this(h,c,l,b,block,recipe,false);
-	}
-	
-	public ArmorSet(Item h, Item c, Item l, Item b, ItemStack block, boolean recipe, boolean allMeta) 
-	{
-		this(h,c,l,b,block,recipe,allMeta,true);
-	}
-	
-	/**
-	 * All meta boolean for the itemstack block
-	 */
-	public ArmorSet(Item h, Item c, Item l,Item b,ItemStack block,boolean recipe,boolean allMeta,boolean register)
-	{
-		this(new ItemStack(h),new ItemStack(c),new ItemStack(l),new ItemStack(b),block,recipe,allMeta,register);
-	}
-	/**
-	 * use this constructor to not use crafting recipes
-	 */
 	public ArmorSet(ItemStack h, ItemStack c, ItemStack l,ItemStack b)
 	{
-		this(h,c,l,b,new ItemStack(Blocks.AIR),false,false,true);
+		this(h,c,l,b,air);
 	}
-	
-	public ArmorSet(ItemStack h, ItemStack c, ItemStack l,ItemStack b,ItemStack block,boolean recipe)
+	public ArmorSet(ItemStack h, ItemStack c, ItemStack l,ItemStack b,ItemStack block)
 	{
-		this(h, c, l,b,block,recipe,false);
+		this(h,c,l,b,block,false);
 	}
-	
-	public ArmorSet(ItemStack h, ItemStack c, ItemStack l, ItemStack b, ItemStack block, boolean recipe, boolean allMeta) 
+	public ArmorSet(ItemStack h, ItemStack c, ItemStack l,ItemStack b,ItemStack block,boolean allMeta)
 	{
-		this(h,c,l,b,block,recipe,allMeta,true);
+		this(h,c,l,b,block,allMeta,true);
 	}
 	
-	public ArmorSet(ItemStack h, ItemStack c, ItemStack l,ItemStack b,ItemStack block,boolean recipe,boolean allMeta,boolean register)
+	public ArmorSet(ItemStack h, ItemStack c, ItemStack l,ItemStack b,ItemStack block,boolean allMeta,boolean register)
 	{
 		this.helmet = h;
 		this.chestplate = c;
@@ -69,7 +60,7 @@ public class ArmorSet {
 		this.allMetaBlock = allMeta;
 		if(register)
 			MainJava.armorsets.add(this);
-		this.hasRecipe = recipe;
+		this.hasRecipe = !block.isEmpty();
 	}
 
 }
