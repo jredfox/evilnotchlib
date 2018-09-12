@@ -68,7 +68,6 @@ public class BasicBlock extends Block implements IBasicBlock{
 	
 	/**
 	 * MUST BE CALLED DURING PREINIT OR LATER
-	 * in order for lang to work it needs to be called before post init or it's manual lang registries for you
 	 */
 	public BasicBlock(Material blockMaterialIn, MapColor blockMapColorIn,ResourceLocation id,CreativeTabs tab,boolean model,boolean register,boolean lang,boolean config,ItemBlock itemblock,boolean useItemBlock,BlockProperties props,LangEntry... langlist) 
 	{

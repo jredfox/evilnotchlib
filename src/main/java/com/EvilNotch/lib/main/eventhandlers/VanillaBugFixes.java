@@ -32,6 +32,7 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -63,7 +64,6 @@ public class VanillaBugFixes {
     	if(!hasItemClazz && blockclazz != null && BlockApi.blocksModified.contains(b.getRegistryName() ))
     	{
     		e.setNewSpeed(1.0F);
-//    		System.out.println("here:" + blockclazz );
     	}
     }
 	
@@ -109,24 +109,21 @@ public class VanillaBugFixes {
   		  {
   			  NBTTagCompound nbt = new NBTTagCompound();
   		   	  tile.writeToNBT(nbt);
-  		   	  ResourceLocation stringId = ItemMonsterPlacer.getNamedIdFrom(stack);
-  			  String name = stringId == null ? null : stringId.toString();
+  		   	  ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
+  			  String name = loc == null ? null : loc.toString();
   			  if(name == null)
   				  return;
-  			  NBTTagList spawnpot = new NBTTagList();
-  			  NBTTagCompound entry = new NBTTagCompound();
-  			  entry.setInteger("Weight", 1);
-  			
-  			  NBTTagCompound entity = new NBTTagCompound();
-  			  entity.setString("id",name);
   			  
-  			  entry.setTag("Entity", entity);
-  			  spawnpot.appendTag(entry);
-  			  
-  			  nbt.setTag("SpawnPotentials", spawnpot);
+  			  //spawndata reset
   			  NBTTagCompound data = new NBTTagCompound();
-  			  data.setString("id", name);
+  			  data.setString("id", loc.toString());
   			  nbt.setTag("SpawnData", data);
+  			  
+  			  //spawn potentials reset
+  			  NBTTagList pot = new NBTTagList();
+  			  pot.appendTag(new WeightedSpawnerEntity(1,data.copy()).toCompoundTag() );
+  			  nbt.setTag("SpawnPotentials", pot);
+  			  
   			  if (!p.capabilities.isCreativeMode)
   			       stack.shrink(1);
   			  

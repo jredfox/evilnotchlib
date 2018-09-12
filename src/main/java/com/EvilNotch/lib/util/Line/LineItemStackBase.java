@@ -116,22 +116,55 @@ public class LineItemStackBase extends LineBase
 			}
 		}
 	 }
-	
+	/**
+	 * don't compare actual meta/nbt values since they should be configurable it's like a head
+	 */
 	@Override
     public boolean equals(Object obj)
+    {
+		return this.equalsMeta(obj,false);
+    }
+	@Override
+	public boolean equals(Object obj,boolean compareHead)
+	{
+		return super.equals(obj, compareHead) && this.equalsMeta(obj, compareHead);
+	}
+	
+    public boolean equalsMeta(Object obj, boolean compareMeta) 
     {
         if(!(obj instanceof LineItemStackBase))
             return this.NBT == null && !this.hasMeta && super.equals(obj);
         LineItemStackBase line = (LineItemStackBase)obj;
-        boolean nbt = false;
-        if(this.NBT != null && line.NBT != null)
-            nbt = this.NBT.equals(line.NBT);
-        if(this.NBT == null)
-            nbt = line.NBT == null;
-        return super.equals(obj) && this.meta == line.meta && nbt && this.hasMeta == line.hasMeta;
-    }
+        boolean nbt = this.hasNBT() == line.hasNBT();
+        
+        boolean lineSame = super.equals(obj)  && nbt && this.hasMeta == line.hasMeta && this.hasStrMeta == line.hasStrMeta;
+        if(compareMeta)
+        {
+        	lineSame = lineSame && this.equalsNBT(line.NBT) && this.meta == line.meta && this.equalsMeta(line.strmeta);
+        }
+        return lineSame;
+	}
 
-    @Override
+	public boolean equalsMeta(String otherMeta) 
+	{
+		if(this.hasStrMeta)
+			return this.strmeta.equals(otherMeta);
+		return otherMeta == null;
+	}
+
+	public boolean equalsNBT(NBTTagCompound nbt) 
+	{
+		if(this.hasNBT())
+			return this.NBT.equals(nbt);
+		return nbt == null;
+	}
+
+	public boolean hasNBT() 
+	{
+		return this.NBT != null;
+	}
+
+	@Override
     public String toString()
     {
         String strid = super.toString();

@@ -8,7 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
 
 public class BlockProperties {
-	public ResourceLocation loc = null;
+	public ResourceLocation matId = null;
 	public Material mat = null;
 	public String harvestTool = null;
 	public float blockHardness = 0f;
@@ -37,30 +37,29 @@ public class BlockProperties {
 	 * Construct default with only default values you manipulate what you want
 	 */
 	public BlockProperties(){
-		this.loc = new ResourceLocation("null");
 	}
-	public BlockProperties(ResourceLocation loc)
+	public BlockProperties(ResourceLocation idMat)
 	{
-		this.loc = loc;
+		this.matId = idMat;
 	}
 	/**
 	 * Basic constructor
 	 * loc is the resource location of the block
 	 * and mat is the material of that block
 	 */
-	public BlockProperties(ResourceLocation loc,String tool,float hard,float resist,int lvl){
-		this(loc,tool,hard,resist,lvl,null);
+	public BlockProperties(ResourceLocation idMat,String tool,float hard,float resist,int lvl){
+		this(idMat,tool,hard,resist,lvl,null);
 	}
-	public BlockProperties(ResourceLocation loc,String tool,float hard,float resist,int lvl, SoundType sound){
-		this(loc,tool,hard,resist,lvl,sound,-1,-1);
+	public BlockProperties(ResourceLocation idMat,String tool,float hard,float resist,int lvl, SoundType sound){
+		this(idMat,tool,hard,resist,lvl,sound,-1,-1);
 	}
-	public BlockProperties(ResourceLocation loc,String tool,float hard,float resist,int lvl, SoundType sound,int flamE,int flame){
-		this(loc,tool,hard,resist,lvl,sound,flamE,flame,0.6F,0);
+	public BlockProperties(ResourceLocation idMat,String tool,float hard,float resist,int lvl, SoundType sound,int flamE,int flame){
+		this(idMat,tool,hard,resist,lvl,sound,flamE,flame,0.6F,0);
 	}
-	public BlockProperties(ResourceLocation loc,String tool,float hard,float resist,int lvl,SoundType sound,int flameE,int flame,float slip,int light)
+	public BlockProperties(ResourceLocation idMat,String tool,float hard,float resist,int lvl,SoundType sound,int flameE,int flame,float slip,int light)
 	{
-		this.loc = loc;
-		this.mat = BlockApi.getMatFromReg(loc);
+		this.matId = idMat;
+		this.mat = BlockApi.getMatFromReg(idMat);
 		this.harvestTool = tool;
 		this.blockHardness = hard;
 		this.blastResistance = resist;
@@ -73,9 +72,11 @@ public class BlockProperties {
 	}
 	public BlockProperties(LineEnhanced line)
 	{
-		this.loc = new ResourceLocation(line.strmeta);
 		if(line.hasStrMeta)
-			this.mat = BlockApi.getMatFromReg(this.loc);
+		{
+			this.matId = new ResourceLocation(line.strmeta);
+			this.mat = BlockApi.getMatFromReg(this.matId);
+		}
 		int size = line.heads.size();
 		if(size >= 5)
 		{
@@ -121,6 +122,6 @@ public class BlockProperties {
 		else if(useFlame){
 			bonus = "," + this.flameEncoragement + "," + this.flamability;
 		}
-		return "<\"" + this.loc.toString() + "\">" + " = [" + init + bonus +"]";
+		return "<\"" + this.matId.toString() + "\">" + " = [" + init + bonus +"]";
 	}
 }
