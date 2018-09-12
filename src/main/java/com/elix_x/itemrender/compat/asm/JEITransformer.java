@@ -68,7 +68,8 @@ public class JEITransformer  implements IClassTransformer{
 						while(spot.getOpcode() != Opcodes.IFNE)
 						{
 							spot = spot.getNext();
-							System.out.println(spot.getOpcode());
+							if(spot.getOpcode() == Opcodes.RETURN)
+								break;
 						}
 						break;
 					}
@@ -86,14 +87,7 @@ public class JEITransformer  implements IClassTransformer{
 		   	
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
-            byte[] bytes = classWriter.toByteArray();
-            if(true)
-            {
-          	  String[] a = "mezz.jei.render.IngredientListBatchRenderer".split("\\.");
-          	  File f = new File(System.getProperty("user.home") + "/Desktop/" + a[a.length-1] + ".class");
-          	  FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
-            }
-            return bytes;
+            return classWriter.toByteArray();
 		}
 		catch (Throwable e) 
 		{

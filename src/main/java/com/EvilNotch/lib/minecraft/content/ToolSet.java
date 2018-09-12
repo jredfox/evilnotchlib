@@ -17,44 +17,41 @@ public class ToolSet {
 	public boolean allMetaBlock = true;
 	public boolean allMetaStick = true;
 	
-	public ToolSet(Item p, Item a, Item s,Item shovel, Item h,ItemStack block,ItemStack stick,boolean allMetaBlock,boolean allMetaStick)
+	public ToolSet(Item pick,Item axe,Item sword,Item shovel,Item hoe)
 	{
-		this(p, a, s,shovel, h,block,stick,allMetaBlock,allMetaStick,true);
+		this(pick,axe,sword,shovel,hoe,false);
+	}
+	public ToolSet(Item pick,Item axe,Item sword,Item shovel,Item hoe,boolean recipe)
+	{
+		this(pick,axe,sword,shovel,hoe,recipe,false,false);
+	}
+	public ToolSet(Item pick,Item axe,Item sword,Item shovel,Item hoe,boolean recipe,boolean allMetaBlock,boolean allMetaStick)
+	{
+		this(new ItemStack(pick),new ItemStack(axe),new ItemStack(sword),new ItemStack(shovel),new ItemStack(hoe),recipe,allMetaBlock,allMetaStick);
 	}
 	
-	public ToolSet(Item p, Item a, Item s,Item shovel, Item h,ItemStack block,ItemStack stick,boolean allMetaBlock,boolean allMetaStick,boolean register)
+	public ToolSet(ItemStack pick,ItemStack axe,ItemStack sword,ItemStack shovel,ItemStack hoe)
 	{
-		this.pickaxe = new ItemStack(p);
-		this.axe = new ItemStack(a);
-		this.sword = new ItemStack(s);
-		this.shovel = new ItemStack(shovel);
-		this.hoe = new ItemStack(h);
-		this.block = block;
-		this.stick = stick;
-		this.allMetaBlock = allMetaBlock;
-		this.allMetaStick = allMetaStick;
-		if(register)
-			MainJava.toolsets.add(this);
+		this(pick,axe,sword,shovel,hoe,false);
+	}
+	public ToolSet(ItemStack pick,ItemStack axe,ItemStack sword,ItemStack shovel,ItemStack hoe,boolean recipe)
+	{
+		this(pick,axe,sword,shovel,hoe,recipe,false,false);
 	}
 	
-	public ToolSet(ItemStack p, ItemStack a, ItemStack s,ItemStack shovel, ItemStack h,ItemStack block,ItemStack stick,boolean allMetaBlock,boolean allMetaStick)
+	public ToolSet(ItemStack pick,ItemStack axe,ItemStack pickaxe,ItemStack shovel,ItemStack hoe,boolean recipe,boolean allMetaBlock,boolean allMetaStick)
 	{
-		this(p, a, s,shovel, h,block,stick,allMetaBlock,allMetaStick,true);
-	}
-	
-	public ToolSet(ItemStack p, ItemStack a, ItemStack s,ItemStack shovel, ItemStack h,ItemStack block,ItemStack stick,boolean allMetaBlock,boolean allMetaStick,boolean register)
-	{
-		this.pickaxe = p;
-		this.axe = a;
-		this.sword = s;
+		this.pickaxe = pick;
+		this.axe = axe;
+		this.pickaxe = pickaxe;
 		this.shovel = shovel;
-		this.hoe = h;
-		this.block = block;
-		this.stick = stick;
-		this.allMetaBlock = allMetaBlock;
-		this.allMetaStick = allMetaStick;
-		if(register)
+		this.hoe = hoe;
+		if(recipe)
+		{
+			this.allMetaBlock = allMetaBlock;
+			this.allMetaStick = allMetaStick;
 			MainJava.toolsets.add(this);
+		}
 	}
 
 }

@@ -191,7 +191,7 @@ public class MainJava {
 		}
 		proxy.lang();
 		
-		if(!Config.isDev)
+		if(!MainJava.isDeObfuscated)
 		{
 			cfgArmors.updateConfig(true, false, true);
 			cfgTools.updateConfig(true, false, true);

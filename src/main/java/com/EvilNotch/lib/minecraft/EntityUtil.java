@@ -560,7 +560,7 @@ public class EntityUtil {
 	//Returns true for survival mode unless debug mode is on
 	public static boolean isSurvival(EntityPlayer player) 
 	{
-		if(player == null || player.capabilities.isCreativeMode && !Config.debug|| !player.capabilities.allowEdit && !Config.debug)
+		if(player == null || player.capabilities.isCreativeMode|| !player.capabilities.allowEdit)
 			return false;
 		return true;
 	}
