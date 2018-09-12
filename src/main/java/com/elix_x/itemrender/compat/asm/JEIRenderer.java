@@ -13,4 +13,12 @@ import net.minecraft.util.SoundEvent;
 public class JEIRenderer{
 	
 	public static Set<Item> slowItems = new HashSet();
+	
+	public static void a(int i)
+	{
+		if(i > 1)
+		{
+			System.out.println();
+		}
+	}
 }

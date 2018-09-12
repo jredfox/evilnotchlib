@@ -361,4 +361,17 @@ public class ASMHelper
 		MethodNode node = new MethodNode(opcode, name, desc, null, null);
 		classNode.methods.add(node);
 	}
+	/**
+	 * get a local variable index by it's owner name
+	 */
+	public static int getLocalVarIndexFromOwner(MethodNode method, String owner) 
+	{
+		for(LocalVariableNode node : method.localVariables)
+		{
+			System.out.println(node.desc);
+			if(node.desc.equals(owner))
+				return node.index;
+		}
+		return -1;
+	}
 }
