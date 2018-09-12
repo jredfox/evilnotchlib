@@ -30,6 +30,12 @@ public class IItemRendererHandler {
 	public static Set<Item> getItems() {
 		return renderers.keySet();
 	}
+	/**
+	 * must be called before post init
+	 */
+	public static void removeItem(Item i){
+		renderers.remove(i);
+	}
 	public static boolean hasKey(ItemStack stack){
 		return stack != null ? renderers.containsKey(stack.getItem()) : false;
 	}

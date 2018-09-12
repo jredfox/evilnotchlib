@@ -15,7 +15,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class JEITransformer  implements IClassTransformer{
 	
-    public static final List<String> classesBeingTransformed = (List<String>)JavaUtil.<String>asArray2(new Object[]
+    public static final List<String> classesBeingTransformed = JavaUtil.<String>asArray2(new Object[]
     {
     		"mezz.jei.render.IngredientListBatchRenderer"
     });
@@ -35,11 +35,11 @@ public class JEITransformer  implements IClassTransformer{
 		try 
 		{
 			ClassNode classNode = ASMHelper.getClassNode(basicClass);
-			MethodNode test = ASMHelper.getMethodNode(classNode, "<clinit>", "()V");
-			System.out.println("Class Initializer is methodNode:" + (test != null));
+			MethodNode method = ASMHelper.getMethodNode(classNode, "set", "(Lmezz/jei/render/IngredientListSlot;Lmezz/jei/gui/ingredients/IIngredientListElement;)V");
+			
 			String inputBase = "assets/" + IItemRendererMod.MODID + "/asm/" + (obfuscated ? "srg/" : "deob/");
 			return ASMHelper.replaceClass(inputBase + "IngredientListBatchRenderer");
-		} 
+		}
 		catch (IOException e) 
 		{
 			e.printStackTrace();

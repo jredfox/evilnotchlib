@@ -7,6 +7,7 @@ import com.EvilNotch.lib.Api.MCPSidedString;
 import com.EvilNotch.lib.Api.ReflectionUtil;
 import com.elix_x.itemrender.IItemRendererHandler;
 import com.elix_x.itemrender.IItemRendererRenderItem;
+import com.elix_x.itemrender.compat.asm.JEIRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -73,19 +74,10 @@ public class IItemRendererMod {
 	{
 		if(Loader.isModLoaded("jei"))
 		{
-			Method addSlowRenderer = ReflectionUtil.getMethod(ReflectionUtil.classForName("mezz.jei.render.IngredientListBatchRenderer"),"addSlowRenderer",Item.class);
-			try
-			{
-				for(Item i : IItemRendererHandler.getItems())
-				{
-					addSlowRenderer.invoke(null,i);
-				}
-			}
-			catch(Throwable e)
-			{
-				System.out.println("JEI Patcher Isn't working with the current Build of JEI Report to EvilNotchLib issue on github");
-				e.printStackTrace();
-			}
+			for(Item i : IItemRendererHandler.getItems())
+				JEIRenderer.slowItems.add(i);
+			Class c = ReflectionUtil.classForName("mezz.jei.render.IngredientListBatchRenderer");
+			String s = c.getName();
 		}
 	}
 

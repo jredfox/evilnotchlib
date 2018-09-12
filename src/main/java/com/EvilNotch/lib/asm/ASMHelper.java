@@ -348,4 +348,17 @@ public class ASMHelper
 		}
 		return null;
 	}
+	/**
+	 * add a brand new method node into the classNode
+	 */
+	public static void addMethodNodeIf(ClassNode classNode,int opcode, String name, String desc) 
+	{
+		if(containsMethod(classNode, name, desc))
+		{
+			System.out.println("returing class has method already!" + name + "," + desc);
+			return;
+		}
+		MethodNode node = new MethodNode(opcode, name, desc, null, null);
+		classNode.methods.add(node);
+	}
 }
