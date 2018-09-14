@@ -436,7 +436,8 @@ public class ClientProxy extends ServerProxy{
 			boolean compiled = compiledTracker.get(domain);
 			if(compiled)
 			{
-				System.out.println("skipping lang entry as mod is compiled:" + lang);
+				if(Config.debug)
+					System.out.println("skipping lang entry as mod is compiled:" + lang);
 				continue;
 			}
 			File file = new File(root,domain + "/lang/" + lang.langType + ".lang");
@@ -447,7 +448,7 @@ public class ClientProxy extends ServerProxy{
 				map.put(file, cfg);
 			}
 			LangLine line = new LangLine(lang.getString());
-			cfg.addLine(line);
+			cfg.setLine(line);
 		}
 		for(ConfigLang lang : map.values())
 		{	

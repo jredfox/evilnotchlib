@@ -17,16 +17,11 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class BasicArmor extends ItemArmor implements IBasicItem,IBasicArmor{
+public class BasicArmor extends BasicArmorBase implements IPotionArmor{
 	/**
 	 * a list of option effects to be applied to the player on tick
 	 */
-	PotionEffect[] effects = null;
-	public boolean hasregister = false;
-	public boolean hasmodel = false;
-	public boolean haslang = false;
-	public boolean hasconfig = false;
-	public ArmorSet armorset = null;
+	public PotionEffect[] effects = null;
 	
 	/**
 	 * the booleans are used for later calls in case people want to call create objects before preinit
@@ -57,50 +52,33 @@ public class BasicArmor extends ItemArmor implements IBasicItem,IBasicArmor{
 		this(mat,id,renderIndexIn,slot,tab,new PotionEffect[]{potion},true,true,true,true,langList);
 	}
 
-	public BasicArmor(ArmorMat materialIn,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn,CreativeTabs tab,
+	public BasicArmor(ArmorMat mat,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot slot,CreativeTabs tab,
 			PotionEffect[] potions,boolean model,boolean register,boolean lang, boolean config,LangEntry... langlist) {
-		super(BasicItem.getMat(materialIn,config), renderIndexIn, equipmentSlotIn);
-		this.setRegistryName(id);
-		String unlocalname = id.toString().replaceAll(":", ".");
-		this.setUnlocalizedName(unlocalname);
-		this.setCreativeTab(tab);
+		super(mat,id,renderIndexIn,slot,tab,model,register,lang,config,langlist);
+		
 		if(potions != null && potions[0] != null)
 			this.effects = potions;//don't set the potion list if it's null array or contains null
-		
-		this.hasregister = register;
-		this.hasmodel = model;
-		this.haslang = lang;
-		this.hasconfig = config;
-		
-		//autofill
-		this.populateLang(langlist, unlocalname,id);
-		
-		MainJava.items.add(this);
 	}
-	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
-		if(!this.useLangRegistry())
-			return;
-		for(LangEntry entry : langlist)
-		{
-			entry.langId = "item." + unlocalname + ".name";
-			entry.loc = id;
-			BasicItem.itemlangs.add(entry);
-		}
-	}
+
+	
 	@Override
-	public void setArmorSet(ArmorSet set){
-		this.armorset = set;
+	public PotionEffect[] getPotionEffects() {
+		return this.effects;
 	}
+	
 	@Override
-	public ArmorSet getArmorSet(){
-		return this.armorset;
+	public boolean containsPotionEffect(PotionEffect potion) {
+		for(PotionEffect p : this.getPotionEffects())
+			if(p.getPotion() == potion.getPotion())
+				return true;
+		return false;
 	}
 	
 	@Override
 	public void onArmorTick(final World world, final EntityPlayer player, final ItemStack itemStack) 
 	{
 		super.onArmorTick(world, player, itemStack);
-		if(this.effects == null || this.armorset  == null)
+		if(this.effects == null || this.armorset == null)
 			return;
 		ItemStack head = player.inventory.armorInventory.get(3);
 		//return from ticking if helmet isn't on since I only need one thing happening per tick
@@ -120,38 +98,6 @@ public class BasicArmor extends ItemArmor implements IBasicItem,IBasicArmor{
 				player.addPotionEffect(p); // Apply a copy of the PotionEffect to the player
 			}
 		}
-	}
-	@Override
-	public boolean hasFullArmorSet(ItemStack boots, ItemStack pants, ItemStack chest, ItemStack head) 
-	{
-		return this.armorset.boots.getItem() == boots.getItem() && this.armorset.leggings.getItem() == pants.getItem() && this.armorset.chestplate.getItem() == chest.getItem() && this.armorset.helmet.getItem() == head.getItem();
-	}
-	@Override
-	public boolean register() {
-		return this.hasregister;
-	}
-	@Override
-	public boolean registerModel() {
-		return this.hasmodel;
-	}
-	@Override
-	public boolean useLangRegistry() {
-		return this.haslang;
-	}
-	@Override
-	public boolean useConfigPropterties() {
-		return this.hasconfig;
-	}
-	@Override
-	public PotionEffect[] getPotionEffects() {
-		return this.effects;
-	}
-	@Override
-	public boolean containsPotionEffect(PotionEffect potion) {
-		for(PotionEffect p : this.getPotionEffects())
-			if(p.getPotion() == potion.getPotion())
-				return true;
-		return false;
 	}
 
 }

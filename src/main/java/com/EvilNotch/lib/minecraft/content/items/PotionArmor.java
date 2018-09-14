@@ -61,13 +61,13 @@ public class PotionArmor extends BasicArmor{
 	@Override
 	public boolean hasFullArmorSet(ItemStack boots, ItemStack pants, ItemStack chest, ItemStack head) 
 	{
-		if(!(boots.getItem() instanceof IBasicArmor) || !(pants.getItem() instanceof IBasicArmor)|| !(chest.getItem() instanceof IBasicArmor) || !(head.getItem() instanceof IBasicArmor))
+		if(!(boots.getItem() instanceof IPotionArmor) || !(pants.getItem() instanceof IPotionArmor)|| !(chest.getItem() instanceof IPotionArmor) || !(head.getItem() instanceof IPotionArmor))
 			return false;
 		
-		IBasicArmor b = (IBasicArmor) boots.getItem();
-		IBasicArmor p = (IBasicArmor)pants.getItem();
-		IBasicArmor c = (IBasicArmor) chest.getItem();
-		IBasicArmor h = (IBasicArmor) head.getItem();
+		IPotionArmor b = (IPotionArmor) boots.getItem();
+		IPotionArmor p = (IPotionArmor)pants.getItem();
+		IPotionArmor c = (IPotionArmor) chest.getItem();
+		IPotionArmor h = (IPotionArmor) head.getItem();
 		
 		if(!b.hasPotionEffects() || !p.hasPotionEffects() || !c.hasPotionEffects() || !h.hasPotionEffects())
 			return super.hasFullArmorSet(boots, pants, chest, head);
@@ -77,7 +77,7 @@ public class PotionArmor extends BasicArmor{
 	/**
 	 * compares if all potions from this is in objects boots,pants,chest,helmet
 	 */
-	public boolean hasPotionEffects(IBasicArmor b, IBasicArmor p, IBasicArmor c, IBasicArmor h) 
+	public boolean hasPotionEffects(IPotionArmor b, IPotionArmor p, IPotionArmor c, IPotionArmor h) 
 	{
 		for(PotionEffect potion : this.effects)
 		{
