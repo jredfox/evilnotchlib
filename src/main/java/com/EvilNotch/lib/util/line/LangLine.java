@@ -56,7 +56,7 @@ public class LangLine implements ILineHead{
 		if(!(obj instanceof LangLine))
 			return false;
 		LangLine line = (LangLine)obj;
-		return this.key.equals(line.key) && this.value.equals(line.value);
+		return this.key.equals(line.key);
 	}
 	
 	@Override

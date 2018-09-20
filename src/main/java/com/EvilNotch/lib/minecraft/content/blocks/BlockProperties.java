@@ -72,7 +72,7 @@ public class BlockProperties {
 	}
 	public BlockProperties(LineArray line)
 	{
-		if(!line.meta.isEmpty())
+		if(line.hasStringMeta())
 		{
 			this.matId = new ResourceLocation(line.meta);
 			this.mat = BlockApi.getMatFromReg(this.matId);

@@ -66,6 +66,16 @@ public class LineMeta extends Line implements ILineMeta{
 		this.nbt = NBTUtil.getNBTFromString(LineUtil.getBrackets(currentIndex, str,this.quote, '{', '}'));
 	}
 	
+	public boolean hasStringMeta()
+	{
+		return !this.meta.isEmpty() && this.metaData == null;
+	}
+	
+	public boolean hasMetaDataNum()
+	{
+		return this.metaData != null;
+	}
+	
 	@Override
 	public int hashCode()
 	{

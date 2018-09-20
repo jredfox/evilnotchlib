@@ -1,6 +1,7 @@
 package com.EvilNotch.lib.util.line.config;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -31,7 +32,7 @@ public abstract class ConfigBase {
 	/**
 	 * this is what signify's a comment for the config start
 	 */
-	public char commentStart = '#';
+	public char commentStart = LineUtil.commentDefault;
 	/**
 	 * this tells whether or not config comments get parsed saved added or written to the disk
 	 */
@@ -102,6 +103,7 @@ public abstract class ConfigBase {
 		this.lines.clear();
 		try
 		{
+			checkFile();
 			List<String> list = JavaUtil.getFileLines(this.file,true);
 			parseLines(list);
 		}
@@ -122,6 +124,7 @@ public abstract class ConfigBase {
 		this.lines.clear();
 		try
 		{
+			checkFile();
 			List<String> list = JavaUtil.getFileLines(inputStream);
 			parseLines(list);
 		}
@@ -137,6 +140,7 @@ public abstract class ConfigBase {
 	{
 		try
 		{
+			checkFile();
 			JavaUtil.saveFileLines(list, this.file, true);
 		}
 		catch(Exception e)
@@ -145,6 +149,14 @@ public abstract class ConfigBase {
 		}
 	}
 	
+	protected void checkFile() throws IOException 
+	{
+		if(!this.file.exists())
+		{
+			JavaUtil.createFileSafley(this.file);
+		}
+	}
+
 	public void saveConfig()
 	{
 		this.saveConfig(false);
