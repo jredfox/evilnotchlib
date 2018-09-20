@@ -145,7 +145,8 @@ public class ClientProxy extends ServerProxy{
 			boolean compiled = compiledTracker.get(domain);
 			if(compiled)
 			{
-				System.out.println("skipping model gen for:" + i.getRegistryName());
+				if(Config.debug)
+					System.out.println("skipping model gen for:" + i.getRegistryName());
 				continue;
 			}
 			
@@ -190,7 +191,8 @@ public class ClientProxy extends ServerProxy{
 		{
 			if(!b.registerModel())
 			{
-				System.out.println("skipping model gen:" + b.getRegistryName());
+				if(Config.debug)
+					System.out.println("skipping model no model reeg found:" + b.getRegistryName());
 				continue;
 			}
 			ResourceLocation loc = b.getRegistryName();
@@ -201,7 +203,8 @@ public class ClientProxy extends ServerProxy{
 			boolean compiled = compiledTracker.get(domain);
 			if(compiled)
 			{
-				System.out.println("skipping model gen for:" + loc);
+				if(Config.debug)
+					System.out.println("skipping model gen for:" + loc);
 				continue;
 			}
 			
@@ -383,10 +386,10 @@ public class ClientProxy extends ServerProxy{
 			langlist = (Map<String, String>) ReflectionUtil.getObject(manager, LanguageMap.class, MCPMappings.getField(LanguageMap.class, "languageList"));
 		}
 		currentLang = getCurrentLang();
-		
+		//inject lang into mc ignoring if it has it already since in dev code is supreme
 		for(ConfigLang cfg : cfgs.values())
 		{
-			if(!cfg.file.getName().startsWith(currentLang))
+			if(!cfg.file.getName().endsWith(currentLang + ".lang"))
 			{
 				System.out.println("skipping cfgFile:" + cfg.file.getName() );
 				continue;
@@ -396,18 +399,12 @@ public class ClientProxy extends ServerProxy{
 				ILineHead line = (ILineHead)l;
 				String key = line.getId();
 				String value = (String) line.getHead();
-				if(!langlistClient.containsKey(key))
-				{
-					if(Config.debug)
-						System.out.println("injecting:" + line);
-					langlistClient.put(key,value);
-				}
-				if(!langlist.containsKey(key))
-				{
-					if(Config.debug)
-						System.out.println("injectingServer:" + line);
-					langlist.put(key,value);
-				}
+				if(Config.debug)
+					System.out.println("injecting:" + line);
+				langlistClient.put(key,value);
+				if(Config.debug)
+					System.out.println("injectingServer:" + line);
+				langlist.put(key,value);
 			}
 		}
 	}

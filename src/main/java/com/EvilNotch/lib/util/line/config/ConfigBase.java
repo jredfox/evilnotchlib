@@ -65,13 +65,14 @@ public abstract class ConfigBase {
 	 */
 	public ConfigBase(String inputStream,File output)
 	{
-		this.file = output;
+		this(output);
 		this.stream = inputStream;
 	}
 
 	public ConfigBase(File f)
 	{
 		this.file = f;
+		this.checkFile();
 	}
 	
 	public ConfigBase(File f, List<String> comments) {
@@ -92,6 +93,7 @@ public abstract class ConfigBase {
 		for(String s : comments)
 			this.addHeaderCommentAdmin(s);
 		this.headerWrappers = headWrapper;
+		this.checkFile();
 	}
 			
 	/**
@@ -103,7 +105,6 @@ public abstract class ConfigBase {
 		this.lines.clear();
 		try
 		{
-			checkFile();
 			List<String> list = JavaUtil.getFileLines(this.file,true);
 			parseLines(list);
 		}
@@ -124,7 +125,6 @@ public abstract class ConfigBase {
 		this.lines.clear();
 		try
 		{
-			checkFile();
 			List<String> list = JavaUtil.getFileLines(inputStream);
 			parseLines(list);
 		}
@@ -140,7 +140,6 @@ public abstract class ConfigBase {
 	{
 		try
 		{
-			checkFile();
 			JavaUtil.saveFileLines(list, this.file, true);
 		}
 		catch(Exception e)
@@ -149,11 +148,18 @@ public abstract class ConfigBase {
 		}
 	}
 	
-	protected void checkFile() throws IOException 
+	protected void checkFile() 
 	{
-		if(!this.file.exists())
+		try
 		{
-			JavaUtil.createFileSafley(this.file);
+			if(!this.file.exists())
+			{
+				JavaUtil.createFileSafley(this.file);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 
