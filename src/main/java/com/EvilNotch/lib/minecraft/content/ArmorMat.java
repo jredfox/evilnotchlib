@@ -1,12 +1,12 @@
 package com.EvilNotch.lib.minecraft.content;
 
 import java.util.HashMap;
+import java.util.List;
 
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.minecraft.MinecraftUtil;
 import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.Line.ArrEntry;
-import com.EvilNotch.lib.util.Line.LineEnhanced;
+import com.EvilNotch.lib.util.line.LineArray;
 import com.EvilNotch.lib.util.simple.IEnumContainer;
 
 import net.minecraft.item.ItemArmor.ArmorMaterial;
@@ -63,14 +63,14 @@ public class ArmorMat implements IEnumContainer{
     {
          this(enumName,nameIn,maxDamageFactorIn,damageReductionAmountArrayIn, enchantabilityIn, MinecraftUtil.getSoundEvent(soundEventIN), toughnessIn);
     }
-	public ArmorMat(LineEnhanced line)
+	public ArmorMat(LineArray line)
 	{
-		this.enumName = line.getModPath();
+		this.enumName = line.getId();
 		this.textureName = (String) line.heads.get(0);
 		this.durability = line.getInt(1);
 		 
 		int[] damageReduce = new int[4];
-		ArrEntry arr = line.getStaticArray(2);
+		List<Object> arr = line.getHeadList(2);
 		damageReduce[0] = line.getInt(arr, 0);
 		damageReduce[1] = line.getInt(arr, 1);
 		damageReduce[2] = line.getInt(arr, 2);

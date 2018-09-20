@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.Line.LineBase;
+import com.EvilNotch.lib.util.line.Line;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
@@ -43,17 +43,18 @@ public class ConfigMenu {
 			String[] order = config.get("menulib", "menu_order", new String[]{""},"Enable and use WhiteList for sizes less then this list").getStringList();
 			for(String s : order)
 			{
-				if(s == null || LineBase.toWhiteSpaced(s).equals("") || LineBase.toWhiteSpaced(s).indexOf('#') == 0)
+				if(s == null || JavaUtil.toWhiteSpaced(s).equals("") || JavaUtil.toWhiteSpaced(s).indexOf('#') == 0)
 					continue;
-					menusConfig.add(new LineBase(s).getResourceLocation());
+					menusConfig.add(new Line(s).getResourceLocation());
 			}
 			
 			String[] wlist = config.get("menulib","menu_whitelist",new String[]{""}).getStringList();
 			for(String s : wlist)
 			{
-				if(s == null || LineBase.toWhiteSpaced(s).equals("") || LineBase.toWhiteSpaced(s).indexOf('#') == 0)
+				String wspaced = JavaUtil.toWhiteSpaced(s);
+				if(s == null || wspaced.equals("") || wspaced.indexOf('#') == 0)
 					continue;
-				whiteListConfig.add(new LineBase(s).getResourceLocation());
+				whiteListConfig.add(new Line(s).getResourceLocation());
 			}
 		}
 		

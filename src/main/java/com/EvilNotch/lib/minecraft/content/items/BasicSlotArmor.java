@@ -12,6 +12,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 	
@@ -37,7 +38,7 @@ public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) 
 	{
 		super.onArmorTick(world, player, stack);
-		if(this.slot == null || this.armorset == null)
+		if(this.armorset == null || this.slot == null)
 			return;
 		if(this.armorset.boots.getItem() == this)
 		{

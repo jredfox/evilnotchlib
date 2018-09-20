@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.EvilNotch.lib.util.Line.LineBase;
+import com.EvilNotch.lib.util.JavaUtil;
 
 public class CSVE {
 	
@@ -48,7 +48,7 @@ public class CSVE {
 			int index = 1;
 			if(parts.length > 1)
 			{
-				parts[1] = LineBase.toWhiteSpaced(parts[1]);
+				parts[1] = JavaUtil.toWhiteSpaced(parts[1]);
 				index = Integer.parseInt(parts[1]);
 			}
 			if(name.equals(var))
@@ -71,7 +71,7 @@ public class CSVE {
 		boolean body = false;
 		for(String s : init)
 		{
-			String str = LineBase.toWhiteSpaced(s);
+			String str = JavaUtil.toWhiteSpaced(s);
 			if(str.equals("") || str.indexOf("#") == 0)
 				continue;
 			if(str.equals("<Header>"))

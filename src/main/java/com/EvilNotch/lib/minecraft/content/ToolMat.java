@@ -2,7 +2,7 @@ package com.EvilNotch.lib.minecraft.content;
 
 import java.util.HashMap;
 
-import com.EvilNotch.lib.util.Line.LineEnhanced;
+import com.EvilNotch.lib.util.line.LineArray;
 import com.EvilNotch.lib.util.simple.IEnumContainer;
 
 import net.minecraft.item.Item.ToolMaterial;
@@ -46,8 +46,8 @@ public class ToolMat implements IEnumContainer{
         this.enchantability = enchantability;
     }
     
-    public ToolMat(LineEnhanced line) {
-		this.enumName = line.getModPath();
+    public ToolMat(LineArray line) {
+		this.enumName = line.getId();
 		this.harvestLevel = line.getInt(0);
 		this.maxUses =  line.getInt(1);
 		this.efficiency = line.getFloat(2);

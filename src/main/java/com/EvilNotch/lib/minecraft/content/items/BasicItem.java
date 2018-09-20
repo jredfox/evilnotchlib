@@ -3,17 +3,15 @@ package com.EvilNotch.lib.minecraft.content.items;
 import java.util.ArrayList;
 
 import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.util.Line.LineEnhanced;
 import com.EvilNotch.lib.minecraft.content.ArmorMat;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.ToolMat;
+import com.EvilNotch.lib.util.line.LineArray;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BasicItem extends Item implements IBasicItem{
 	
@@ -92,10 +90,10 @@ public class BasicItem extends Item implements IBasicItem{
 				return cached.getEnum();
 			if(MainJava.cfgTools != null)
 			{
-				LineEnhanced line = new LineEnhanced(mat.toString());
+				LineArray line = new LineArray(mat.toString());
 //				System.out.println("Before:" + line);
 				MainJava.cfgTools.addLine(line);
-				line = (LineEnhanced) MainJava.cfgTools.getUpdatedLine(line);//critical line this lets the config override the default line
+				line = (LineArray) MainJava.cfgTools.getUpdatedLine(line);//critical line this lets the config override the default line
 				mat = new ToolMat(line);
 				ToolMat.toolmats.put(mat.enumName, mat);
 //				System.out.println("After: " + line);
@@ -116,9 +114,9 @@ public class BasicItem extends Item implements IBasicItem{
 				return cached.getEnum();
 			if(MainJava.cfgArmors != null)
 			{
-				LineEnhanced line = new LineEnhanced(mat.toString());
+				LineArray line = new LineArray(mat.toString());
 				MainJava.cfgArmors.addLine(line);
-				line = (LineEnhanced) MainJava.cfgArmors.getUpdatedLine(line);//critical line this lets the config override the default line
+				line = (LineArray) MainJava.cfgArmors.getUpdatedLine(line);//critical line this lets the config override the default line
 //				System.out.println("Before:" + mat);
 				mat = new ArmorMat(line);
 //				System.out.println("After: " + mat);

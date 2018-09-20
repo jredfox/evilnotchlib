@@ -35,7 +35,7 @@ import com.EvilNotch.lib.minecraft.network.packets.PacketYawOffset;
 import com.EvilNotch.lib.minecraft.network.packets.PacketYawPitch;
 import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.Line.LineBase;
+import com.EvilNotch.lib.util.line.Line;
 import com.EvilNotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
 
@@ -569,7 +569,7 @@ public class EntityUtil {
 	 * it is legacy do not use unless you know what you are doing
 	 */
 	@Deprecated
-	public static LineBase getEntityMod(Entity entity)
+	public static Line getEntityMod(Entity entity)
 	{
 	   	String modName = "";
 	   	String modid = "";
@@ -582,7 +582,7 @@ public class EntityUtil {
 	   		modName = "Minecraft";
     		modid = "minecraft";
     	}
-		return new LineBase("\"" + modid + ":" + modName + "\"");
+		return new Line("\"" + modid + ":" + modName + "\"");
     }
 	public static List<EntityDefintions.EntityInfo> getInfos(Entity e)
 	{

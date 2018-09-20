@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.EvilNotch.lib.util.JavaUtil;
+
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,6 +15,8 @@ import net.minecraft.nbt.NBTTagList;
 public class NBTUtil {
 	
 	public static NBTTagCompound getNBTFromString(String str){
+		if(JavaUtil.isStringNullOrEmpty(str))
+			return null;
 		try{
 			return JsonToNBT.getTagFromJson(str);
 		}catch(Exception e){}

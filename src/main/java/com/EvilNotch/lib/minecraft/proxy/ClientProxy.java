@@ -19,9 +19,7 @@ import com.EvilNotch.lib.main.ConfigMenu;
 import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.main.eventhandlers.ClientEvents;
 import com.EvilNotch.lib.minecraft.MinecraftUtil;
-import com.EvilNotch.lib.minecraft.content.ConfigLang;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
-import com.EvilNotch.lib.minecraft.content.LangLine;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.BasicMetaBlock;
 import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
@@ -35,11 +33,14 @@ import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.network.packets.PacketRequestSeed;
 import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.Line.Comment;
-import com.EvilNotch.lib.util.Line.ConfigBase;
-import com.EvilNotch.lib.util.Line.IHead;
-import com.EvilNotch.lib.util.Line.ILine;
-import com.EvilNotch.lib.util.Line.LineItemStack;
+import com.EvilNotch.lib.util.line.ILine;
+import com.EvilNotch.lib.util.line.ILineHead;
+import com.EvilNotch.lib.util.line.LangLine;
+import com.EvilNotch.lib.util.line.LineArray;
+import com.EvilNotch.lib.util.line.comment.Comment;
+import com.EvilNotch.lib.util.line.config.ConfigBase;
+import com.EvilNotch.lib.util.line.config.ConfigLang;
+import com.EvilNotch.lib.util.line.config.ConfigLine;
 import com.EvilNotch.lib.util.simple.PairString;
 import com.elix_x.itemrender.IItemRendererHandler;
 
@@ -385,25 +386,26 @@ public class ClientProxy extends ServerProxy{
 		
 		for(ConfigLang cfg : cfgs.values())
 		{
-			if(!cfg.cfgfile.getName().startsWith(currentLang))
+			if(!cfg.file.getName().startsWith(currentLang))
 			{
-				System.out.println("skipping cfgFile:" + cfg.cfgfile.getName() );
+				System.out.println("skipping cfgFile:" + cfg.file.getName() );
 				continue;
 			}
-			for(ILine line : cfg.lines)
+			for(ILine l : cfg.lines)
 			{
-				String key = line.getModPath();
+				ILineHead line = (ILineHead)l;
+				String key = line.getId();
 				String value = (String) line.getHead();
 				if(!langlistClient.containsKey(key))
 				{
 					if(Config.debug)
-						System.out.println("injecting:" + line.getString());
+						System.out.println("injecting:" + line);
 					langlistClient.put(key,value);
 				}
 				if(!langlist.containsKey(key))
 				{
 					if(Config.debug)
-						System.out.println("injectingServer:" + line.getString());
+						System.out.println("injectingServer:" + line);
 					langlist.put(key,value);
 				}
 			}
@@ -445,6 +447,7 @@ public class ClientProxy extends ServerProxy{
 			if(cfg == null)
 			{
 				cfg = new ConfigLang(file);
+				cfg.loadConfig();
 				map.put(file, cfg);
 			}
 			LangLine line = new LangLine(lang.getString());
@@ -452,7 +455,7 @@ public class ClientProxy extends ServerProxy{
 		}
 		for(ConfigLang lang : map.values())
 		{	
-			lang.updateConfig(true,false,true);
+			lang.saveConfig(true,false,true);
 		}
 	}
 
@@ -472,9 +475,10 @@ public class ClientProxy extends ServerProxy{
 
 	public void injectClientLang(ConfigLang cfg) 
 	{
-		for(ILine line : cfg.lines)
+		for(ILine l : cfg.lines)
 		{
-			String key = line.getModPath();
+			ILineHead line = (ILineHead)l;
+			String key = line.getId();
 			String value = (String) line.getHead();
 			if(!langlistClient.containsKey(key))
 				langlistClient.put(key,value);
@@ -501,23 +505,25 @@ public class ClientProxy extends ServerProxy{
 	{	
 		//register user registered menus
 		File f = new File(ConfigMenu.cfgmenu.getParent(),"menulib.cfg");
-		ArrayList<Comment> comments = (ArrayList<Comment>)JavaUtil.asArray(new Comment[]{new Comment("Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :("),new Comment("Format is: \"modid:mainmenu\" = \"class.full.name\"")});
-		ConfigBase cfg = new ConfigBase(f,comments);
+		List<String> comments = (ArrayList<String>)JavaUtil.asArray(new String[]{"Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :(","Format is: \"modid:mainmenu\" = \"class.full.name\""});
+		ConfigBase cfg = new ConfigLine(f,comments);
+		cfg.loadConfig();
+		
 		if(Loader.isModLoaded("thebetweenlands"))
 		{
-			cfg.addLine(new LineItemStack("\"thebetweenlands:mainmenu\" = \"thebetweenlands.client.gui.menu.GuiBLMainMenu\""));
-			cfg.updateConfig(false, false, true);
+			cfg.addLine(new LineArray("\"thebetweenlands:mainmenu\" = \"thebetweenlands.client.gui.menu.GuiBLMainMenu\""));
+			cfg.saveConfig(false, false, true);
 		}
 		for(ILine line : cfg.lines)
 		{
-			IHead head = (IHead)line;
+			ILineHead head = (ILineHead)line;
 			try
 			{
-				MenuRegistry.registerGuiMenu((Class<? extends GuiScreen>) Class.forName(head.getStringHead()), line.getResourceLocation());
+				MenuRegistry.registerGuiMenu((Class<? extends GuiScreen>) Class.forName(head.getString()), line.getResourceLocation());
 			}
 			catch(Throwable t)
 			{
-				System.out.print("[MenuLib/ERR] Unable to Locate class skipping menu registration for:" + line.getString() + "\n");
+				System.out.print("[MenuLib/ERR] Unable to Locate class skipping menu registration for:" + line + "\n");
 			}
 		}
 		

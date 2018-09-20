@@ -13,11 +13,10 @@ import com.EvilNotch.lib.main.MainJava;
 import com.EvilNotch.lib.minecraft.content.LangEntry;
 import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
 import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.Line.ConfigBase;
-import com.EvilNotch.lib.util.Line.LineEnhanced;
+import com.EvilNotch.lib.util.line.LineArray;
+import com.EvilNotch.lib.util.line.config.ConfigBase;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -29,11 +28,8 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BasicBlock extends Block implements IBasicBlock{
 	
@@ -139,10 +135,10 @@ public class BasicBlock extends Block implements IBasicBlock{
 
 	public static BlockProperties getConfiguredBlockProps(Block b,BlockProperties props) 
 	{
-		LineEnhanced line = new LineEnhanced("\"" + b.getRegistryName() + "\" " + props.toString());
+		LineArray line = new LineArray("\"" + b.getRegistryName() + "\" " + props.toString());
 		ConfigBase cfg = MainJava.cfgBlockProps;
 		cfg.addLine(line);
-		line = (LineEnhanced) cfg.getUpdatedLine(line);
+		line = (LineArray) cfg.getUpdatedLine(line);
 		return new BlockProperties(line);
 	}
 

@@ -2,14 +2,14 @@ package com.EvilNotch.lib.Api;
 
 import java.util.ArrayList;
 
-import com.EvilNotch.lib.util.Line.LineBase;
+import com.EvilNotch.lib.util.JavaUtil;
 
 public class CSV {
 	ArrayList<String> list = new ArrayList<String>();
 	public boolean tst;
 	public CSV(String s)
 	{
-		String[] parts = LineBase.toWhiteSpaced(s).split(",");
+		String[] parts = JavaUtil.toWhiteSpaced(s).split(",");
 		for(String ss : parts)
 			list.add(ss);
 	}

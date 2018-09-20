@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import com.EvilNotch.lib.Api.FieldAcess;
 import com.EvilNotch.lib.minecraft.EntityUtil;
 import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.Line.LineBase;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -58,7 +57,7 @@ public class CMDDim extends CommandTeleport{
     		if(!(sender instanceof Entity) && args.length == 1)
     			throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
         	String arg = args[args.length-1];
-        	boolean flag = LineBase.isStringNum(arg);
+        	boolean flag = JavaUtil.isStringNum(arg);
        		Entity fromPlayer = args.length == 1 ? (Entity)sender : getEntity(server, sender, args[index++]);
        		Entity toPlayer = args.length <= 2 && flag ? fromPlayer : getEntity(server, sender, args[index++]);
        		
@@ -82,14 +81,14 @@ public class CMDDim extends CommandTeleport{
     		if(args.length == 3)
     		{
     			String last = args[args.length-1];
-    			if(last.startsWith("~") || LineBase.isStringNum(last))
+    			if(last.startsWith("~") || JavaUtil.isStringNum(last))
     				throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
     		}
     		Entity e = getEntity(server, sender, args[index++]);
     		
     		String dim = args[index++];
     		String bool = args[index++];
-    		if(!LineBase.isStringNum(dim) || JavaUtil.isStringBoolean(bool))
+    		if(!JavaUtil.isStringNum(dim) || JavaUtil.isStringBoolean(bool))
     			throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
     		
     		int dimension = Integer.parseInt(dim);
@@ -100,7 +99,7 @@ public class CMDDim extends CommandTeleport{
         	String ent = args[index];
         	Entity entity = null;
         	
-        	if(ent.startsWith("~") || LineBase.isStringNum(ent))
+        	if(ent.startsWith("~") || JavaUtil.isStringNum(ent))
         	{
         		if(!(sender instanceof Entity))
         			throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
@@ -128,7 +127,7 @@ public class CMDDim extends CommandTeleport{
                 	throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
                 
                 String strdim = args[index++];
-                if(!LineBase.isStringNum(strdim))
+                if(!JavaUtil.isStringNum(strdim))
                	 	throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
                 int traveldim = Integer.parseInt(strdim);
                 

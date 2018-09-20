@@ -1,7 +1,7 @@
 package com.EvilNotch.lib.minecraft.content.blocks;
 
 import com.EvilNotch.lib.Api.BlockApi;
-import com.EvilNotch.lib.util.Line.LineEnhanced;
+import com.EvilNotch.lib.util.line.LineArray;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -70,11 +70,11 @@ public class BlockProperties {
 		this.slipperiness = slip;
 		this.lightValue = light;
 	}
-	public BlockProperties(LineEnhanced line)
+	public BlockProperties(LineArray line)
 	{
-		if(line.hasStrMeta)
+		if(!line.meta.isEmpty())
 		{
-			this.matId = new ResourceLocation(line.strmeta);
+			this.matId = new ResourceLocation(line.meta);
 			this.mat = BlockApi.getMatFromReg(this.matId);
 		}
 		int size = line.heads.size();

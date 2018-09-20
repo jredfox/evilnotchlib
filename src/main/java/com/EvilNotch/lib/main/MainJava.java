@@ -44,8 +44,8 @@ import com.EvilNotch.lib.minecraft.content.world.FakeWorld;
 import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
 import com.EvilNotch.lib.minecraft.proxy.ServerProxy;
 import com.EvilNotch.lib.minecraft.registry.GeneralRegistry;
-import com.EvilNotch.lib.util.Line.ConfigBase;
-import com.EvilNotch.lib.util.Line.ConfigEnhanced;
+import com.EvilNotch.lib.util.line.config.ConfigBase;
+import com.EvilNotch.lib.util.line.config.ConfigNonMeta;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -118,9 +118,13 @@ public class MainJava {
 		proxy.preinit(e);
 		GeneralRegistry.load();
 		
-		cfgTools = new ConfigEnhanced(new File(Config.cfg.getParent(),"config/tools.cfg"));
-		cfgArmors = new ConfigEnhanced(new File(Config.cfg.getParent(),"config/armor.cfg"));
-		cfgBlockProps = new ConfigEnhanced(new File(Config.cfg.getParent(),"config/blockprops.cfg"));
+		cfgTools = new ConfigNonMeta(new File(Config.cfg.getParent(),"config/tools.cfg"));
+		cfgArmors = new ConfigNonMeta(new File(Config.cfg.getParent(),"config/armor.cfg"));
+		cfgBlockProps = new ConfigNonMeta(new File(Config.cfg.getParent(),"config/blockprops.cfg"));
+		
+		cfgTools.loadConfig();
+		cfgArmors.loadConfig();
+		cfgBlockProps.loadConfig();
 		
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
@@ -193,9 +197,9 @@ public class MainJava {
 		
 		if(!MainJava.isDeObfuscated)
 		{
-			cfgArmors.updateConfig(true, false, true);
-			cfgTools.updateConfig(true, false, true);
-			cfgBlockProps.updateConfig(true, false, true);
+			cfgArmors.saveConfig(true, false, true);
+			cfgTools.saveConfig(true, false, true);
+			cfgBlockProps.saveConfig(true, false, true);
 		}
 		
 	    proxy.postinit();//generate lang,generate shadow sizes
