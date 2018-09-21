@@ -45,6 +45,8 @@ public class LineMeta extends Line implements ILineMeta{
 		super(str,sep,quote,invalid);
 		this.metaBrackets = metaBrackets;
 		int currentIndex = this.getId().length();
+		if(this.hasQuote)
+			currentIndex += 2;
 		
 		this.meta = LineUtil.getFirstBrackets(currentIndex, str,this.quote, this.metaBrackets[0], this.metaBrackets[1]);
 		if(this.meta == null)

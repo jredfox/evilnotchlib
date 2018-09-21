@@ -135,6 +135,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 
 	public static BlockProperties getConfiguredBlockProps(Block b,BlockProperties props) 
 	{
+		System.out.println("\"" + b.getRegistryName() + "\" " + props.toString());
 		LineArray line = new LineArray("\"" + b.getRegistryName() + "\" " + props.toString());
 		ConfigBase cfg = MainJava.cfgBlockProps;
 		cfg.addLine(line);
