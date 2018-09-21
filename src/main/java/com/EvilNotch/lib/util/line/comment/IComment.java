@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.line.comment;
+package com.evilnotch.lib.util.line.comment;
 
 public interface IComment {
 	

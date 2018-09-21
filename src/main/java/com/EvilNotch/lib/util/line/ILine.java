@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.line;
+package com.evilnotch.lib.util.line;
 
 import net.minecraft.util.ResourceLocation;
 /**

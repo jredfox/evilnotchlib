@@ -1,9 +1,9 @@
-package com.EvilNotch.lib.util.line.config;
+package com.evilnotch.lib.util.line.config;
 
 import java.io.File;
 import java.util.List;
 
-import com.EvilNotch.lib.util.line.util.LineUtil;
+import com.evilnotch.lib.util.line.util.LineUtil;
 
 public class ConfigNonMeta extends ConfigLine{
 
@@ -16,7 +16,12 @@ public class ConfigNonMeta extends ConfigLine{
 		super(inputStream,output);
 	}
 	public ConfigNonMeta(File f, List<String> comments) {
-		this(f,"",LineUtil.commentDefault,comments);
+		this(f,comments,"");
+	}
+	
+	public ConfigNonMeta(File f,List<String> comments,String header)
+	{
+		this(f,header,LineUtil.commentDefault,comments);
 	}
 	public ConfigNonMeta(File f,String header,char commentStart,List<String> comments)
 	{

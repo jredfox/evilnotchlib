@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.commands;
+package com.evilnotch.lib.minecraft.content.commands;
 
 import net.minecraft.command.ICommandSender;
 

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.blocks;
+package com.evilnotch.lib.minecraft.content.blocks;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,14 +7,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.Api.ReflectionUtil;
-import com.EvilNotch.lib.minecraft.content.LangEntry;
-import com.EvilNotch.lib.minecraft.content.blocks.item.IMetaName;
-import com.EvilNotch.lib.minecraft.content.blocks.item.ItemBlockMeta;
-import com.EvilNotch.lib.minecraft.content.blocks.property.IPropertyMeta;
-import com.EvilNotch.lib.minecraft.content.blocks.property.IPropertyName;
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.Api.FieldAcess;
+import com.evilnotch.lib.Api.ReflectionUtil;
+import com.evilnotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.minecraft.content.blocks.item.IMetaName;
+import com.evilnotch.lib.minecraft.content.blocks.item.ItemBlockMeta;
+import com.evilnotch.lib.minecraft.content.blocks.property.IPropertyMeta;
+import com.evilnotch.lib.minecraft.content.blocks.property.IPropertyName;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.items;
+package com.evilnotch.lib.minecraft.content.items;
 
 public class BasicArmorSlot {
 

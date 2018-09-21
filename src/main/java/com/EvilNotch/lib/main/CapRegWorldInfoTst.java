@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.main;
+package com.evilnotch.lib.main;
 
-import com.EvilNotch.lib.main.testing.CapTickTest;
-import com.EvilNotch.lib.main.testing.CapWorldSeed;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
+import com.evilnotch.lib.main.testing.CapTickTest;
+import com.evilnotch.lib.main.testing.CapWorldSeed;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.ICapProvider;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.WorldInfo;

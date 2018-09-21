@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.minecraft.content.pcapabilites;
+package com.evilnotch.lib.minecraft.content.pcapabilites;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

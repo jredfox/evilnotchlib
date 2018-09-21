@@ -1,8 +1,9 @@
 package net.minecraft.item;
 
-import com.EvilNotch.lib.minecraft.events.TileStackSyncEvent.Merge;
-import com.EvilNotch.lib.minecraft.events.TileStackSyncEvent.Permissions;
-import com.EvilNotch.lib.minecraft.events.TileStackSyncEvent.Post;
+import com.evilnotch.lib.minecraft.events.TileStackSyncEvent;
+import com.evilnotch.lib.minecraft.events.TileStackSyncEvent.Merge;
+import com.evilnotch.lib.minecraft.events.TileStackSyncEvent.Permissions;
+import com.evilnotch.lib.minecraft.events.TileStackSyncEvent.Post;
 import java.io.PrintStream;
 import java.util.List;
 import javax.annotation.Nullable;

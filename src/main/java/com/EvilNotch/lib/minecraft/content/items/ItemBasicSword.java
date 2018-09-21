@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.minecraft.content.items;
+package com.evilnotch.lib.minecraft.content.items;
 
 import java.util.ArrayList;
 
-import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.minecraft.content.LangEntry;
-import com.EvilNotch.lib.minecraft.content.ToolMat;
+import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.minecraft.content.ToolMat;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemSword;

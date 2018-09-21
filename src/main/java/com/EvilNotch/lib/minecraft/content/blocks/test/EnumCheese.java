@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.minecraft.content.blocks.test;
+package com.evilnotch.lib.minecraft.content.blocks.test;
 
-import com.EvilNotch.lib.minecraft.content.blocks.property.IPropertyMeta;
+import com.evilnotch.lib.minecraft.content.blocks.property.IPropertyMeta;
 
 import net.minecraft.util.IStringSerializable;
 

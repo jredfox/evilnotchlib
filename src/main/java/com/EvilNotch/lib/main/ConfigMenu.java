@@ -1,12 +1,12 @@
-package com.EvilNotch.lib.main;
+package com.evilnotch.lib.main;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.line.Line;
+import com.evilnotch.lib.minecraft.content.client.gui.MenuRegistry;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.Line;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;

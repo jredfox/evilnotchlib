@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.asm;
+package com.evilnotch.lib.asm;
 
 import java.io.File;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
     		ConfigCore.load();
     		configGenerated = true;
     	}
-        return new String[] {"com.EvilNotch.lib.asm.Transformer","com.elix_x.itemrender.compat.asm.JEITransformer"};
+        return new String[] {"com.evilnotch.lib.asm.Transformer","com.elix_x.itemrender.compat.asm.JEITransformer"};
     }
 
     @Override

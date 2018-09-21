@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.proxy;
+package com.evilnotch.lib.minecraft.proxy;
 
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 

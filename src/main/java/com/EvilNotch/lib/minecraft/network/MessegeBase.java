@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.minecraft.network;
+package com.evilnotch.lib.minecraft.network;
 
-import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.FMLClientHandler;

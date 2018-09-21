@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.minecraft.network.packets.handlers;
+package com.evilnotch.lib.minecraft.network.packets.handlers;
 
 import java.util.UUID;
 
-import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.network.MessegeBase;
-import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
+import com.evilnotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.minecraft.network.MessegeBase;
+import com.evilnotch.lib.minecraft.network.packets.PacketUUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;

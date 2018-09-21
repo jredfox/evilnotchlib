@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.network;
+package com.evilnotch.lib.minecraft.network;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

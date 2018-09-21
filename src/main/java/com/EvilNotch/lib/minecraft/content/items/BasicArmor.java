@@ -1,11 +1,11 @@
-package com.EvilNotch.lib.minecraft.content.items;
+package com.evilnotch.lib.minecraft.content.items;
 
 import java.util.ArrayList;
 
-import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.minecraft.content.ArmorMat;
-import com.EvilNotch.lib.minecraft.content.ArmorSet;
-import com.EvilNotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.minecraft.content.ArmorMat;
+import com.evilnotch.lib.minecraft.content.ArmorSet;
+import com.evilnotch.lib.minecraft.content.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;

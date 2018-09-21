@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft;
+package com.evilnotch.lib.minecraft;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,22 +21,22 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
 
-import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.Api.ReflectionUtil;
-import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.main.eventhandlers.LibEvents;
-import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions;
-import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityInfo;
-import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
-import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
-import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
-import com.EvilNotch.lib.minecraft.network.packets.PacketYawOffset;
-import com.EvilNotch.lib.minecraft.network.packets.PacketYawPitch;
-import com.EvilNotch.lib.minecraft.registry.SpawnListEntryAdvanced;
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.line.Line;
-import com.EvilNotch.lib.util.simple.PointId;
+import com.evilnotch.lib.Api.FieldAcess;
+import com.evilnotch.lib.Api.ReflectionUtil;
+import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.eventhandlers.LibEvents;
+import com.evilnotch.lib.minecraft.content.entity.EntityDefintions;
+import com.evilnotch.lib.minecraft.content.entity.EntityDefintions.EntityInfo;
+import com.evilnotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
+import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packets.PacketClipBoard;
+import com.evilnotch.lib.minecraft.network.packets.PacketYawOffset;
+import com.evilnotch.lib.minecraft.network.packets.PacketYawPitch;
+import com.evilnotch.lib.minecraft.registry.SpawnListEntryAdvanced;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.Line;
+import com.evilnotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.WrongUsageException;

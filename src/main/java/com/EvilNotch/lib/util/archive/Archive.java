@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.archive;
+package com.evilnotch.lib.util.archive;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +15,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.JavaUtil;
 
 /**
  * Doesn't support zips inside of zips, adding files/ZipEntires from another file

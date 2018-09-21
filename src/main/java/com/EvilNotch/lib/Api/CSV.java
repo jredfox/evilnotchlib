@@ -1,8 +1,8 @@
-package com.EvilNotch.lib.Api;
+package com.evilnotch.lib.Api;
 
 import java.util.ArrayList;
 
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.JavaUtil;
 
 public class CSV {
 	ArrayList<String> list = new ArrayList<String>();

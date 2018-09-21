@@ -1,7 +1,7 @@
-package com.EvilNotch.lib.minecraft.content.capabilites;
+package com.evilnotch.lib.minecraft.content.capabilites;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

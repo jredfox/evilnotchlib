@@ -1,9 +1,9 @@
-package com.EvilNotch.lib.minecraft.content.pcapabilites;
+package com.evilnotch.lib.minecraft.content.pcapabilites;
 
 import java.util.ArrayList;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
-import com.EvilNotch.lib.util.simple.ICopy;
+import com.evilnotch.lib.minecraft.content.capabilites.ICapability;
+import com.evilnotch.lib.util.simple.ICopy;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.minecraft.content;
+package com.evilnotch.lib.minecraft.content;
 
-import com.EvilNotch.lib.main.MainJava;
+import com.evilnotch.lib.main.MainJava;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;

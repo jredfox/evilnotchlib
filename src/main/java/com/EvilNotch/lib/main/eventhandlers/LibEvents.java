@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.main.eventhandlers;
+package com.evilnotch.lib.main.eventhandlers;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,16 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
-import com.EvilNotch.lib.minecraft.content.tick.TickReg;
-import com.EvilNotch.lib.minecraft.events.PickEvent;
-import com.EvilNotch.lib.minecraft.events.TileStackSyncEvent;
-import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
-import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
-import com.EvilNotch.lib.minecraft.network.packets.PacketYawHead;
-import com.EvilNotch.lib.util.simple.PointId;
+import com.evilnotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.ICapProvider;
+import com.evilnotch.lib.minecraft.content.tick.TickReg;
+import com.evilnotch.lib.minecraft.events.PickEvent;
+import com.evilnotch.lib.minecraft.events.TileStackSyncEvent;
+import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packets.PacketUUID;
+import com.evilnotch.lib.minecraft.network.packets.PacketYawHead;
+import com.evilnotch.lib.util.simple.PointId;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;

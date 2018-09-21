@@ -1,12 +1,12 @@
-package com.EvilNotch.lib.minecraft.content.capabilites.registry;
+package com.evilnotch.lib.minecraft.content.capabilites.registry;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.ICapTick;
-import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
-import com.EvilNotch.lib.minecraft.content.capabilites.IListener;
+import com.evilnotch.lib.minecraft.content.capabilites.ICapTick;
+import com.evilnotch.lib.minecraft.content.capabilites.ICapability;
+import com.evilnotch.lib.minecraft.content.capabilites.IListener;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

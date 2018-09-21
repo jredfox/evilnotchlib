@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.asm;
+package com.evilnotch.lib.asm;
 
 import java.io.File;
 

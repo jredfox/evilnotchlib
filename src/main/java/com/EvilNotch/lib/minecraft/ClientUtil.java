@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft;
+package com.evilnotch.lib.minecraft;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;

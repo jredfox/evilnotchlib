@@ -1,18 +1,18 @@
-package com.EvilNotch.lib.main.eventhandlers;
+package com.evilnotch.lib.main.eventhandlers;
 
 import java.util.List;
 
-import com.EvilNotch.lib.main.ConfigMenu;
-import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.NBTUtil;
-import com.EvilNotch.lib.minecraft.TileEntityUtil;
-import com.EvilNotch.lib.minecraft.content.client.gui.GuiFakeMenu;
-import com.EvilNotch.lib.minecraft.content.client.gui.IMenu;
-import com.EvilNotch.lib.minecraft.content.client.gui.MenuRegistry;
-import com.EvilNotch.lib.minecraft.content.tick.TickReg;
-import com.EvilNotch.lib.minecraft.proxy.ClientProxy;
-import com.EvilNotch.lib.util.simple.RomanNumerals;
+import com.evilnotch.lib.main.ConfigMenu;
+import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.minecraft.NBTUtil;
+import com.evilnotch.lib.minecraft.TileEntityUtil;
+import com.evilnotch.lib.minecraft.content.client.gui.GuiFakeMenu;
+import com.evilnotch.lib.minecraft.content.client.gui.IMenu;
+import com.evilnotch.lib.minecraft.content.client.gui.MenuRegistry;
+import com.evilnotch.lib.minecraft.content.tick.TickReg;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
+import com.evilnotch.lib.util.simple.RomanNumerals;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;

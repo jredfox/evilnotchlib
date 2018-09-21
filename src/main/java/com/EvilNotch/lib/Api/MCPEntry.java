@@ -1,8 +1,8 @@
-package com.EvilNotch.lib.Api;
+package com.evilnotch.lib.Api;
 
 import java.util.ArrayList;
 
-import com.EvilNotch.lib.main.Config;
+import com.evilnotch.lib.main.Config;
 
 public class MCPEntry {
 	public String srg = null;

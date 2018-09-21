@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.tick;
+package com.evilnotch.lib.minecraft.content.tick;
 
 import java.util.ArrayList;
 import java.util.List;

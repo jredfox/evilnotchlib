@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.util.primitive;
+package com.evilnotch.lib.util.primitive;
 
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.JavaUtil;
 
 /**
  * a modifyable integer object that can convert not just cast between other primitive values

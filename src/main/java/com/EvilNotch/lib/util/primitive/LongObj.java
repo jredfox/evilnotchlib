@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.util.primitive;
+package com.evilnotch.lib.util.primitive;
 
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.JavaUtil;
 
 @SuppressWarnings("serial")
 public class LongObj extends Number implements IModNumber{

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.capabilites;
+package com.evilnotch.lib.minecraft.content.capabilites;
 
 import net.minecraft.world.World;
 

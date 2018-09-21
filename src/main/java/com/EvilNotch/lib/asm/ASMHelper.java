@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.asm;
+package com.evilnotch.lib.asm;
 
 import static org.objectweb.asm.Opcodes.ALOAD;
 
@@ -22,9 +22,9 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.EvilNotch.lib.Api.MCPSidedString;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.Api.MCPSidedString;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.entity.Entity;
 

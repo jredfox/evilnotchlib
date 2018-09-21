@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util;
+package com.evilnotch.lib.util;
 
 import java.awt.Color;
 import java.awt.Toolkit;
@@ -42,16 +42,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
-import com.EvilNotch.lib.util.line.config.ConfigBase;
-import com.EvilNotch.lib.util.line.config.ConfigLine;
-import com.EvilNotch.lib.util.primitive.ByteObj;
-import com.EvilNotch.lib.util.primitive.DoubleObj;
-import com.EvilNotch.lib.util.primitive.FloatObj;
-import com.EvilNotch.lib.util.primitive.IntObj;
-import com.EvilNotch.lib.util.primitive.LongObj;
-import com.EvilNotch.lib.util.primitive.ShortObj;
-import com.EvilNotch.lib.util.simple.ICopy;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
+import com.evilnotch.lib.util.line.config.ConfigBase;
+import com.evilnotch.lib.util.line.config.ConfigLine;
+import com.evilnotch.lib.util.primitive.ByteObj;
+import com.evilnotch.lib.util.primitive.DoubleObj;
+import com.evilnotch.lib.util.primitive.FloatObj;
+import com.evilnotch.lib.util.primitive.IntObj;
+import com.evilnotch.lib.util.primitive.LongObj;
+import com.evilnotch.lib.util.primitive.ShortObj;
+import com.evilnotch.lib.util.simple.ICopy;
 
 import net.minecraft.util.ResourceLocation;
 

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.pcapabilites;
+package com.evilnotch.lib.minecraft.content.pcapabilites;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,10 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.main.eventhandlers.LibEvents;
-import com.EvilNotch.lib.minecraft.NBTUtil;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.eventhandlers.LibEvents;
+import com.evilnotch.lib.minecraft.NBTUtil;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.google.common.base.Strings;
 
 import net.minecraft.entity.player.EntityPlayer;

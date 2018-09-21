@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.util.line;
+package com.evilnotch.lib.util.line;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.line.util.LineUtil;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.util.LineUtil;
 
 public class LineArray extends LineMeta implements ILineHeadArray{
 
@@ -54,7 +54,15 @@ public class LineArray extends LineMeta implements ILineHeadArray{
 	@Override
 	public void setHead(Object obj,int index) 
 	{
-		this.heads.set(index, obj);
+		if(this.heads.isEmpty())
+			this.addHead(obj);
+		else
+			this.heads.set(index, obj);
+	}
+	@Override
+	public void addHead(Object obj)
+	{
+		this.heads.add(obj);
 	}
 	@Override
 	public int size()

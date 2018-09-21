@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.client.block;
+package com.evilnotch.lib.minecraft.content.client.block;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,8 +8,8 @@ import java.util.Set;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.simple.PairString;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.simple.PairString;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

@@ -1,11 +1,11 @@
-package com.EvilNotch.lib.util.line;
+package com.evilnotch.lib.util.line;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.line.util.LineUtil;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.util.LineUtil;
 
 public class LineDynamicLogic extends LineComment implements ILine,ILineMeta{
 

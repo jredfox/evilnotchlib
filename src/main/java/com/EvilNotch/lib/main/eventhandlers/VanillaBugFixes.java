@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.main.eventhandlers;
+package com.evilnotch.lib.main.eventhandlers;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONObject;
 
-import com.EvilNotch.lib.Api.BlockApi;
-import com.EvilNotch.lib.minecraft.BlockUtil;
-import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.ItemUtil;
-import com.EvilNotch.lib.minecraft.MinecraftUtil;
-import com.EvilNotch.lib.minecraft.TestProps;
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.Api.BlockApi;
+import com.evilnotch.lib.minecraft.BlockUtil;
+import com.evilnotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.minecraft.ItemUtil;
+import com.evilnotch.lib.minecraft.MinecraftUtil;
+import com.evilnotch.lib.minecraft.TestProps;
+import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 

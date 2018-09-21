@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.simple;
+package com.evilnotch.lib.util.simple;
 
 public interface ICopy{
 	

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.registry;
+package com.evilnotch.lib.minecraft.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.Api.ReflectionUtil;
-import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.minecraft.MinecraftUtil;
-import com.EvilNotch.lib.minecraft.content.recipe.ShapelessRecipe;
-import com.EvilNotch.lib.util.simple.PairObj;
+import com.evilnotch.lib.Api.FieldAcess;
+import com.evilnotch.lib.Api.ReflectionUtil;
+import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.minecraft.MinecraftUtil;
+import com.evilnotch.lib.minecraft.content.recipe.ShapelessRecipe;
+import com.evilnotch.lib.util.simple.PairObj;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;

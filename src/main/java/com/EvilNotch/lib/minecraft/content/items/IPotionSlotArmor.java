@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.items;
+package com.evilnotch.lib.minecraft.content.items;
 
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.PotionEffect;

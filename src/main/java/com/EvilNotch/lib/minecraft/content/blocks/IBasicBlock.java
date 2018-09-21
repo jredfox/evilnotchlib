@@ -1,11 +1,11 @@
-package com.EvilNotch.lib.minecraft.content.blocks;
+package com.evilnotch.lib.minecraft.content.blocks;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
-import com.EvilNotch.lib.minecraft.content.items.IBasicItem;
+import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
+import com.evilnotch.lib.minecraft.content.items.IBasicItem;
 
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.world;
+package com.evilnotch.lib.minecraft.content.world;
 
 import java.util.ArrayList;
 import java.util.List;

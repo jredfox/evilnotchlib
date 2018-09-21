@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.blocks.property;
+package com.evilnotch.lib.minecraft.content.blocks.property;
 
 import java.util.Collection;
 import java.util.HashSet;

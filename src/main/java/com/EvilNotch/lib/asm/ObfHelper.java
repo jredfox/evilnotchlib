@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.asm;
+package com.evilnotch.lib.asm;
 
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;

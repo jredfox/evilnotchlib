@@ -1,11 +1,11 @@
-package com.EvilNotch.lib.minecraft.content.commands;
+package com.evilnotch.lib.minecraft.content.commands;
 
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.minecraft.EntityUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

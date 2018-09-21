@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.network.packets;
+package com.evilnotch.lib.minecraft.network.packets;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;

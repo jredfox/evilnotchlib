@@ -1,8 +1,8 @@
-package com.EvilNotch.lib.util.line;
+package com.evilnotch.lib.util.line;
 
 import java.util.List;
 
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.JavaUtil;
 /**
  * used in LineArray for multi index heads
  * @author jredfox
@@ -13,6 +13,7 @@ public interface ILineHeadArray extends ILineHead{
 	public List<Object> getHeads();
 	public Object getHead(int index);
 	public void setHead(Object obj,int index);
+	public void addHead(Object obj);
 	public int size();
 	
 	/**

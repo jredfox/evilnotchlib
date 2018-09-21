@@ -13,7 +13,7 @@ import java.util.Map;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.EvilNotch.lib.util.simple.ICopy;
+import com.evilnotch.lib.util.simple.ICopy;
 
 /**
  * A JSON object. Key value pairs are unordered. JSONObject supports java.util.Map interface.

@@ -1,7 +1,7 @@
-package com.EvilNotch.lib.minecraft.content.blocks;
+package com.evilnotch.lib.minecraft.content.blocks;
 
-import com.EvilNotch.lib.Api.BlockApi;
-import com.EvilNotch.lib.util.line.LineArray;
+import com.evilnotch.lib.Api.BlockApi;
+import com.evilnotch.lib.util.line.LineArray;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;

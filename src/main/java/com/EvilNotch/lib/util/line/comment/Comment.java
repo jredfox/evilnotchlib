@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.util.line.comment;
+package com.evilnotch.lib.util.line.comment;
 
-import com.EvilNotch.lib.util.line.util.LineUtil;
+import com.evilnotch.lib.util.line.util.LineUtil;
 
 public class Comment implements ICommentAttatch{
 	

@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.Api;
+package com.evilnotch.lib.Api;
 
-import com.EvilNotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.asm.FMLCorePlugin;
 
 public class MCPSidedString {
 	

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.asm;
+package com.evilnotch.lib.asm;
 
 import org.objectweb.asm.ByteVector;
 import org.objectweb.asm.ClassReader;

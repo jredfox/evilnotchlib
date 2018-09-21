@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.util.line.config;
+package com.evilnotch.lib.util.line.config;
 
 import java.io.File;
 import java.util.List;
 
-import com.EvilNotch.lib.util.line.ILine;
-import com.EvilNotch.lib.util.line.LangLine;
+import com.evilnotch.lib.util.line.ILine;
+import com.evilnotch.lib.util.line.LangLine;
 
 public class ConfigLang extends ConfigBase{
 	

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.events;
+package com.evilnotch.lib.minecraft.events;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

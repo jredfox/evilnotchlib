@@ -19,12 +19,12 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.EvilNotch.lib.Api.MCPSidedString;
-import com.EvilNotch.lib.asm.ASMHelper;
-import com.EvilNotch.lib.asm.ConfigCore;
-import com.EvilNotch.lib.asm.FMLCorePlugin;
-import com.EvilNotch.lib.asm.MCWriter;
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.Api.MCPSidedString;
+import com.evilnotch.lib.asm.ASMHelper;
+import com.evilnotch.lib.asm.ConfigCore;
+import com.evilnotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.asm.MCWriter;
+import com.evilnotch.lib.util.JavaUtil;
 import com.elix_x.itemrender.mod.IItemRendererMod;
 
 import net.minecraft.launchwrapper.IClassTransformer;

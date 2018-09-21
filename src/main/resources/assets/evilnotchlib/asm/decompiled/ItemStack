@@ -218,7 +218,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
    	 	if(i instanceof ItemBlock && resault == EnumActionResult.SUCCESS)
    	 	{
    	 		IBlockState placedAgainst = blockSnapshot.getWorld().getBlockState(blockSnapshot.getPos().offset(side.getOpposite()));
-   	 		com.EvilNotch.lib.minecraft.events.ClientBlockPlaceEvent e = new com.EvilNotch.lib.minecraft.events.ClientBlockPlaceEvent(blockSnapshot, placedAgainst, playerIn, hand);
+   	 		com.evilnotch.lib.minecraft.events.ClientBlockPlaceEvent e = new com.evilnotch.lib.minecraft.events.ClientBlockPlaceEvent(blockSnapshot, placedAgainst, playerIn, hand);
    	 		net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(e);
    	 	}
    	 	else if (resault == EnumActionResult.SUCCESS)
@@ -732,7 +732,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         if(trans == null)
         	trans = this.getItem().getItemStackDisplayName(this);
 
-    	com.EvilNotch.lib.minecraft.events.DynamicTranslationEvent event = new com.EvilNotch.lib.minecraft.events.DynamicTranslationEvent(this,trans);
+    	com.evilnotch.lib.minecraft.events.DynamicTranslationEvent event = new com.evilnotch.lib.minecraft.events.DynamicTranslationEvent(this,trans);
     	net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event);
     	return event.translation;
     }

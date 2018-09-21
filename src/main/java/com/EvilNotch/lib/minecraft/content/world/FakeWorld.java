@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.world;
+package com.evilnotch.lib.minecraft.content.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.EvilNotch.lib.main.MainJava;
+import com.evilnotch.lib.main.MainJava;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSetMultimap;

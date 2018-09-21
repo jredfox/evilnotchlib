@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.minecraft.content.capabilites.registry;
+package com.evilnotch.lib.minecraft.content.capabilites.registry;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.minecraft.content.capabilites.ICapability;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.util.ResourceLocation;
 

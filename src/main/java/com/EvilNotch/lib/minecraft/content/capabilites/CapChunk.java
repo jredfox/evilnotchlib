@@ -1,8 +1,8 @@
-package com.EvilNotch.lib.minecraft.content.capabilites;
+package com.evilnotch.lib.minecraft.content.capabilites;
 
 import java.util.HashMap;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
 
 import net.minecraft.world.chunk.Chunk;
 

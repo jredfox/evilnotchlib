@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.minecraft.content.capabilites.primitive;
+package com.evilnotch.lib.minecraft.content.capabilites.primitive;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
+import com.evilnotch.lib.minecraft.content.capabilites.ICapability;
 
 public abstract class CapBase<T> implements ICapability<T>{
 	

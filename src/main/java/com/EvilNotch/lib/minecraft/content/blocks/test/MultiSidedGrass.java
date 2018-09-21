@@ -1,12 +1,12 @@
-package com.EvilNotch.lib.minecraft.content.blocks.test;
+package com.evilnotch.lib.minecraft.content.blocks.test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.EvilNotch.lib.minecraft.content.LangEntry;
-import com.EvilNotch.lib.minecraft.content.blocks.BasicMetaBlock;
-import com.EvilNotch.lib.minecraft.content.blocks.BlockProperties;
-import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
+import com.evilnotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.minecraft.content.blocks.BasicMetaBlock;
+import com.evilnotch.lib.minecraft.content.blocks.BlockProperties;
+import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;

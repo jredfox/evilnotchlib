@@ -1,11 +1,11 @@
-package com.EvilNotch.lib.util.line.util;
+package com.evilnotch.lib.util.line.util;
 
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.line.ILine;
-import com.EvilNotch.lib.util.line.ILineMeta;
-import com.EvilNotch.lib.util.line.Line;
-import com.EvilNotch.lib.util.line.LineArray;
-import com.EvilNotch.lib.util.line.LineMeta;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.ILine;
+import com.evilnotch.lib.util.line.ILineMeta;
+import com.evilnotch.lib.util.line.Line;
+import com.evilnotch.lib.util.line.LineArray;
+import com.evilnotch.lib.util.line.LineMeta;
 
 public class LineUtil {
 	//this section is to remove hard coding the same varibles multiple times

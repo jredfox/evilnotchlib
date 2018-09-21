@@ -1,11 +1,11 @@
-package com.EvilNotch.lib.Api;
+package com.evilnotch.lib.Api;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraftforge.common.MinecraftForge;
 

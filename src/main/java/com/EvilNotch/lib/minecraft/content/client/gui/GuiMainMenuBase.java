@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.client.gui;
+package com.evilnotch.lib.minecraft.content.client.gui;
 
 import static net.minecraftforge.common.ForgeVersion.Status.BETA;
 import static net.minecraftforge.common.ForgeVersion.Status.BETA_OUTDATED;

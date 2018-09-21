@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content;
+package com.evilnotch.lib.minecraft.content;
 
 import net.minecraft.util.ResourceLocation;
 

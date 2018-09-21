@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.line;
+package com.evilnotch.lib.util.line;
 /**
  * for anything that is not your basic line nor in the head section your meta data goes here
  * @author jredfox

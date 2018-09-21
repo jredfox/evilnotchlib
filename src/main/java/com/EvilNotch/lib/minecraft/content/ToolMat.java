@@ -1,9 +1,9 @@
-package com.EvilNotch.lib.minecraft.content;
+package com.evilnotch.lib.minecraft.content;
 
 import java.util.HashMap;
 
-import com.EvilNotch.lib.util.line.LineArray;
-import com.EvilNotch.lib.util.simple.IEnumContainer;
+import com.evilnotch.lib.util.line.LineArray;
+import com.evilnotch.lib.util.simple.IEnumContainer;
 
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemStack;

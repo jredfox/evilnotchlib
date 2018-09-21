@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.main;
+package com.evilnotch.lib.main;
 
 import java.io.File;
 import java.util.ArrayList;

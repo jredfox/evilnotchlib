@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.line.config;
+package com.evilnotch.lib.util.line.config;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,16 +7,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.line.ILine;
-import com.EvilNotch.lib.util.line.ILineMeta;
-import com.EvilNotch.lib.util.line.Line;
-import com.EvilNotch.lib.util.line.LineArray;
-import com.EvilNotch.lib.util.line.LineDynamicLogic;
-import com.EvilNotch.lib.util.line.LineMeta;
-import com.EvilNotch.lib.util.line.comment.Comment;
-import com.EvilNotch.lib.util.line.comment.IComment;
-import com.EvilNotch.lib.util.line.util.LineUtil;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.ILine;
+import com.evilnotch.lib.util.line.ILineMeta;
+import com.evilnotch.lib.util.line.Line;
+import com.evilnotch.lib.util.line.LineArray;
+import com.evilnotch.lib.util.line.LineDynamicLogic;
+import com.evilnotch.lib.util.line.LineMeta;
+import com.evilnotch.lib.util.line.comment.Comment;
+import com.evilnotch.lib.util.line.comment.IComment;
+import com.evilnotch.lib.util.line.util.LineUtil;
 
 public class ConfigLine extends ConfigBase{
 	
@@ -53,8 +53,14 @@ public class ConfigLine extends ConfigBase{
 	{
 		super(f);
 	}
+	
 	public ConfigLine(File f, List<String> comments) {
-		this(f,"",LineUtil.commentDefault,comments);
+		this(f,comments,"");
+	}
+	
+	public ConfigLine(File f,List<String> comments,String header)
+	{
+		this(f,header,LineUtil.commentDefault,comments);
 	}
 	
 	public ConfigLine(File f,String header,char commentStart,List<String> comments)

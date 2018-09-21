@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.world;
+package com.evilnotch.lib.minecraft.content.world;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

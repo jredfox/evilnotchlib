@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.minecraft.content.capabilites.registry;
+package com.evilnotch.lib.minecraft.content.capabilites.registry;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
+import com.evilnotch.lib.minecraft.content.capabilites.ICapability;
 
 import net.minecraft.util.ResourceLocation;
 

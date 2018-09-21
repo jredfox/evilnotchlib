@@ -1,8 +1,8 @@
-package com.EvilNotch.lib.minecraft.content.items;
+package com.evilnotch.lib.minecraft.content.items;
 
 import java.util.ArrayList;
 
-import com.EvilNotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.minecraft.content.LangEntry;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;

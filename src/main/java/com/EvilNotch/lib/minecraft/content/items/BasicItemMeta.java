@@ -1,7 +1,7 @@
-package com.EvilNotch.lib.minecraft.content.items;
+package com.evilnotch.lib.minecraft.content.items;
 
-import com.EvilNotch.lib.minecraft.content.LangEntry;
-import com.EvilNotch.lib.minecraft.content.blocks.item.IMetaName;
+import com.evilnotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.minecraft.content.blocks.item.IMetaName;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

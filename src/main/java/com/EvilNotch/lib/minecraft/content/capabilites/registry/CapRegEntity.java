@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.capabilites.registry;
+package com.evilnotch.lib.minecraft.content.capabilites.registry;
 
 import net.minecraft.entity.Entity;
 

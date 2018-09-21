@@ -1,20 +1,20 @@
-package com.EvilNotch.lib.minecraft.network;
+package com.evilnotch.lib.minecraft.network;
 
-import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
-import com.EvilNotch.lib.minecraft.network.packets.PacketRequestSeed;
-import com.EvilNotch.lib.minecraft.network.packets.PacketSeed;
-import com.EvilNotch.lib.minecraft.network.packets.PacketUUID;
-import com.EvilNotch.lib.minecraft.network.packets.PacketYawHead;
-import com.EvilNotch.lib.minecraft.network.packets.PacketYawOffset;
-import com.EvilNotch.lib.minecraft.network.packets.PacketYawPitch;
-import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketClipBoardHandler;
-import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketRequestSeedHandler;
-import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketSeedHandler;
-import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketUUIDHandler;
-import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketYawHeadHandler;
-import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketYawOffsetHandler;
-import com.EvilNotch.lib.minecraft.network.packets.handlers.PacketYawPitchHandler;
+import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.minecraft.network.packets.PacketClipBoard;
+import com.evilnotch.lib.minecraft.network.packets.PacketRequestSeed;
+import com.evilnotch.lib.minecraft.network.packets.PacketSeed;
+import com.evilnotch.lib.minecraft.network.packets.PacketUUID;
+import com.evilnotch.lib.minecraft.network.packets.PacketYawHead;
+import com.evilnotch.lib.minecraft.network.packets.PacketYawOffset;
+import com.evilnotch.lib.minecraft.network.packets.PacketYawPitch;
+import com.evilnotch.lib.minecraft.network.packets.handlers.PacketClipBoardHandler;
+import com.evilnotch.lib.minecraft.network.packets.handlers.PacketRequestSeedHandler;
+import com.evilnotch.lib.minecraft.network.packets.handlers.PacketSeedHandler;
+import com.evilnotch.lib.minecraft.network.packets.handlers.PacketUUIDHandler;
+import com.evilnotch.lib.minecraft.network.packets.handlers.PacketYawHeadHandler;
+import com.evilnotch.lib.minecraft.network.packets.handlers.PacketYawOffsetHandler;
+import com.evilnotch.lib.minecraft.network.packets.handlers.PacketYawPitchHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

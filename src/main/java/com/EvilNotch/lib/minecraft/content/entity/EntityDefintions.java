@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.minecraft.content.entity;
+package com.evilnotch.lib.minecraft.content.entity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.EvilNotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
+import com.evilnotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
 
 public class EntityDefintions
 {

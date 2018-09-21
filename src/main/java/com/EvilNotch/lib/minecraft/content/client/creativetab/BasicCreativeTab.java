@@ -1,9 +1,9 @@
-package com.EvilNotch.lib.minecraft.content.client.creativetab;
+package com.evilnotch.lib.minecraft.content.client.creativetab;
 
 import java.util.ArrayList;
 
-import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.minecraft.content.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

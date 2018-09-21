@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.recipe;
+package com.evilnotch.lib.minecraft.content.recipe;
 
 import java.util.ArrayList;
 import java.util.List;

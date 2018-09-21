@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.blocks.item;
+package com.evilnotch.lib.minecraft.content.blocks.item;
 
 import net.minecraft.item.ItemStack;
 

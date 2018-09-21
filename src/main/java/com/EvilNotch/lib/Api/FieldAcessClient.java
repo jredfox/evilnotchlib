@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.Api;
+package com.evilnotch.lib.Api;
 
 import java.util.Map;
 

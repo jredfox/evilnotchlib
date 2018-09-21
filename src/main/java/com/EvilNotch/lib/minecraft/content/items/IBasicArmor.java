@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.minecraft.content.items;
+package com.evilnotch.lib.minecraft.content.items;
 
-import com.EvilNotch.lib.minecraft.content.ArmorSet;
+import com.evilnotch.lib.minecraft.content.ArmorSet;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.client.gui;
+package com.evilnotch.lib.minecraft.content.client.gui;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
-import com.EvilNotch.lib.Api.ReflectionUtil;
-import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.main.ConfigMenu;
-import com.EvilNotch.lib.main.MainJava;
+import com.evilnotch.lib.Api.ReflectionUtil;
+import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.ConfigMenu;
+import com.evilnotch.lib.main.MainJava;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

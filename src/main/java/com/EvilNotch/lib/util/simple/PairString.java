@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.simple;
+package com.evilnotch.lib.util.simple;
 
 public class PairString extends PairObj<String,String>{
 

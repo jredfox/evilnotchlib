@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.line;
+package com.evilnotch.lib.util.line;
 /**
  * for line separation between modid:block so you don't have to manually parse it when using your line object later
  * @author jredfox

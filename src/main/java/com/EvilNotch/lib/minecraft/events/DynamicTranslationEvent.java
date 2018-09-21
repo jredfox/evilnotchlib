@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.events;
+package com.evilnotch.lib.minecraft.events;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.Event;

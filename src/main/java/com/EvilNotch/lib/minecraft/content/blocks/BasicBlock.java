@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.blocks;
+package com.evilnotch.lib.minecraft.content.blocks;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,13 +8,13 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import com.EvilNotch.lib.Api.BlockApi;
-import com.EvilNotch.lib.main.MainJava;
-import com.EvilNotch.lib.minecraft.content.LangEntry;
-import com.EvilNotch.lib.minecraft.content.client.block.ModelPart;
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.line.LineArray;
-import com.EvilNotch.lib.util.line.config.ConfigBase;
+import com.evilnotch.lib.Api.BlockApi;
+import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.LineArray;
+import com.evilnotch.lib.util.line.config.ConfigBase;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
@@ -135,7 +135,6 @@ public class BasicBlock extends Block implements IBasicBlock{
 
 	public static BlockProperties getConfiguredBlockProps(Block b,BlockProperties props) 
 	{
-		System.out.println("\"" + b.getRegistryName() + "\" " + props.toString());
 		LineArray line = new LineArray("\"" + b.getRegistryName() + "\" " + props.toString());
 		ConfigBase cfg = MainJava.cfgBlockProps;
 		cfg.addLine(line);

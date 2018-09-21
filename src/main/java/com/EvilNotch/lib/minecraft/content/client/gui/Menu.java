@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.minecraft.content.client.gui;
+package com.evilnotch.lib.minecraft.content.client.gui;
 
 import java.lang.reflect.Constructor;
 
-import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.main.ConfigMenu;
-import com.EvilNotch.lib.util.simple.ICopy;
+import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.ConfigMenu;
+import com.evilnotch.lib.util.simple.ICopy;
 
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;

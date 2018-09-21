@@ -1,7 +1,7 @@
-package com.EvilNotch.lib.minecraft.content.items;
+package com.evilnotch.lib.minecraft.content.items;
 
-import com.EvilNotch.lib.minecraft.content.ArmorMat;
-import com.EvilNotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.minecraft.content.ArmorMat;
+import com.evilnotch.lib.minecraft.content.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.inventory.EntityEquipmentSlot;

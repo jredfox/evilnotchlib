@@ -1,9 +1,9 @@
-package com.EvilNotch.lib.minecraft.content.commands;
+package com.evilnotch.lib.minecraft.content.commands;
 
-import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.EnumChatFormatting;
-import com.EvilNotch.lib.minecraft.network.NetWorkHandler;
-import com.EvilNotch.lib.minecraft.network.packets.PacketClipBoard;
+import com.evilnotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.minecraft.EnumChatFormatting;
+import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packets.PacketClipBoard;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

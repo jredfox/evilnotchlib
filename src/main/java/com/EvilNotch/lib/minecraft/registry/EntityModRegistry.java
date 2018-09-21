@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.registry;
+package com.evilnotch.lib.minecraft.registry;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package com.EvilNotch.lib.minecraft.content.commands;
+package com.evilnotch.lib.minecraft.content.commands;
 
-import com.EvilNotch.lib.main.Config;
-import com.EvilNotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.minecraft.EntityUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

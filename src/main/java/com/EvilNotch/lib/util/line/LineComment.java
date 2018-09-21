@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.util.line;
+package com.evilnotch.lib.util.line;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.EvilNotch.lib.util.line.comment.ICommentAttatch;
-import com.EvilNotch.lib.util.line.comment.ICommentStorage;
+import com.evilnotch.lib.util.line.comment.ICommentAttatch;
+import com.evilnotch.lib.util.line.comment.ICommentStorage;
 
 public abstract class LineComment implements ILine,ICommentStorage{
 	

@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.events;
+package com.evilnotch.lib.minecraft.events;
 
 import javax.annotation.Nonnull;
 

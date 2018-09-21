@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.minecraft.content.capabilites;
+package com.evilnotch.lib.minecraft.content.capabilites;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
 
 /**
  * this allows you to have your capabilities attatched to the update() as long as they call super()

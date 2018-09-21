@@ -1,14 +1,14 @@
-package com.EvilNotch.lib.asm;
+package com.evilnotch.lib.asm;
 
 import java.util.Collection;
 import java.util.List;
 
-import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.minecraft.content.capabilites.ICapability;
-import com.EvilNotch.lib.minecraft.content.capabilites.primitive.CapBoolean;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.ICapProvider;
+import com.evilnotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.minecraft.content.capabilites.ICapability;
+import com.evilnotch.lib.minecraft.content.capabilites.primitive.CapBoolean;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapRegHandler;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.ICapProvider;
 
 import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.tileentity.TileEntity;

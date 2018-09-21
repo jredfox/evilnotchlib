@@ -1,7 +1,7 @@
-package com.EvilNotch.lib.minecraft.network.packets.handlers;
+package com.evilnotch.lib.minecraft.network.packets.handlers;
 
-import com.EvilNotch.lib.minecraft.network.MessegeBase;
-import com.EvilNotch.lib.minecraft.network.packets.PacketYawOffset;
+import com.evilnotch.lib.minecraft.network.MessegeBase;
+import com.evilnotch.lib.minecraft.network.packets.PacketYawOffset;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;

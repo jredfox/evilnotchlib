@@ -1,8 +1,8 @@
-package com.EvilNotch.lib.minecraft;
+package com.evilnotch.lib.minecraft;
 
 import java.util.List;
 
-import com.EvilNotch.lib.Api.BlockApi;
+import com.evilnotch.lib.Api.BlockApi;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

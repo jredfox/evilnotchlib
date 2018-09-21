@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.util.archive;
+package com.evilnotch.lib.util.archive;
 
 import java.util.zip.ZipEntry;
 

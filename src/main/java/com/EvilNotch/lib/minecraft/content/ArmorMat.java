@@ -1,13 +1,13 @@
-package com.EvilNotch.lib.minecraft.content;
+package com.evilnotch.lib.minecraft.content;
 
 import java.util.HashMap;
 import java.util.List;
 
-import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.minecraft.MinecraftUtil;
-import com.EvilNotch.lib.util.JavaUtil;
-import com.EvilNotch.lib.util.line.LineArray;
-import com.EvilNotch.lib.util.simple.IEnumContainer;
+import com.evilnotch.lib.Api.FieldAcess;
+import com.evilnotch.lib.minecraft.MinecraftUtil;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.LineArray;
+import com.evilnotch.lib.util.simple.IEnumContainer;
 
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;

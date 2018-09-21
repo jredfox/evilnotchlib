@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.asm;
+package com.evilnotch.lib.asm;
 
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
@@ -11,7 +11,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.EvilNotch.lib.Api.MCPSidedString;
+import com.evilnotch.lib.Api.MCPSidedString;
 
 public class GeneralTransformer {
 	/**
@@ -29,7 +29,7 @@ public class GeneralTransformer {
     			if(n.owner.equals("net/minecraftforge/common/ForgeHooks"))
     			{
     				n.name = "pickBlock";
-    				n.owner = "com/EvilNotch/lib/asm/PickBlock";
+    				n.owner = "com/evilnotch/lib/asm/PickBlock";
     				System.out.println("patched Minecraft#middleClickMouse()");
     				break;
     			}
@@ -47,7 +47,7 @@ public class GeneralTransformer {
 		 MethodNode method = ASMHelper.getMethodNode(playerList, method_name, method_desc);
 		 InsnList toInsert = new InsnList();
          toInsert.add(new VarInsnNode(ALOAD,1));
-         toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/EvilNotch/lib/minecraft/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
+         toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
          method.instructions.insertBefore(ASMHelper.getFirstInstruction(method, Opcodes.ALOAD),toInsert);
 	}
 

@@ -1,7 +1,7 @@
-package com.EvilNotch.lib.minecraft.content.client.block;
+package com.evilnotch.lib.minecraft.content.client.block;
 
-import com.EvilNotch.lib.minecraft.content.blocks.IBasicBlock;
-import com.EvilNotch.lib.minecraft.content.blocks.property.IPropertyName;
+import com.evilnotch.lib.minecraft.content.blocks.IBasicBlock;
+import com.evilnotch.lib.minecraft.content.blocks.property.IPropertyName;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;

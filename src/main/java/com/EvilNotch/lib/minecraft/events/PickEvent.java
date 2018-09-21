@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.events;
+package com.evilnotch.lib.minecraft.events;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;

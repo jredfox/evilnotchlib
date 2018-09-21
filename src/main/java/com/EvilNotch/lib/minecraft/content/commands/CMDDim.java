@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft.content.commands;
+package com.evilnotch.lib.minecraft.content.commands;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -7,9 +7,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.minecraft.EntityUtil;
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.Api.FieldAcess;
+import com.evilnotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

@@ -1,6 +1,6 @@
-package com.EvilNotch.lib.minecraft.content.capabilites.primitive;
+package com.evilnotch.lib.minecraft.content.capabilites.primitive;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
 
 import net.minecraft.nbt.NBTTagCompound;
 

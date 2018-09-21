@@ -1,8 +1,8 @@
-package com.EvilNotch.lib.util.line;
+package com.evilnotch.lib.util.line;
 
 import java.util.List;
 
-import com.EvilNotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.JavaUtil;
 /**
  * does your head have a line implement this
  * @author jredfox

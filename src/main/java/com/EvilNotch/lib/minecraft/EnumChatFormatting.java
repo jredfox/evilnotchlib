@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft;
+package com.evilnotch.lib.minecraft;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 

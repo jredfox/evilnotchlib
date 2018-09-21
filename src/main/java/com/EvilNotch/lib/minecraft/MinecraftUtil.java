@@ -1,4 +1,4 @@
-package com.EvilNotch.lib.minecraft;
+package com.evilnotch.lib.minecraft;
 
 import java.io.File;
 import java.io.InputStream;
@@ -10,8 +10,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.EvilNotch.lib.Api.FieldAcess;
-import com.EvilNotch.lib.minecraft.content.pcapabilites.CapabilityReg;
+import com.evilnotch.lib.Api.FieldAcess;
+import com.evilnotch.lib.minecraft.content.pcapabilites.CapabilityReg;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 

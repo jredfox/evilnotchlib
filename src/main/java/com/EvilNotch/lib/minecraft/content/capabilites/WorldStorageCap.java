@@ -1,10 +1,10 @@
-package com.EvilNotch.lib.minecraft.content.capabilites;
+package com.evilnotch.lib.minecraft.content.capabilites;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import com.EvilNotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
