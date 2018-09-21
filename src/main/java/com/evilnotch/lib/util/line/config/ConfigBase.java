@@ -314,7 +314,7 @@ public abstract class ConfigBase {
 				}
 			}
 			str = getRawLine(str);
-			this.lines.add(getLineFromString(str));
+			this.appendLine(getLineFromString(str));
 			index_line++;
 		}
 		if(this.commentsEnabled)

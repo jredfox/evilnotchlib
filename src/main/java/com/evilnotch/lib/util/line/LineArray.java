@@ -6,6 +6,8 @@ import java.util.List;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.util.LineUtil;
 
+import net.minecraft.util.ResourceLocation;
+
 public class LineArray extends LineMeta implements ILineHeadArray{
 
 	public List<Object> heads = new ArrayList<Object>();
@@ -24,10 +26,10 @@ public class LineArray extends LineMeta implements ILineHeadArray{
 		{
 			str = JavaUtil.splitFirst(str,'=')[1].trim();
 			
-			this.lbracket = brackets[0];
-			this.rbracket = brackets[1];
 			if(str.startsWith("" + brackets[0]))
 			{
+				this.lbracket = brackets[0];
+				this.rbracket = brackets[1];
 				str = str.substring(1, str.length()-1);
 			}
 			

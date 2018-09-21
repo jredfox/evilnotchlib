@@ -97,7 +97,13 @@ public class LineMeta extends Line implements ILineMeta{
 		
 		for(int i=0;i<meta.length;i++)
 		{
-			if(!meta[i].equals(otherMeta[i]))
+			String m = meta[i];
+			String otherm = otherMeta[i];
+			if(m == null)
+				m = "";
+			if(otherm == null)
+				otherm = "";
+			if(!m.equals(otherm))
 				return false;
 		}
 		return true;
@@ -112,6 +118,9 @@ public class LineMeta extends Line implements ILineMeta{
 	public double getMetaDouble(){
 		return (double)this.metaData;
 	}
+	public String getMetaString() {
+		return this.meta;
+	}
 	
 	@Override
 	public String toString(boolean comparible)
@@ -124,7 +133,7 @@ public class LineMeta extends Line implements ILineMeta{
 				me = "\"" + me + (this.metaDataId != ' ' ? this.metaDataId : "") + "\"";
 			m += " " + this.metaBrackets[0] + me + "" + this.metaBrackets[1];
 		}
-		if(this.nbt != null && this.nbt != null)
+		if(this.nbt != null)
 			m += " " + this.nbt;
 		return super.toString(comparible) + m;
 	}
