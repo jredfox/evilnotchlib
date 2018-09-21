@@ -21,8 +21,8 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
 
-import com.evilnotch.lib.Api.FieldAcess;
-import com.evilnotch.lib.Api.ReflectionUtil;
+import com.evilnotch.lib.api.FieldAcess;
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandlers.LibEvents;

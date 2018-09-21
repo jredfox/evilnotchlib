@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 
-import com.evilnotch.lib.Api.ReflectionUtil;
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.ConfigMenu;
 import com.evilnotch.lib.main.MainJava;

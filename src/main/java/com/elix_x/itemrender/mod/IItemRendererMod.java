@@ -3,11 +3,11 @@ package com.elix_x.itemrender.mod;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import com.evilnotch.lib.Api.MCPSidedString;
-import com.evilnotch.lib.Api.ReflectionUtil;
 import com.elix_x.itemrender.IItemRendererHandler;
 import com.elix_x.itemrender.IItemRendererRenderItem;
 import com.elix_x.itemrender.compat.asm.JEIRenderer;
+import com.evilnotch.lib.api.MCPSidedString;
+import com.evilnotch.lib.api.ReflectionUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;

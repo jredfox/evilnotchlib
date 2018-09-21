@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 
-import com.evilnotch.lib.Api.FieldAcess;
-import com.evilnotch.lib.Api.MCPMappings;
+import com.evilnotch.lib.api.FieldAcess;
+import com.evilnotch.lib.api.MCPMappings;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.main.eventhandlers.LibEvents;
 import com.evilnotch.lib.main.eventhandlers.VanillaBugFixes;

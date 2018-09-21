@@ -19,7 +19,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.evilnotch.lib.Api.MCPSidedString;
+import com.evilnotch.lib.api.MCPSidedString;
 import com.evilnotch.lib.asm.ASMHelper;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;

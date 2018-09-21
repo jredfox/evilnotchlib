@@ -22,7 +22,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.evilnotch.lib.Api.MCPSidedString;
+import com.evilnotch.lib.api.MCPSidedString;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
 import com.evilnotch.lib.util.JavaUtil;

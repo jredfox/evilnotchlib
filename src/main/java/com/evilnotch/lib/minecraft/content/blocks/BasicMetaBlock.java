@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.evilnotch.lib.Api.FieldAcess;
-import com.evilnotch.lib.Api.ReflectionUtil;
+import com.evilnotch.lib.api.FieldAcess;
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.minecraft.content.LangEntry;
 import com.evilnotch.lib.minecraft.content.blocks.item.IMetaName;
 import com.evilnotch.lib.minecraft.content.blocks.item.ItemBlockMeta;

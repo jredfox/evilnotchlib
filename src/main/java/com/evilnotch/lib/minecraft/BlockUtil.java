@@ -2,7 +2,7 @@ package com.evilnotch.lib.minecraft;
 
 import java.util.List;
 
-import com.evilnotch.lib.Api.BlockApi;
+import com.evilnotch.lib.api.BlockApi;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

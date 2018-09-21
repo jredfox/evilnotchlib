@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.evilnotch.lib.Api.FieldAcess;
+import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.minecraft.EntityUtil;
 import com.evilnotch.lib.util.JavaUtil;
 

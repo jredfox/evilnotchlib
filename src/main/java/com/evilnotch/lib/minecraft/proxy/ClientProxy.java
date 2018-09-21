@@ -9,11 +9,11 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 
-import com.evilnotch.lib.Api.BlockApi;
-import com.evilnotch.lib.Api.FieldAcess;
-import com.evilnotch.lib.Api.FieldAcessClient;
-import com.evilnotch.lib.Api.MCPMappings;
-import com.evilnotch.lib.Api.ReflectionUtil;
+import com.evilnotch.lib.api.BlockApi;
+import com.evilnotch.lib.api.FieldAcess;
+import com.evilnotch.lib.api.FieldAcessClient;
+import com.evilnotch.lib.api.MCPMappings;
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.ConfigMenu;
 import com.evilnotch.lib.main.MainJava;

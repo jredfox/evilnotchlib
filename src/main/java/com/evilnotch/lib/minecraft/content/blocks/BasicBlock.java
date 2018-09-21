@@ -8,7 +8,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import com.evilnotch.lib.Api.BlockApi;
+import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.content.LangEntry;
 import com.evilnotch.lib.minecraft.content.client.block.ModelPart;

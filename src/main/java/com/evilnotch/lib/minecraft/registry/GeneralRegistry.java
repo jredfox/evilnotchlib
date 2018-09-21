@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.evilnotch.lib.Api.FieldAcess;
-import com.evilnotch.lib.Api.ReflectionUtil;
+import com.evilnotch.lib.api.FieldAcess;
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.MinecraftUtil;
 import com.evilnotch.lib.minecraft.content.recipe.ShapelessRecipe;

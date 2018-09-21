@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONObject;
 
-import com.evilnotch.lib.Api.BlockApi;
+import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.minecraft.BlockUtil;
 import com.evilnotch.lib.minecraft.EntityUtil;
 import com.evilnotch.lib.minecraft.ItemUtil;

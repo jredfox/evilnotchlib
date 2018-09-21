@@ -10,7 +10,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.evilnotch.lib.Api.FieldAcess;
+import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.minecraft.content.pcapabilites.CapabilityReg;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
