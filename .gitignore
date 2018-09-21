@@ -6,3 +6,4 @@ src/main/java/net/minecraft/tileentity/WeightedSpawnerEntry.java
 src/main/resources/assets/iitemrenderer/asm/deob/IngredientListBatchRenderer
 src/main/resources/assets/iitemrenderer/asm/srg/IngredientListBatchRenderer
 src/main/java/net/minecraft/item/ItemStack.java
+src/main/java/net/minecraft/network/NetHandlerPlayServer.java
