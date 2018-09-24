@@ -1,10 +1,10 @@
 package com.evilnotch.lib.main.testing;
 
-import com.evilnotch.lib.minecraft.content.capabilites.primitive.CapBoolean;
-import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
-import com.evilnotch.lib.minecraft.content.capabilites.registry.CapRegChunk;
-import com.evilnotch.lib.minecraft.content.capabilites.registry.CapRegTileEntity;
-import com.evilnotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
+import com.evilnotch.lib.minecraft.content.capability.primitive.CapBoolean;
+import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capability.registry.CapRegChunk;
+import com.evilnotch.lib.minecraft.content.capability.registry.CapRegTileEntity;
+import com.evilnotch.lib.minecraft.content.capability.registry.ICapRegistry;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;

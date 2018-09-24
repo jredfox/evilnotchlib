@@ -3,9 +3,9 @@ package com.evilnotch.lib.api;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.evilnotch.lib.minecraft.BlockUtil;
-import com.evilnotch.lib.minecraft.ItemUtil;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
+import com.evilnotch.lib.minecraft.util.BlockUtil;
+import com.evilnotch.lib.minecraft.util.ItemUtil;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.block.Block;

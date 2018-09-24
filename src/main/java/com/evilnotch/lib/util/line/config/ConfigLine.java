@@ -44,6 +44,14 @@ public class ConfigLine extends ConfigBase{
 	public String orLogic = LineUtil.orLogic;
 	public String andLogic = LineUtil.andLogic;
 	
+	/**
+	 * create config base for only in memory manipulation
+	 */
+	public ConfigLine()
+	{
+		
+	}
+	
 	public ConfigLine(String inputStream,File output)
 	{
 		super(inputStream,output);

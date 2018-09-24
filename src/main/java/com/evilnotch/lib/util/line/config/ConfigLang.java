@@ -8,6 +8,14 @@ import com.evilnotch.lib.util.line.LangLine;
 
 public class ConfigLang extends ConfigBase{
 	
+	/**
+	 * create config base for only in memory manipulation
+	 */
+	public ConfigLang()
+	{
+		
+	}
+	
 	public ConfigLang(File f) 
 	{
 		super(f);

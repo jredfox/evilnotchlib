@@ -9,6 +9,14 @@ import com.evilnotch.lib.util.line.util.LineUtil;
 
 public class ConfigLineMeta extends ConfigLine{
 	
+	/**
+	 * create config base for only in memory manipulation
+	 */
+	public ConfigLineMeta()
+	{
+		
+	}
+	
 	public ConfigLineMeta(File f) 
 	{
 		super(f);

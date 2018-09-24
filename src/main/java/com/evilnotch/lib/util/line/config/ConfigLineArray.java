@@ -8,6 +8,14 @@ import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.util.LineUtil;
 
 public class ConfigLineArray extends ConfigLine{
+	
+	/**
+	 * create config base for only in memory manipulation
+	 */
+	public ConfigLineArray()
+	{
+		
+	}
 
 	public ConfigLineArray(File f) 
 	{

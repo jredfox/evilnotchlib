@@ -1,8 +1,8 @@
 package com.evilnotch.lib.main.testing;
 
-import com.evilnotch.lib.minecraft.content.capabilites.primitive.CapString;
-import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
-import com.evilnotch.lib.minecraft.content.capabilites.registry.CapRegWorld;
+import com.evilnotch.lib.minecraft.content.capability.primitive.CapString;
+import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capability.registry.CapRegWorld;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;

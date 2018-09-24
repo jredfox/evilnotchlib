@@ -24,7 +24,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.MCPSidedString;
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.client.renderer.tileentity.TileEntityBannerRenderer;
@@ -36,7 +36,7 @@ import net.minecraft.util.math.Vec3i;
 
 public class Transformer implements IClassTransformer
 {
-    public static final List<String> classesBeingTransformed = (List<String>)JavaUtil.<String>asArray2(new Object[]
+    public static final List<String> classesBeingTransformed = (List<String>)JavaUtil.<String>asArray(new Object[]
     {
     	"net.minecraft.server.management.PlayerList",
     	"net.minecraft.tileentity.TileEntityFurnace",
@@ -116,7 +116,6 @@ public class Transformer implements IClassTransformer
                 	if(!ConfigCore.asm_setTileNBTFix)
                 		return classToTransform;
                 	ASMHelper.replaceMethod(classNode, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "func_179224_a");
-                	ASMHelper.addIfMethod(classNode,inputBase + "ItemBlock","setTileNBT","(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;Lnet/minecraft/nbt/NBTTagCompound;Z)Z");
                 break;
                 
                 case 5:

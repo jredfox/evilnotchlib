@@ -60,6 +60,19 @@ public abstract class ConfigBase {
 	public char[] headerWrappers = new char[]{'<','/','>'};
 	
 	/**
+	 * allow people to only generate crap on first launch of file only changes to true when instantiated from the file's non existence
+	 */
+	public boolean firstLaunch = false;
+	
+	/**
+	 * create config base for only in memory manipulation
+	 */
+	public ConfigBase()
+	{
+		
+	}
+	
+	/**
 	 * call this constructor if your reading from a jar/zip 
 	 * since jar files can't be modified only call this constructor if the output file doesn't exist
 	 */
@@ -72,9 +85,9 @@ public abstract class ConfigBase {
 	public ConfigBase(File f)
 	{
 		this.file = f;
-		this.checkFile();
+		this.validateFile();
 	}
-	
+
 	public ConfigBase(File f, List<String> comments) {
 		this(f,comments,"");
 	}
@@ -98,7 +111,7 @@ public abstract class ConfigBase {
 		for(String s : comments)
 			this.addHeaderCommentAdmin(s);
 		this.headerWrappers = headWrapper;
-		this.checkFile();
+		this.validateFile();
 	}
 			
 	/**
@@ -110,8 +123,11 @@ public abstract class ConfigBase {
 		this.lines.clear();
 		try
 		{
-			List<String> list = JavaUtil.getFileLines(this.file,true);
-			parseLines(list);
+			if(this.file.exists())
+			{
+				List<String> list = JavaUtil.getFileLines(this.file,true);
+				parseLines(list);
+			}
 		}
 		catch(Exception e)
 		{
@@ -153,18 +169,15 @@ public abstract class ConfigBase {
 		}
 	}
 	
-	protected void checkFile() 
+	/**
+	 * coders only allows on constructor you to set first launch to true/false and if not then have create file
+	 */
+	protected void validateFile() 
 	{
-		try
+		if(!this.file.exists())
 		{
-			if(!this.file.exists())
-			{
-				JavaUtil.createFileSafley(this.file);
-			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
+			this.firstLaunch = true;
+			JavaUtil.createFolders(this.file);
 		}
 	}
 

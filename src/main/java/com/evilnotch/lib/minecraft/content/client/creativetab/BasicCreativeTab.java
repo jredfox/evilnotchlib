@@ -3,7 +3,7 @@ package com.evilnotch.lib.minecraft.content.client.creativetab;
 import java.util.ArrayList;
 
 import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.minecraft.content.LangEntry;
+import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

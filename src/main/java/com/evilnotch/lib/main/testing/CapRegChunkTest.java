@@ -1,7 +1,7 @@
 package com.evilnotch.lib.main.testing;
 
-import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
-import com.evilnotch.lib.minecraft.content.capabilites.registry.CapRegChunk;
+import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capability.registry.CapRegChunk;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.chunk.Chunk;

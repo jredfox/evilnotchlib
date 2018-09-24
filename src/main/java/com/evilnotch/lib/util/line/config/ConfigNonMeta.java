@@ -6,6 +6,14 @@ import java.util.List;
 import com.evilnotch.lib.util.line.util.LineUtil;
 
 public class ConfigNonMeta extends ConfigLine{
+	
+	/**
+	 * create config base for only in memory manipulation
+	 */
+	public ConfigNonMeta()
+	{
+		
+	}
 
 	public ConfigNonMeta(File f) 
 	{

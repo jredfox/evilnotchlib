@@ -1,6 +1,6 @@
 package com.evilnotch.lib.util.line;
 
-import com.evilnotch.lib.minecraft.NBTUtil;
+import com.evilnotch.lib.minecraft.util.NBTUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.util.LineUtil;
 

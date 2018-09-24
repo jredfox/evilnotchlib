@@ -2,7 +2,7 @@ package com.evilnotch.lib.minecraft.content.client;
 
 import java.util.UUID;
 
-import com.evilnotch.lib.minecraft.EntityUtil;
+import com.evilnotch.lib.minecraft.util.EntityUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;

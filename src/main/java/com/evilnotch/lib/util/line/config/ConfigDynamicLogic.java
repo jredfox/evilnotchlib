@@ -9,6 +9,14 @@ import com.evilnotch.lib.util.line.util.LineUtil;
 
 public class ConfigDynamicLogic extends ConfigLine{
 	
+	/**
+	 * create config base for only in memory manipulation
+	 */
+	public ConfigDynamicLogic()
+	{
+
+	}
+	
 	public ConfigDynamicLogic(File f) 
 	{
 		super(f);

@@ -17,21 +17,22 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.ConfigMenu;
 import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.main.eventhandlers.ClientEvents;
-import com.evilnotch.lib.minecraft.MinecraftUtil;
-import com.evilnotch.lib.minecraft.content.LangEntry;
-import com.evilnotch.lib.minecraft.content.blocks.BasicBlock;
-import com.evilnotch.lib.minecraft.content.blocks.BasicMetaBlock;
-import com.evilnotch.lib.minecraft.content.blocks.IBasicBlock;
+import com.evilnotch.lib.main.eventhandler.ClientEvents;
+import com.evilnotch.lib.minecraft.content.block.BasicBlock;
+import com.evilnotch.lib.minecraft.content.block.BasicMetaBlock;
+import com.evilnotch.lib.minecraft.content.block.IBasicBlock;
 import com.evilnotch.lib.minecraft.content.client.ClientUUID;
 import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
 import com.evilnotch.lib.minecraft.content.client.block.StateMapperSupreme;
 import com.evilnotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.evilnotch.lib.minecraft.content.client.gui.MenuRegistry;
-import com.evilnotch.lib.minecraft.content.items.BasicItem;
-import com.evilnotch.lib.minecraft.content.items.IBasicItem;
+import com.evilnotch.lib.minecraft.content.item.BasicItem;
+import com.evilnotch.lib.minecraft.content.item.IBasicItem;
+import com.evilnotch.lib.minecraft.content.lang.LangEntry;
+import com.evilnotch.lib.minecraft.content.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
-import com.evilnotch.lib.minecraft.network.packets.PacketRequestSeed;
+import com.evilnotch.lib.minecraft.network.packet.PacketRequestSeed;
+import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.ILine;
 import com.evilnotch.lib.util.line.ILineHead;
@@ -75,11 +76,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends ServerProxy{
 	
-	public static final List<LangEntry> langs = new ArrayList();
-	public static String currentLang = null;
-	public static Map<String, String> langlistClient = null;
-	public static  Map<String,String> langlist = null;
 	public static File root = null;
+	public static final HashMap<String,Boolean> compiledTracker = new HashMap();
 	
 	public static Map<Integer,String> seeds = new HashMap();
 	public static String getSeed(WorldClient world) 
@@ -91,6 +89,9 @@ public class ClientProxy extends ServerProxy{
 			NetWorkHandler.INSTANCE.sendToServer(new PacketRequestSeed(dim));
 		}
 		return ClientProxy.seeds.get(dim);
+	}
+	public static void setSeed(int dim, long seed) {
+		seeds.put(dim, "" + seed);
 	}
 
 	@Override
@@ -336,6 +337,11 @@ public class ClientProxy extends ServerProxy{
 		return json;
 	}
 	
+	@Override
+	public void lang(){
+		LangRegistry.registerLang();
+	}
+	
 	public static JSONObject getJSONItem(String parent,IBasicItem i) {
 		return getJSONItem(parent,i,0);
 	}
@@ -356,59 +362,8 @@ public class ClientProxy extends ServerProxy{
 		json.put("textures",textures);
 		return json;
 	}
-
-	@Override
-	public void lang() 
-	{
-		if(!MainJava.isDeObfuscated)
-		{
-			System.out.println("lan generation only occurs in dev enviorment on client:");
-			return;
-		}
-		joinLang(BasicBlock.blocklangs);
-		joinLang(BasicItem.itemlangs);
-		joinLang(BasicCreativeTab.creativeTabLang);
-		
-		checkRootFile();
-		HashMap<File,ConfigLang> cfgs = new HashMap();
-		populateLang(root,langs,cfgs);
-		
-		if(langlistClient == null)
-		{
-			LanguageManager manager = Minecraft.getMinecraft().getLanguageManager();
-			Locale l = (Locale)ReflectionUtil.getObject(manager, LanguageManager.class, FieldAcessClient.CURRENT_LOCALE);
-			Map<String, String> map = (Map<String, String>) ReflectionUtil.getObject(l, Locale.class, FieldAcessClient.properties);
-			langlistClient = map;
-		}
-		if(langlist == null)
-		{
-			LanguageMap manager = (LanguageMap) ReflectionUtil.getObject(null, I18n.class, FieldAcess.lang_localizedName);
-			langlist = (Map<String, String>) ReflectionUtil.getObject(manager, LanguageMap.class, MCPMappings.getField(LanguageMap.class, "languageList"));
-		}
-		currentLang = getCurrentLang();
-		//inject lang into mc ignoring if it has it already since in dev code is supreme
-		for(ConfigLang cfg : cfgs.values())
-		{
-			if(!cfg.file.getName().endsWith(currentLang + ".lang"))
-			{
-				System.out.println("skipping cfgFile:" + cfg.file.getName() );
-				continue;
-			}
-			for(ILine l : cfg.lines)
-			{
-				ILineHead line = (ILineHead)l;
-				String key = line.getId();
-				String value = (String) line.getHead();
-				if(Config.debug)
-					System.out.println("injecting:" + line);
-				langlistClient.put(key,value);
-				if(Config.debug)
-					System.out.println("injectingServer:" + line);
-				langlist.put(key,value);
-			}
-		}
-	}
-	protected void checkRootFile() {
+	
+	public static void checkRootFile() {
 		if(root != null)
 			return;
 		root = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
@@ -416,71 +371,6 @@ public class ClientProxy extends ServerProxy{
 			root.mkdirs();
 	}
 
-	public static void joinLang(List<LangEntry> itemlangs) {
-		for(LangEntry lang : itemlangs)
-			langs.add(lang);
-	}
-
-	/**
-	 * generate lang files here
-	 */
-	public static final HashMap<String,Boolean> compiledTracker = new HashMap();
-	public void populateLang(File root, List<LangEntry> li,HashMap<File,ConfigLang> map) 
-	{
-		for(LangEntry lang : li)
-		{
-			String domain = lang.loc.getResourceDomain();
-			if(!compiledTracker.containsKey(domain))
-				compiledTracker.put(domain, MinecraftUtil.isModCompiled(domain));
-			boolean compiled = compiledTracker.get(domain);
-			if(compiled)
-			{
-				if(Config.debug)
-					System.out.println("skipping lang entry as mod is compiled:" + lang);
-				continue;
-			}
-			File file = new File(root,domain + "/lang/" + lang.langType + ".lang");
-			ConfigLang cfg = map.get(file);
-			if(cfg == null)
-			{
-				cfg = new ConfigLang(file);
-				cfg.loadConfig();
-				map.put(file, cfg);
-			}
-			LangLine line = new LangLine(lang.getString());
-			cfg.setLine(line);
-		}
-		for(ConfigLang lang : map.values())
-		{	
-			lang.saveConfig(true,false,true);
-		}
-	}
-
-	public static String getCurrentLang() 
-	{
-		 return Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
-	}
-
-	/**
-	 * Create fast utf-8 instanceof ConfigLang then do manual injections
-	 */
-	public void injectClientLang(File f) 
-	{
-		ConfigLang cfg = new ConfigLang(f);
-		injectClientLang(cfg);
-	}
-
-	public void injectClientLang(ConfigLang cfg) 
-	{
-		for(ILine l : cfg.lines)
-		{
-			ILineHead line = (ILineHead)l;
-			String key = line.getId();
-			String value = (String) line.getHead();
-			if(!langlistClient.containsKey(key))
-				langlistClient.put(key,value);
-		}
-	}
 
 	@Override
 	public void initMod()
@@ -502,7 +392,7 @@ public class ClientProxy extends ServerProxy{
 	{	
 		//register user registered menus
 		File f = new File(ConfigMenu.cfgmenu.getParent(),"menulib.cfg");
-		List<String> comments = (ArrayList<String>)JavaUtil.asArray(new String[]{"Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :(","Format is: \"modid:mainmenu\" = \"class.full.name\""});
+		List<String> comments = JavaUtil.asStringList(new String[]{"Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :(","Format is: \"modid:mainmenu\" = \"class.full.name\""});
 		ConfigBase cfg = new ConfigLine(f,comments);
 		cfg.loadConfig();
 		
@@ -592,10 +482,6 @@ public class ClientProxy extends ServerProxy{
 
 	public static EntityPlayer getPlayer() {
 		return FMLClientHandler.instance().getClientPlayerEntity();
-	}
-
-	public static void setSeed(int dim, long seed) {
-		seeds.put(dim, "" + seed);
 	}
 
 	/*public static int getBurn(IInventory tileFurnace, int pixels) 

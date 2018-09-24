@@ -1,7 +1,7 @@
 package com.evilnotch.lib.main.testing;
 
-import com.evilnotch.lib.minecraft.content.capabilites.ICapability;
-import com.evilnotch.lib.minecraft.content.capabilites.registry.CapContainer;
+import com.evilnotch.lib.minecraft.content.capability.ICapability;
+import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;

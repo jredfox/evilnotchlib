@@ -1,6 +1,6 @@
 package com.evilnotch.lib.asm;
 
-import com.evilnotch.lib.minecraft.events.PickEvent;
+import com.evilnotch.lib.minecraft.event.PickEvent;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

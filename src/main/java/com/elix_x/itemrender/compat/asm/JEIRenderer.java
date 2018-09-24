@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.evilnotch.lib.minecraft.content.ArmorMat;
+import com.evilnotch.lib.minecraft.content.item.armor.ArmorMat;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;

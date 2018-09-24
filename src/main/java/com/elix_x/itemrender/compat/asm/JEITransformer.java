@@ -31,7 +31,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class JEITransformer  implements IClassTransformer{
 	
-    public static final List<String> classesBeingTransformed = JavaUtil.<String>asArray2(new Object[]
+    public static final List<String> classesBeingTransformed = JavaUtil.<String>asArray(new Object[]
     {
     		"mezz.jei.render.IngredientListBatchRenderer"
     });

@@ -42,7 +42,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.evilnotch.lib.minecraft.content.capabilites.registry.ICapRegistry;
+import com.evilnotch.lib.minecraft.content.capability.registry.ICapRegistry;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.line.config.ConfigLine;
 import com.evilnotch.lib.util.primitive.ByteObj;
@@ -908,14 +908,7 @@ public class JavaUtil {
 	public static String getFileTrueDisplayName(File file) {
 		return file.getName().split("\\.")[0];
 	}
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static ArrayList asArray(Object[] staticArr) {
-		ArrayList list = new ArrayList();
-		for(int i=0;i<staticArr.length;i++)
-			list.add(staticArr[i]);
-		return list;
-	}
-	public static <T extends Object> ArrayList<T> asArray2(Object... staticArr) {
+	public static <T extends Object> ArrayList<T> asArray(Object... staticArr) {
 		ArrayList<T> list = new ArrayList();
 		for(int i=0;i<staticArr.length;i++)
 			list.add((T) staticArr[i]);
@@ -1291,6 +1284,21 @@ public class JavaUtil {
 			}
 		}
 		return true;
+	}
+	/**
+	 * create folders for file
+	 */
+	public static void createFolders(File file) 
+	{
+		File parent = file.getParentFile();
+		if(!parent.exists())
+			file.getParentFile().mkdirs();
+	}
+	public static List<String> asStringList(String[] str) {
+		List list = new ArrayList(str.length);
+		for(String s : str)
+			list.add(s);
+		return list;
 	}
 	
 }

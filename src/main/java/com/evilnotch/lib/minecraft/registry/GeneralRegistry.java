@@ -12,8 +12,8 @@ import java.util.TreeMap;
 import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.MinecraftUtil;
 import com.evilnotch.lib.minecraft.content.recipe.ShapelessRecipe;
+import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.simple.PairObj;
 
 import net.minecraft.block.SoundType;
