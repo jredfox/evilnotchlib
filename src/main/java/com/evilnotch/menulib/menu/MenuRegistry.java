@@ -1,5 +1,6 @@
-package com.evilnotch.lib.minecraft.content.client.gui;
+package com.evilnotch.menulib.menu;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,9 +9,18 @@ import org.apache.logging.log4j.Level;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.ConfigMenu;
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.ILine;
+import com.evilnotch.lib.util.line.ILineHead;
+import com.evilnotch.lib.util.line.LineArray;
+import com.evilnotch.lib.util.line.config.ConfigBase;
+import com.evilnotch.lib.util.line.config.ConfigLine;
+import com.evilnotch.menulib.ConfigMenu;
+import com.evilnotch.menulib.MenuLib;
 
+import lumien.custommainmenu.gui.GuiCustom;
+import lumien.custommainmenu.gui.GuiFakeMain;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
@@ -212,6 +222,8 @@ public class MenuRegistry {
 
 	public static boolean containsMenu(Class clazz) 
 	{
+		if(MenuLib.cmm && clazz.getName().equals(GuiFakeMain.class.getName()))
+			clazz = GuiCustom.class;
 		for(int i=0;i<menus.size();i++)
 		{
 			if(menus.get(i).getGuiClass().equals(clazz))
@@ -236,6 +248,38 @@ public class MenuRegistry {
 			MainJava.logger.log(Level.ERROR,"[MenuLib/ERR] Unable to find Current Index for Requested Menu");
 		indexMenu = index;
 		currentMenu = menu;
+	}
+	/**
+	 * Reorder menus or if client overrides using whitelist do only the whitelist
+	 */
+	public static void loadInit() 
+	{	
+		//register user registered menus
+		File f = new File(ConfigMenu.cfgmenu.getParent(),"menulib.cfg");
+		List<String> comments = JavaUtil.asStringList(new String[]{"Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :(","Format is: \"modid:mainmenu\" = \"class.full.name\""});
+		ConfigBase cfg = new ConfigLine(f,comments);
+		cfg.loadConfig();
+		
+		if(Loader.isModLoaded("thebetweenlands"))
+		{
+			cfg.addLine(new LineArray("\"thebetweenlands:mainmenu\" = \"thebetweenlands.client.gui.menu.GuiBLMainMenu\""));
+			cfg.saveConfig(false, false, true);
+		}
+		for(ILine line : cfg.lines)
+		{
+			ILineHead head = (ILineHead)line;
+			try
+			{
+				MenuRegistry.registerGuiMenu((Class<? extends GuiScreen>) Class.forName(head.getString()), line.getResourceLocation());
+			}
+			catch(Throwable t)
+			{
+				System.out.print("[MenuLib/ERR] Unable to Locate class skipping menu registration for:" + line + "\n");
+			}
+		}
+		
+		MenuRegistry.reOrder();
+		MenuRegistry.setCurrentMenu(ConfigMenu.currentMenuIndex);
 	}
 
 }

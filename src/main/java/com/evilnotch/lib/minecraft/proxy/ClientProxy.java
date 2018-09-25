@@ -15,7 +15,6 @@ import com.evilnotch.lib.api.FieldAcessClient;
 import com.evilnotch.lib.api.MCPMappings;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.ConfigMenu;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.ClientEvents;
 import com.evilnotch.lib.minecraft.content.block.BasicBlock;
@@ -25,7 +24,6 @@ import com.evilnotch.lib.minecraft.content.client.ClientUUID;
 import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
 import com.evilnotch.lib.minecraft.content.client.block.StateMapperSupreme;
 import com.evilnotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
-import com.evilnotch.lib.minecraft.content.client.gui.MenuRegistry;
 import com.evilnotch.lib.minecraft.content.item.BasicItem;
 import com.evilnotch.lib.minecraft.content.item.IBasicItem;
 import com.evilnotch.lib.minecraft.content.lang.LangEntry;
@@ -43,6 +41,8 @@ import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.line.config.ConfigLang;
 import com.evilnotch.lib.util.line.config.ConfigLine;
 import com.evilnotch.lib.util.simple.PairString;
+import com.evilnotch.menulib.ConfigMenu;
+import com.evilnotch.menulib.menu.MenuRegistry;
 import com.elix_x.itemrender.IItemRendererHandler;
 
 import net.minecraft.block.Block;
@@ -111,11 +111,9 @@ public class ClientProxy extends ServerProxy{
 	{
 		super.preinit(e);
 		
-		ConfigMenu.loadMenuLib(e.getModConfigurationDirectory());
 		FieldAcessClient.cacheFields();
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
-		MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
 		if(Config.debug)
 			ClientCommandHandler.instance.registerCommand(new ClientUUID());
 	}
@@ -375,7 +373,6 @@ public class ClientProxy extends ServerProxy{
 	@Override
 	public void initMod()
 	{
-		menuLibInit();
 		super.initMod();
 	}
 	
@@ -383,39 +380,6 @@ public class ClientProxy extends ServerProxy{
 	public void postinit()
 	{
 		super.postinit();
-	}
-
-	/**
-	 * Reorder menus or if client overrides using whitelist do only the whitelist
-	 */
-	public static void menuLibInit() 
-	{	
-		//register user registered menus
-		File f = new File(ConfigMenu.cfgmenu.getParent(),"menulib.cfg");
-		List<String> comments = JavaUtil.asStringList(new String[]{"Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :(","Format is: \"modid:mainmenu\" = \"class.full.name\""});
-		ConfigBase cfg = new ConfigLine(f,comments);
-		cfg.loadConfig();
-		
-		if(Loader.isModLoaded("thebetweenlands"))
-		{
-			cfg.addLine(new LineArray("\"thebetweenlands:mainmenu\" = \"thebetweenlands.client.gui.menu.GuiBLMainMenu\""));
-			cfg.saveConfig(false, false, true);
-		}
-		for(ILine line : cfg.lines)
-		{
-			ILineHead head = (ILineHead)line;
-			try
-			{
-				MenuRegistry.registerGuiMenu((Class<? extends GuiScreen>) Class.forName(head.getString()), line.getResourceLocation());
-			}
-			catch(Throwable t)
-			{
-				System.out.print("[MenuLib/ERR] Unable to Locate class skipping menu registration for:" + line + "\n");
-			}
-		}
-		
-		MenuRegistry.reOrder();
-		MenuRegistry.setCurrentMenu(ConfigMenu.currentMenuIndex);
 	}
 
 	/**
