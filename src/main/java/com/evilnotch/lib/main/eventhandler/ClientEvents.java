@@ -60,10 +60,6 @@ public class ClientEvents {
 		Minecraft mc = Minecraft.getMinecraft();
 		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo)
 			return;
-//		World w = Minecraft.getMinecraft().world;
-//		TileEntity old = ItemBlock.lastTile;
-//		TileEntity n = w.getTileEntity(ItemBlock.lastTile.getPos() );
-////		System.out.println("old:" + (old == n) );
 		List<String> f3 = e.getLeft();
 		int index = 0;
 		for(String s : f3)
@@ -114,6 +110,7 @@ public class ClientEvents {
 		{
 			return;
 		}
+		System.out.println("firing hacks");
 		e.setGui(MenuRegistry.getCurrentGui());
 	}
 	@SubscribeEvent

@@ -894,14 +894,18 @@ public class EntityUtil {
 			boolean living = e instanceof EntityLiving; 
 			boolean base = e instanceof EntityLivingBase && !(e instanceof EntityLiving);
 			boolean nonliving = !(e instanceof EntityLivingBase);
-			//allow mods like jc mod that are stupid and work after post init to pass by the exception finder for entities
-			if(Config.cacheEntAllow.contains(loc.getResourceDomain()) && !nonliving)
-				continue;
+
 			String translation = TransLateEntity(e, world);
 			if(e == null || translation == null)
 			{
 				ent_blacklist.add(loc);//Entity failed cache it's string id for debugging
 				MainJava.logger.log(Level.ERROR,"Skipping Broken Entity Creation/Translation Failed Report to mod autoher:" + loc);
+				continue;
+			}
+			else if(Config.cacheEntDeny.contains(loc.getResourceDomain()) || Config.cacheEntNamesDeny.contains(loc))
+			{
+				ent_blacklist.add(loc);
+				MainJava.logger.log(Level.INFO,"Skipping blacklisted entity:" + loc);
 				continue;
 			}
 			ent_blacklist.remove(loc);

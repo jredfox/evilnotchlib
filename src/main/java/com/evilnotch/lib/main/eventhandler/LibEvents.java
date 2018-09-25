@@ -60,7 +60,7 @@ public class LibEvents {
 		{
 			System.out.println("Server Sending UUID To:" + e.player.getName() );
 			EntityPlayerMP playerIn = (EntityPlayerMP) e.player;
-			PacketUUID id = new PacketUUID(playerIn.getUniqueID().toString());
+			PacketUUID id = new PacketUUID(playerIn.getUniqueID());
 			NetWorkHandler.INSTANCE.sendTo(id, playerIn);
 			playerFlags.remove(e.player.getName());
 		}

@@ -21,7 +21,7 @@ public class PacketUUIDHandler extends MessegeBase<PacketUUID>{
 				return;
 			}
 			System.out.println("Setting Client UUID to:" + message.uuid);
-			EntityUtil.setPlayerUUID(player, UUID.fromString(message.uuid));
+			EntityUtil.setPlayerUUID(player, message.uuid);
 		});
 	}
 

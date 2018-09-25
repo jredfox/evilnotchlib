@@ -121,7 +121,10 @@ public class Transformer implements IClassTransformer
                 case 5:
                 	return ASMHelper.replaceClass(inputBase + "SPacketUpdateTileEntity");
                 case 6:
-                	ASMHelper.replaceMethod(classNode, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "func_184337_a");
+                	if(FMLCorePlugin.isObf)
+                		ASMHelper.replaceMethod(classNode, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "func_184337_a");
+                	else
+                		ASMHelper.replaceClass(inputBase + "NetHandlerPlayServer");//to fix all them no such field errors in mdk
                 break;
                 //custom capability system to the Entity.class
                 case 7:

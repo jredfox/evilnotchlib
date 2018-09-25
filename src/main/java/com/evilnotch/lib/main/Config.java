@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.evilnotch.lib.util.JavaUtil;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 
@@ -15,7 +17,14 @@ public class Config {
 	public static File cfg = null;
 	public static boolean tpAllowCrossDim = false;
 	public static boolean replaceTP = true;
-	public static List<ResourceLocation> cacheEntAllow = new ArrayList();
+	/**
+	 * list of domains that are not acceptable
+	 */
+	public static List<String> cacheEntDeny = new ArrayList();
+	/**
+	 * blacklist of entities that are not allowed even though no exceptions are thrown
+	 */
+	public static List<ResourceLocation> cacheEntNamesDeny = new ArrayList();
 	
 	public static void loadConfig(File d)
 	{
@@ -26,7 +35,11 @@ public class Config {
 		debug = config.get("general", "Debug", false).getBoolean();
 		tpAllowCrossDim = config.get("general","tpAllowCrossDim",true).getBoolean();
 		replaceTP = config.get("general","tpReplace",true).getBoolean();
-		config.getStringList("domainEntityAllowed", "lib", new String[]{"jurassicraft"}, "add a whitelist of domains that are ok for creating entity living bases");
+		
+		//entity cache data for black list and allow certain entities to pass through
+		cacheEntDeny =JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));
+		String[] str = config.getStringList("blacklistEntity", "cache_entity", new String[]{""}, "don't want to blacklist entire mod domain use this list");
+		cacheEntNamesDeny = JavaUtil.stringToLocArray(str);
 		config.save();
 	}
 }

@@ -530,6 +530,14 @@ public class JavaUtil {
 		return str.substring(0,str.length()-1);
 	}
 	
+	public static <T extends Object> List<T> staticToArray(Object[] objs)
+	{
+		List<T> list = new ArrayList();
+		for(Object obj : objs)
+			list.add((T)obj);
+		return list;
+	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static List<Integer> staticToArray(int[] values) 
 	{
@@ -676,16 +684,6 @@ public class JavaUtil {
 			index++;
 		}
 		System.out.print("]\n");
-	}
-	
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static List staticToArray(Object[] str)
-	{
-	    List list = new ArrayList();
-	    for(int i=0;i<str.length;i++)
-	    	list.add(str[i]);
-	    return list;
 	}
 	
 	public static byte[] arrayToStaticBytes(List<Byte> list)
@@ -1299,6 +1297,12 @@ public class JavaUtil {
 		for(String s : str)
 			list.add(s);
 		return list;
+	}
+	public static List<ResourceLocation> stringToLocArray(String[] list) {
+		List<ResourceLocation> locs = new ArrayList();
+		for(String str : list)
+			locs.add(new ResourceLocation(str));
+		return locs;
 	}
 	
 }

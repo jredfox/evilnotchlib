@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class CapString<T> extends CapBase<T>{
 	
-	public String str = "";
+	public String value = "";
 	public CapString(String key)
 	{
 		super(key);
@@ -15,15 +15,15 @@ public class CapString<T> extends CapBase<T>{
 
 	@Override
 	public void writeToNBT(T object, NBTTagCompound nbt, CapContainer c) {
-		nbt.setString(this.key, this.str);
+		nbt.setString(this.key, this.value);
 	}
 
 	@Override
 	public void readFromNBT(T object, NBTTagCompound nbt, CapContainer c) 
 	{
-		this.str = nbt.getString(this.key);
+		this.value = nbt.getString(this.key);
 	}
 	@Override
-	public String toString(){return this.key + "=" + this.str;}
+	public String toString(){return this.key + "=" + this.value;}
 
 }
