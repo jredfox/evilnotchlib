@@ -3,9 +3,6 @@ package com.evilnotch.lib.minecraft.content.pcapability;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.LibEvents;

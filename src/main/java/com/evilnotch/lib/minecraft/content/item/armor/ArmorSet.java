@@ -4,7 +4,6 @@ import com.evilnotch.lib.main.MainJava;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 public class ArmorSet {

@@ -1,7 +1,5 @@
 package com.evilnotch.lib.minecraft.content.command;
 
-import com.evilnotch.lib.minecraft.network.NetWorkHandler;
-import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.EnumChatFormatting;
 
@@ -12,9 +10,7 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.IClientCommand;
 
 public class CMDSeedGet extends CommandBase {
 	

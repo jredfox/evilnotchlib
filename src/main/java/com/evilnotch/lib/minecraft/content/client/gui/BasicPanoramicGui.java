@@ -23,7 +23,6 @@ import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
 
 import com.evilnotch.lib.util.simple.ICopy;
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Runnables;
 
 import net.minecraft.client.Minecraft;
@@ -40,8 +39,6 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResource;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.math.MathHelper;

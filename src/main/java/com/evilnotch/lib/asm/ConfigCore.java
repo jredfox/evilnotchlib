@@ -2,8 +2,6 @@ package com.evilnotch.lib.asm;
 
 import java.io.File;
 
-import net.minecraft.block.Block;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.config.Configuration;
 
 public class ConfigCore {

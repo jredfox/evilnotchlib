@@ -2,8 +2,6 @@ package com.evilnotch.lib.minecraft.registry;
 
 import java.util.List;
 
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;

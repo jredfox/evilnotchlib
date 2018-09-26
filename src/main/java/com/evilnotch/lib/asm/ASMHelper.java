@@ -1,11 +1,8 @@
 package com.evilnotch.lib.asm;
 
-import static org.objectweb.asm.Opcodes.ALOAD;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
@@ -14,19 +11,12 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.MCPSidedString;
-import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
-import com.evilnotch.lib.util.JavaUtil;
-
-import net.minecraft.entity.Entity;
 
 public class ASMHelper 
 {	

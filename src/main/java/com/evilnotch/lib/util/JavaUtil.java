@@ -42,9 +42,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.evilnotch.lib.minecraft.content.capability.registry.ICapRegistry;
 import com.evilnotch.lib.util.line.config.ConfigBase;
-import com.evilnotch.lib.util.line.config.ConfigLine;
 import com.evilnotch.lib.util.primitive.ByteObj;
 import com.evilnotch.lib.util.primitive.DoubleObj;
 import com.evilnotch.lib.util.primitive.FloatObj;

@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.content.item;
 
-import com.evilnotch.lib.minecraft.content.block.item.IMetaName;
 import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;

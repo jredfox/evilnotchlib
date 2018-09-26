@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.content.capability.registry;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.world.chunk.Chunk;
 
 public abstract class CapRegChunk implements ICapRegistry<Chunk>{

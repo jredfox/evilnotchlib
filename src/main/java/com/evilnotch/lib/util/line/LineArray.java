@@ -6,8 +6,6 @@ import java.util.List;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.util.LineUtil;
 
-import net.minecraft.util.ResourceLocation;
-
 public class LineArray extends LineMeta implements ILineHeadArray{
 
 	public List<Object> heads = new ArrayList<Object>();

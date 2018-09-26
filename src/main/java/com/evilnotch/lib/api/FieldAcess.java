@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntitySlime;

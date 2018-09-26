@@ -3,7 +3,6 @@ package com.evilnotch.lib.minecraft.network;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;

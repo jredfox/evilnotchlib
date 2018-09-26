@@ -1,21 +1,16 @@
 package com.evilnotch.menulib;
 
-import java.io.File;
-import java.util.List;
-
+import com.evilnotch.menulib.compat.menu.MenuCMM;
 import com.evilnotch.menulib.eventhandler.GuiEventHandler;
 import com.evilnotch.menulib.menu.MenuRegistry;
 import com.evilnotch.menulib.test.MainMenuAetherTest;
-import com.evilnotch.menulib.test.MenuCMM;
 
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -40,10 +35,9 @@ public class MenuLib {
 			MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
 		else
 		{
-			MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
 			MenuRegistry.registerIMenu(new MenuCMM());
 		}
-		MenuRegistry.registerGuiMenu(MainMenuAetherTest.class, new ResourceLocation("menulib:aether_test"));
+//		MenuRegistry.registerGuiMenu(MainMenuAetherTest.class, new ResourceLocation("menulib:aether_test"));
 		MinecraftForge.EVENT_BUS.register(new GuiEventHandler());
 	}
 	

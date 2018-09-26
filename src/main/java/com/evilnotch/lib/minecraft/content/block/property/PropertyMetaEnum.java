@@ -2,7 +2,6 @@ package com.evilnotch.lib.minecraft.content.block.property;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.google.common.base.Predicate;

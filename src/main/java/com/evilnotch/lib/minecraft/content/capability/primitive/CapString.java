@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.content.capability.primitive;
 
-import com.evilnotch.lib.minecraft.content.capability.ICapability;
 import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
 
 import net.minecraft.nbt.NBTTagCompound;

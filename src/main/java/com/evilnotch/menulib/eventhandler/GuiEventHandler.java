@@ -17,12 +17,11 @@ public class GuiEventHandler {
 	/**
 	 * set the gui to something mods are never going to be looking at
 	 */
-	@SubscribeEvent(priority = EventPriority.HIGH)
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onGuiOpenPre(GuiOpenEvent e)
 	{
 		if(e.getGui() == null)
 			return;
-//		System.out.println(e.getGui().getClass());
 		if(!(e.getGui() instanceof GuiMainMenu) && !MenuRegistry.containsMenu(e.getGui().getClass() ) )
 		{
 			return;
@@ -53,7 +52,6 @@ public class GuiEventHandler {
 			Class clazz = e.getGui().getClass();
 			if(!MenuRegistry.containsMenu(clazz) )
 			{
-				System.out.println("returning doesn't contain menu:" + clazz);
 				return;
 			}
 			IMenu menu = MenuRegistry.getCurrentMenu();

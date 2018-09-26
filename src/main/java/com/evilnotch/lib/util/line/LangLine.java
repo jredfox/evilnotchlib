@@ -1,10 +1,5 @@
 package com.evilnotch.lib.util.line;
 
-import java.util.List;
-
-import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.line.comment.IComment;
-
 /**
  * A Class used to simulate MC Lang Files tile.stone.name=value or anything split with key=value
  * @author jredfox

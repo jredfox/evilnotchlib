@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.evilnotch.lib.minecraft.content.capability.registry.CapRegHandler;
-import com.evilnotch.lib.minecraft.content.capability.registry.ICapProvider;
 import com.evilnotch.lib.minecraft.content.tick.TickReg;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.TileStackSyncEvent;
@@ -21,7 +19,6 @@ import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.util.simple.PointId;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +31,6 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;

@@ -1,7 +1,6 @@
 package com.evilnotch.lib.util.archive;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -12,7 +11,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import com.evilnotch.lib.util.JavaUtil;

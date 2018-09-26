@@ -11,7 +11,6 @@ import com.evilnotch.lib.api.MCPMappings;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
-import com.evilnotch.lib.main.testing.CapRegWorldTest;
 import com.evilnotch.lib.minecraft.content.block.BasicBlock;
 import com.evilnotch.lib.minecraft.content.block.BasicMetaBlock;
 import com.evilnotch.lib.minecraft.content.block.BlockProperties;
@@ -19,7 +18,6 @@ import com.evilnotch.lib.minecraft.content.block.IBasicBlock;
 import com.evilnotch.lib.minecraft.content.block.property.PropertyMetaEnum;
 import com.evilnotch.lib.minecraft.content.block.test.EnumCheese;
 import com.evilnotch.lib.minecraft.content.block.test.MultiSidedGrass;
-import com.evilnotch.lib.minecraft.content.capability.registry.CapRegHandler;
 import com.evilnotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
 import com.evilnotch.lib.minecraft.content.command.CMDDim;
 import com.evilnotch.lib.minecraft.content.command.CMDKick;
@@ -54,7 +52,6 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.command.ICommand;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -78,7 +75,6 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import scala.actors.threadpool.Arrays;
 
 
 @Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION)

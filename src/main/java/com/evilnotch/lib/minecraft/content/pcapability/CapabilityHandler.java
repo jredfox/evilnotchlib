@@ -1,28 +1,14 @@
 package com.evilnotch.lib.minecraft.content.pcapability;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
-import com.evilnotch.lib.minecraft.util.NBTUtil;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class CapabilityHandler {
 	

@@ -3,8 +3,6 @@ package com.evilnotch.lib.minecraft.content.capability.primitive;
 import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
 public class CapBoolean<T> extends CapBase<T>{
 	

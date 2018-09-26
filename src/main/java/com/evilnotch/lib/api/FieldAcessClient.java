@@ -1,8 +1,5 @@
 package com.evilnotch.lib.api;
 
-import java.util.Map;
-
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.Locale;
 

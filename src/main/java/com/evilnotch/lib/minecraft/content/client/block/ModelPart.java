@@ -2,11 +2,9 @@ package com.evilnotch.lib.minecraft.content.client.block;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairString;

@@ -1,9 +1,7 @@
 package com.evilnotch.lib.asm;
 
-import org.objectweb.asm.ByteVector;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 
 public class MCWriter extends ClassWriter
 {

@@ -1,8 +1,5 @@
 package com.evilnotch.lib.minecraft.content.command;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 
 import net.minecraft.command.CommandBase;
@@ -11,11 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.command.server.CommandTeleport;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class CMDTeleport extends CommandTeleport{

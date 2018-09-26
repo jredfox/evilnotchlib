@@ -1,8 +1,5 @@
 package com.evilnotch.lib.minecraft.content.block.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.evilnotch.lib.minecraft.content.block.BasicMetaBlock;
 import com.evilnotch.lib.minecraft.content.block.BlockProperties;
 import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
@@ -11,13 +8,9 @@ import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 
 public class MultiSidedGrass extends BasicMetaBlock{
 	

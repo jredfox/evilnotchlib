@@ -1,26 +1,13 @@
 package com.evilnotch.lib.main.eventhandler;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-
-import org.apache.commons.codec.binary.Base64;
-import org.json.simple.JSONObject;
-
 import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.minecraft.util.BlockUtil;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.ItemUtil;
-import com.evilnotch.lib.minecraft.util.MinecraftUtil;
-import com.evilnotch.lib.minecraft.util.TestProps;
-import com.evilnotch.lib.util.JavaUtil;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
@@ -35,12 +22,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class VanillaBugFixes {
 

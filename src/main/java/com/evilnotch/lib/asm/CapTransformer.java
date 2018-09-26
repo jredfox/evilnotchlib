@@ -9,7 +9,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
@@ -21,7 +20,6 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.MCPSidedString;
-import com.evilnotch.lib.minecraft.content.capability.registry.ICapProvider;
 
 
 public class CapTransformer {
@@ -151,11 +149,16 @@ public class CapTransformer {
 		String stackCompound = new MCPSidedString("stackTagCompound","field_77990_d").toString();
 		implementICapProvider(classNode,name,"Lnet/minecraft/item/ItemStack;");
 		
-		InsnList toInsert1 = new InsnList();
-		//inject CapRegUtil.registerCapsToObject(this);
-		toInsert1.add(new VarInsnNode(ALOAD,0));
-		toInsert1.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/content/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+		MethodNode capNode = ASMHelper.getMethodNode(classNode, "forgeInit", "()V");
 		
+		InsnList toInsert0 = new InsnList();
+		//inject CapRegUtil.registerCapsToObject(this);
+		toInsert0.add(new VarInsnNode(ALOAD,0));
+		toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/content/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+		capNode.instructions.insertBefore(ASMHelper.getFirstInstruction(capNode, Opcodes.ALOAD),toInsert0);
+		
+		InsnList toInsert1 = new InsnList();
+
 		//inject this.capContainer.readFromNBT(this,this.stackCompound);
 		toInsert1.add(new VarInsnNode(ALOAD,0));
 		toInsert1.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "capContainer", "Lcom/evilnotch/lib/minecraft/content/capability/registry/CapContainer;"));
@@ -164,7 +167,6 @@ public class CapTransformer {
 		toInsert1.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/item/ItemStack", stackCompound, "Lnet/minecraft/nbt/NBTTagCompound;"));
 		toInsert1.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/evilnotch/lib/minecraft/content/capability/registry/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		//inject all instructions
-		MethodNode capNode = ASMHelper.getMethodNode(classNode, "forgeInit", "()V");
 		AbstractInsnNode spotNode = ASMHelper.getLastInstruction(capNode, Opcodes.RETURN);
 		capNode.instructions.insertBefore(spotNode, toInsert1);
 		

@@ -1,9 +1,7 @@
 package com.evilnotch.lib.minecraft.content.capability;
 
 import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
-import com.evilnotch.lib.minecraft.content.capability.registry.ICapProvider;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public interface IListener<T> {

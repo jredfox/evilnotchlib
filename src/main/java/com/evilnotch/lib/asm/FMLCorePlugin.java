@@ -1,9 +1,7 @@
 package com.evilnotch.lib.asm;
 
-import java.io.File;
 import java.util.Map;
 
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.Name("evilnotchlib-transformer_fixes")
@@ -22,7 +20,11 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
     		ConfigCore.load();
     		configGenerated = true;
     	}
-        return new String[] {"com.evilnotch.lib.asm.Transformer","com.elix_x.itemrender.compat.asm.JEITransformer"};
+        return new String[] {
+        		"com.evilnotch.lib.asm.Transformer",
+        		"com.elix_x.itemrender.compat.asm.JEITransformer",
+        		"com.evilnotch.menulib.compat.asm.CMMTransformer"
+        };
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketYawHeadHandler extends MessegeBase<PacketYawHead>{
 

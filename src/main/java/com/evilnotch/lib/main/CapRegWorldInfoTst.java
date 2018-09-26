@@ -3,7 +3,6 @@ package com.evilnotch.lib.main;
 import com.evilnotch.lib.main.testing.CapTickTest;
 import com.evilnotch.lib.main.testing.CapWorldSeed;
 import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
-import com.evilnotch.lib.minecraft.content.capability.registry.ICapProvider;
 import com.evilnotch.lib.minecraft.content.capability.registry.ICapRegistry;
 
 import net.minecraft.util.ResourceLocation;

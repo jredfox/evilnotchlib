@@ -10,8 +10,6 @@ import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.item.Item.ToolMaterial;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class ItemBasicHoe extends ItemHoe implements IBasicItem{
 	

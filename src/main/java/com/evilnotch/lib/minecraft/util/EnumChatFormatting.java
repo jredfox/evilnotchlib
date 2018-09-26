@@ -1,7 +1,5 @@
 package com.evilnotch.lib.minecraft.util;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
-
 public class EnumChatFormatting {
 	public static final String BLACK = "\u00A7" + "0";
 	public static final String DARK_BLUE = "\u00A7" + "1";

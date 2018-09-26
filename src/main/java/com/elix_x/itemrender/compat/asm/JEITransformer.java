@@ -2,11 +2,8 @@ package com.elix_x.itemrender.compat.asm;
 
 import static org.objectweb.asm.Opcodes.ALOAD;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -21,11 +18,9 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.MCPSidedString;
 import com.evilnotch.lib.asm.ASMHelper;
-import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.MCWriter;
 import com.evilnotch.lib.util.JavaUtil;
-import com.elix_x.itemrender.mod.IItemRendererMod;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 

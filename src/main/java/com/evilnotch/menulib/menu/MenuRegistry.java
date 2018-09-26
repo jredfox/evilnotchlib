@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 
 import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.ILine;
@@ -17,10 +16,7 @@ import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.line.config.ConfigLine;
 import com.evilnotch.menulib.ConfigMenu;
-import com.evilnotch.menulib.MenuLib;
 
-import lumien.custommainmenu.gui.GuiCustom;
-import lumien.custommainmenu.gui.GuiFakeMain;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
@@ -222,8 +218,6 @@ public class MenuRegistry {
 
 	public static boolean containsMenu(Class clazz) 
 	{
-		if(MenuLib.cmm && clazz.getName().equals(GuiFakeMain.class.getName()))
-			clazz = GuiCustom.class;
 		for(int i=0;i<menus.size();i++)
 		{
 			if(menus.get(i).getGuiClass().equals(clazz))

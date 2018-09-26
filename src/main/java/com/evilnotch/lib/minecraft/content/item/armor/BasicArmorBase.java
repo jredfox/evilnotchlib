@@ -5,13 +5,10 @@ import com.evilnotch.lib.minecraft.content.item.BasicItem;
 import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 public class BasicArmorBase extends ItemArmor implements IBasicArmor{
 	

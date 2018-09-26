@@ -1,13 +1,10 @@
 package com.evilnotch.lib.minecraft.content.command;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.util.JavaUtil;
 
@@ -18,8 +15,6 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.command.server.CommandTeleport;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketSetPassengers;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;

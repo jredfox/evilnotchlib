@@ -1,10 +1,5 @@
 package com.evilnotch.lib.minecraft.content.item;
 
-import java.util.ArrayList;
-
-import com.evilnotch.lib.minecraft.content.lang.LangEntry;
-
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 public interface IBasicItem {

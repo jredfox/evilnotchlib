@@ -1,7 +1,5 @@
 package com.evilnotch.lib.minecraft.network.packet.handler;
 
-import java.util.UUID;
-
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.util.EntityUtil;

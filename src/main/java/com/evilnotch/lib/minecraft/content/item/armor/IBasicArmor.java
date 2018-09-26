@@ -3,7 +3,6 @@ package com.evilnotch.lib.minecraft.content.item.armor;
 import com.evilnotch.lib.minecraft.content.item.IBasicItem;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 
 public interface IBasicArmor extends IBasicItem{
 	

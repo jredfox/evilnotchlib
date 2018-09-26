@@ -2,9 +2,6 @@ package com.evilnotch.lib.minecraft.content.client.gui;
 
 import java.util.List;
 
-import com.evilnotch.lib.api.FieldAcess;
-import com.evilnotch.lib.api.ReflectionUtil;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;

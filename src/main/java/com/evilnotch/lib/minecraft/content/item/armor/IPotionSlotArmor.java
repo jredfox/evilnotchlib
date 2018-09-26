@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.content.item.armor;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.PotionEffect;
 
 public interface IPotionSlotArmor {

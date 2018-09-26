@@ -1,12 +1,6 @@
 package com.evilnotch.lib.util.line;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.line.comment.IComment;
-import com.evilnotch.lib.util.line.comment.ICommentAttatch;
-import com.evilnotch.lib.util.line.comment.ICommentStorage;
 import com.evilnotch.lib.util.line.util.LineUtil;
 
 import net.minecraft.util.ResourceLocation;

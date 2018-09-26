@@ -1,19 +1,13 @@
 package com.evilnotch.lib.util.line.config;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.ILine;
-import com.evilnotch.lib.util.line.ILineMeta;
-import com.evilnotch.lib.util.line.Line;
-import com.evilnotch.lib.util.line.LineArray;
-import com.evilnotch.lib.util.line.LineMeta;
 import com.evilnotch.lib.util.line.comment.Comment;
 import com.evilnotch.lib.util.line.comment.IComment;
 import com.evilnotch.lib.util.line.comment.ICommentAttatch;

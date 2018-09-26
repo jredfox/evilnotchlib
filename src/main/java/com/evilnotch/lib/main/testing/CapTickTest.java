@@ -5,7 +5,6 @@ import com.evilnotch.lib.minecraft.content.capability.ICapability;
 import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

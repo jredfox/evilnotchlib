@@ -7,8 +7,6 @@ import com.evilnotch.lib.minecraft.network.packet.PacketSeed;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketRequestSeedHandler extends MessegeBase<PacketRequestSeed>{
 
