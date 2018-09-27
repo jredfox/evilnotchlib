@@ -1,18 +1,48 @@
 package com.evilnotch.menulib.eventhandler;
 
+import java.util.List;
+
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.content.client.gui.GuiFakeMenu;
+import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.menulib.ConfigMenu;
+import com.evilnotch.menulib.MenuLib;
+import com.evilnotch.menulib.compat.menu.MenuCMM;
+import com.evilnotch.menulib.event.MenuMusicEvent;
 import com.evilnotch.menulib.menu.IMenu;
 import com.evilnotch.menulib.menu.MenuRegistry;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class GuiEventHandler {
+	
+	@SubscribeEvent
+	public void canPlayMusic(MenuMusicEvent e)
+	{
+		for(Class c : ConfigMenu.musicDeny)
+		{
+			if(JavaUtil.isClassExtending(c, e.gui.getClass()))
+			{
+				e.canPlay = false;
+				return;
+			}
+		}
+		for(Class c : ConfigMenu.musicAllow)
+		{
+			if(JavaUtil.isClassExtending(c, e.gui.getClass()))
+			{
+				e.canPlay = true;
+				break;
+			}
+		}
+	}
 	
 	/**
 	 * set the gui to something mods are never going to be looking at
@@ -22,6 +52,7 @@ public class GuiEventHandler {
 	{
 		if(e.getGui() == null)
 			return;
+//		System.out.println(e.getGui().getClass());
 		if(!(e.getGui() instanceof GuiMainMenu) && !MenuRegistry.containsMenu(e.getGui().getClass() ) )
 		{
 			return;
@@ -57,8 +88,9 @@ public class GuiEventHandler {
 			IMenu menu = MenuRegistry.getCurrentMenu();
 			if(menu.allowButtonOverlay())
 			{
-				e.getButtonList().add(menu.getButton(true));
-				e.getButtonList().add(menu.getButton(false));
+				List<GuiButton> li = e.getButtonList();
+				li.add(menu.getLeftButton());
+				li.add(menu.getRightButton());
 			}
 		}
 	}

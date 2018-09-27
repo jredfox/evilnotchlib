@@ -163,20 +163,28 @@ public class MenuRegistry {
 			return;
 		}
 		
-		if(ConfigMenu.menusConfig.size() == 0)
+		if(ConfigMenu.menusConfig.isEmpty())
 		{
 			//error catch
 			System.out.print("[MenuLib/ERR] Returning Menu Size Configured List 0\nReturning And Repairing Config:\n");
 			ConfigMenu.saveMenus(getIds());
 			return;
 		}
-		else if(menus.size() != ConfigMenu.menusConfig.size()){
+		else if(menus.size() != ConfigMenu.menusConfig.size())
+		{
 			//error catch sizes must be the same
 			System.out.print("[MenuLib/ERR] Size Not Same As Codded Switch WhiteList on if your removing GUIS\nRepairing Config!\n");
 			ConfigMenu.saveMenus(getIds());
 			return;
 		}
-		else{
+		else if(!checkMenus())
+		{
+			System.out.print("[MenuLib/ERR] Config content isn't the same as coded saving ids");
+			ConfigMenu.saveMenus(getIds());
+			return;
+		}
+		else
+		{
 			//default ordering system from config
 			ArrayList newMenus = new ArrayList();
 			for(int i=0;i<menus.size();i++)
@@ -194,7 +202,20 @@ public class MenuRegistry {
 			menus = newMenus;
 		}
 	}
-
+	/**
+	 * returns true if the check succeeded in matching all coded locs with all configured ones
+	 */
+	public static boolean checkMenus() 
+	{
+		for(IMenu menu : menus)
+		{
+			ResourceLocation menuLoc = menu.getId();
+			if(!ConfigMenu.menusConfig.contains(menuLoc))
+				return false;
+		}
+		return true;
+	}
+	
 	public static List<ResourceLocation> getIds() {
 		ArrayList<ResourceLocation> locs = new ArrayList();
 		for(IMenu menu : menus)

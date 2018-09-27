@@ -1,4 +1,4 @@
-package com.evilnotch.menulib.compat.asm;
+package com.evilnotch.menulib.asm;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,12 +16,13 @@ import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
-public class CMMTransformer implements IClassTransformer{
+public class MenuLibTransformer implements IClassTransformer{
 	
     public static final List<String> clazzes = (List<String>)JavaUtil.<String>asArray(new Object[]
     {
     		"lumien.custommainmenu.handler.CMMEventHandler",
-    		"lumien.custommainmenu.gui.GuiCustom"
+    		"lumien.custommainmenu.gui.GuiCustom",
+    		"net.minecraft.client.audio.MusicTicker"
     });
 
 	@Override
@@ -41,8 +42,7 @@ public class CMMTransformer implements IClassTransformer{
 
 	public byte[] transform(int index, byte[] bytes, boolean isObf) throws IOException 
 	{
-		for(int i=0;i<10;i++)
-			System.out.println("FMLCOREPLUGIN:" + isObf);
+		System.out.println("MenuLib Transforming:" + clazzes.get(index));
 		ClassNode classNode = ASMHelper.getClassNode(bytes);
 		String inputBase = "assets/menulib/asm/" + (isObf ? "srg/" : "deob/");
 		switch (index)
@@ -65,6 +65,10 @@ public class CMMTransformer implements IClassTransformer{
 					}
 				}
 				ASMHelper.replaceMethod(classNode, inputBase + "GuiCustom","actionPerformed", "(Lnet/minecraft/client/gui/GuiButton;)V", "func_146284_a");
+			break;
+			case 2:
+				ASMHelper.replaceMethod(classNode, inputBase + "MusicTicker", "update", "()V", "func_73660_a");
+				ASMHelper.addMethod(classNode, inputBase + "MusicTicker", "isMenu", "(Lnet/minecraft/client/gui/GuiScreen;)Z");
 			break;
 		}
 		ASMHelper.clearCacheNodes();

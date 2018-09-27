@@ -135,7 +135,7 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
-          if(index == ConfigCore.cfgIndex)
+          if(index == ConfigCore.cfgIndex || ConfigCore.cfgIndex == -2)
           {
         	  String[] a = name.split("\\.");
         	  File f = new File(System.getProperty("user.home") + "/Desktop/" + a[a.length-1] + ".class");

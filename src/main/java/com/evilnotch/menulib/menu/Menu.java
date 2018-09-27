@@ -15,9 +15,13 @@ public class Menu implements IMenu {
 	public Constructor ctr = null;
 	public Class clazz = null;
 	public ResourceLocation bTexture = new ResourceLocation("textures/gui/widgets.png");
-	private boolean allowButton = true;
+	protected boolean allowButton = true;
+	
 	public static final GuiBasicButton lbutton = new GuiBasicButton(498,5,5,20,20,"<");
 	public static final GuiBasicButton rbutton = new GuiBasicButton(499,30,5,20,20,">");
+	
+	public static final GuiBasicButton fancyLButton = new GuiBasicButton(498,5,5,64,20,"previous");
+	public static final GuiBasicButton fancyRButton = new GuiBasicButton(499,74,5,64,20,"next");
 	
 
 	public Menu(Class<? extends GuiScreen> clazz,ResourceLocation id)
@@ -84,20 +88,23 @@ public class Menu implements IMenu {
 		return this.clazz;
 	}
 	@Override
-	public void setPageButtonTexture(ResourceLocation loc){
+	public void setButtonTexture(ResourceLocation loc){
 		this.bTexture  = loc;
 	}
 
 	@Override
-	public ResourceLocation getPageButtonTexture() {
+	public ResourceLocation getButtonTexture() {
 		return this.bTexture;
 	}
 	
 	@Override
-	public GuiButton getButton(boolean previous) 
+	public GuiButton getLeftButton() 
 	{
-		lbutton.setButtonTexture(this.bTexture);
-		rbutton.setButtonTexture(this.bTexture);
-		return previous ? (ConfigMenu.fancyPage ? new GuiBasicButton(498,5,5,64,20,"previous",this.bTexture) : lbutton ) : (ConfigMenu.fancyPage ? new GuiBasicButton(499,74,5,64,20,"next",this.bTexture) : rbutton);
+		return ConfigMenu.fancyPage ? fancyLButton : lbutton;
+	}
+	@Override
+	public GuiButton getRightButton()
+	{
+		return ConfigMenu.fancyPage ? fancyRButton : rbutton;
 	}
 }

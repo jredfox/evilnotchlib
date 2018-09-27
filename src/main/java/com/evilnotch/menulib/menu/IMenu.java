@@ -13,8 +13,9 @@ public interface IMenu {
 	public ResourceLocation getId();
 	public boolean allowButtonOverlay();
 	public void setAllowButtonOverlay(boolean toset);
-	public GuiButton getButton(boolean previous);
-	public ResourceLocation getPageButtonTexture();
-	public void setPageButtonTexture(ResourceLocation loc);
+	public GuiButton getLeftButton();
+	public GuiButton getRightButton();
+	public ResourceLocation getButtonTexture();
+	public void setButtonTexture(ResourceLocation loc);
 
 }
