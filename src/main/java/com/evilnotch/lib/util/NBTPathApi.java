@@ -92,7 +92,7 @@ public class NBTPathApi {
 		{
 			NBTTagLongArray list = (NBTTagLongArray)param_nbt;
 			if(secondCall)
-				this.paths.put(path, new NBTTagByteArray(new byte[0]));
+				this.paths.put(path, new NBTTagLongArray(new long[0]));
 			long[] values = (long[]) ReflectionUtil.getObject(param_nbt, NBTTagLongArray.class, new MCPSidedString("data","field_193587_b").toString() );
 			for(int i=0;i<values.length;i++)
 			{
@@ -193,25 +193,158 @@ public class NBTPathApi {
 			}
 			return true;
 		}
-		else if(type == CompareType.greaterThenEqual)
+		else
 		{
-			
+			for(String s : this.paths.keySet())
+			{
+				Object tag = this.paths.get(s);
+				Object otherTag = other.paths.get(s);
+				if(tag instanceof Number)
+				{
+					if(!compareValue(type,(Number)tag,(Number)otherTag))
+						return false;
+				}
+				else if(!tag.equals(otherTag))
+					return false;
+			}
+			return true;
+		}
+	}
+	/**
+	 * compare two values based upon CompareType logic
+	 */
+	public boolean compareValue(CompareType type,Number num, Number num2) 
+	{
+		if(type == CompareType.greaterThenEqual)
+		{
+			return greaterThenEqual(num, num2);
 		}
 		else if(type == CompareType.lessThenEqualTo)
 		{
-			
+			return lessThenEqual(num, num2);
 		}
 		else if(type == CompareType.greaterThen)
 		{
-			
+			return greaterThen(num, num2);
 		}
 		else if(type == CompareType.lessThen)
 		{
-			
+			return lessThen(num, num2);
 		}
 		return false;
 	}
-	
+	public boolean lessThenEqual(Number num, Number num2) 
+	{
+		if(num instanceof Integer)
+		{
+			return (int)num <= (int)num2;
+		}
+		else if(num instanceof Short)
+		{
+			return (short)num <= (short)num2; 
+		}
+		else if(num instanceof Byte)
+		{
+			return (byte)num <= (byte)num2; 
+		}
+		else if(num instanceof Long)
+		{
+			return (long)num <= (long)num2; 
+		}
+		else if(num instanceof Double)
+		{
+			return (double)num <= (double)num2; 
+		}
+		else if(num instanceof Float)
+		{
+			return (float)num <= (float)num2; 
+		}
+		return false;
+	}
+	public boolean lessThen(Number num, Number num2) 
+	{
+		if(num instanceof Integer)
+		{
+			return (int)num < (int)num2;
+		}
+		else if(num instanceof Short)
+		{
+			return (short)num < (short)num2; 
+		}
+		else if(num instanceof Byte)
+		{
+			return (byte)num < (byte)num2; 
+		}
+		else if(num instanceof Long)
+		{
+			return (long)num < (long)num2; 
+		}
+		else if(num instanceof Double)
+		{
+			return (double)num < (double)num2; 
+		}
+		else if(num instanceof Float)
+		{
+			return (float)num < (float)num2; 
+		}
+		return false;
+	}
+	public boolean greaterThenEqual(Number num, Number num2) 
+	{
+		if(num instanceof Integer)
+		{
+			return (int)num >= (int)num2;
+		}
+		else if(num instanceof Short)
+		{
+			return (short)num >= (short)num2; 
+		}
+		else if(num instanceof Byte)
+		{
+			return (byte)num >= (byte)num2; 
+		}
+		else if(num instanceof Long)
+		{
+			return (long)num >= (long)num2; 
+		}
+		else if(num instanceof Double)
+		{
+			return (double)num >= (double)num2; 
+		}
+		else if(num instanceof Float)
+		{
+			return (float)num >= (float)num2; 
+		}
+		return false;
+	}
+	public boolean greaterThen(Number num, Number num2) 
+	{
+		if(num instanceof Integer)
+		{
+			return (int)num > (int)num2;
+		}
+		else if(num instanceof Short)
+		{
+			return (short)num > (short)num2; 
+		}
+		else if(num instanceof Byte)
+		{
+			return (byte)num > (byte)num2; 
+		}
+		else if(num instanceof Long)
+		{
+			return (long)num > (long)num2; 
+		}
+		else if(num instanceof Double)
+		{
+			return (double)num > (double)num2; 
+		}
+		else if(num instanceof Float)
+		{
+			return (float)num > (float)num2; 
+		}
+		return false;
+	}
 	/**
 	 * Safely merge one nbt to the other one with nbttaglist support primitive values and primitive array indexes will get overriden though
 	 */
@@ -224,7 +357,13 @@ public class NBTPathApi {
 	 */
 	public void copySafley(NBTPathApi api)
 	{
-		//TODO:
+		for(String s : api.paths.keySet())
+		{
+			if(!this.paths.containsKey(s))
+			{
+				this.paths.put(s, api.paths.get(s));
+			}
+		}
 	}
 	
 	public NBTTagCompound compile()
@@ -232,15 +371,18 @@ public class NBTPathApi {
 		//TODO:
 		return null;
 	}
-	
+	/**
+	 * what logic is the nbtpath api going to be running upon when comparing logic
+	 * @author jredfox
+	 */
 	public static enum CompareType
 	{
 		hasTags(),
 		equals(),
-		greaterThenEqual(),
-		lessThenEqualTo(),
 		greaterThen(),
-		lessThen()
+		greaterThenEqual(),
+		lessThen(),
+		lessThenEqualTo()
 	}
 	
 	@Override
