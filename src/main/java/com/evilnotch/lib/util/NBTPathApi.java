@@ -1,10 +1,13 @@
 package com.evilnotch.lib.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.evilnotch.lib.api.MCPSidedString;
 import com.evilnotch.lib.api.ReflectionUtil;
@@ -23,7 +26,10 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagLongArray;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
-
+/**
+ * this is a class all about comparing logic on deep comparison of nbttagcompounds,nbttaglists and more as well as merging nbt
+ * @author jredfox
+ */
 public class NBTPathApi {
 	/**
 	 * hashmap between string and mostly primitive objects except for identifyers
@@ -381,7 +387,80 @@ public class NBTPathApi {
 	 */
 	public NBTTagCompound compile()
 	{
-		//TODO:
+		NBTTagCompound nbt = new NBTTagCompound();
+		for(String path : this.paths.keySet())
+		{
+			this.mdkrs(nbt,path);
+		}
+		return nbt;
+	}
+	public void mdkrs(NBTTagCompound nbt,String p) 
+	{
+		String[] dir = p.split("/");
+		NBTBase base = nbt;
+		String path = dir[0];
+		for(int i=0;i<dir.length;i++)
+		{
+			String cPath = dir[i];
+			if(i != 0)
+				path += "/" + cPath;
+			NBTBase tag = nbt.getTag(cPath);
+			if(tag == null)
+			{
+				nbt.setTag(cPath, this.getCompiledObject(this.paths.get(path)));
+				tag = nbt.getTag(cPath);
+			}
+			if(tag instanceof NBTTagCompound)
+				nbt = (NBTTagCompound)tag;
+		}
+	}
+	/**
+	 * get the compiled object from the decompiled path primitive/string/class value
+	 */
+	public NBTBase getCompiledObject(Object obj) 
+	{
+		if(obj instanceof Integer)
+		{
+			return new NBTTagInt((Integer) obj);
+		}
+		else if(obj instanceof Byte)
+		{
+			return new NBTTagByte((Byte) obj);
+		}
+		else if(obj instanceof Short)
+		{
+			return new NBTTagShort((Short) obj);
+		}
+		else if(obj instanceof Long)
+		{
+			return new NBTTagLong((Long) obj);
+		}
+		else if(obj instanceof Double)
+		{
+			return new NBTTagDouble((Double) obj);
+		}
+		else if(obj instanceof Float)
+		{
+			return new NBTTagFloat((Float) obj);
+		}
+		else if(obj instanceof String)
+		{
+			return new NBTTagString((String)obj);
+		}
+		else if(obj instanceof Class)
+		{
+			if(NBTTagCompound.class.equals(obj))
+				return new NBTTagCompound();
+			else if(NBTTagList.class.equals(obj))
+				return new NBTTagList();
+			//TODO: find work around around these
+			else if(NBTTagByteArray.class.equals(obj))
+				return new NBTTagByteArray(new byte[0]);
+			else if(NBTTagIntArray.class.equals(obj))
+				return new NBTTagIntArray(new int[0]);
+			else if(NBTTagLongArray.class.equals(obj))
+				return new NBTTagLongArray(new long[0]);
+		}
 		return null;
 	}
 	/**
