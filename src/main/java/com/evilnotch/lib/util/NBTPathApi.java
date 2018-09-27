@@ -6,7 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.evilnotch.lib.api.MCPSidedString;
+import com.evilnotch.lib.api.ReflectionUtil;
+
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTPrimitive;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,6 +22,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagLongArray;
 import net.minecraft.nbt.NBTTagShort;
+import net.minecraft.nbt.NBTTagString;
 
 public class NBTPathApi {
 	/**
@@ -30,7 +35,7 @@ public class NBTPathApi {
 		parseNBT(nbt,"");
 	}
 	/**
-	 * decompile nbt at it's source for comparison
+	 * decompile nbt at it's source for comparison calls it'self recursivley
 	 */
 	public void parseNBT(NBTBase param_nbt,String path)
 	{
@@ -59,13 +64,53 @@ public class NBTPathApi {
 				this.parseNBT(base, path + slash + i);
 			}
 		}
-		else if(param_nbt instanceof NBTTagByteArray || param_nbt instanceof NBTTagIntArray || param_nbt instanceof NBTTagLongArray)
+		else if(param_nbt instanceof NBTTagByteArray)
 		{
-			this.paths.put(path, param_nbt);
+			NBTTagByteArray list = (NBTTagByteArray)param_nbt;
+			if(secondCall)
+				this.paths.put(path, new NBTTagByteArray(new byte[0]));
+			byte[] values = list.getByteArray();
+			for(int i=0;i<values.length;i++)
+			{
+				byte value = values[i];
+				this.paths.put(path + slash + i, value);
+			}
 		}
-		else
+		else if(param_nbt instanceof NBTTagIntArray)
+		{
+			NBTTagIntArray list = (NBTTagIntArray)param_nbt;
+			if(secondCall)
+				this.paths.put(path, new NBTTagIntArray(new int[0]));
+			int[] values = list.getIntArray();
+			for(int i=0;i<values.length;i++)
+			{
+				int value = values[i];
+				this.paths.put(path + slash + i, value);
+			}
+		}
+		else if(param_nbt instanceof NBTTagLongArray)
+		{
+			NBTTagLongArray list = (NBTTagLongArray)param_nbt;
+			if(secondCall)
+				this.paths.put(path, new NBTTagByteArray(new byte[0]));
+			long[] values = (long[]) ReflectionUtil.getObject(param_nbt, NBTTagLongArray.class, new MCPSidedString("data","field_193587_b").toString() );
+			for(int i=0;i<values.length;i++)
+			{
+				long value = values[i];
+				this.paths.put(path + slash + i, value);
+			}
+		}
+		else if(isPrimitive(param_nbt))
 			this.paths.put(path,getPrimitive(param_nbt));
 	}
+	/**
+	 * not as in is data non object but as in is this NBTTagCompound,NBTTagList,NBTArray or simply simple
+	 */
+	public boolean isPrimitive(NBTBase tag) 
+	{
+		return tag instanceof NBTPrimitive || tag instanceof NBTTagString;
+	}
+	
 	public Object getPrimitive(NBTBase tag) 
 	{
 		if(tag instanceof NBTTagInt)
@@ -92,6 +137,10 @@ public class NBTPathApi {
 		{
 			return ((NBTTagDouble)tag).getDouble();
 		}
+		else if(tag instanceof NBTTagString)
+		{
+			return ((NBTTagString)tag).getString();
+		}
 		return null;
 	}
 	/**
@@ -99,8 +148,6 @@ public class NBTPathApi {
 	 */
 	public boolean hasTags(NBTPathApi other)
 	{
-		if(this.paths.size() != other.paths.size())
-			return false;
 		for(String s : this.paths.keySet())
 			if(!other.paths.keySet().contains(s))
 				return false;
@@ -113,20 +160,14 @@ public class NBTPathApi {
 			return false;
 		
 		NBTPathApi api = (NBTPathApi) obj;
-		if(!this.hasTags(api))
+		if(this.paths.size() != api.paths.size())
 			return false;
-		
 		for(String s : this.paths.keySet())
 		{
 			Object tag = this.paths.get(s);
 			Object otherTag = api.paths.get(s);
-			if(tag instanceof Number && tag != otherTag)
+			if(!tag.equals(otherTag))
 				return false;
-			else
-			{
-				if(!tag.equals(otherTag))
-					return false;
-			}
 		}
 		
 		return true;
@@ -137,13 +178,21 @@ public class NBTPathApi {
 	 */
 	public boolean equalsLogic(CompareType type,NBTPathApi other)
 	{
-		if(!hasTags(other))
-			return false;//all method needs the same tags for comparing if they don't have them it's false
-		else if(type == CompareType.hasTags)
-			return true;
-		
+		if(type == CompareType.hasTags)
+		{
+			return this.hasTags(other);
+		}
 		else if(type == CompareType.equals)
-			return this.equals(other);
+		{
+			for(String s : this.paths.keySet())
+			{
+				Object tag = this.paths.get(s);
+				Object otherTag = other.paths.get(s);
+				if(!tag.equals(otherTag))
+					return false;
+			}
+			return true;
+		}
 		else if(type == CompareType.greaterThenEqual)
 		{
 			
@@ -163,6 +212,27 @@ public class NBTPathApi {
 		return false;
 	}
 	
+	/**
+	 * Safely merge one nbt to the other one with nbttaglist support primitive values and primitive array indexes will get overriden though
+	 */
+	public void merge(NBTPathApi api)
+	{
+		//TODO:
+	}
+	/**
+	 * different from merge no matter what path and what tag if it exists it won't get overriden
+	 */
+	public void copySafley(NBTPathApi api)
+	{
+		//TODO:
+	}
+	
+	public NBTTagCompound compile()
+	{
+		//TODO:
+		return null;
+	}
+	
 	public static enum CompareType
 	{
 		hasTags(),
@@ -176,7 +246,7 @@ public class NBTPathApi {
 	@Override
 	public String toString()
 	{
-		return this.paths.keySet().toString();
+		return this.paths.toString();
 	}
 
 }
