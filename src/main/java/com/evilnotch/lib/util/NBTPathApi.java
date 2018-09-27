@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagEnd;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagIntArray;
@@ -164,7 +165,7 @@ public class NBTPathApi {
 	/**
 	 * this method isn't for comparing logic it's for storage in arrays. 
 	 * The amount of paths size() and paths have to be equal
-	 * use equalsLogic() instead
+	 * use equalsLogic(CompareType.equals,NBTPathApi other) instead
 	 */
 	@Override
 	public boolean equals(Object obj)
@@ -244,6 +245,11 @@ public class NBTPathApi {
 		{
 			return lessThen(num, num2);
 		}
+		else if(type == CompareType.equals)
+		{
+			return num.equals(num2);
+		}
+		System.out.println("Invalid Type Comparison \"CompareType#" + type + "\"");
 		return false;
 	}
 	
@@ -394,7 +400,7 @@ public class NBTPathApi {
 		}
 		return nbt;
 	}
-	public void mdkrs(NBTTagCompound nbt,String p) 
+	public void mdkrs(NBTBase nbt,String p) 
 	{
 		String[] dir = p.split("/");
 		NBTBase base = nbt;
@@ -404,15 +410,57 @@ public class NBTPathApi {
 			String cPath = dir[i];
 			if(i != 0)
 				path += "/" + cPath;
-			NBTBase tag = nbt.getTag(cPath);
+			NBTBase tag = getTag(nbt,cPath);
 			if(tag == null)
 			{
-				nbt.setTag(cPath, this.getCompiledObject(this.paths.get(path)));
-				tag = nbt.getTag(cPath);
+				setTag(nbt,cPath, this.getCompiledObject(this.paths.get(path)));
+				tag = getTag(nbt,cPath);
 			}
-			if(tag instanceof NBTTagCompound)
-				nbt = (NBTTagCompound)tag;
+			if(!this.isPrimitive(tag))
+				nbt = tag;
 		}
+	}
+	/**
+	 * set a tag from either nbttagcompound or nbttaglist
+	 */
+	public void setTag(NBTBase nbt, String cPath, NBTBase toSet) 
+	{
+		if(nbt instanceof NBTTagCompound)
+			((NBTTagCompound)nbt).setTag(cPath,toSet);
+		else if(nbt instanceof NBTTagList)
+		{
+			int index = Integer.parseInt(cPath);
+			NBTTagList list = (NBTTagList)nbt;
+			//populate blank nbttaglists
+			if(index >= list.tagCount())
+			{
+				for(int i=0;i<=index;i++)
+				{
+					if(list.get(i) instanceof NBTTagEnd)
+						list.appendTag(createNewByType(toSet.getId()));
+				}
+			}
+			//set the index finally
+			list.set(index, toSet);
+		}
+	}
+	/**
+	 * get a tag from either nbttagcompound or nbttaglist
+	 */
+	public NBTBase getTag(NBTBase nbt, String cPath) 
+	{
+		if(nbt instanceof NBTTagCompound)
+			return ((NBTTagCompound)nbt).getTag(cPath);
+		else if(nbt instanceof NBTTagList)
+		{
+			int index = Integer.parseInt(cPath);
+			NBTTagList list = (NBTTagList)nbt;
+			NBTBase tag = list.get(index);
+			if(tag instanceof NBTTagEnd)
+				tag = null;
+			return tag;
+		}
+		return null;
 	}
 	/**
 	 * get the compiled object from the decompiled path primitive/string/class value
@@ -463,6 +511,43 @@ public class NBTPathApi {
 		}
 		return null;
 	}
+    /**
+     * Creates a new NBTBase object that corresponds with the passed in id.
+     */
+    public static NBTBase createNewByType(byte id)
+    {
+        switch (id)
+        {
+            case 0:
+                return new NBTTagEnd();
+            case 1:
+                return new NBTTagByte((byte)0);
+            case 2:
+                return new NBTTagShort((short)0);
+            case 3:
+                return new NBTTagInt(0);
+            case 4:
+                return new NBTTagLong(0L);
+            case 5:
+                return new NBTTagFloat(0F);
+            case 6:
+                return new NBTTagDouble(0F);
+            case 7:
+                return new NBTTagByteArray(new byte[0]);
+            case 8:
+                return new NBTTagString("");
+            case 9:
+                return new NBTTagList();
+            case 10:
+                return new NBTTagCompound();
+            case 11:
+                return new NBTTagIntArray(new int[0]);
+            case 12:
+                return new NBTTagLongArray(new long[0]);
+            default:
+                return null;
+        }
+    }
 	/**
 	 * what logic is the nbtpath api going to be running upon when comparing logic
 	 * @author jredfox
