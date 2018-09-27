@@ -46,17 +46,19 @@ public class NBTPathApi {
 		{
 			NBTTagCompound nbt = (NBTTagCompound)param_nbt;
 			if(secondCall)
-				paths.put(path, new NBTTagCompound());
+				paths.put(path, NBTTagCompound.class);
 			for(String name : nbt.getKeySet())
 			{
 				NBTBase tag = nbt.getTag(name);
+				if(JavaUtil.isStringNum(name))
+					name = "nbtpathapi-name:" + name;//prevent this from being incompatible later
 				this.parseNBT(tag,path + slash + name);
 			}
 		}
 		else if(param_nbt instanceof NBTTagList)
 		{
 			if(secondCall)
-				paths.put(path, new NBTTagList());
+				paths.put(path, NBTTagList.class);
 			NBTTagList list = (NBTTagList)param_nbt;
 			for(int i=0;i<list.tagCount();i++)
 			{
@@ -68,7 +70,7 @@ public class NBTPathApi {
 		{
 			NBTTagByteArray list = (NBTTagByteArray)param_nbt;
 			if(secondCall)
-				this.paths.put(path, new NBTTagByteArray(new byte[0]));
+				this.paths.put(path,NBTTagByteArray.class);
 			byte[] values = list.getByteArray();
 			for(int i=0;i<values.length;i++)
 			{
@@ -80,7 +82,7 @@ public class NBTPathApi {
 		{
 			NBTTagIntArray list = (NBTTagIntArray)param_nbt;
 			if(secondCall)
-				this.paths.put(path, new NBTTagIntArray(new int[0]));
+				this.paths.put(path, NBTTagIntArray.class);
 			int[] values = list.getIntArray();
 			for(int i=0;i<values.length;i++)
 			{
@@ -92,7 +94,7 @@ public class NBTPathApi {
 		{
 			NBTTagLongArray list = (NBTTagLongArray)param_nbt;
 			if(secondCall)
-				this.paths.put(path, new NBTTagLongArray(new long[0]));
+				this.paths.put(path, NBTTagLongArray.class);
 			long[] values = (long[]) ReflectionUtil.getObject(param_nbt, NBTTagLongArray.class, new MCPSidedString("data","field_193587_b").toString() );
 			for(int i=0;i<values.length;i++)
 			{
@@ -153,6 +155,11 @@ public class NBTPathApi {
 				return false;
 		return true;
 	}
+	/**
+	 * this method isn't for comparing logic it's for storage in arrays. 
+	 * The amount of paths size() and paths have to be equal
+	 * use equalsLogic() instead
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -205,7 +212,7 @@ public class NBTPathApi {
 						return false;
 				}
 				else if(!tag.equals(otherTag))
-					return false;
+					return false;//for strings and empty nbtbases
 			}
 			return true;
 		}
@@ -233,6 +240,7 @@ public class NBTPathApi {
 		}
 		return false;
 	}
+	
 	public boolean lessThenEqual(Number num, Number num2) 
 	{
 		if(num instanceof Integer)
@@ -346,11 +354,14 @@ public class NBTPathApi {
 		return false;
 	}
 	/**
-	 * Safely merge one nbt to the other one with nbttaglist support primitive values and primitive array indexes will get overriden though
+	 * merge two NBTPathApi's the other's primitive values will get overriden
 	 */
 	public void merge(NBTPathApi api)
 	{
-		//TODO:
+		for(String s : api.paths.keySet())
+		{
+			this.paths.put(s, api.paths.get(s));
+		}
 	}
 	/**
 	 * different from merge no matter what path and what tag if it exists it won't get overriden
@@ -365,7 +376,9 @@ public class NBTPathApi {
 			}
 		}
 	}
-	
+	/**
+	 * once your done with comparing and merging nbt's then you might want to compile it back again
+	 */
 	public NBTTagCompound compile()
 	{
 		//TODO:
@@ -388,7 +401,7 @@ public class NBTPathApi {
 	@Override
 	public String toString()
 	{
-		return this.paths.toString();
+		return this.paths.keySet().toString();
 	}
 
 }
