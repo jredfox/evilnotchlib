@@ -376,7 +376,7 @@ public class NBTPathApi {
 		}
 	}
 	/**
-	 * different from merge no matter what path and what tag if it exists it won't get overriden
+	 * different from merge no matter what path and what tag if it exists it won't get overridden
 	 */
 	public void copySafley(NBTPathApi api)
 	{
@@ -402,8 +402,8 @@ public class NBTPathApi {
 	}
 	public void mdkrs(NBTBase nbt,String p) 
 	{
+		Set<INBTWrapperArray> toVanilla = new HashSet();
 		String[] dir = p.split("/");
-		NBTBase base = nbt;
 		String path = dir[0];
 		for(int i=0;i<dir.length;i++)
 		{
@@ -411,20 +411,28 @@ public class NBTPathApi {
 			if(i != 0)
 				path += "/" + cPath;
 			NBTBase tag = getTag(nbt,cPath);
-			if(tag == null)
+			if(tag == null || i+1 == dir.length && this.isArray(nbt))
 			{
-				setTag(nbt,cPath, this.getCompiledObject(this.paths.get(path)));
+				setTag(nbt,cPath, this.getCompiledObject(this.paths.get(path)),toVanilla);
 				tag = getTag(nbt,cPath);
 			}
 			if(!this.isPrimitive(tag))
 				nbt = tag;
 		}
+		for(INBTWrapperArray wrapper : toVanilla)
+		{
+			wrapper.toVanilla();
+		}
+	}
+	public boolean isArray(NBTBase nbt) 
+	{
+		return nbt instanceof NBTTagList || nbt instanceof NBTTagByteArray || nbt instanceof NBTTagIntArray || nbt instanceof NBTTagLongArray;
 	}
 	/**
 	 * set a tag from either nbttagcompound or nbttaglist
 	 */
-	public void setTag(NBTBase nbt, String cPath, NBTBase toSet) 
-	{
+	public void setTag(NBTBase nbt, String cPath, NBTBase toSet,Set<INBTWrapperArray> toVanilla) 
+	{	
 		if(nbt instanceof NBTTagCompound)
 			((NBTTagCompound)nbt).setTag(cPath,toSet);
 		else if(nbt instanceof NBTTagList)
@@ -434,7 +442,7 @@ public class NBTPathApi {
 			//populate blank nbttaglists
 			if(index >= list.tagCount())
 			{
-				for(int i=0;i<=index;i++)
+				for(int i=list.tagCount();i<=index;i++)
 				{
 					if(list.get(i) instanceof NBTTagEnd)
 						list.appendTag(createNewByType(toSet.getId()));
@@ -442,6 +450,30 @@ public class NBTPathApi {
 			}
 			//set the index finally
 			list.set(index, toSet);
+		}
+		else if(nbt instanceof NBTArrayByte)
+		{
+			NBTArrayByte arr = (NBTArrayByte)nbt;
+			int index = Integer.parseInt(cPath);
+			NBTTagByte b = (NBTTagByte)toSet;
+			arr.setValue(index, b.getByte());
+			toVanilla.add(arr);
+		}
+		else if(nbt instanceof NBTArrayInt)
+		{
+			NBTArrayInt arr = (NBTArrayInt)nbt;
+			int index = Integer.parseInt(cPath);
+			NBTTagInt b = (NBTTagInt)toSet;
+			arr.setValue(index, b.getInt());
+			toVanilla.add(arr);
+		}
+		else if(nbt instanceof NBTArrayLong)
+		{
+			NBTArrayLong arr = (NBTArrayLong)nbt;
+			int index = Integer.parseInt(cPath);
+			NBTTagLong b = (NBTTagLong)toSet;
+			arr.setValue(index, b.getLong());
+			toVanilla.add(arr);
 		}
 	}
 	/**
@@ -459,6 +491,10 @@ public class NBTPathApi {
 			if(tag instanceof NBTTagEnd)
 				tag = null;
 			return tag;
+		}
+		else if(nbt instanceof NBTTagByteArray || nbt instanceof NBTTagIntArray || nbt instanceof NBTTagLongArray)
+		{
+			return nbt;//the nbt arrays are only primitive so keep it at that level
 		}
 		return null;
 	}
@@ -503,11 +539,11 @@ public class NBTPathApi {
 				return new NBTTagList();
 			//TODO: find work around around these
 			else if(NBTTagByteArray.class.equals(obj))
-				return new NBTTagByteArray(new byte[0]);
+				return new NBTArrayByte();
 			else if(NBTTagIntArray.class.equals(obj))
-				return new NBTTagIntArray(new int[0]);
+				return new NBTArrayInt();
 			else if(NBTTagLongArray.class.equals(obj))
-				return new NBTTagLongArray(new long[0]);
+				return new NBTArrayLong();
 		}
 		return null;
 	}
@@ -533,7 +569,7 @@ public class NBTPathApi {
             case 6:
                 return new NBTTagDouble(0F);
             case 7:
-                return new NBTTagByteArray(new byte[0]);
+                return new NBTArrayByte();
             case 8:
                 return new NBTTagString("");
             case 9:
@@ -541,9 +577,9 @@ public class NBTPathApi {
             case 10:
                 return new NBTTagCompound();
             case 11:
-                return new NBTTagIntArray(new int[0]);
+                return new NBTArrayInt();
             case 12:
-                return new NBTTagLongArray(new long[0]);
+                return new NBTArrayLong();
             default:
                 return null;
         }
