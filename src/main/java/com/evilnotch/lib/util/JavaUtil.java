@@ -55,7 +55,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class JavaUtil {
 	public static final String SPECIALCHARS = "~!@#$%^&*()_+`'-=/,.<>?\"{}[]:;|" + "\\";
-	public static final String uniqueSplitter = "\u00A9" + "#";
+	public static final String uniqueSplitter = "\u00A9" + "#" + "\u20AC";
 	public static String numberIds = "bslfdi";
 	
 	/**

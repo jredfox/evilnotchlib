@@ -1,4 +1,4 @@
-package com.evilnotch.lib.util;
+package com.evilnotch.lib.minecraft.nbt;
 
 import java.util.ArrayList;
 import java.util.List;

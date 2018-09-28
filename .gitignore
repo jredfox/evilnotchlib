@@ -7,3 +7,12 @@ src/main/resources/assets/iitemrenderer/asm/deob/IngredientListBatchRenderer
 src/main/resources/assets/iitemrenderer/asm/srg/IngredientListBatchRenderer
 src/main/java/net/minecraft/item/ItemStack.java
 src/main/java/net/minecraft/network/NetHandlerPlayServer.java
+src/main/resources/assets/menulib/aetherii/panorama/panorama_0.png
+src/main/resources/assets/menulib/aetherii/panorama/panorama_1.png
+src/main/resources/assets/menulib/aetherii/panorama/panorama_2.png
+src/main/resources/assets/menulib/aetherii/panorama/panorama_3.png
+src/main/resources/assets/menulib/aetherii/logo.png
+src/main/resources/assets/menulib/aetherii/panorama/panorama_4.png
+src/main/resources/assets/menulib/aetherii/panorama/panorama_5.png
+src/main/resources/assets/menulib/aetherii/buttons.png
+src/main/resources/assets/menulib/aetherii/background.png

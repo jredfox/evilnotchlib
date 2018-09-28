@@ -1,4 +1,4 @@
-package com.evilnotch.lib.util;
+package com.evilnotch.lib.minecraft.nbt;
 
 public interface INBTWrapperArray {
 	
