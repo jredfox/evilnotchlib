@@ -35,16 +35,16 @@ public class NBTPathApi {
 	/**
 	 * hashmap between string and mostly primitive objects except for identifyers
 	 */
-	public HashMap<String,Object> paths = new HashMap<>();
+	public HashMap<String,Object> paths = new HashMap<>(); 
 	
 	public NBTPathApi(NBTTagCompound nbt)
 	{
-		parseNBT(nbt,"");
+		decompile(nbt,"");
 	}
 	/**
 	 * decompile nbt at it's source for comparison calls it'self recursivley
 	 */
-	public void parseNBT(NBTBase param_nbt,String path)
+	public void decompile(NBTBase param_nbt,String path)
 	{
 		String slash = path.isEmpty() ? "" : "/";
 		boolean secondCall = !path.isEmpty();
@@ -57,9 +57,11 @@ public class NBTPathApi {
 			for(String name : nbt.getKeySet())
 			{
 				NBTBase tag = nbt.getTag(name);
-				if(JavaUtil.isStringNum(name))
-					name = "nbtpathapi-name:" + name;//prevent this from being incompatible later
-				this.parseNBT(tag,path + slash + name);
+				if(name.contains("/"))
+				{
+					name = name.replaceAll("/", JavaUtil.uniqueSplitter);
+				}
+				this.decompile(tag,path + slash + name);
 			}
 		}
 		else if(param_nbt instanceof NBTTagList)
@@ -70,7 +72,7 @@ public class NBTPathApi {
 			for(int i=0;i<list.tagCount();i++)
 			{
 				NBTBase base = list.get(i);
-				this.parseNBT(base, path + slash + i);
+				this.decompile(base, path + slash + i);
 			}
 		}
 		else if(param_nbt instanceof NBTTagByteArray)
@@ -434,7 +436,11 @@ public class NBTPathApi {
 	public void setTag(NBTBase nbt, String cPath, NBTBase toSet,Set<INBTWrapperArray> toVanilla) 
 	{	
 		if(nbt instanceof NBTTagCompound)
+		{
+			if(cPath.contains(JavaUtil.uniqueSplitter))
+				cPath = cPath.replaceAll(JavaUtil.uniqueSplitter, "/");
 			((NBTTagCompound)nbt).setTag(cPath,toSet);
+		}
 		else if(nbt instanceof NBTTagList)
 		{
 			int index = Integer.parseInt(cPath);
@@ -537,7 +543,6 @@ public class NBTPathApi {
 				return new NBTTagCompound();
 			else if(NBTTagList.class.equals(obj))
 				return new NBTTagList();
-			//TODO: find work around around these
 			else if(NBTTagByteArray.class.equals(obj))
 				return new NBTArrayByte();
 			else if(NBTTagIntArray.class.equals(obj))
