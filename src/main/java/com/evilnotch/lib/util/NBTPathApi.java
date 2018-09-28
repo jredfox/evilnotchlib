@@ -395,16 +395,18 @@ public class NBTPathApi {
 	 */
 	public NBTTagCompound compile()
 	{
+		Set<INBTWrapperArray> toVanilla = new HashSet();
 		NBTTagCompound nbt = new NBTTagCompound();
 		for(String path : this.paths.keySet())
 		{
-			this.mdkrs(nbt,path);
+			this.mdkrs(nbt,path,toVanilla);
 		}
+		for(INBTWrapperArray wrapper : toVanilla)
+			wrapper.toVanilla();
 		return nbt;
 	}
-	public void mdkrs(NBTBase nbt,String p) 
+	public void mdkrs(NBTBase nbt,String p,Set<INBTWrapperArray> toVanilla) 
 	{
-		Set<INBTWrapperArray> toVanilla = new HashSet();
 		String[] dir = p.split("/");
 		String path = dir[0];
 		for(int i=0;i<dir.length;i++)
@@ -420,10 +422,6 @@ public class NBTPathApi {
 			}
 			if(!this.isPrimitive(tag))
 				nbt = tag;
-		}
-		for(INBTWrapperArray wrapper : toVanilla)
-		{
-			wrapper.toVanilla();
 		}
 	}
 	public boolean isArray(NBTBase nbt) 
