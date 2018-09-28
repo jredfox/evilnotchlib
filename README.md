@@ -58,10 +58,10 @@ remove methods,add methods, add fields, remove fields
 PickBlockEvent(allows you to override what the block returns via middle click)
 PickEntityEvent(allows you to override what the entity returns via middle click)
 FakeWorld allows you to instatiate entities before a main world is even loaded you will have to exception handle for broken entities
+NBTPathAPI allows for deep comparsions of nbt based upon logic type as well as comparing has tags merging nbt and compiling back into normal nbt
 
 Future:
 Font Renderer
-NBTPathAPI
 Lan Skin Host Fix
 ```
 
