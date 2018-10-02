@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.nbt.CompressedStreamTools;
@@ -142,6 +143,39 @@ public class NBTUtil {
 		if(tag == null)
 			return new NBTTagList();
 		return tag.getTagList(name, type);
+	}
+	/**
+	 * this process is heavy don't use on tick cache at least one nbtpath api and both if at all possible
+	 * @return
+	 */
+	public static boolean equalsLogic(NBTPathApi.CompareType type, NBTTagCompound base,NBTTagCompound toCompare)
+	{
+		//no need to decompile it if all they are comparing is equals
+		if(type == NBTPathApi.CompareType.equals)
+			return base.equals(toCompare);
+		
+		NBTPathApi apiBase = new NBTPathApi(base);
+		NBTPathApi apiCompare = new NBTPathApi(toCompare);
+		return apiBase.equalsLogic(type, apiCompare);
+	}
+	/**
+	 * merge nbt at a deep level unlike vanilla is an actual merge and will keep tags from both sides if they are tagcompounds and conflict with names
+	 * if you need specific tags removed you need to implement this yourself this is simply a deep merging
+	 */
+	public static void merge(NBTTagCompound base,NBTTagCompound toCompare)
+	{
+		NBTPathApi apiBase = new NBTPathApi(base);
+		NBTPathApi apiCompare = new NBTPathApi(toCompare);
+		apiBase.merge(apiCompare);
+	}
+	/**
+	 * unlike merge doesn't override the other tags compounds if they have the path only if non existent at a deep level of comparison
+	 */
+	public static void copySafley(NBTTagCompound base,NBTTagCompound toCompare)
+	{
+		NBTPathApi apiBase = new NBTPathApi(base);
+		NBTPathApi apiCompare = new NBTPathApi(toCompare);
+		apiBase.copySafley(apiCompare);
 	}
 
 }

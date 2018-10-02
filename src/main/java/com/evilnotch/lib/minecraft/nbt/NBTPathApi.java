@@ -37,6 +37,7 @@ public class NBTPathApi {
 	 * hashmap between string and mostly primitive objects except for identifyers
 	 */
 	public HashMap<String,Object> paths = new HashMap<>(); 
+	public static final String numId = "nbtpathapi-num:";
 	
 	public NBTPathApi(NBTTagCompound nbt)
 	{
@@ -62,6 +63,8 @@ public class NBTPathApi {
 				{
 					name = name.replaceAll("/", JavaUtil.uniqueSplitter);
 				}
+				else if(JavaUtil.isStringNum(name))
+					name = numId + name;
 				this.decompile(tag,path + slash + name);
 			}
 		}
@@ -438,6 +441,8 @@ public class NBTPathApi {
 		{
 			if(cPath.contains(JavaUtil.uniqueSplitter))
 				cPath = cPath.replaceAll(JavaUtil.uniqueSplitter, "/");
+			else if(cPath.startsWith(numId))
+				cPath = cPath.substring(numId.length(), cPath.length());
 			((NBTTagCompound)nbt).setTag(cPath,toSet);
 		}
 		else if(nbt instanceof NBTTagList)
