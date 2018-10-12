@@ -48,12 +48,17 @@ public class ASMHelper
 		return null;
 	}
 	
+	public static void patchMethod(MethodNode node,String className,String oldClassName)
+	{
+		patchMethod(node,className,oldClassName,false);
+	}
+	
 	/**
 	 * patch a method you can call this directly after replacing it
 	 */
-	public static void patchMethod(MethodNode node,String className,String oldClassName)
+	public static void patchMethod(MethodNode node,String className,String oldClassName,boolean patchStatic)
 	{
-		patchInstructions(node, className, oldClassName);
+		patchInstructions(node, className, oldClassName,patchStatic);
 		patchLocals(node, className);
 	}
 	
@@ -151,14 +156,14 @@ public class ASMHelper
 	/**
 	 * patch previous object owner instructions to new owner with filtering out static fields/method calls
 	 */
-	public static void patchInstructions(MethodNode mn, String className, String oldClassName) 
+	public static void patchInstructions(MethodNode mn, String className, String oldClassName,boolean patchStatic) 
 	{
 		for(AbstractInsnNode ain : mn.instructions.toArray())
 		{
 			if(ain instanceof MethodInsnNode)
 			{
 				MethodInsnNode min = (MethodInsnNode)ain;
-				if(min.owner.equals(oldClassName) && !isStaticMethodNode(min))
+				if(min.owner.equals(oldClassName) && !isStaticMethodNode(min) || patchStatic && min.owner.equals(oldClassName) )
 				{
 					min.owner=className.replaceAll("\\.", "/");
 				}
@@ -166,7 +171,7 @@ public class ASMHelper
 			else if(ain instanceof FieldInsnNode)
 			{
 				FieldInsnNode fin = (FieldInsnNode)ain;
-				if(fin.owner.equals(oldClassName) && !isStaticFeild(fin))
+				if(fin.owner.equals(oldClassName) && !isStaticFeild(fin) || patchStatic && fin.owner.equals(oldClassName))
 				{
 					fin.owner=className.replaceAll("\\.", "/");
 				}

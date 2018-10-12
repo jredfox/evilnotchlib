@@ -22,7 +22,7 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
     	}
         return new String[] {
         		"com.evilnotch.lib.asm.Transformer",
-        		"com.elix_x.itemrender.compat.asm.JEITransformer",
+        		"com.elix_x.itemrender.compat.asm.RenderTransformer",
         		"com.evilnotch.menulib.asm.MenuLibTransformer"
         };
     }
