@@ -95,6 +95,7 @@ public class PickBlock {
     public static void storeTEInStack(ItemStack stack, TileEntity te)
     {
         NBTTagCompound nbttagcompound = te.writeToNBT(new NBTTagCompound());
+        System.out.println(nbttagcompound);
         nbttagcompound.removeTag("x");
         nbttagcompound.removeTag("y");
         nbttagcompound.removeTag("z");

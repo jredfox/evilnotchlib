@@ -37,7 +37,7 @@ public class MenuLib {
 		{
 			MenuRegistry.registerIMenu(new MenuCMM());
 		}
-		MenuRegistry.registerGuiMenu(MainMenuAetherTest.class, new ResourceLocation("menulib:aether_test"));
+//		MenuRegistry.registerGuiMenu(MainMenuAetherTest.class, new ResourceLocation("menulib:aether_test"));
 		MinecraftForge.EVENT_BUS.register(new GuiEventHandler());
 	}
 	
