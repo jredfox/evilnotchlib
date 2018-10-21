@@ -66,6 +66,7 @@ public class FieldAcess {
 	public static String blockstate = null;
 	public static String gameRuleMap = null;
 	public static String potentialSpawns = null;
+	public static String itemDropThreshold = null;
 	
 	public static void cacheFields()
 	{
@@ -94,6 +95,7 @@ public class FieldAcess {
 		blockstate = MCPMappings.getField(Block.class, "blockState");
 		gameRuleMap =  MCPMappings.getField(GameRules.class, "rules");
 		potentialSpawns = MCPMappings.getField(MobSpawnerBaseLogic.class,"potentialSpawns");
+		itemDropThreshold = MCPMappings.getField(NetHandlerPlayServer.class, "itemDropThreshold");
 		
 		try 
 		{

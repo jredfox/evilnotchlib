@@ -29,7 +29,7 @@ public class GeneralTransformer {
     			if(n.owner.equals("net/minecraftforge/common/ForgeHooks"))
     			{
     				n.name = "pickBlock";
-    				n.owner = "com/evilnotch/lib/asm/PickBlock";
+    				n.owner = "com/evilnotch/lib/main/eventhandler/PickBlock";
     				System.out.println("patched Minecraft#middleClickMouse()");
     				break;
     			}

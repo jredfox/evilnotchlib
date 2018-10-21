@@ -31,9 +31,12 @@ public class PickEvent extends Event{
 	
 	public static class Entity extends PickEvent
 	{
+		public net.minecraft.entity.Entity target;
+		
 		public Entity(ItemStack resault, RayTraceResult target, EntityPlayer player, World world) 
 		{
 			super(resault, target, player, world);
+			this.target = target.entityHit;
 		}	
 	}
 	
