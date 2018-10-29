@@ -8,12 +8,4 @@ import net.minecraft.item.Item;
 public class JEIRenderer{
 	
 	public static Set<Item> slowItems = new HashSet();
-	
-	public static void a(int i)
-	{
-		if(i > 1)
-		{
-			System.out.println();
-		}
-	}
 }
