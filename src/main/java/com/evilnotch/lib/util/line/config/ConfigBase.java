@@ -40,7 +40,7 @@ public abstract class ConfigBase {
 	 */
 	public List<IComment> headerComments = new ArrayList<IComment>();
 	/**
-	 * a list of comments that starts below the ffile
+	 * a list of comments that starts below the file
 	 */
 	public List<IComment> footerComments = new ArrayList<IComment>();
 	/**
@@ -63,7 +63,7 @@ public abstract class ConfigBase {
 	 */
 	public ConfigBase()
 	{
-		
+		this(null);
 	}
 	
 	/**
@@ -114,13 +114,16 @@ public abstract class ConfigBase {
 	 */
 	public void loadConfig()
 	{
-		this.lines.clear();
 		try
 		{
 			if(this.file.exists())
 			{
+				this.lines.clear();
+				this.footerComments.clear();
+				
 				List<String> list = JavaUtil.getFileLines(this.file,true);
 				parseLines(list);
+				this.origin = this.toDirtyLines(list);
 			}
 		}
 		catch(Exception e)
@@ -128,6 +131,22 @@ public abstract class ConfigBase {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * this is for auto detection if the file should save or not. skipping white spacing
+	 */
+	protected List<String> toDirtyLines(List<String> file) 
+	{
+		List<String> list = new ArrayList<String>(file.size());
+		for(String s : file)
+		{
+			String wspaced = JavaUtil.toWhiteSpaced(s);
+			if(wspaced.isEmpty())
+				continue;
+			list.add(s);
+		}
+		return list;
+	}
+
 	/**
 	 * if you used the jar constructor call this instead of loadConfig() regular
 	 */
@@ -137,11 +156,14 @@ public abstract class ConfigBase {
 	
 	public void loadConfigFromJar(String inputStream) 
 	{
-		this.lines.clear();
 		try
 		{
+			this.lines.clear();
+			this.footerComments.clear();
+			
 			List<String> list = JavaUtil.getFileLines(inputStream);
 			parseLines(list);
+			this.origin = this.toDirtyLines(list);
 		}
 		catch(Exception e)
 		{
@@ -168,7 +190,7 @@ public abstract class ConfigBase {
 	 */
 	protected void validateFile() 
 	{
-		if(!this.file.exists())
+		if(this.file != null && !this.file.exists())
 		{
 			this.firstLaunch = true;
 			JavaUtil.createFolders(this.file);
@@ -199,14 +221,17 @@ public abstract class ConfigBase {
 		if(alphabitize)
 			this.alphabitize();
 		List<String> list = this.toFileLines();
-		if(force || !list.equals(this.origin))
+		List<String> dirty = this.toDirtyLines(list);
+		
+		if(force || !dirty.equals(this.origin))
 		{
 			if(msg)
 				System.out.println("Saving Config:" + this.file);
 			this.saveConfig(list);
-			this.origin = list;
+			this.origin = dirty;
 		}
 	}
+	
 	/**
 	 * equivalent to toString() but, has capacity for more indexes then a single string
 	 * @return
@@ -234,7 +259,7 @@ public abstract class ConfigBase {
 					else
 						attatched += c.toString();
 				}
-				list.add(line.toString() + attatched);				
+				list.add(line.toString() + attatched);
 			}
 			else
 				list.add(l.toString());
@@ -340,7 +365,6 @@ public abstract class ConfigBase {
 			}
 			this.tmpComments.clear();
 		}
-		this.origin = this.toFileLines();
 	}
 	
     /**
@@ -479,7 +503,7 @@ public abstract class ConfigBase {
 	/**
 	 * add a comment to a line
 	 */
-	public void addLineComment(ILine line,String comment)
+	public void addLineComment(ILine line,String comment,boolean attatched)
 	{
 		if(!this.commentsEnabled)
 			return;
@@ -487,7 +511,11 @@ public abstract class ConfigBase {
 			return;
 		line = this.getUpdatedLine(line);
 		ICommentStorage comments = (ICommentStorage)line;
-		comments.addComment(new Comment(this.commentStart,comment,-1));
+		Comment c = new Comment(this.commentStart,comment,attatched,-1);
+		if(!comments.getComments().contains(c))
+		{
+			comments.addComment(c);
+		}
 	}
 	/**
 	 * add a comment to the top of the file before the lines
@@ -497,14 +525,18 @@ public abstract class ConfigBase {
 	{
 		if(!this.commentsEnabled)
 			return;
-		this.headerComments.add(new Comment(this.commentStart,comment,-1));
+		Comment c = new Comment(this.commentStart,comment,-1);
+		if(!this.headerComments.contains(c))
+			this.headerComments.add(c);
 	}
 	/**
 	 * used for constructor calls doesn't get used outside of the constructor normally
 	 */
 	protected void addHeaderCommentAdmin(String comment)
 	{
-		this.headerComments.add(new Comment(this.commentStart,comment,-1));
+		Comment c = new Comment(this.commentStart,comment,-1);
+		if(!this.headerComments.contains(c))
+			this.headerComments.add(c);
 	}
 	
 	/**
@@ -515,7 +547,9 @@ public abstract class ConfigBase {
 	{
 		if(!this.commentsEnabled)
 			return;
-		this.footerComments.add(new Comment(this.commentStart,comment,-1));
+		Comment c = new Comment(this.commentStart,comment,-1);
+		if(!this.footerComments.contains(c))
+			this.footerComments.add(c);
 	}
 	/**
 	 * remove a comment below file lines

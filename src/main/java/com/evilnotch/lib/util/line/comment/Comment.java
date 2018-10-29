@@ -67,6 +67,6 @@ public class Comment implements ICommentAttatch{
 		if(!(obj instanceof Comment))
 			return false;
 		Comment c = (Comment)obj;
-		return this.cStart == c.cStart && this.comment.equals(c.comment);
+		return this.cStart == c.cStart && this.comment.equals(c.comment) && this.attatched == c.attatched;
 	}
 }
