@@ -50,7 +50,7 @@ public class LineDynamicLogic extends LineComment implements ILine,ILineMeta{
 			List<ILine> list = new ArrayList<ILine>();
 			for(String line : parts)
 			{
-				ILine l = LineUtil.getLineFromString(line,this.sep,this.quote,this.metaBrackets,lrBrackets,this.invalid);
+				ILine l = LineUtil.getLineFromString(line,this.sep,this.quote,this.metaBrackets,lrBrackets,this.orLogic,this.andLogic, this.invalid);
 				list.add(l);
 			}
 			this.lines.put(oreIndex,list);

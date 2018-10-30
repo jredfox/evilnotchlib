@@ -22,17 +22,21 @@ public class LineArray extends LineMeta implements ILineHeadArray{
 		super(str, sep,q,metaBrackets,invalid);
 		if(str.contains("="))
 		{
-			str = JavaUtil.splitFirst(str,'=')[1].trim();
-			
-			if(str.startsWith("" + brackets[0]))
+			String[] parts = LineUtil.selectString(str, "=", q, "{" + metaBrackets[0], "}" + metaBrackets[1]);
+			if(parts.length > 1)
 			{
-				this.lbracket = brackets[0];
-				this.rbracket = brackets[1];
-				str = str.substring(1, str.length()-1);
-			}
+				str = parts[1].trim();
 			
-			String[] toParse = LineUtil.selectString(str, ',',q,this.lbracket,this.rbracket);
-			parseHead(toParse,this.heads);
+				if(str.startsWith("" + brackets[0]))
+				{
+					this.lbracket = brackets[0];
+					this.rbracket = brackets[1];
+					str = str.substring(1, str.length()-1);
+				}
+			
+				String[] toParse = LineUtil.selectString(str, ',',q,this.lbracket,this.rbracket);
+				parseHead(toParse,this.heads);
+			}
 		}
 	}
 	@Override
@@ -139,6 +143,7 @@ public class LineArray extends LineMeta implements ILineHeadArray{
 		return LineUtil.parseWeight(weight, this.quote);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Object> getHeadList(int index) 
 	{

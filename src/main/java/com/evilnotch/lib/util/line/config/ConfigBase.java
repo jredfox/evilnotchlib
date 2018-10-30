@@ -142,7 +142,7 @@ public abstract class ConfigBase {
 			String wspaced = JavaUtil.toWhiteSpaced(s);
 			if(wspaced.isEmpty())
 				continue;
-			list.add(s);
+			list.add(s.replaceAll("\r\n", ""));
 		}
 		return list;
 	}

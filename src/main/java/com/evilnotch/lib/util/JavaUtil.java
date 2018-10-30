@@ -1261,7 +1261,7 @@ public class JavaUtil {
 			return false;
 		for(int i=0;i<s.length();i++)
 		{
-			String character = s.substring(i, i+1);
+			String character = s.substring(i, i+1).toLowerCase();
 			boolean lastindex = i == s.length() -1;
 			if(check.contains(character))
 			{
@@ -1275,8 +1275,10 @@ public class JavaUtil {
 			{
 				if(i + 1 < s.length())
 					return false;
-				if(lastindex)
-					return valid_endings.contains(character.toLowerCase());
+				if(lastindex && valid_endings.contains(character) )
+				{
+					return character.equals("d") || character.equals("f");
+				}
 			}
 		}
 		return true;

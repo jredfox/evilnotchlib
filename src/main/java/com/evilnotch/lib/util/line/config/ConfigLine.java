@@ -85,15 +85,24 @@ public class ConfigLine extends ConfigBase{
 	@Override
 	public ILine getLineFromString(String str) 
 	{
-		if(str.contains(this.orLogic) || str.contains(this.andLogic))
+		String arr = "=";
+		String lmeta = "" + this.metaBrackets[0] + "{" + this.arrBrackets[0];
+		String rmeta = "" + this.metaBrackets[1] + "}" + this.arrBrackets[1];
+		
+		if(LineUtil.containsParsing(this.orLogic, this.quote, lmeta, rmeta, str) || LineUtil.containsParsing(this.andLogic, this.quote, lmeta, rmeta, str))
+		{		
 			return new LineDynamicLogic(str, this.orLogic, this.andLogic, this.sep, this.quote, this.metaBrackets, this.arrBrackets, this.invalid);
-		else if(str.contains("="))
-		{
-			return new LineArray(str,this.sep,this.quote,this.metaBrackets,this.arrBrackets,this.invalid);
 		}
-		else if(str.contains("" + this.metaBrackets[0]) || str.contains("{"))
-			return new LineMeta(str,this.sep,this.quote,this.metaBrackets,this.invalid);
-
-		return new Line(str,this.sep,this.quote,this.invalid);
+		else if(LineUtil.containsParsingChars(arr, this.quote,str))
+		{
+			return new LineArray(str, this.sep, this.quote, this.metaBrackets, this.arrBrackets, this.invalid);
+		}
+		else if(LineUtil.containsParsingChars(lmeta, this.quote,str))
+		{
+			return new LineMeta(str, this.sep, this.quote, this.metaBrackets, this.invalid);
+		}
+		
+		return new Line(str);
 	}
+	
 }
