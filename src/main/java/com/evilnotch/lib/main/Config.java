@@ -35,7 +35,7 @@ public class Config {
 		replaceTP = config.get("general","tpReplace",true).getBoolean();
 		
 		//entity cache data for black list and allow certain entities to pass through
-		cacheEntDeny =JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));
+		cacheEntDeny = JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));
 		String[] str = config.getStringList("blacklistEntity", "cache_entity", new String[]{""}, "don't want to blacklist entire mod domain use this list");
 		cacheEntNamesDeny = JavaUtil.stringToLocArray(str);
 		config.save();

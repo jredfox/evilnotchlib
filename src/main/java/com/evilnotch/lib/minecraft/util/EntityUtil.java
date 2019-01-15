@@ -125,7 +125,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry.EntityRegistration;
 public class EntityUtil {
 	
 	public static boolean cached = false;
-	public static List<ResourceLocation> end_ents = new ArrayList<ResourceLocation>();
+	public static Set<ResourceLocation> end_ents = new HashSet<ResourceLocation>();
 	
 	public static Set<ResourceLocation> forgemobs = new HashSet();//forge mobs that are entity living
 	public static HashMap<ResourceLocation,String[]> living = new HashMap();
@@ -866,6 +866,12 @@ public class EntityUtil {
 		
 		for(ResourceLocation loc : list)
 		{
+			if(Config.cacheEntDeny.contains(loc.getResourceDomain()) || Config.cacheEntNamesDeny.contains(loc))
+			{
+				ent_blacklist.add(loc);
+				MainJava.logger.log(Level.INFO,"Skipping blacklisted entity:" + loc);
+				continue;
+			}
 			Class clazz = EntityList.getClass(loc);
 			if(clazz == null)
 			{
@@ -881,7 +887,7 @@ public class EntityUtil {
 			{
 				Constructor k = clazz.getConstructor(new Class[] {World.class});
 			} 
-			catch (Throwable t) 
+			catch (Throwable t)
 			{
 				ent_blacklist.add(loc);
 				MainJava.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod autoher:" + loc);
@@ -902,12 +908,6 @@ public class EntityUtil {
 				MainJava.logger.log(Level.ERROR,"Skipping Broken Entity Creation/Translation Failed Report to mod autoher:" + loc);
 				continue;
 			}
-			else if(Config.cacheEntDeny.contains(loc.getResourceDomain()) || Config.cacheEntNamesDeny.contains(loc))
-			{
-				ent_blacklist.add(loc);
-				MainJava.logger.log(Level.INFO,"Skipping blacklisted entity:" + loc);
-				continue;
-			}
 			ent_blacklist.remove(loc);
 			NBTTagCompound tag = getEntityNBTSafley(e);
 			
@@ -920,8 +920,7 @@ public class EntityUtil {
 			{
 				try
 				{
-					Entity entity = EntityUtil.createEntityByNameQuietly(loc, world,true);
-					((EntityLiving)entity).onInitialSpawn(e.world.getDifficultyForLocation(new BlockPos(0,4,0)), (IEntityLivingData)null);
+					((EntityLiving)e).onInitialSpawn(e.world.getDifficultyForLocation(new BlockPos(0,4,0)), (IEntityLivingData)null);
 				}
 				catch(Throwable t)
 				{

@@ -412,6 +412,15 @@ public abstract class ConfigBase {
 		return false;
 	}
 	/**
+	 * the simpler method call
+	 * @param c
+	 * @return
+	 */
+	public boolean containsLine(ILine c)
+	{
+		return this.containsLine(c,this.checkMetaByDefault());
+	}
+	/**
 	 * see if there is another line or not here already by comparing it's id and possibly metadata
 	 */
 	public boolean containsLine(ILine c,boolean compareMeta) 

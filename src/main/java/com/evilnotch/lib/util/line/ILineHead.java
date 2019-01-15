@@ -35,6 +35,8 @@ public interface ILineHead extends ILine{
 	default public boolean getBoolean(){
 		return (Boolean)this.getHead();
 	}
-   
+	default public boolean hasHead(){
+		return this.getHead() != null;
+	}
 	
 }

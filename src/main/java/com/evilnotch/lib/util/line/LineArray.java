@@ -50,7 +50,7 @@ public class LineArray extends LineMeta implements ILineHeadArray{
 	@Override
 	public Object getHead(int index) 
 	{
-		return this.heads.get(index);
+		return this.heads.isEmpty() ? null : this.heads.get(index);
 	}
 	/**
 	 * set the lines value
