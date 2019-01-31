@@ -164,8 +164,12 @@ public class NBTPathApi {
 	public boolean hasTags(NBTPathApi other)
 	{
 		for(String s : this.paths.keySet())
+		{
 			if(!other.paths.keySet().contains(s))
+			{
 				return false;
+			}
+		}
 		return true;
 	}
 	/**

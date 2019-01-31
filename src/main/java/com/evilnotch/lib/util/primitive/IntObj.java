@@ -85,5 +85,9 @@ public class IntObj extends Number implements IModNumber{
 	public String toString(){
 		return "" + this.intValue();
 	}
+	@Override
+	public int hashCode(){
+		return Integer.hashCode(this.integer);
+	}
 
 }

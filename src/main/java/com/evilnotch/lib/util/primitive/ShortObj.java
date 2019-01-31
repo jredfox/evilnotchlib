@@ -80,5 +80,9 @@ public class ShortObj extends Number implements IModNumber{
 	public String toString(){
 		return "" + this.shortValue();
 	}
+	@Override
+	public int hashCode(){
+		return Short.hashCode(this.s);
+	}
 
 }

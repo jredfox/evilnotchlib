@@ -23,6 +23,11 @@ public class BooleanObj{
 	}
 	
 	@Override
+	public int hashCode(){
+		return Boolean.hashCode(this.value);
+	}
+	
+	@Override
 	public boolean equals(Object obj)
 	{
 		if(obj instanceof Boolean)

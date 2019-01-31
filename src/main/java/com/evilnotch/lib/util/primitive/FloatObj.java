@@ -80,5 +80,9 @@ public class FloatObj extends Number implements IModNumber{
 	public String toString(){
 		return "" + this.floatValue();
 	}
+	@Override
+	public int hashCode(){
+		return Float.hashCode(this.f);
+	}
 
 }

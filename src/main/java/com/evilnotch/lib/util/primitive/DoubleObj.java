@@ -80,5 +80,9 @@ public class DoubleObj extends Number implements IModNumber{
 	public String toString(){
 		return "" + this.doubleValue();
 	}
+	@Override
+	public int hashCode(){
+		return Double.hashCode(this.d);
+	}
 
 }

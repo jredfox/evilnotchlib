@@ -82,5 +82,9 @@ public class LongObj extends Number implements IModNumber{
 	public String toString(){
 		return "" + this.longValue();
 	}
+	@Override
+	public int hashCode(){
+		return Long.hashCode(this.l);
+	}
 
 }

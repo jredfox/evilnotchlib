@@ -205,8 +205,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         if(i instanceof ItemBlock)
         {
    	 		BlockPos pos2 = pos;
-   	 		ItemBlock item = (ItemBlock)this.getItem();
-   	 		if(!item.getBlock().isReplaceable(worldIn, pos))
+   	 		if(!worldIn.getBlockState(pos).getBlock().isReplaceable(worldIn, pos))
    	 		{
    	 			pos2 = pos2.offset(side);
    	 		}

@@ -82,5 +82,10 @@ public class ByteObj extends Number implements IModNumber{
 	public String toString(){
 		return "" + this.byteValue();
 	}
+	
+	@Override
+	public int hashCode(){
+		return Byte.hashCode(this.b);
+	}
 
 }

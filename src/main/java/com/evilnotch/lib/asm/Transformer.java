@@ -81,13 +81,14 @@ public class Transformer implements IClassTransformer
                 break;
                 
                 case 3:
-                	if(!ConfigCore.asm_clientPlaceEvent)
+                	if(ConfigCore.asm_clientPlaceEvent)
                 	{
-                		System.out.println("returning bytes ITEMSTACK");
-                		return classToTransform;
+                		ASMHelper.replaceMethod(classNode, inputBase + "ItemStack", "onItemUse", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Lnet/minecraft/util/EnumActionResult;", "func_179546_a");
                 	}
-                	ASMHelper.replaceMethod(classNode, inputBase + "ItemStack", "onItemUse", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/EnumHand;Lnet/minecraft/util/EnumFacing;FFF)Lnet/minecraft/util/EnumActionResult;", "func_179546_a");
-                	ASMHelper.replaceMethod(classNode, inputBase + "ItemStack", "getDisplayName", "()Ljava/lang/String;", "func_82833_r");
+                	if(ConfigCore.asm_TranslationEvent)
+                	{
+                		ASMHelper.replaceMethod(classNode, inputBase + "ItemStack", "getDisplayName", "()Ljava/lang/String;", "func_82833_r");
+                	}
                 	CapTransformer.transformItemStack(name, classNode, obfuscated);
                 break;
                 
@@ -126,7 +127,9 @@ public class Transformer implements IClassTransformer
                 	CapTransformer.transformAnvilChunkLoader(classNode,name,obfuscated);
                 break;
                 case 13:
-                	GeneralTransformer.transformMC(classNode);
+                	if(!ConfigCore.asm_middleClickEvent)
+                		return classToTransform;
+                		GeneralTransformer.transformMC(classNode);
                 break;
             }
             
