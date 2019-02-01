@@ -7,11 +7,11 @@ import java.util.Set;
 
 import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.content.block.item.IMetaName;
 import com.evilnotch.lib.minecraft.content.block.item.ItemBlockMeta;
 import com.evilnotch.lib.minecraft.content.block.property.IPropertyMeta;
 import com.evilnotch.lib.minecraft.content.block.property.IPropertyName;
-import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.block.Block;

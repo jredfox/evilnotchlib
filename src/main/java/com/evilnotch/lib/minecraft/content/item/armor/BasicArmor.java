@@ -1,6 +1,6 @@
 package com.evilnotch.lib.minecraft.content.item.armor;
 
-import com.evilnotch.lib.minecraft.content.lang.LangEntry;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;

@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.content.recipe.ShapelessRecipe;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.simple.PairObj;
@@ -26,6 +27,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class GeneralRegistry {
@@ -39,6 +42,7 @@ public class GeneralRegistry {
 	//removing
 	public static Set<String> cmdRemove = new HashSet();
 	public static Set<String> gameRulesRemove = new HashSet();
+	public static int recipeIndex = 0;
 	
 	public static void load()
 	{
@@ -235,9 +239,15 @@ public class GeneralRegistry {
 			MinecraftUtil.addGameRule(g, pair.getKey(), value, type);
 		}
 	}
-	public static void addShapelessRecipe(IForgeRegistry<IRecipe> reg,ResourceLocation id,ItemStack output, ItemStack... params) 
+	
+	public static void addShapelessRecipe(IForgeRegistry<IRecipe> reg,ItemStack output, ItemStack... params) 
 	{
-		reg.register(new ShapelessRecipe(id,output,params).setRegistryName(id));
+		reg.register(new ShapelessRecipe(new ResourceLocation(MinecraftUtil.getActiveModDomain() + ":" + recipeIndex++),output,params));
+	}
+
+	public static void addShapedRecipe(ItemStack output, Object... params) 
+	{
+		GameRegistry.addShapedRecipe(new ResourceLocation(MinecraftUtil.getActiveModDomain() + ":" + recipeIndex++), new ResourceLocation("recipes"), output, params);
 	}
 
 }

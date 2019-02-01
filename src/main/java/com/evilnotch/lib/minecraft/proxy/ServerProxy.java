@@ -14,7 +14,7 @@ public class ServerProxy {
 	/**
 	 * called before anything else
 	 */
-	public void proxypreinit() {}
+	public void proxyStart() {}
 	public void initMod() {}
 
 	//client only methods

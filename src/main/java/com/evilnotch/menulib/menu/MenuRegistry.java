@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Level;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.ILine;
 import com.evilnotch.lib.util.line.ILineHead;
@@ -193,7 +194,7 @@ public class MenuRegistry {
 				IMenu menu = getMenu(loc);
 				if(menu == null)
 				{
-					MainJava.logger.log(Level.FATAL, "[MenuLib/ERR] Null Menu For Resource Location: " + loc + "\nInput Not Accepted Skipping Menu List Reparing Config");
+					LoaderMain.logger.log(Level.FATAL, "[MenuLib/ERR] Null Menu For Resource Location: " + loc + "\nInput Not Accepted Skipping Menu List Reparing Config");
 					ConfigMenu.saveMenus(getIds());
 					return;
 				}
@@ -260,7 +261,7 @@ public class MenuRegistry {
 			}
 		}
 		if(menu == null)
-			MainJava.logger.log(Level.ERROR,"[MenuLib/ERR] Unable to find Current Index for Requested Menu");
+			LoaderMain.logger.log(Level.ERROR,"[MenuLib/ERR] Unable to find Current Index for Requested Menu");
 		indexMenu = index;
 		currentMenu = menu;
 	}

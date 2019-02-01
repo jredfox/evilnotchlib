@@ -1,8 +1,8 @@
 package com.evilnotch.lib.minecraft.content.item.armor;
 
-import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.loader.LoaderItems;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.content.item.BasicItem;
-import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -44,7 +44,7 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor{
 		//autofill
 		this.populateLang(langlist, unlocalname,id);
 		
-		MainJava.items.add(this);
+		LoaderItems.items.add(this);
 	}
 	
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {

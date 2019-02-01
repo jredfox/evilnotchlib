@@ -10,7 +10,10 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameRules.ValueType;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLContainer;
+import net.minecraftforge.fml.common.InjectedModContainer;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
 public class MinecraftUtil {
 	
@@ -77,6 +80,13 @@ public class MinecraftUtil {
    public static boolean isModExtension(String name) 
    {
 	   return name.endsWith(".jar") || name.endsWith(".zip");
+   }
+   
+   public static String getActiveModDomain()
+   {
+	   ModContainer mc = Loader.instance().activeModContainer();
+	   String prefix = mc == null || (mc instanceof InjectedModContainer && ((InjectedModContainer)mc).wrappedContainer instanceof FMLContainer) ? "minecraft" : mc.getModId().toLowerCase();
+	   return prefix;
    }
 
 }

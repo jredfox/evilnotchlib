@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.content.command;
 
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.EnumChatFormatting;
 
@@ -27,7 +28,7 @@ public class CMDSeedGet extends CommandBase {
      */
     public int getRequiredPermissionLevel()
     {
-        return 0;
+        return Config.seedF3 ? 0 : super.getRequiredPermissionLevel();
     }
 
     /**

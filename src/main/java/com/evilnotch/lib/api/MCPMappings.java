@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -22,7 +23,7 @@ public class MCPMappings {
 	 */
 	public static String getField(Class clazz, String name)
 	{
-		if(MainJava.isDeObfuscated)
+		if(LoaderMain.isDeObfuscated)
 			return name;
 		else
 		{
@@ -37,7 +38,7 @@ public class MCPMappings {
 	 */
 	public static String getMethod(Class clazz, String name)
 	{
-		if(MainJava.isDeObfuscated)
+		if(LoaderMain.isDeObfuscated)
 			return name;
 		else
 		{

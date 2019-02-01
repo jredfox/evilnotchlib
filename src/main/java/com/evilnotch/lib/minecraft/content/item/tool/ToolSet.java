@@ -1,6 +1,6 @@
 package com.evilnotch.lib.minecraft.content.item.tool;
 
-import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.loader.LoaderItems;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -54,7 +54,7 @@ public class ToolSet {
 			this.stick = stick;
 			this.allMetaBlock = allMetaBlock;
 			this.allMetaStick = allMetaStick;
-			MainJava.toolsets.add(this);
+			LoaderItems.toolsets.add(this);
 		}
 	}
 

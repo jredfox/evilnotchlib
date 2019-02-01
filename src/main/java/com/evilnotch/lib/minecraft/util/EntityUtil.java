@@ -27,6 +27,7 @@ import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.content.entity.EntityDefintions;
 import com.evilnotch.lib.minecraft.content.entity.EntityDefintions.EntityInfo;
 import com.evilnotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
@@ -238,7 +239,7 @@ public class EntityUtil {
 			return name;
 		}catch(Throwable t){
 			ent_blacklist_commandsender.add(getEntityResourceLocation(entity));
-			MainJava.logger.error("Entity Has Thrown an Error when entity.getName() Report to mod author:" + EntityList.getEntityString(entity));
+			LoaderMain.logger.error("Entity Has Thrown an Error when entity.getName() Report to mod author:" + EntityList.getEntityString(entity));
 		}
 		return null;
 	}
@@ -857,7 +858,7 @@ public class EntityUtil {
 	}
 	public static void cacheEnts()
 	{
-		cacheEnts((List)null,MainJava.fake_world,true);
+		cacheEnts((List)null,LoaderMain.fake_world,true);
 	}
 	public static void cacheEnts(Set<ResourceLocation> set,World w)
 	{
@@ -885,13 +886,13 @@ public class EntityUtil {
 			if(Config.cacheEntDeny.contains(loc.getResourceDomain()) || Config.cacheEntNamesDeny.contains(loc))
 			{
 				ent_blacklist.add(loc);
-				MainJava.logger.log(Level.INFO,"Skipping blacklisted entity:" + loc);
+				LoaderMain.logger.log(Level.INFO,"Skipping blacklisted entity:" + loc);
 				continue;
 			}
 			Class clazz = EntityList.getClass(loc);
 			if(clazz == null)
 			{
-				MainJava.logger.log(Level.ERROR,"Skipping Broken Entity No Class Found Report to mod autoher:" + loc);
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Class Found Report to mod autoher:" + loc);
 				continue;
 			}
 			boolean isAbstract = Modifier.isAbstract(clazz.getModifiers());
@@ -906,7 +907,7 @@ public class EntityUtil {
 			catch (Throwable t)
 			{
 				ent_blacklist.add(loc);
-				MainJava.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod autoher:" + loc);
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod autoher:" + loc);
 				continue;
 			}
 			Entity e = EntityUtil.createEntityByNameQuietly(loc, world,true);
@@ -921,7 +922,7 @@ public class EntityUtil {
 			if(e == null || translation == null)
 			{
 				ent_blacklist.add(loc);//Entity failed cache it's string id for debugging
-				MainJava.logger.log(Level.ERROR,"Skipping Broken Entity Creation/Translation Failed Report to mod autoher:" + loc);
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity Creation/Translation Failed Report to mod autoher:" + loc);
 				continue;
 			}
 			ent_blacklist.remove(loc);
@@ -941,7 +942,7 @@ public class EntityUtil {
 				catch(Throwable t)
 				{
 					ent_blacklist.add(loc);
-					MainJava.logger.log(Level.ERROR,"Skipping broken Entity Failed to read onInitialSpawn() aka onSpawnWithEgg() Report to mod author:" + loc);
+					LoaderMain.logger.log(Level.ERROR,"Skipping broken Entity Failed to read onInitialSpawn() aka onSpawnWithEgg() Report to mod author:" + loc);
 				}
 			}
 			if(!ent_blacklist.contains(loc) && !ent_blacklist_nbt.contains(loc))
@@ -1047,7 +1048,7 @@ public class EntityUtil {
 		if(tag == null)
 		{
 			ent_blacklist_nbt.add(loc);
-			MainJava.logger.log(Level.ERROR,"Entity Serialization Has Been Broken When Reading It's Own NBT Report to mod autoher:" + loc);
+			LoaderMain.logger.log(Level.ERROR,"Entity Serialization Has Been Broken When Reading It's Own NBT Report to mod autoher:" + loc);
 			return;
 		}
 		try
@@ -1058,7 +1059,7 @@ public class EntityUtil {
 		catch(Throwable t)
 		{
 			ent_blacklist_nbt.add(loc);
-			MainJava.logger.log(Level.ERROR,"Entity Serialization Has Been Broken When Reading It's Own NBT Report to mod autoher:" + loc);
+			LoaderMain.logger.log(Level.ERROR,"Entity Serialization Has Been Broken When Reading It's Own NBT Report to mod autoher:" + loc);
 		}
 	}
 
@@ -1479,7 +1480,7 @@ public class EntityUtil {
 	}
 
 	public static boolean isPlayerOwner(EntityPlayerMP player) {
-		if(!MainJava.isClient)
+		if(!LoaderMain.isClient)
 			return false;
 		return player.getName().equals(player.getServer().getServerOwner());
 	}

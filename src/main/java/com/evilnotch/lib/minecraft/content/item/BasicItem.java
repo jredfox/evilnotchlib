@@ -3,9 +3,10 @@ package com.evilnotch.lib.minecraft.content.item;
 import java.util.ArrayList;
 
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.loader.LoaderItems;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.content.item.armor.ArmorMat;
 import com.evilnotch.lib.minecraft.content.item.tool.ToolMat;
-import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 import com.evilnotch.lib.util.line.LineArray;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -42,7 +43,7 @@ public class BasicItem extends Item implements IBasicItem{
 		//autofill
 		populateLang(langlist,unlocalname,id);//not just client side I18l or something uses it on server side for translations
 		
-		MainJava.items.add(this);
+		LoaderItems.items.add(this);
 	}
 	
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
@@ -88,12 +89,12 @@ public class BasicItem extends Item implements IBasicItem{
 			ToolMat cached = ToolMat.toolmats.get(mat.enumName);//grab preconfigured toolmat if available
 			if(cached != null)
 				return cached.getEnum();
-			if(MainJava.cfgTools != null)
+			if(LoaderItems.cfgTools != null)
 			{
 				LineArray line = new LineArray(mat.toString());
 //				System.out.println("Before:" + line);
-				MainJava.cfgTools.addLine(line);
-				line = (LineArray) MainJava.cfgTools.getUpdatedLine(line);//critical line this lets the config override the default line
+				LoaderItems.cfgTools.addLine(line);
+				line = (LineArray) LoaderItems.cfgTools.getUpdatedLine(line);//critical line this lets the config override the default line
 				mat = new ToolMat(line);
 				ToolMat.toolmats.put(mat.enumName, mat);
 //				System.out.println("After: " + line);
@@ -112,11 +113,11 @@ public class BasicItem extends Item implements IBasicItem{
 			ArmorMat cached = ArmorMat.armormats.get(mat.enumName);
 			if(cached != null)
 				return cached.getEnum();
-			if(MainJava.cfgArmors != null)
+			if(LoaderItems.cfgArmors != null)
 			{
 				LineArray line = new LineArray(mat.toString());
-				MainJava.cfgArmors.addLine(line);
-				line = (LineArray) MainJava.cfgArmors.getUpdatedLine(line);//critical line this lets the config override the default line
+				LoaderItems.cfgArmors.addLine(line);
+				line = (LineArray) LoaderItems.cfgArmors.getUpdatedLine(line);//critical line this lets the config override the default line
 //				System.out.println("Before:" + mat);
 				mat = new ArmorMat(line);
 //				System.out.println("After: " + mat);

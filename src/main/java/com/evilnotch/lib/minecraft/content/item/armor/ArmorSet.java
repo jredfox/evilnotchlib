@@ -1,6 +1,7 @@
 package com.evilnotch.lib.minecraft.content.item.armor;
 
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.loader.LoaderItems;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -58,7 +59,7 @@ public class ArmorSet {
 		this.block = block;
 		this.allMetaBlock = allMeta;
 		if(register)
-			MainJava.armorsets.add(this);
+			LoaderItems.armorsets.add(this);
 		this.hasRecipe = !block.isEmpty();
 	}
 

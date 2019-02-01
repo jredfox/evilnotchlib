@@ -29,7 +29,7 @@ public class MenuLib {
 	public void preinit(FMLPreInitializationEvent event)
 	{
 		ConfigMenu.loadMenuLib(event.getModConfigurationDirectory());
-		cmm =Loader.isModLoaded("custommainmenu");
+		cmm = Loader.isModLoaded("custommainmenu");
 		//don't add vanilla menu to list if cmm is installed
 		if(!cmm)
 			MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));

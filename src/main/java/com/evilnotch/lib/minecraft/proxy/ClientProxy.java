@@ -14,14 +14,15 @@ import com.evilnotch.lib.api.FieldAcessClient;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.ClientEvents;
+import com.evilnotch.lib.main.loader.LoaderBlocks;
+import com.evilnotch.lib.main.loader.LoaderItems;
+import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.content.block.IBasicBlock;
 import com.evilnotch.lib.minecraft.content.client.ClientUUID;
 import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
 import com.evilnotch.lib.minecraft.content.client.block.StateMapperSupreme;
 import com.evilnotch.lib.minecraft.content.item.IBasicItem;
-import com.evilnotch.lib.minecraft.content.lang.LangRegistry;
-import com.evilnotch.lib.minecraft.network.NetWorkHandler;
-import com.evilnotch.lib.minecraft.network.packet.PacketRequestSeed;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairString;
@@ -29,7 +30,6 @@ import com.evilnotch.lib.util.simple.PairString;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -55,9 +55,9 @@ public class ClientProxy extends ServerProxy{
 	
 
 	@Override
-	public void proxypreinit()
+	public void proxyStart()
 	{
-		MainJava.isClient = true;
+		LoaderMain.isClient = true;
 	}
 	
 	@Override
@@ -74,13 +74,13 @@ public class ClientProxy extends ServerProxy{
 	@Override
 	public void jsonGen() throws Exception
 	{
-		if(!MainJava.isDeObfuscated)
+		if(!LoaderMain.isDeObfuscated)
 		{
 			return;
 		}
 		checkRootFile();
 		boolean flag = false;
-		for(IBasicItem i : MainJava.items)
+		for(IBasicItem i : LoaderItems.items)
 		{
 			if(!i.registerModel())
 			{
@@ -130,7 +130,7 @@ public class ClientProxy extends ServerProxy{
 				}
 			}
 		}
-		for(IBasicBlock b : MainJava.blocks)
+		for(IBasicBlock b : LoaderBlocks.blocks)
 		{
 			if(!b.registerModel())
 			{
@@ -338,7 +338,7 @@ public class ClientProxy extends ServerProxy{
 	public static void modelpreInit() 
 	{
 		System.out.println("Loading MODELS");
-		for(IBasicItem i : MainJava.items)
+		for(IBasicItem i : LoaderItems.items)
 	    {
 		   if(i.registerModel())
 		   {
@@ -357,7 +357,7 @@ public class ClientProxy extends ServerProxy{
 			  }
 		   }
 	   }
-	   for(IBasicBlock i : MainJava.blocks)
+	   for(IBasicBlock i : LoaderBlocks.blocks)
 	   {
 		   if(i.registerModel())
 		   {

@@ -17,7 +17,6 @@ public class Config {
 	public static boolean tpAllowCrossDim = false;
 	public static boolean replaceTP = true;
 	public static boolean seedF3 = true;
-	
 	/**
 	 * list of domains that are not acceptable
 	 */

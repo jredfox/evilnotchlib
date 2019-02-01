@@ -22,6 +22,7 @@ public class ShapelessRecipe extends net.minecraftforge.registries.IForgeRegistr
 		this.id = loc;
 		this.output = output;
 		this.ingrediants = params;
+		this.setRegistryName(loc);
 	}
 	public ShapelessRecipe(ResourceLocation loc,ItemStack output,Item... params)
 	{

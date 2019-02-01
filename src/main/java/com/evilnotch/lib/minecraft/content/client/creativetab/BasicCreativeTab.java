@@ -3,7 +3,8 @@ package com.evilnotch.lib.minecraft.content.client.creativetab;
 import java.util.ArrayList;
 
 import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.minecraft.content.lang.LangEntry;
+import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -25,7 +26,7 @@ public class BasicCreativeTab extends CreativeTabs{
 		this.setBackgroundImageName(backgroundIcon);
 		if(!drawTitle)
 			this.setNoTitle();
-		if(MainJava.isClient)
+		if(LoaderMain.isClient)
 		{
 			populateLang(langlist,id);
 		}

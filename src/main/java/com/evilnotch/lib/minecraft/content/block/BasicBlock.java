@@ -10,8 +10,9 @@ import javax.annotation.Nullable;
 
 import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.loader.LoaderBlocks;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
-import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.config.ConfigBase;
@@ -84,7 +85,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 		//set properties of the block
 		fillProperties(props);
 		
-		MainJava.blocks.add(this);
+		LoaderBlocks.blocks.add(this);
 		
 		if(useItemBlock)
 		{
@@ -136,7 +137,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 	public static BlockProperties getConfiguredBlockProps(Block b,BlockProperties props) 
 	{
 		LineArray line = new LineArray("\"" + b.getRegistryName() + "\" " + props.toString());
-		ConfigBase cfg = MainJava.cfgBlockProps;
+		ConfigBase cfg = LoaderBlocks.cfgBlockProps;
 		cfg.addLine(line);
 		line = (LineArray) cfg.getUpdatedLine(line);
 		return new BlockProperties(line);

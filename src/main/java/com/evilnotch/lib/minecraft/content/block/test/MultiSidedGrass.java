@@ -1,9 +1,9 @@
 package com.evilnotch.lib.minecraft.content.block.test;
 
+import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.content.block.BasicMetaBlock;
 import com.evilnotch.lib.minecraft.content.block.BlockProperties;
 import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
-import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;

@@ -2,10 +2,10 @@ package com.evilnotch.lib.minecraft.content.item.tool;
 
 import java.util.ArrayList;
 
-import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.loader.LoaderItems;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.content.item.BasicItem;
 import com.evilnotch.lib.minecraft.content.item.IBasicItem;
-import com.evilnotch.lib.minecraft.content.lang.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemHoe;
@@ -41,7 +41,7 @@ public class ItemBasicHoe extends ItemHoe implements IBasicItem{
 		//autofill
 		this.populateLang(langlist, unlocalname,id);
 		
-		MainJava.items.add(this);
+		LoaderItems.items.add(this);
 	}
 	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
 		if(!this.useLangRegistry())
