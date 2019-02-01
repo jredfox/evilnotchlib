@@ -2,12 +2,9 @@ package com.evilnotch.menulib.eventhandler;
 
 import java.util.List;
 
-import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.content.client.gui.GuiFakeMenu;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.menulib.ConfigMenu;
-import com.evilnotch.menulib.MenuLib;
-import com.evilnotch.menulib.compat.menu.MenuCMM;
 import com.evilnotch.menulib.event.MenuMusicEvent;
 import com.evilnotch.menulib.menu.IMenu;
 import com.evilnotch.menulib.menu.MenuRegistry;
@@ -15,9 +12,9 @@ import com.evilnotch.menulib.menu.MenuRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -50,10 +47,11 @@ public class GuiEventHandler {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onGuiOpenPre(GuiOpenEvent e)
 	{
-		if(e.getGui() == null)
+		GuiScreen gui = e.getGui();
+		if(gui == null)
 			return;
 //		System.out.println(e.getGui().getClass());
-		if(!(e.getGui() instanceof GuiMainMenu) && !MenuRegistry.containsMenu(e.getGui().getClass() ) )
+		if(!(gui instanceof GuiMainMenu) && !MenuRegistry.containsMenu(gui.getClass() ) )
 		{
 			return;
 		}
@@ -65,9 +63,10 @@ public class GuiEventHandler {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onGuiOpen(GuiOpenEvent e)
 	{
-		if(e.getGui() == null)
+		GuiScreen gui = e.getGui();
+		if(gui == null)
 			return;
-		if(!(e.getGui() instanceof GuiFakeMenu))
+		if(!(gui instanceof GuiFakeMenu))
 		{
 			return;
 		}
@@ -76,11 +75,12 @@ public class GuiEventHandler {
 	@SubscribeEvent
 	public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post e)
 	{
-		if(e.getGui() == null)
+		GuiScreen gui = e.getGui();
+		if(gui == null)
 			return;
 		if(MenuRegistry.getMenuSize() > 1)
 		{
-			Class clazz = e.getGui().getClass();
+			Class clazz = gui.getClass();
 			if(!MenuRegistry.containsMenu(clazz) )
 			{
 				return;
@@ -97,9 +97,10 @@ public class GuiEventHandler {
 	@SubscribeEvent
 	public void guiButtonClick(GuiScreenEvent.ActionPerformedEvent.Pre e)
 	{
-		if(e.getGui() == null)
+		GuiScreen gui = e.getGui();
+		if(gui == null)
 			return;
-		Class clazz = e.getGui().getClass();
+		Class clazz = gui.getClass();
 		if(!MenuRegistry.containsMenu(clazz))
 			return;
 

@@ -40,6 +40,8 @@ public class RenderTransformer  implements IClassTransformer{
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) 
 	{
+		if(basicClass == null)
+			return null;
 		int index = classesBeingTransformed.indexOf(transformedName);
 	    return index != -1 ? transform(index, basicClass, FMLCorePlugin.isObf) : basicClass;
 	}

@@ -29,27 +29,20 @@ public class MenuRegistry {
 	public static int indexMenu = 0;
 	protected static IMenu currentMenu = null;
 	
-	public static void registerIMenu(IMenu menu){
+	public static void registerIMenu(IMenu menu)
+	{
 		menus.add(menu);
 	}
+	
 	/**
 	 * Returns menu so you can manipulate data after adding one
 	 * to make an IMenu method use register IMenu
 	 * or simply make a new Menu instance(Menu implements IMenu) and override what you need 
 	 */
-	public static IMenu registerGuiMenu(Class<? extends GuiScreen> guiClazz,ResourceLocation id){
+	public static IMenu registerGuiMenu(Class<? extends GuiScreen> guiClazz,ResourceLocation id)
+	{
 		IMenu menu = new Menu(guiClazz,id);
 		menus.add(menu);
-		return menu;
-	}
-	/**
-	 * Returns menu so you can manipulate data after adding one
-	 * to make an IMenu method use register IMenu
-	 * or simply make a new Menu instance(Menu implements IMenu) and override what you need 
-	 */
-	public static IMenu registerGuiMenu(int index,Class<? extends GuiScreen> guiClazz,ResourceLocation id){
-		IMenu menu = new Menu(guiClazz,id);
-		menus.add(index,menu);
 		return menu;
 	}
 	
@@ -99,6 +92,7 @@ public class MenuRegistry {
 			ReflectionUtil.setObject(instance, false, s, "hasBlMainMenu");//sets it to false to garentee it will not play till the next cik
 		}
 	}
+	
 	public static void advancePreviousMenu()
 	{
 		getCurrentMenu().onClose();
@@ -123,6 +117,7 @@ public class MenuRegistry {
 		index++;
 		return index;
 	}
+	
 	public static int getPrevious(int index) 
 	{
 		if( (index -1) == -1)
@@ -137,6 +132,7 @@ public class MenuRegistry {
 		GuiScreen screen = menu.getGui();
 		return screen;
 	}
+	
 	public static IMenu getCurrentMenu()
 	{
 		if(currentMenu == null)
@@ -217,24 +213,28 @@ public class MenuRegistry {
 		return true;
 	}
 	
-	public static List<ResourceLocation> getIds() {
+	public static List<ResourceLocation> getIds() 
+	{
 		ArrayList<ResourceLocation> locs = new ArrayList();
 		for(IMenu menu : menus)
 			locs.add(menu.getId());
 		return locs;
 	}
-	public static IMenu getMenu(ResourceLocation loc) {
+	public static IMenu getMenu(ResourceLocation loc) 
+	{
 		for(IMenu menu : menus)
 			if(menu.getId().equals(loc))
 				return menu;
 		return null;
 	}
 
-	public static ArrayList<IMenu> getMenus() {
+	public static ArrayList<IMenu> getMenus() 
+	{
 		return menus;
 	}
 
-	public static int getMenuSize() {
+	public static int getMenuSize() 
+	{
 		return menus.size();
 	}
 
@@ -247,6 +247,7 @@ public class MenuRegistry {
 		}
 		return false;
 	}
+	
 	public static void setCurrentMenu(ResourceLocation loc)
 	{
 		IMenu menu = null;
@@ -265,6 +266,7 @@ public class MenuRegistry {
 		indexMenu = index;
 		currentMenu = menu;
 	}
+	
 	/**
 	 * Reorder menus or if client overrides using whitelist do only the whitelist
 	 */

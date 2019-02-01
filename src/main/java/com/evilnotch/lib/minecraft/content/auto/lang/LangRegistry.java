@@ -99,9 +99,7 @@ public class LangRegistry {
 		for(LangEntry lang : li)
 		{
 			String domain = lang.loc.getResourceDomain();
-			if(!ClientProxy.compiledTracker.containsKey(domain))
-				ClientProxy.compiledTracker.put(domain, MinecraftUtil.isModCompiled(domain));
-			boolean compiled = ClientProxy.compiledTracker.get(domain);
+			boolean compiled = MinecraftUtil.isModCompiled(domain);
 			if(compiled)
 			{
 				if(Config.debug)

@@ -74,26 +74,31 @@ public class Menu implements IMenu {
 	 * set this to false to use your own buttons for switching menus
 	 */
 	@Override
-	public boolean allowButtonOverlay() {
+	public boolean allowButtonOverlay() 
+	{
 		return this.allowButton;
 	}
 	
 	@Override
-	public void setAllowButtonOverlay(boolean b){
+	public void setAllowButtonOverlay(boolean b)
+	{
 		this.allowButton = b;
 	}
 
 	@Override
-	public Class<? extends GuiScreen> getGuiClass() {
+	public Class<? extends GuiScreen> getGuiClass() 
+	{
 		return this.clazz;
 	}
 	@Override
-	public void setButtonTexture(ResourceLocation loc){
+	public void setButtonTexture(ResourceLocation loc)
+	{
 		this.bTexture  = loc;
 	}
 
 	@Override
-	public ResourceLocation getButtonTexture() {
+	public ResourceLocation getButtonTexture() 
+	{
 		return this.bTexture;
 	}
 	

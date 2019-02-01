@@ -84,7 +84,6 @@ public class CapTransformer {
     			MethodInsnNode m = (MethodInsnNode)node;
     			if(m.name.equals(startSection) && m.desc.equals("(Ljava/lang/String;)V"))
     			{
-    				System.out.println("found injection point for entity.onEntityUpdate()");
     				spotTickNode = node;
     				break;
     			}
@@ -239,7 +238,6 @@ public class CapTransformer {
 		String worldInfo = new MCPSidedString("worldInfo","field_72986_A").toString();
 		MethodNode tick = ASMHelper.getMethodNode(classNode, new MCPSidedString("tick","func_72835_b").toString(), "()V");
 		AbstractInsnNode tickPoint = ASMHelper.getFirstInstruction(tick, Opcodes.ALOAD);
-		System.out.println("found injection for ticking point on WorldInfo");
 		
 		InsnList toTick = new InsnList();
 		
@@ -277,7 +275,6 @@ public class CapTransformer {
 						MethodInsnNode mnode = (MethodInsnNode)point;
 						if(mnode.getOpcode() == Opcodes.INVOKEINTERFACE && mnode.name.equals("iterator"))
 						{
-							System.out.println("found injection point for ticking tile caps:" + point.getClass());
 							InsnList toInsert = new InsnList();
 							toInsert.add(new VarInsnNode(ALOAD,0));
 							toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/world/World", "tickTileCaps", "()V", false));
@@ -319,7 +316,6 @@ public class CapTransformer {
 				LdcInsnNode ldc = (LdcInsnNode)obj;
 				if(ldc.cst.toString().equals("Version"))
 				{
-					System.out.println("found injection point for constructor worldinfo(NBTTagCompound)");
 					AbstractInsnNode spot = ldc.getPrevious().getPrevious();
 					InsnList toInsert = new InsnList();
 					
@@ -428,7 +424,6 @@ public class CapTransformer {
 			}
 			if(nextALOAD && node.getOpcode() == Opcodes.ALOAD)
 			{
-				System.out.println("found injection point for reading chunk from nbt");
 				readSpot = node;
 				break;
 			}

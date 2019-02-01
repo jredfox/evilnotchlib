@@ -51,9 +51,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ClientProxy extends ServerProxy{
 	
 	public static File root = null;
-	public static final HashMap<String,Boolean> compiledTracker = new HashMap();
 	
-
 	@Override
 	public void proxyStart()
 	{
@@ -66,11 +64,16 @@ public class ClientProxy extends ServerProxy{
 		super.preinit(e);
 		
 		FieldAcessClient.cacheFields();
+		registerEvents();
+	}
+	private void registerEvents() 
+	{
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		if(Config.debug)
 			ClientCommandHandler.instance.registerCommand(new ClientUUID());
 	}
+
 	@Override
 	public void jsonGen() throws Exception
 	{
@@ -87,9 +90,7 @@ public class ClientProxy extends ServerProxy{
 				continue;
 			}
 			String domain = i.getRegistryName().getResourceDomain();
-			if(!compiledTracker.containsKey(domain))
-				compiledTracker.put(domain, MinecraftUtil.isModCompiled(domain));
-			boolean compiled = compiledTracker.get(domain);
+			boolean compiled = MinecraftUtil.isModCompiled(domain);
 			if(compiled)
 				continue;
 			
@@ -141,9 +142,7 @@ public class ClientProxy extends ServerProxy{
 			ResourceLocation loc = b.getRegistryName();
 			
 			String domain = loc.getResourceDomain();
-			if(!compiledTracker.containsKey(domain))
-				compiledTracker.put(domain, MinecraftUtil.isModCompiled(domain));
-			boolean compiled = compiledTracker.get(domain);
+			boolean compiled = MinecraftUtil.isModCompiled(domain);
 			if(compiled)
 			{
 				if(Config.debug)

@@ -65,6 +65,10 @@ public class LoaderMain {
 	public static void loadPostInit(FMLPostInitializationEvent e)
 	{
 		fake_world = new FakeWorld();
+		LoaderItems.loadpostinit();
+		LoaderBlocks.loadpostinit();
+		LoaderGen.load();
+	    MainJava.proxy.postinit();//generate lang,generate shadow sizes
 	}
 
 	private static void loaderMainPreInit(FMLPreInitializationEvent e) 

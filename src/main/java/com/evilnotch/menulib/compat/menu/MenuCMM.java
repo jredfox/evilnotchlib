@@ -32,7 +32,9 @@ public class MenuCMM implements IMenu{
 	}
 
 	@Override
-	public void onClose() {
+	public void onClose() 
+	{
+		
 	}
 
 	@Override
@@ -69,40 +71,50 @@ public class MenuCMM implements IMenu{
 	}
 
 	@Override
-	public Class<? extends GuiScreen> getGuiClass() {
+	public Class<? extends GuiScreen> getGuiClass() 
+	{
 		return guiCustom;
 	}
 
 	@Override
-	public ResourceLocation getId() {
+	public ResourceLocation getId() 
+	{
 		return new ResourceLocation("custommainmenu:mainmenu");
 	}
 
 	@Override
-	public boolean allowButtonOverlay() {
+	public boolean allowButtonOverlay() 
+	{
 		return true;
 	}
 
 	@Override
-	public void setAllowButtonOverlay(boolean toset) {
+	public void setAllowButtonOverlay(boolean toset) 
+	{
+		
 	}
 
 	@Override
-	public ResourceLocation getButtonTexture() {
+	public ResourceLocation getButtonTexture() 
+	{
 		return new ResourceLocation("textures/gui/widgets.png");
 	}
 
 	@Override
-	public void setButtonTexture(ResourceLocation loc) {
+	public void setButtonTexture(ResourceLocation loc)
+	{
+		
 	}
 
 	@Override
-	public GuiButton getLeftButton() {
+	public GuiButton getLeftButton() 
+	{
 		return Menu.lbutton;
 	}
 
 	@Override
-	public GuiButton getRightButton() {
+	public GuiButton getRightButton() 
+	{
 		return Menu.rbutton;
 	}
 

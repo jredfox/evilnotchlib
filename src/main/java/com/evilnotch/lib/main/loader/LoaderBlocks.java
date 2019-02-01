@@ -36,4 +36,12 @@ public class LoaderBlocks {
 	    }
 	}
 
+	public static void loadpostinit() 
+	{
+		if(!LoaderMain.isDeObfuscated)
+		{
+			LoaderBlocks.cfgBlockProps.saveConfig(true, false, true);
+		}
+	}
+
 }

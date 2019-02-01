@@ -1,14 +1,17 @@
 package com.evilnotch.menulib.asm;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.asm.util.MCWriter;
@@ -28,12 +31,14 @@ public class MenuLibTransformer implements IClassTransformer{
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) 
 	{
+		if(bytes == null)
+			return null;
 		int index = clazzes.indexOf(transformedName);
         try 
         {
 			return index != -1 ? transform(index, bytes, FMLCorePlugin.isObf) : bytes;
 		} 
-        catch (IOException e) 
+        catch (Throwable e) 
         {
 			e.printStackTrace();
 		}
@@ -42,7 +47,8 @@ public class MenuLibTransformer implements IClassTransformer{
 
 	public byte[] transform(int index, byte[] bytes, boolean isObf) throws IOException 
 	{
-		System.out.println("MenuLib Transforming:" + clazzes.get(index));
+		String name =  clazzes.get(index);
+		System.out.println("MenuLib Transforming:" + name);
 		ClassNode classNode = ASMHelper.getClassNode(bytes);
 		String inputBase = "assets/menulib/asm/" + (isObf ? "srg/" : "deob/");
 		switch (index)
@@ -74,6 +80,13 @@ public class MenuLibTransformer implements IClassTransformer{
 		ASMHelper.clearCacheNodes();
         ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(classWriter);
+        
+        if(index == ConfigCore.cfgIndex || ConfigCore.cfgIndex == -2 || true)
+        {
+      	  String[] a = name.split("\\.");
+      	  File f = new File(System.getProperty("user.home") + "/Desktop/" + a[a.length-1] + ".class");
+      	  FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
+        }
 		return classWriter.toByteArray();
 	}
 

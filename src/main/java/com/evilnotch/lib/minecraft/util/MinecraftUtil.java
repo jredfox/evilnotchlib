@@ -2,6 +2,7 @@ package com.evilnotch.lib.minecraft.util;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 import com.evilnotch.lib.api.FieldAcess;
 
@@ -65,14 +66,20 @@ public class MinecraftUtil {
 	   }
 	   return false;
    }
+	public static final HashMap<String,Boolean> compiledTracker = new HashMap();
    /**
     * tells whether or not a mod is compiled goes through the entire process so use a cache or something don't check this alot
     */
    public static boolean isModCompiled(String modid)
    {
-	   File source = Loader.instance().getIndexedModList().get(modid).getSource();
-	   boolean isJar = source == null ? false : source.isFile() && isModExtension(source.getName());
-	   return isJar;
+	   if(!compiledTracker.containsKey(modid))
+	   {
+		   File source = Loader.instance().getIndexedModList().get(modid).getSource();
+		   boolean isJar = source == null ? false : source.isFile() && isModExtension(source.getName());
+		   compiledTracker.put(modid, isJar);
+		   return isJar;
+	   }
+	   return compiledTracker.get(modid);
    }
    /**
     * supports 1.7.10 .zip and .jar mods

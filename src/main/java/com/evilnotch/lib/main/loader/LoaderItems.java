@@ -134,4 +134,13 @@ public class LoaderItems {
 	    }
 	}
 
+	public static void loadpostinit() 
+	{
+		if(!LoaderMain.isDeObfuscated)
+		{
+			LoaderItems.cfgArmors.saveConfig(true, false, true);
+			LoaderItems.cfgTools.saveConfig(true, false, true);
+		}
+	}
+
 }

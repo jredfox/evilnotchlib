@@ -95,7 +95,6 @@ public class ASMHelper
 	{
 		if(cacheNodes.containsKey(inputStream))
 		{
-			System.out.println("using cached node:");
 			ClassNode node = cacheNodes.get(inputStream);
 			return getMethodNode(node,obMethod,method_desc);
 		}
@@ -276,7 +275,7 @@ public class ASMHelper
 		MethodNode method = getMethodNode(classNode, method_name, method_desc);
 		if(method != null)
 		{
-			System.out.println("removing method:" + classNode.methods.remove(method));
+			classNode.methods.remove(method);
 		}
 	}
 	/**
@@ -364,7 +363,6 @@ public class ASMHelper
 	{
 		for(LocalVariableNode node : method.localVariables)
 		{
-			System.out.println(node.desc);
 			if(node.desc.equals(owner))
 				return node.index;
 		}

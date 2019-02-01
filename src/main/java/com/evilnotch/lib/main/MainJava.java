@@ -105,27 +105,6 @@ public class MainJava {
 	public void post(FMLPostInitializationEvent e)
 	{
 		LoaderMain.loadPostInit(e);
-		/**
-		 * if world capabilities are still not registered by init that is a mod's issue for the world and not mine
-		 */
-		try
-		{
-			proxy.jsonGen();
-		}
-		catch(Exception ee)
-		{
-			ee.printStackTrace();
-		}
-		proxy.lang();
-		
-		if(!LoaderMain.isDeObfuscated)
-		{
-			LoaderItems.cfgArmors.saveConfig(true, false, true);
-			LoaderItems.cfgTools.saveConfig(true, false, true);
-			LoaderBlocks.cfgBlockProps.saveConfig(true, false, true);
-		}
-		
-	    proxy.postinit();//generate lang,generate shadow sizes
 	}
 	
 	/**
