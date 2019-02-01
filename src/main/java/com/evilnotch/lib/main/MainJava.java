@@ -59,7 +59,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-
 @Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION)
 public class MainJava {
 	
@@ -74,25 +73,6 @@ public class MainJava {
 	public void preinit(FMLPreInitializationEvent e)
 	{	
 		LoaderMain.loadpreinit(e);
-	
-		/*BlockProperties props = new BlockProperties(new ResourceLocation(MODID + ":" + "rock"),"pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
-		BasicCreativeTab tab = new BasicCreativeTab(new ResourceLocation(MODID + ":spidertesting"),new ItemStack(Items.CAKE),new LangEntry("Custom Shiny Tab","en_us"),new LangEntry("Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°","ru_ru") );
-		BasicItem item = new BasicItem(new ResourceLocation(MODID + ":" + "stick"),tab,new LangEntry("Modded Stick","en_us"));
-		ToolMat test = new ToolMat(new ResourceLocation(MODID + ":" + "test"), 2, 100, 10, 3, 30);
-		ItemBasicPickaxe axe = new ItemBasicPickaxe(test,new ResourceLocation(MODID + ":" + "pickaxe"),tab, new LangEntry("RadioActive Pick","en_us"));
-		BasicBlock b = new BasicBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "spider"),tab,props,new LangEntry("Spider Master","en_us"),new LangEntry("Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº","ru_ru"));
-		
-		BasicMetaBlock b2 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "cheese"), tab, null,PropertyMetaEnum.createProperty("cheese", EnumCheese.class),new LangEntry("American Cheese","en_us","american"),new LangEntry("Swiss Cheese","en_us","swiss"));
-		BasicMetaBlock b3 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "meat"), tab, null,PropertyInteger.create("meat",0,15),new LangEntry("Steak Block","en_us","0"),new LangEntry("Pork Block","en_us","1"));
-		BasicMetaBlock b4 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "wolf"), tab, null,PropertyBool.create("wolf"),new LangEntry("Angry Wolf Block","en_us","false"),new LangEntry("Wolf Block","en_us","true"));
-		BasicMetaBlock b5 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "facing"), tab, null,PropertyDirection.create("direction"),
-				new LangEntry("UP","en_us","up"),new LangEntry("Down","en_us","down"),new LangEntry("North","en_us","north"),
-				new LangEntry("South","en_us","south"),new LangEntry("East","en_us","east"),new LangEntry("West","en_us","west"));
-		MultiSidedGrass b6 = new MultiSidedGrass(Material.GRASS,new ResourceLocation(MODID + ":" + "grass"),tab,null,PropertyInteger.create("grass_test", 0, 2),new LangEntry("Cool Grass","en_us","0"),new LangEntry("Purple Grass","en_us","1"),new LangEntry("Orange Grass","en_us","2"));
-		
-		BasicItemMeta i2 = new BasicItemMeta(new ResourceLocation(MODID + ":" + "ingot"), 4,tab,
-				new LangEntry("Purple Ingot","en_us","0"),new LangEntry("Yellow Ingot","en_us","1"),new LangEntry("Tropical Ingot","en_us","2"),new LangEntry("Blue Ingot","en_us","3"),
-				new LangEntry("Cloud Ingot","en_us","4"));*/
 	}
 	
 	@Mod.EventHandler

@@ -4,8 +4,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 
-import com.evilnotch.lib.api.FieldAcess;
-import com.evilnotch.lib.api.MCPMappings;
+import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
@@ -77,7 +76,7 @@ public class LoaderMain {
 		logger = e.getModLog();
 		
 		MCPMappings.cacheMCPApplicable(e.getModConfigurationDirectory());
-		FieldAcess.cacheFields();
+		LoaderFields.cacheFields();
 		
 		MainJava.proxy.proxyStart();
 		MainJava.proxy.preinit(e);

@@ -4,7 +4,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import com.evilnotch.lib.api.FieldAcess;
+import com.evilnotch.lib.main.loader.LoaderFields;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -56,7 +56,7 @@ public class MinecraftUtil {
    {
 	   try
 	   {
-		   Method m = FieldAcess.chunkLoaded;
+		   Method m = LoaderFields.chunkLoaded;
 		   m.setAccessible(true);
 		   return (Boolean) m.invoke(w, x,z,allowEmpty);
 	   }

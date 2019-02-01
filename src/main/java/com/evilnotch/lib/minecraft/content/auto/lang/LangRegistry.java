@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.evilnotch.lib.api.FieldAcess;
-import com.evilnotch.lib.api.FieldAcessClient;
-import com.evilnotch.lib.api.MCPMappings;
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.main.loader.LoaderFieldsClient;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.content.block.BasicBlock;
 import com.evilnotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
@@ -53,13 +53,13 @@ public class LangRegistry {
 		if(langlistClient == null)
 		{
 			LanguageManager manager = Minecraft.getMinecraft().getLanguageManager();
-			Locale l = (Locale)ReflectionUtil.getObject(manager, LanguageManager.class, FieldAcessClient.CURRENT_LOCALE);
-			Map<String, String> map = (Map<String, String>) ReflectionUtil.getObject(l, Locale.class, FieldAcessClient.properties);
+			Locale l = (Locale)ReflectionUtil.getObject(manager, LanguageManager.class, LoaderFieldsClient.CURRENT_LOCALE);
+			Map<String, String> map = (Map<String, String>) ReflectionUtil.getObject(l, Locale.class, LoaderFieldsClient.properties);
 			langlistClient = map;
 		}
 		if(langlist == null)
 		{
-			LanguageMap manager = (LanguageMap) ReflectionUtil.getObject(null, I18n.class, FieldAcess.lang_localizedName);
+			LanguageMap manager = (LanguageMap) ReflectionUtil.getObject(null, I18n.class, LoaderFields.lang_localizedName);
 			langlist = (Map<String, String>) ReflectionUtil.getObject(manager, LanguageMap.class, MCPMappings.getField(LanguageMap.class, "languageList"));
 		}
 		currentLang = getCurrentLang();

@@ -1,7 +1,7 @@
 package com.evilnotch.lib.main.eventhandler;
 
-import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketHand;
@@ -184,7 +184,7 @@ public class PickBlock {
         boolean flag1 = packetIn.getSlotId() >= 1 && packetIn.getSlotId() <= 45;
         boolean flag2 = itemstack.isEmpty() || itemstack.getMetadata() >= 0 && itemstack.getCount() <= 64 && !itemstack.isEmpty();
 
-        int itemDropThreshold = (int) ReflectionUtil.getObject(player.connection, NetHandlerPlayServer.class, FieldAcess.itemDropThreshold);
+        int itemDropThreshold = (int) ReflectionUtil.getObject(player.connection, NetHandlerPlayServer.class, LoaderFields.itemDropThreshold);
         if (flag1 && flag2)
         {
             if (itemstack.isEmpty())
@@ -200,7 +200,7 @@ public class PickBlock {
         }
         else if (flag && flag2 && itemDropThreshold < 200)
         {
-        	ReflectionUtil.setObject(player.connection, itemDropThreshold + 20, NetHandlerPlayServer.class, FieldAcess.itemDropThreshold);
+        	ReflectionUtil.setObject(player.connection, itemDropThreshold + 20, NetHandlerPlayServer.class, LoaderFields.itemDropThreshold);
             EntityItem entityitem = player.dropItem(itemstack, true);
 
             if (entityitem != null)

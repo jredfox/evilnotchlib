@@ -3,10 +3,10 @@ package com.elix_x.itemrender.mod;
 import java.util.List;
 
 import com.elix_x.itemrender.asm.compat.JEI;
-import com.elix_x.itemrender.handlers.Handler;
+import com.elix_x.itemrender.handlers.IItemRendererHandler;
 import com.elix_x.itemrender.handlers.RenderItemObj;
-import com.evilnotch.lib.api.MCPSidedString;
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -71,7 +71,7 @@ public class IItemRendererMod {
 	{
 		if(Loader.isModLoaded("jei"))
 		{
-			for(Item i : Handler.getItems())
+			for(Item i : IItemRendererHandler.getItems())
 				JEI.slowItems.add(i);
 			Class c = ReflectionUtil.classForName("mezz.jei.render.IngredientListBatchRenderer");
 			String s = c.getName();

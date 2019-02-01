@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public class Handler {
+public class IItemRendererHandler {
 
 	private static Map<Item, IItemRenderer> renderers = new HashMap<>();
 	private static TransformType currentTransformType;

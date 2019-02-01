@@ -3,7 +3,7 @@ package com.evilnotch.lib.minecraft.content.item.armor;
 import java.util.HashMap;
 import java.util.List;
 
-import com.evilnotch.lib.api.FieldAcess;
+import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.LineArray;
@@ -96,7 +96,7 @@ public class ArmorMat implements IEnumContainer{
 	 
 	 @Override
 	 public String toString(){
-		 return "\"" + this.enumName + "\" = [\"" + this.textureName + "\"," + this.durability + ",[" + JavaUtil.getIntsAsString(this.damageReductionAmountArray) + "]," + this.enchantability + ",\"" + FieldAcess.getSoundEventAsLoc(this.soundEvent) + "\"," + this.toughness + "f]";
+		 return "\"" + this.enumName + "\" = [\"" + this.textureName + "\"," + this.durability + ",[" + JavaUtil.getIntsAsString(this.damageReductionAmountArray) + "]," + this.enchantability + ",\"" + LoaderFields.getSoundEventAsLoc(this.soundEvent) + "\"," + this.toughness + "f]";
 	 }
 
 }

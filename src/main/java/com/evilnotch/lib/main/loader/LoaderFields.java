@@ -1,7 +1,9 @@
-package com.evilnotch.lib.api;
+package com.evilnotch.lib.main.loader;
 
 import java.lang.reflect.Method;
 
+import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
@@ -20,7 +22,7 @@ import net.minecraft.world.WorldSettings;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.storage.SaveHandler;
 
-public class FieldAcess {
+public class LoaderFields {
 	
 	//blockapi and fields
 	public static String blockHardness = null;

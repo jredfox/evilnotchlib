@@ -11,7 +11,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.evilnotch.lib.api.MCPSidedString;
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.util.ASMHelper;
 
 public class GeneralTransformer {

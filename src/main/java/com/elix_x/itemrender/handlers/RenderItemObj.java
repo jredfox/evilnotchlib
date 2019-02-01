@@ -16,7 +16,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class RenderItemObj extends RenderItem {
 	
 	public RenderItem child;
-	private boolean tth = false;
 
 	public RenderItemObj(RenderItem renderItem, TextureManager textureManager, ItemColors itemColors)
 	{
@@ -41,33 +40,27 @@ public class RenderItemObj extends RenderItem {
 	@Override
 	public void renderItem(ItemStack itemstack, IBakedModel model)
 	{
-		if(!tth) 
-			Handler.handleCameraTransforms(TransformType.GROUND);
-		tth = false;
-		
-		if(Handler.renderPre(this, itemstack, model))
+		if(IItemRendererHandler.renderPre(this, itemstack, model))
 		{
 			this.child.renderItem(itemstack, model);
-			Handler.renderPost(this, itemstack, model);
+			IItemRendererHandler.renderPost(this, itemstack, model);
 		}
 	}
 
 	@Override
 	public void renderItemOverlayIntoGUI(FontRenderer fr, ItemStack itemstack, int xPosition, int yPosition, String text)
 	{
-		if(Handler.renderItemOverlayIntoGUIPre(this, fr, itemstack, xPosition, yPosition, text))
+		if(IItemRendererHandler.renderItemOverlayIntoGUIPre(this, fr, itemstack, xPosition, yPosition, text))
 		{
 			this.child.renderItemOverlayIntoGUI(fr, itemstack, xPosition, yPosition, text);
-			Handler.renderItemOverlayIntoGUIPost(this, fr, itemstack, xPosition, yPosition, text);
+			IItemRendererHandler.renderItemOverlayIntoGUIPost(this, fr, itemstack, xPosition, yPosition, text);
 		}
 	}
 
 	@Override
 	public void renderItemModel(ItemStack stack, IBakedModel bakedmodel, TransformType transform, boolean leftHanded)
 	{
-		Handler.handleCameraTransforms(transform);
-		tth = true;
-		if(Handler.hasKey(stack))
+		if(IItemRendererHandler.hasKey(stack))
 			super.renderItemModel(stack, bakedmodel, transform, leftHanded);
 		else
 			this.child.renderItemModel(stack,bakedmodel,transform,leftHanded);//make other mods have their transform types since forge doesn't freaken store it anywhere
@@ -76,9 +69,7 @@ public class RenderItemObj extends RenderItem {
 	@Override
 	public void renderItemModelIntoGUI(ItemStack stack, int x, int y, IBakedModel bakedmodel)
 	{
-		Handler.handleCameraTransforms(TransformType.GUI);
-		tth = true;
-		if(Handler.hasKey(stack))
+		if(IItemRendererHandler.hasKey(stack))
 			super.renderItemModelIntoGUI(stack, x, y, bakedmodel);
 		else
 			this.child.renderItemModelIntoGUI(stack,x,y,bakedmodel);

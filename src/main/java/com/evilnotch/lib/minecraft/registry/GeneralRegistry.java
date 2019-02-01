@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.content.recipe.ShapelessRecipe;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.simple.PairObj;
@@ -188,7 +188,7 @@ public class GeneralRegistry {
     			keys.remove();
     		}
     	}
-    	Set<ICommand> cmds = (Set<ICommand>) ReflectionUtil.getObject(manager, CommandHandler.class, FieldAcess.commandSet);
+    	Set<ICommand> cmds = (Set<ICommand>) ReflectionUtil.getObject(manager, CommandHandler.class, LoaderFields.commandSet);
     	Iterator<ICommand> it = cmds.iterator();
     	while(it.hasNext())
     	{
@@ -209,7 +209,7 @@ public class GeneralRegistry {
 	}
 	public static void removeActiveGameRules(GameRules g)
 	{
-		TreeMap<String, Object> map = (TreeMap<String, Object>) ReflectionUtil.getObject(g, GameRules.class, FieldAcess.gameRuleMap);
+		TreeMap<String, Object> map = (TreeMap<String, Object>) ReflectionUtil.getObject(g, GameRules.class, LoaderFields.gameRuleMap);
 		for(String s : gameRulesRemove)
 		{
 			map.remove(s);

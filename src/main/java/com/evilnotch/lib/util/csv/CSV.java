@@ -1,11 +1,11 @@
-package com.evilnotch.lib.api;
+package com.evilnotch.lib.util.csv;
 
 import java.util.ArrayList;
 
 import com.evilnotch.lib.util.JavaUtil;
 
 public class CSV {
-	ArrayList<String> list = new ArrayList<String>();
+	public ArrayList<String> list = new ArrayList<String>();
 	public boolean tst;
 	public CSV(String s)
 	{

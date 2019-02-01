@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.content.block.item.IMetaName;
 import com.evilnotch.lib.minecraft.content.block.item.ItemBlockMeta;
@@ -94,7 +94,7 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	}
 	
 	public void setStateConstructor(IProperty prop) {
-		ReflectionUtil.setFinalObject(this, this.createBlockState(), Block.class, FieldAcess.blockstate);
+		ReflectionUtil.setFinalObject(this, this.createBlockState(), Block.class, LoaderFields.blockstate);
         this.setDefaultState(this.blockState.getBaseState().withProperty(prop, getDefaultValue(prop)));
 	}
 

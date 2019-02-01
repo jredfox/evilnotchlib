@@ -19,8 +19,8 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.elix_x.itemrender.asm.compat.JEI;
-import com.elix_x.itemrender.handlers.Handler;
-import com.evilnotch.lib.api.MCPSidedString;
+import com.elix_x.itemrender.handlers.IItemRendererHandler;
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
@@ -57,12 +57,11 @@ public class RenderTransformer  implements IClassTransformer{
 			{
 			  case 0:
 				  System.out.println("patching ForgeHooksClient#handleCameraTransforms");
-				  String stream = "com/elix_x/itemrender/asm/gen/ASMHooks";
 				  MethodNode camera = ASMHelper.getMethodNode(classNode, "handleCameraTransforms", "(Lnet/minecraft/client/renderer/block/model/IBakedModel;Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;Z)Lnet/minecraft/client/renderer/block/model/IBakedModel;");
 				 
 				  InsnList toInsert0 = new InsnList();
 			      toInsert0.add(new VarInsnNode(ALOAD,1));
-			      toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/elix_x/itemrender/handlers/Handler", "handleCameraTransforms", "(Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;)V", false));
+			      toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/elix_x/itemrender/handlers/IItemRendererHandler", "handleCameraTransforms", "(Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;)V", false));
 			      camera.instructions.insertBefore(ASMHelper.getFirstInstruction(camera, Opcodes.ALOAD), toInsert0);
 			  break;
 			  

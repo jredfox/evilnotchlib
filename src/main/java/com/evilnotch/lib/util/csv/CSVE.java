@@ -1,4 +1,4 @@
-package com.evilnotch.lib.api;
+package com.evilnotch.lib.util.csv;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -9,8 +9,8 @@ import com.evilnotch.lib.util.JavaUtil;
 
 public class CSVE {
 	
-	ArrayList<CSV> vars = new ArrayList<CSV>();
-	ArrayList<CSV> list = new ArrayList<CSV>();
+	public ArrayList<CSV> vars = new ArrayList<CSV>();
+	public ArrayList<CSV> list = new ArrayList<CSV>();
 	
 	public CSVE(){}//default object with nothing in it
 	

@@ -3,6 +3,7 @@ package com.evilnotch.lib.api;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.util.BlockUtil;
 import com.evilnotch.lib.minecraft.util.ItemUtil;
@@ -25,7 +26,7 @@ public class BlockApi {
 	//getters
 	public static float getBlockHardness(Block b)
 	{
-		return (float)ReflectionUtil.getObject(b, Block.class, FieldAcess.blockHardness);
+		return (float)ReflectionUtil.getObject(b, Block.class, LoaderFields.blockHardness);
 	}
 	public static ResourceLocation getBlockString(Block b)
 	{
@@ -36,40 +37,40 @@ public class BlockApi {
 		return ItemUtil.getStringId(item);
 	}
 	public static Material getblockmaterial(Block b) {
-		return (Material) ReflectionUtil.getObject(b, Block.class, FieldAcess.blockMaterial);
+		return (Material) ReflectionUtil.getObject(b, Block.class, LoaderFields.blockMaterial);
 	}
 	public static String getHarvestTool(Block b,int meta){
-		return ((String[]) ReflectionUtil.getObject(b, Block.class, FieldAcess.harvestTool))[meta];
+		return ((String[]) ReflectionUtil.getObject(b, Block.class, LoaderFields.harvestTool))[meta];
 	}
 	public static float getBlastResistence(Block b) {
-		return (Float)ReflectionUtil.getObject(b, Block.class, FieldAcess.blastResistence);
+		return (Float)ReflectionUtil.getObject(b, Block.class, LoaderFields.blastResistence);
 	}
 	
 	//setters
 	public static void setHarvestTool(Block b,int meta,String s)
 	{
-		String[] tools = (String[]) ReflectionUtil.getObject(b, Block.class, FieldAcess.harvestTool);
+		String[] tools = (String[]) ReflectionUtil.getObject(b, Block.class, LoaderFields.harvestTool);
 		tools[meta] = s;
 	}
 	public static void setStepSound(Block b,SoundType type)
 	{
-		ReflectionUtil.setObject(b, type, Block.class, FieldAcess.blockSoundType);
+		ReflectionUtil.setObject(b, type, Block.class, LoaderFields.blockSoundType);
 	}
 	public static void setTransLucent(Block b, boolean boole)
 	{
-		ReflectionUtil.setObject(b, boole, Block.class, FieldAcess.translucent);
+		ReflectionUtil.setObject(b, boole, Block.class, LoaderFields.translucent);
 	}
 	public static void setBlasResistence(Block b, float f)
 	{	
-		ReflectionUtil.setObject(b, f, Block.class, FieldAcess.blockResistance);
+		ReflectionUtil.setObject(b, f, Block.class, LoaderFields.blockResistance);
 	}
 	public static void setEnableStats(Block b, boolean boole)
 	{
-		ReflectionUtil.setObject(b, boole, Block.class, FieldAcess.enableStats);
+		ReflectionUtil.setObject(b, boole, Block.class, LoaderFields.enableStats);
 	}
 	public static void setisTileProvider(Block b, boolean boole)
 	{
-		ReflectionUtil.setObject(b, boole, Block.class, FieldAcess.isTileProvider);
+		ReflectionUtil.setObject(b, boole, Block.class, LoaderFields.isTileProvider);
 	}
 	public static void setMaterial(Block b, Material m,String toolclazz)
 	{
@@ -77,9 +78,9 @@ public class BlockApi {
 	}
 	public static void setMaterial(Block b, Material m,boolean setMatColor,String toolclazz)
 	{
-		ReflectionUtil.setFinalObject(b, m, Block.class, FieldAcess.blockMaterial);
+		ReflectionUtil.setFinalObject(b, m, Block.class, LoaderFields.blockMaterial);
 		if(setMatColor)
-			ReflectionUtil.setFinalObject(b, m.getMaterialMapColor(), Block.class, FieldAcess.blockMaterialMapColor);
+			ReflectionUtil.setFinalObject(b, m.getMaterialMapColor(), Block.class, LoaderFields.blockMaterialMapColor);
 		
 		//if people want null tool classes they can use setHarvestLevel
 		if(toolclazz != null)
@@ -93,7 +94,8 @@ public class BlockApi {
 		}
         blocksModified.add(b.getRegistryName() );
 	}
-	public static void printBlock(Block b){
+	public static void printBlock(Block b)
+	{
 		String tool = b.getHarvestTool(b.getDefaultState());
 		float blockHardness = BlockApi.getBlockHardness(b);
 		float blastResistance = BlockApi.getBlastResistence(b);

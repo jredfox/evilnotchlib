@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.evilnotch.lib.api.MCPSidedString;
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.nbt.NBTBase;

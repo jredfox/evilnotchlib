@@ -1,4 +1,4 @@
-package com.evilnotch.lib.api;
+package com.evilnotch.lib.api.mcp;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,6 +7,8 @@ import java.util.List;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.csv.CSV;
+import com.evilnotch.lib.util.csv.CSVE;
 
 import net.minecraftforge.common.MinecraftForge;
 

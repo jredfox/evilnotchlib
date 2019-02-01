@@ -1,4 +1,4 @@
-package com.evilnotch.lib.api;
+package com.evilnotch.lib.api.mcp;
 
 import java.util.ArrayList;
 

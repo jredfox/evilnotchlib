@@ -21,12 +21,12 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
 
-import com.evilnotch.lib.api.FieldAcess;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.content.entity.EntityDefintions;
 import com.evilnotch.lib.minecraft.content.entity.EntityDefintions.EntityInfo;
@@ -566,12 +566,12 @@ public class EntityUtil {
 
 	public static SaveHandler getPlayerDataManager(PlayerList playerList) 
 	{
-		return (SaveHandler) ReflectionUtil.getObject(playerList, PlayerList.class, FieldAcess.playerDataManager);
+		return (SaveHandler) ReflectionUtil.getObject(playerList, PlayerList.class, LoaderFields.playerDataManager);
 	}
 	
 	public static DataFixer getDataFixer(SaveHandler handler) 
 	{
-		return (DataFixer) ReflectionUtil.getObject(handler, SaveHandler.class, FieldAcess.dataFixer);
+		return (DataFixer) ReflectionUtil.getObject(handler, SaveHandler.class, LoaderFields.dataFixer);
 	}
 	
 	//Returns true for survival mode unless debug mode is on
@@ -1183,17 +1183,17 @@ public class EntityUtil {
 		try
 		{
 			NetHandlerPlayServer connection = player.connection;
-			FieldAcess.capture.invoke(connection);
+			LoaderFields.capture.invoke(connection);
 			
-			ReflectionUtil.setObject(connection, player.getLowestRidingEntity(), NetHandlerPlayServer.class, FieldAcess.lowestRiddenEnt);
+			ReflectionUtil.setObject(connection, player.getLowestRidingEntity(), NetHandlerPlayServer.class, LoaderFields.lowestRiddenEnt);
 			
-			ReflectionUtil.setObject(connection, player.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX);
-			ReflectionUtil.setObject(connection, player.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY);
-			ReflectionUtil.setObject(connection, player.posZ, NetHandlerPlayServer.class, FieldAcess.lowestRiddenZ);
+			ReflectionUtil.setObject(connection, player.posX, NetHandlerPlayServer.class, LoaderFields.lowestRiddenX);
+			ReflectionUtil.setObject(connection, player.posY, NetHandlerPlayServer.class, LoaderFields.lowestRiddenY);
+			ReflectionUtil.setObject(connection, player.posZ, NetHandlerPlayServer.class, LoaderFields.lowestRiddenZ);
 			
-			ReflectionUtil.setObject(connection, player.posX, NetHandlerPlayServer.class, FieldAcess.lowestRiddenX1);
-			ReflectionUtil.setObject(connection, player.posY, NetHandlerPlayServer.class, FieldAcess.lowestRiddenY1);
-			ReflectionUtil.setObject(connection, player.posZ, NetHandlerPlayServer.class, FieldAcess.lowestRiddenZ1);
+			ReflectionUtil.setObject(connection, player.posX, NetHandlerPlayServer.class, LoaderFields.lowestRiddenX1);
+			ReflectionUtil.setObject(connection, player.posY, NetHandlerPlayServer.class, LoaderFields.lowestRiddenY1);
+			ReflectionUtil.setObject(connection, player.posZ, NetHandlerPlayServer.class, LoaderFields.lowestRiddenZ1);
 		}
 		catch(Throwable t)
 		{
@@ -1329,8 +1329,8 @@ public class EntityUtil {
         {
         	try
         	{
-        		FieldAcess.methodEnt_copyDataFromOld.setAccessible(true);
-        		FieldAcess.methodEnt_copyDataFromOld.invoke(newEntity, entity);
+        		LoaderFields.methodEnt_copyDataFromOld.setAccessible(true);
+        		LoaderFields.methodEnt_copyDataFromOld.invoke(newEntity, entity);
         		newEntity.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
         		//hotfix for minecarts and anything else that breaks onDeath() method
         		if(newEntity instanceof IInventory)
@@ -1373,8 +1373,8 @@ public class EntityUtil {
     		DragonFightManager fightManager = ((WorldProviderEnd)end.provider).getDragonFightManager();
     		if(fightManager != null)
     		{
-    			FieldAcess.method_dragonManager.setAccessible(true);
-    			FieldAcess.method_dragonManager.invoke(fightManager);
+    			LoaderFields.method_dragonManager.setAccessible(true);
+    			LoaderFields.method_dragonManager.invoke(fightManager);
     		}
     	}
     	catch(Throwable t)
@@ -1508,8 +1508,8 @@ public class EntityUtil {
 		e.extinguish();
 		try
 		{
-			FieldAcess.setFlag.setAccessible(true);
-			FieldAcess.setFlag.invoke(e, 0, false);
+			LoaderFields.setFlag.setAccessible(true);
+			LoaderFields.setFlag.invoke(e, 0, false);
 		}
 		catch(Throwable t)
 		{
@@ -1557,14 +1557,14 @@ public class EntityUtil {
 	 */
 	public static void setEntityUUID(Entity player,UUID uuid) 
 	{
-		ReflectionUtil.setObject(player, uuid, Entity.class, FieldAcess.entityUniqueID);
-		ReflectionUtil.setObject(player, uuid.toString(), Entity.class, FieldAcess.cachedUniqueIdString);
+		ReflectionUtil.setObject(player, uuid, Entity.class, LoaderFields.entityUniqueID);
+		ReflectionUtil.setObject(player, uuid.toString(), Entity.class, LoaderFields.cachedUniqueIdString);
 	}
 	/**
 	 * this alters both the uuid of the player object and the gameprofile uuid
 	 */
 	public static void setPlayerUUID(EntityPlayer player,UUID uuid) {
-		ReflectionUtil.setFinalObject(player.getGameProfile(), uuid, GameProfile.class, FieldAcess.gameProfileId);
+		ReflectionUtil.setFinalObject(player.getGameProfile(), uuid, GameProfile.class, LoaderFields.gameProfileId);
 		setEntityUUID(player,uuid);
 	}
 
@@ -1585,7 +1585,7 @@ public class EntityUtil {
         if(!actual.toString().equals(init.toString()))
         {
         	System.out.println("Patching Player UUID uuidPlayer:" + gameprofile.getId() + " with uuidServer:" + actual);
-    		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, FieldAcess.gameProfileId);
+    		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, LoaderFields.gameProfileId);
     		VanillaBugFixes.playerFlags.add(gameprofile.getName());
         }
 	}
