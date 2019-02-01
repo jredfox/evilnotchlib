@@ -14,7 +14,9 @@ public class ConfigCore {
 	public static boolean asm_setTileNBTFix = true;
 	public static boolean asm_TranslationEvent = true;
 	public static boolean asm_middleClickEvent = true;
+	public static boolean asm_enchantments = true;
 	public static int cfgIndex = -1;
+
 	
 	public static void load()
 	{
@@ -28,8 +30,9 @@ public class ConfigCore {
 		asm_furnace = config.get("asm","furnaceFix",true).getBoolean();
 		asm_clientPlaceEvent = config.get("asm","clientBlockPlaceEvent",true).getBoolean();
 		asm_setTileNBTFix = config.get("asm","setTileNBTItemBlockFix",true).getBoolean();
-		asm_TranslationEvent = config.get("asm","DynamicTranslationEvent",true).getBoolean();
-		asm_middleClickEvent = config.get("asm","MiddleClickEvent",true).getBoolean();
+		asm_TranslationEvent = config.get("asm","dynamicTranslationEvent",true).getBoolean();
+		asm_middleClickEvent = config.get("asm","middleClickEvent",true).getBoolean();
+		asm_enchantments = config.get("asm","enchantmentNameFix",true).getBoolean();
 		
 		cfgIndex = config.get("debug","cfgIndex",cfgIndex).getInt();
 		

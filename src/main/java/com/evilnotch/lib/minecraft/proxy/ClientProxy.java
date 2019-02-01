@@ -53,31 +53,11 @@ public class ClientProxy extends ServerProxy{
 	public static File root = null;
 	public static final HashMap<String,Boolean> compiledTracker = new HashMap();
 	
-	public static Map<Integer,String> seeds = new HashMap();
-	public static String getSeed(WorldClient world) 
-	{
-		int dim = world.provider.getDimension();
-		if(!ClientProxy.seeds.containsKey(dim))
-		{
-			ClientProxy.seeds.put(dim,"pending...");
-			NetWorkHandler.INSTANCE.sendToServer(new PacketRequestSeed(dim));
-		}
-		return ClientProxy.seeds.get(dim);
-	}
-	public static void setSeed(int dim, long seed) {
-		seeds.put(dim, "" + seed);
-	}
 
 	@Override
 	public void proxypreinit()
 	{
 		MainJava.isClient = true;
-	}
-	
-	@Override
-	public void onClientDisconect()
-	{
-		seeds.clear();
 	}
 	
 	@Override
@@ -92,15 +72,10 @@ public class ClientProxy extends ServerProxy{
 			ClientCommandHandler.instance.registerCommand(new ClientUUID());
 	}
 	@Override
-	public void onLoadComplete()
-	{
-	}
-	@Override
 	public void jsonGen() throws Exception
 	{
 		if(!MainJava.isDeObfuscated)
 		{
-			System.out.println("json generation only occurs on the client side in dev enviorment");
 			return;
 		}
 		checkRootFile();
@@ -109,7 +84,6 @@ public class ClientProxy extends ServerProxy{
 		{
 			if(!i.registerModel())
 			{
-				System.out.println("skipping model gen:" + i.getRegistryName());
 				continue;
 			}
 			String domain = i.getRegistryName().getResourceDomain();
@@ -117,11 +91,7 @@ public class ClientProxy extends ServerProxy{
 				compiledTracker.put(domain, MinecraftUtil.isModCompiled(domain));
 			boolean compiled = compiledTracker.get(domain);
 			if(compiled)
-			{
-				if(Config.debug)
-					System.out.println("skipping model gen for:" + i.getRegistryName());
 				continue;
-			}
 			
 			JSONObject json = null;
 			ResourceLocation loc = i.getRegistryName();
@@ -421,20 +391,5 @@ public class ClientProxy extends ServerProxy{
 	public static EntityPlayer getPlayer() {
 		return FMLClientHandler.instance().getClientPlayerEntity();
 	}
-
-	/*public static int getBurn(IInventory tileFurnace, int pixels) 
-	{
-        long i = (long)tileFurnace.getField(1);
-        
-        if (i == 0)
-        {
-            i = 200L;
-        }
-
-        long j = ( (tileFurnace.getField(0) * (long)pixels));
-        j = j/i;
-//        System.out.println("j:" + j + " i:" + i + " feild:" + tileFurnace.getField(0));
-        return JavaUtil.castInt(j);
-	}*/
 
 }

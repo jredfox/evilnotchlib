@@ -5,6 +5,7 @@ import com.evilnotch.lib.minecraft.network.packet.PacketYawOffset;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class PacketYawOffsetHandler extends MessegeBase<PacketYawOffset>{
@@ -15,12 +16,12 @@ public class PacketYawOffsetHandler extends MessegeBase<PacketYawOffset>{
 		Minecraft.getMinecraft().addScheduledTask(() -> 
 		{
 			Entity e = Minecraft.getMinecraft().world.getEntityByID(message.id);
-			if(!(e instanceof EntityPlayer))
+			if(!(e instanceof EntityLivingBase))
 			{
 				System.out.println("invalid packet recieved for player:" + message.id);
 				return;
 			}
-			EntityPlayer player = (EntityPlayer)e;
+			EntityLivingBase player = (EntityLivingBase)e;
 			player.renderYawOffset = message.yawOffsetRender;
 			player.prevRenderYawOffset = message.yawOffsetRender;
 		});

@@ -1,9 +1,11 @@
 package com.evilnotch.lib.minecraft.network.packet.handler;
 
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketRequestSeed;
 import com.evilnotch.lib.minecraft.network.packet.PacketSeed;
+import com.evilnotch.lib.minecraft.network.packet.PacketSeedDeny;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,9 +21,17 @@ public class PacketRequestSeedHandler extends MessegeBase<PacketRequestSeed>{
 		EntityPlayerMP p = (EntityPlayerMP)player;
 		p.getServerWorld().addScheduledTask(() ->
 		{
-			long seed = p.mcServer.getWorld(message.dim).getSeed();
-			PacketSeed packet = new PacketSeed(message.dim,seed);
-			NetWorkHandler.INSTANCE.sendTo(packet,p);
+			if(!Config.seedF3)
+			{
+				PacketSeedDeny packet = new PacketSeedDeny(message.dim);
+				NetWorkHandler.INSTANCE.sendTo(packet,p);
+			}
+			else
+			{
+				long seed = p.mcServer.getWorld(message.dim).getSeed();
+				PacketSeed packet = new PacketSeed(message.dim,seed);
+				NetWorkHandler.INSTANCE.sendTo(packet,p);
+			}
 		});
 	}
 

@@ -16,7 +16,8 @@ public class PacketSeed implements IMessage{
 	public PacketSeed(){}
 	
 	@Override
-	public void fromBytes(ByteBuf buf) {
+	public void fromBytes(ByteBuf buf) 
+	{
 		this.dim = buf.readInt();
 		this.seed = buf.readLong();
 	}

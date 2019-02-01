@@ -1251,6 +1251,19 @@ public class JavaUtil {
 		}
 		return strid;
 	}
+	public static boolean isStringInt(String s)
+	{
+		String valid = "1234567890-";
+		for(int i=0;i<s.length();i++)
+		{
+			char c = s.charAt(i);
+			if(!valid.contains("" + c))
+				return false;
+			else if(c == '-' && i > 0)
+				return false;
+		}
+		return true;
+	}
 	public static boolean isStringNum(String s)
 	{
 		String valid = "1234567890.-";

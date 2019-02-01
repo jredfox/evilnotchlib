@@ -7,6 +7,7 @@ import com.evilnotch.lib.minecraft.network.packet.PacketPickBlock;
 import com.evilnotch.lib.minecraft.network.packet.PacketPickEntity;
 import com.evilnotch.lib.minecraft.network.packet.PacketRequestSeed;
 import com.evilnotch.lib.minecraft.network.packet.PacketSeed;
+import com.evilnotch.lib.minecraft.network.packet.PacketSeedDeny;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawOffset;
@@ -16,6 +17,7 @@ import com.evilnotch.lib.minecraft.network.packet.handler.PacketHandHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketPickBlockHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketPickEntityHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketRequestSeedHandler;
+import com.evilnotch.lib.minecraft.network.packet.handler.PacketSeedDenyHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketSeedHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketUUIDHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketYawHeadHandler;
@@ -37,6 +39,7 @@ public class NetWorkHandler {
 		registerMessage(PacketUUIDHandler.class, PacketUUID.class, Side.CLIENT);
 		registerMessage(PacketClipBoardHandler.class, PacketClipBoard.class, Side.CLIENT);
 		registerMessage(PacketSeedHandler.class, PacketSeed.class, Side.CLIENT);
+		registerMessage(PacketSeedDenyHandler.class, PacketSeedDeny.class, Side.CLIENT);
 		registerMessage(PacketYawOffsetHandler.class, PacketYawOffset.class, Side.CLIENT);
 		registerMessage(PacketYawPitchHandler.class, PacketYawPitch.class, Side.CLIENT);
 		registerMessage(PacketYawHeadHandler.class, PacketYawHead.class, Side.CLIENT);
@@ -49,6 +52,6 @@ public class NetWorkHandler {
 	}
 	protected static void registerMessage(Class handler, Class packet, Side side)
 	{
-		INSTANCE.registerMessage(handler, packet,networkid++, side);
+		INSTANCE.registerMessage(handler, packet, networkid++, side);
 	}
 }

@@ -269,7 +269,15 @@ public class EntityUtil {
     		try{
     			net.minecraftforge.fml.common.registry.EntityEntry entry = net.minecraftforge.fml.common.registry.ForgeRegistries.ENTITIES.getValue(loc);
     			return entry == null ? null : entry.newInstance(worldIn);
-    		}catch(Throwable e){return null;}
+    		}
+    		catch(Throwable e)
+    		{
+    			if(Config.debug)
+    			{
+    				e.printStackTrace();
+    			}
+    			return null;
+    		}
     	}
     	else
     	{
@@ -279,7 +287,14 @@ public class EntityUtil {
     			Constructor c = clazz.getConstructor(new Class[] {World.class});
     			return (Entity) c.newInstance(worldIn);
     		}
-    		catch(Throwable t){return null;}
+    		catch(Throwable e)
+    		{
+    			if(Config.debug)
+    			{
+    				e.printStackTrace();
+    			}
+    			return null;
+    		}
     	}
     }
     

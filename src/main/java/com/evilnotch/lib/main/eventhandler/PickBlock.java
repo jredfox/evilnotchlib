@@ -123,7 +123,8 @@ public class PickBlock {
     {
         for (int i = 0; i < inv.mainInventory.size(); ++i)
         {
-            if (!((ItemStack)inv.mainInventory.get(i)).isEmpty() && stackEqualExact(stack, inv.mainInventory.get(i)))
+        	ItemStack compare = (ItemStack)inv.mainInventory.get(i);
+            if (!compare.isEmpty() && stackEqualExact(stack, compare))
             {
                 return i;
             }

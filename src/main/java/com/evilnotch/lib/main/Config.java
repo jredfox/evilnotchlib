@@ -8,6 +8,7 @@ import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 public class Config {
 
@@ -15,6 +16,8 @@ public class Config {
 	public static File cfg = null;
 	public static boolean tpAllowCrossDim = false;
 	public static boolean replaceTP = true;
+	public static boolean seedF3 = true;
+	
 	/**
 	 * list of domains that are not acceptable
 	 */
@@ -30,9 +33,10 @@ public class Config {
 			cfg = new File(d,MainJava.MODID + "/" + MainJava.MODID + ".cfg");
 		Configuration config = new Configuration(cfg);
 		config.load();
-		debug = config.get("general", "Debug", false).getBoolean();
+		debug = config.get("general", "debug", false).getBoolean();
 		tpAllowCrossDim = config.get("general","tpAllowCrossDim",true).getBoolean();
 		replaceTP = config.get("general","tpReplace",true).getBoolean();
+		seedF3 = config.get("general","seedF3",true).getBoolean();
 		
 		//entity cache data for black list and allow certain entities to pass through
 		cacheEntDeny = JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));

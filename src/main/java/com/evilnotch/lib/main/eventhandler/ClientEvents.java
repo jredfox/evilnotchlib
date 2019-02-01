@@ -3,10 +3,12 @@ package com.evilnotch.lib.main.eventhandler;
 import java.util.List;
 
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.minecraft.content.client.Seeds;
 import com.evilnotch.lib.minecraft.content.tick.TickReg;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.NBTUtil;
+import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.RomanNumerals;
 
 import net.minecraft.client.Minecraft;
@@ -29,15 +31,17 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class ClientEvents {
+	
 	/**
 	 * this is so data get's cleared on client side only that needs to not be stored all the time or is attatched per world
 	 */
 	@SubscribeEvent
 	public void disconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent e)
 	{
-		MainJava.proxy.onClientDisconect();
 		TickReg.garbageCollectClient();
+		Seeds.clearSeeds();
 	}
+	
 	@SubscribeEvent
 	public void tickClient(ClientTickEvent e)
 	{
@@ -45,8 +49,11 @@ public class ClientEvents {
 			 return;
 		 TickReg.tickClient();
 	}
+	/**
+	 * put the seed into f3
+	 */
 	@SubscribeEvent
-	public void seedText(RenderGameOverlayEvent.Text e)
+	public void seedTxt(RenderGameOverlayEvent.Text e)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
 		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo)
@@ -57,15 +64,17 @@ public class ClientEvents {
 		{
 			if(s.toLowerCase().contains("biome"))
 			{
-				f3.add(index+1, "Seed:" + ClientProxy.getSeed(mc.world));
+				f3.add(index+1, "Seed:" + Seeds.getSeed(mc.world));
 				break;
 			}
 			index++;
 		}
 	}
-
+	/**
+	 * if you get booted from your own world
+	 */
 	@SubscribeEvent
-	public void onGuiDisconnect(GuiOpenEvent e)
+	public void kickSelf(GuiOpenEvent e)
 	{
 		if(e.getGui() == null || !(e.getGui() instanceof GuiDisconnected) || EntityUtil.msgShutdown == null)
 			return;
@@ -73,52 +82,5 @@ public class ClientEvents {
 		e.setGui(new GuiDisconnected(new GuiMainMenu(),"disconnect.lost", EntityUtil.msgShutdown) );
 		EntityUtil.msgShutdown = null;
 	}
-	
-	/**
-	 * tooltip roman numerals fixer
-	 */
-	@SubscribeEvent (priority = EventPriority.HIGH)
-	public void onToolTip(ItemTooltipEvent e)
-	{
-		ItemStack stack = e.getItemStack();
-		NBTTagList ench = stack.getEnchantmentTagList();
-		if(ench.tagCount() == 0)
-			ench = NBTUtil.getNBTTagListSafley(stack.getTagCompound(),"StoredEnchantments",10);
-			
-		if(stack.isEmpty() || ench.tagCount() == 0)
-			return;
-		List<String> toolTip = e.getToolTip();
-		for(int i=0;i<toolTip.size();i++)
-		{
-			String s = toolTip.get(i);
-			if(!s.contains("enchantment.level"))
-				continue;
-			for(int j=0;j<ench.tagCount();j++)
-			{
-				NBTTagCompound nbt = (NBTTagCompound)ench.getCompoundTagAt(j);
-				int id = nbt.getInteger("id");
-				int lvl = nbt.getInteger("lvl");
-				String Roman = RomanNumerals.translateIntToRoman(lvl);
-				Enchantment enchantment = Enchantment.getEnchantmentByID(id);
-				String enchName = getEnchName(enchantment);
-				String enchname = enchantment.getTranslatedName(lvl);
-				if(s.equals(enchname))
-				{
-					toolTip.set(i, enchName + " " + Roman);
-				}
-			}
-		}
-	}
-
-    public String getEnchName(Enchantment e)
-    {
-        String s = I18n.translateToLocal(e.getName());
-
-        if (e.isCurse())
-        {
-            s = TextFormatting.RED + s;
-        }
-        return s;
-    }
 	
 }

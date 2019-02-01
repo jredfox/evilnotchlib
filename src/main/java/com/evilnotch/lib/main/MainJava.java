@@ -34,8 +34,6 @@ import com.evilnotch.lib.minecraft.content.item.tool.ItemBasicPickaxe;
 import com.evilnotch.lib.minecraft.content.item.tool.ToolMat;
 import com.evilnotch.lib.minecraft.content.item.tool.ToolSet;
 import com.evilnotch.lib.minecraft.content.lang.LangEntry;
-import com.evilnotch.lib.minecraft.content.pcapability.CapabilityHandler;
-import com.evilnotch.lib.minecraft.content.pcapability.CapabilityReg;
 import com.evilnotch.lib.minecraft.content.tick.TickReg;
 import com.evilnotch.lib.minecraft.content.world.FakeWorld;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
@@ -125,7 +123,6 @@ public class MainJava {
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
 		
 		GeneralRegistry.registerCommand(new CMDDim());
 		GeneralRegistry.registerCommand(new CMDStack());
@@ -137,12 +134,6 @@ public class MainJava {
 			GeneralRegistry.replaceVanillaCommand("tp",new CMDTP());
 			GeneralRegistry.replaceVanillaCommand("teleport",new CMDTeleport());
 		}
-		
-//		CapRegHandler.registerRegistry(new CapRegEnt());
-//		CapRegHandler.registerRegistry(new CapRegTile());
-//		CapRegHandler.registerRegistry(new CapRegWorldInfoTst());
-//		CapRegHandler.registerRegistry(new CapRegWorldTest());
-//		CapRegHandler.registerRegistry(new CapRegChunkTest());
 		
 //		BlockApi.setMaterial(Blocks.DIAMOND_ORE,Material.WOOD,"axe");
 //		BlockApi.setMaterial(Blocks.DIRT,Material.ROCK,"shovel");
@@ -204,7 +195,7 @@ public class MainJava {
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent e) throws Exception
 	{
-		proxy.onLoadComplete();
+		
 	}
 	
 	@SubscribeEvent
@@ -318,18 +309,7 @@ public class MainJava {
 	 */
 	@Mod.EventHandler
 	public void serverStopping(FMLServerStoppingEvent event)
-	{
-		if(CapabilityReg.reg.size() == 0)
-			return;
-		System.out.println("Server is stopping. Saving capabilities");
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-		List<EntityPlayerMP> players = server.getPlayerList().getPlayers();
-		for(EntityPlayerMP p : players)
-		{
-			CapabilityReg.saveToFile(p);
-			CapabilityReg.removeCapailityContainer(p);
-		}
-		
+	{	
 		//prevent memory leaks
 		TickReg.garbageCollectServer();
 		EntityUtil.nbts.clear();
@@ -346,12 +326,11 @@ public class MainJava {
 		for(ICommand cmd : GeneralRegistry.getCmdList())
 			e.registerServerCommand(cmd);
 		
-		GameRules g = e.getServer().getEntityWorld().getGameRules();
+		GameRules g = server.getEntityWorld().getGameRules();
 		GeneralRegistry.removeActiveGameRules(g);
 		GeneralRegistry.injectGameRules(g);
 		
 		//directories instantiate
-		System.out.println("Server Starting Event:");
 		LibEvents.worlDir = server.worlds[0].getSaveHandler().getWorldDirectory();
 		LibEvents.playerDataDir = new File(LibEvents.worlDir,"playerdata");
 		LibEvents.playerDataNames = new File(LibEvents.worlDir,"playerdata/names");

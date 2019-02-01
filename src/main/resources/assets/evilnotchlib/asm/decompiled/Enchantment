@@ -1,0 +1,51 @@
+package net.minecraft.enchantment;
+
+import com.evilnotch.lib.util.simple.RomanNumerals;
+import com.google.common.collect.Lists;
+import java.util.List;
+import javax.annotation.Nullable;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
+
+public abstract class Enchantment extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<Enchantment>
+{
+    /**
+     * Returns the correct traslated name of the enchantment and the level in roman numbers.
+     */
+    public String getTranslatedName(int level)
+    {
+        String s = I18n.translateToLocal(this.getName());
+
+        if (this.isCurse())
+        {
+            s = TextFormatting.RED + s;
+        }
+        String lvl = I18n.translateToLocal("enchantment.level." + level);
+        if(lvl.startsWith("enchantment.level."))
+        	lvl = RomanNumerals.translateIntToRoman(level);
+        return level == 1 && this.getMaxLevel() == 1 ? s : s + " " + lvl;
+    }
+
+	private String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private int getMaxLevel() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	private boolean isCurse() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+}

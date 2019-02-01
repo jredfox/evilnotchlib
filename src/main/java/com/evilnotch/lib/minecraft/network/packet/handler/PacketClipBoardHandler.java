@@ -15,7 +15,6 @@ public class PacketClipBoardHandler extends MessegeBase<PacketClipBoard>{
 		Minecraft.getMinecraft().addScheduledTask(() -> 
 		{
 			JavaUtil.writeToClipboard(message.str, null);
-			System.out.println("copied to clipboard:" + message.str);
 		});
 	}
 

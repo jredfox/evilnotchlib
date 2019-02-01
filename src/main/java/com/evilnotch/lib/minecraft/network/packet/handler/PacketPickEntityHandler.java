@@ -4,6 +4,7 @@ import com.evilnotch.lib.main.eventhandler.PickBlock;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.packet.PacketPickEntity;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.RayTraceResult;
@@ -19,7 +20,13 @@ public class PacketPickEntityHandler extends MessegeBase<PacketPickEntity>{
 		EntityPlayerMP p = (EntityPlayerMP)player;
 		p.getServerWorld().addScheduledTask(() ->
 		{
-			PickBlock.pickBlock(new RayTraceResult(player.world.getEntityByID(message.entityId),message.vec), player, player.world);
+			Entity e = player.world.getEntityByID(message.entityId);
+			if(e == null)
+			{
+				System.out.println("recieved invalid packet for pickEntity event");
+				return;
+			}
+			PickBlock.pickBlock(new RayTraceResult(e,message.vec), player, player.world);
 		});
 	}
 

@@ -97,14 +97,28 @@ public class GeneralRegistry {
 		soundTypes.put(new ResourceLocation("WOOD"), SoundType.WOOD);
 	}
 	
-	public static void registerCommand(ICommand cmd){
+	public static void registerSoundType(ResourceLocation loc, SoundType type)
+	{
+		soundTypes.put(loc, type);
+	}
+	
+	public static void registerMaterial(ResourceLocation loc, Material mat)
+	{
+		blockmats.put(loc, mat);
+	}
+	
+	public static void registerCommand(ICommand cmd)
+	{
 		cmds.add(cmd);
 	}
-	public static List<ICommand> getCmdList(){
+	
+	public static List<ICommand> getCmdList()
+	{
 		return cmds;
 	}
 	
-	public static void removeVanillaCommand(String name){
+	public static void removeVanillaCommand(String name)
+	{
 		cmdRemove.add(name);
 	}
 	/**
@@ -139,7 +153,8 @@ public class GeneralRegistry {
 		}
 	}
 
-	public static void replaceVanillaCommand(String name, ICommand cmd){
+	public static void replaceVanillaCommand(String name, ICommand cmd)
+	{
 		removeVanillaCommand(name);
 		registerCommand(cmd);
 	}

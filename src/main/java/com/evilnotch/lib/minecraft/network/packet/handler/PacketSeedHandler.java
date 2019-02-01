@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.network.packet.handler;
 
+import com.evilnotch.lib.minecraft.content.client.Seeds;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.packet.PacketSeed;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
@@ -14,13 +15,13 @@ public class PacketSeedHandler extends MessegeBase<PacketSeed>{
 	{
 		Minecraft.getMinecraft().addScheduledTask(() -> 
 		{
-			ClientProxy.setSeed(message.dim,message.seed);
+			Seeds.setSeed(message.dim,message.seed);
 		});
 	}
 
 	@Override
-	public void handleServerSide(PacketSeed message, EntityPlayer player) {
-		// TODO Auto-generated method stub
+	public void handleServerSide(PacketSeed message, EntityPlayer player) 
+	{
 		
 	}
 
