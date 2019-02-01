@@ -1,4 +1,4 @@
-package com.evilnotch.lib.asm;
+package com.evilnotch.lib.asm.transformer;
 
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
@@ -12,11 +12,11 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.MCPSidedString;
+import com.evilnotch.lib.asm.util.ASMHelper;
 
 public class GeneralTransformer {
 	/**
 	 * changes the execution of where the invoking static method takes the middle click to my method
-	 * @param classNode
 	 */
 	public static void transformMC(ClassNode classNode) 
 	{

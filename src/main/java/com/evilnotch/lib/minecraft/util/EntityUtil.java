@@ -26,6 +26,7 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
+import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.content.entity.EntityDefintions;
 import com.evilnotch.lib.minecraft.content.entity.EntityDefintions.EntityInfo;
 import com.evilnotch.lib.minecraft.content.entity.EntityDefintions.EntityType;
@@ -453,16 +454,16 @@ public class EntityUtil {
 	public static File getPlayerFile(EntityPlayer player,boolean uuid)
 	{
 		if(uuid)
-			return new File(LibEvents.playerDataDir,player.getUniqueID().toString() + ".dat");
+			return new File(VanillaBugFixes.playerDataDir,player.getUniqueID().toString() + ".dat");
 		else
-			return new File(LibEvents.playerDataNames,player.getName() + ".dat");
+			return new File(VanillaBugFixes.playerDataNames,player.getName() + ".dat");
 	}
 	public static File getPlayerFile(String username,boolean uuid)
 	{
 		if(uuid)
-			return new File(LibEvents.playerDataDir,username + ".dat");
+			return new File(VanillaBugFixes.playerDataDir,username + ".dat");
 		else
-			return new File(LibEvents.playerDataNames,username + ".dat");
+			return new File(VanillaBugFixes.playerDataNames,username + ".dat");
 	}
 	
 	/**
@@ -526,7 +527,7 @@ public class EntityUtil {
 		NBTTagCompound nbt = null;
 		try
 		{
-			stream = !uuidDir ? new FileInputStream(new File(LibEvents.playerDataNames,display + ".dat")) : new FileInputStream(new File(LibEvents.playerDataDir,display + ".dat"));
+			stream = !uuidDir ? new FileInputStream(new File(VanillaBugFixes.playerDataNames,display + ".dat")) : new FileInputStream(new File(VanillaBugFixes.playerDataDir,display + ".dat"));
 			nbt = CompressedStreamTools.readCompressed(stream);
 		}
 		catch(Exception e)
@@ -1584,7 +1585,7 @@ public class EntityUtil {
         {
         	System.out.println("Patching Player UUID uuidPlayer:" + gameprofile.getId() + " with uuidServer:" + actual);
     		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, FieldAcess.gameProfileId);
-    		LibEvents.playerFlags.add(gameprofile.getName());
+    		VanillaBugFixes.playerFlags.add(gameprofile.getName());
         }
 	}
     /**

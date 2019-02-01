@@ -1,4 +1,4 @@
-package com.evilnotch.lib.asm;
+package com.evilnotch.lib.asm.util;
 
 import java.io.IOException;
 import java.util.regex.Matcher;

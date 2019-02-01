@@ -313,7 +313,7 @@ public class MainJava {
 		//prevent memory leaks
 		TickReg.garbageCollectServer();
 		EntityUtil.nbts.clear();
-		LibEvents.playerFlags.clear();
+		VanillaBugFixes.playerFlags.clear();
 		LibEvents.kicker.clear();
 		LibEvents.isKickerIterating = false;
 		LibEvents.msgs.clear();
@@ -331,9 +331,9 @@ public class MainJava {
 		GeneralRegistry.injectGameRules(g);
 		
 		//directories instantiate
-		LibEvents.worlDir = server.worlds[0].getSaveHandler().getWorldDirectory();
-		LibEvents.playerDataDir = new File(LibEvents.worlDir,"playerdata");
-		LibEvents.playerDataNames = new File(LibEvents.worlDir,"playerdata/names");
+		VanillaBugFixes.worlDir = server.worlds[0].getSaveHandler().getWorldDirectory();
+		VanillaBugFixes.playerDataDir = new File(VanillaBugFixes.worlDir,"playerdata");
+		VanillaBugFixes.playerDataNames = new File(VanillaBugFixes.worlDir,"playerdata/names");
 	}
 
 }

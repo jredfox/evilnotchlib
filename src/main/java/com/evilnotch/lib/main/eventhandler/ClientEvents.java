@@ -47,8 +47,10 @@ public class ClientEvents {
 	{
 		 if(e.phase != Phase.END)
 			 return;
+		 
 		 TickReg.tickClient();
 	}
+	
 	/**
 	 * put the seed into f3
 	 */

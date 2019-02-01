@@ -2,9 +2,9 @@ package com.elix_x.itemrender.mod;
 
 import java.util.List;
 
-import com.elix_x.itemrender.IItemRendererHandler;
-import com.elix_x.itemrender.IItemRendererRenderItem;
-import com.elix_x.itemrender.compat.asm.JEIRenderer;
+import com.elix_x.itemrender.asm.compat.JEI;
+import com.elix_x.itemrender.handlers.Handler;
+import com.elix_x.itemrender.handlers.RenderItemObj;
 import com.evilnotch.lib.api.MCPSidedString;
 import com.evilnotch.lib.api.ReflectionUtil;
 
@@ -30,21 +30,22 @@ public class IItemRendererMod {
 
 	public static final String MODID = "iitemrenderer";
 	public static final String NAME = "IItem Renderer";
-	public static final String VERSION = "1.2";
+	public static final String VERSION = "1.3";
 
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		IReloadableResourceManager mcResourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
 
-		if(mcResourceManager instanceof SimpleReloadableResourceManager){
+		if(mcResourceManager instanceof SimpleReloadableResourceManager)
+		{
 			List<IResourceManagerReloadListener> reloadListeners = ReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, (SimpleReloadableResourceManager) mcResourceManager, "reloadListeners", "field_110546_b");
 			reloadListeners.remove(Minecraft.getMinecraft().getItemRenderer());
 			reloadListeners.remove(Minecraft.getMinecraft().entityRenderer);
 			reloadListeners.remove(Minecraft.getMinecraft().renderGlobal);
 		}
 
-		RenderItem renderItem = new IItemRendererRenderItem(Minecraft.getMinecraft().getRenderItem(), Minecraft.getMinecraft().renderEngine, Minecraft.getMinecraft().getItemColors());
+		RenderItem renderItem = new RenderItemObj(Minecraft.getMinecraft().getRenderItem(), Minecraft.getMinecraft().renderEngine, Minecraft.getMinecraft().getItemColors());
 		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderItem, new MCPSidedString("renderItem", "field_175621_X").toString());
 
 		RenderManager renderManager = new RenderManager(Minecraft.getMinecraft().renderEngine, renderItem);
@@ -70,8 +71,8 @@ public class IItemRendererMod {
 	{
 		if(Loader.isModLoaded("jei"))
 		{
-			for(Item i : IItemRendererHandler.getItems())
-				JEIRenderer.slowItems.add(i);
+			for(Item i : Handler.getItems())
+				JEI.slowItems.add(i);
 			Class c = ReflectionUtil.classForName("mezz.jei.render.IngredientListBatchRenderer");
 			String s = c.getName();
 		}

@@ -42,69 +42,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class LibEvents {
-	public static File worlDir = null;
-	public static File playerDataNames = null;
-	public static File playerDataDir = null;
-	
-	public static Set<String> playerFlags = new HashSet();
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void join(PlayerLoggedInEvent e)
-	{
-		if(e.player.world.isRemote)
-			return;
-		if(playerFlags.contains(e.player.getName()))
-		{
-			System.out.println("Server Sending UUID To:" + e.player.getName() );
-			EntityPlayerMP playerIn = (EntityPlayerMP) e.player;
-			PacketUUID id = new PacketUUID(playerIn.getUniqueID());
-			NetWorkHandler.INSTANCE.sendTo(id, playerIn);
-			playerFlags.remove(e.player.getName());
-		}
-	}
-	/**
-	 * fix heads being on backwards when you start tracking a player
-	 */
-	@SubscribeEvent
-	public void headFix(PlayerEvent.StartTracking e)
-	{
-		if(!(e.getTarget() instanceof EntityPlayerMP))
-			return;
-		EntityPlayerMP targ = (EntityPlayerMP) e.getTarget();
-		NetWorkHandler.INSTANCE.sendTo(new PacketYawHead(targ.getRotationYawHead(),targ.getEntityId()), (EntityPlayerMP)e.getEntityPlayer());
-	}
-	@SubscribeEvent
-	public void tilesync(TileStackSyncEvent.Merge e)
-	{
-		TileEntity tileentity = e.tile;
-        if(tileentity instanceof TileEntityMobSpawner && !e.nbt.hasKey("SpawnPotentials"))
-        {
-        	NBTTagList list = new NBTTagList();
-        	list.appendTag(new WeightedSpawnerEntity(1,(NBTTagCompound) e.nbt.getTag("SpawnData").copy() ).toCompoundTag());
-        	e.nbt.setTag("SpawnPotentials", list);
-        }
-	}
-	@SubscribeEvent
-	public void tilesync(TileStackSyncEvent.Post e)
-	{
-        if(e.world.isRemote)
-        {
-        	if(e.tile instanceof TileEntityMobSpawner)
-        		SPacketUpdateTileEntity.toIgnore.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
-        }
-	}
-	/**
-	 * fix mob spawner returning null stack
-	 * @param e
-	 */
-	@SubscribeEvent(priority=EventPriority.HIGH)
-	public void pick(PickEvent.Block e)
-	{
-		if(e.tile instanceof TileEntityMobSpawner)
-		{
-			Block b = e.state.getBlock();
-			e.current = new ItemStack(b,1,b.getMetaFromState(e.state));
-		}
-	}
 	
 	public static int mTick = 0;
 	public static final List<String> msgs = new ArrayList();

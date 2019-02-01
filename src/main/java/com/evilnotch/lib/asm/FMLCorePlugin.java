@@ -21,8 +21,8 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
     		configGenerated = true;
     	}
         return new String[] {
-        		"com.evilnotch.lib.asm.Transformer",
-        		"com.elix_x.itemrender.compat.asm.RenderTransformer",
+        		"com.evilnotch.lib.asm.transformer.Transformer",
+        		"com.elix_x.itemrender.asm.RenderTransformer",
         		"com.evilnotch.menulib.asm.MenuLibTransformer"
         };
     }

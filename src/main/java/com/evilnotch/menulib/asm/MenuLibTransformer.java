@@ -9,9 +9,9 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import com.evilnotch.lib.asm.ASMHelper;
 import com.evilnotch.lib.asm.FMLCorePlugin;
-import com.evilnotch.lib.asm.MCWriter;
+import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.asm.util.MCWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;

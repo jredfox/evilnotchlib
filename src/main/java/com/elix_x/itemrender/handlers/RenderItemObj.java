@@ -1,4 +1,4 @@
-package com.elix_x.itemrender;
+package com.elix_x.itemrender.handlers;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -13,12 +13,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-public class IItemRendererRenderItem extends RenderItem {
+public class RenderItemObj extends RenderItem {
 	
 	public RenderItem child;
 	private boolean tth = false;
 
-	public IItemRendererRenderItem(RenderItem renderItem, TextureManager textureManager, ItemColors itemColors)
+	public RenderItemObj(RenderItem renderItem, TextureManager textureManager, ItemColors itemColors)
 	{
 		super(textureManager, renderItem.getItemModelMesher().getModelManager(), itemColors);
 		this.child = renderItem;
@@ -42,32 +42,32 @@ public class IItemRendererRenderItem extends RenderItem {
 	public void renderItem(ItemStack itemstack, IBakedModel model)
 	{
 		if(!tth) 
-			IItemRendererHandler.handleCameraTransforms(TransformType.GROUND);
+			Handler.handleCameraTransforms(TransformType.GROUND);
 		tth = false;
 		
-		if(IItemRendererHandler.renderPre(this, itemstack, model))
+		if(Handler.renderPre(this, itemstack, model))
 		{
 			this.child.renderItem(itemstack, model);
-			IItemRendererHandler.renderPost(this, itemstack, model);
+			Handler.renderPost(this, itemstack, model);
 		}
 	}
 
 	@Override
 	public void renderItemOverlayIntoGUI(FontRenderer fr, ItemStack itemstack, int xPosition, int yPosition, String text)
 	{
-		if(IItemRendererHandler.renderItemOverlayIntoGUIPre(this, fr, itemstack, xPosition, yPosition, text))
+		if(Handler.renderItemOverlayIntoGUIPre(this, fr, itemstack, xPosition, yPosition, text))
 		{
 			this.child.renderItemOverlayIntoGUI(fr, itemstack, xPosition, yPosition, text);
-			IItemRendererHandler.renderItemOverlayIntoGUIPost(this, fr, itemstack, xPosition, yPosition, text);
+			Handler.renderItemOverlayIntoGUIPost(this, fr, itemstack, xPosition, yPosition, text);
 		}
 	}
 
 	@Override
 	public void renderItemModel(ItemStack stack, IBakedModel bakedmodel, TransformType transform, boolean leftHanded)
 	{
-		IItemRendererHandler.handleCameraTransforms(transform);
+		Handler.handleCameraTransforms(transform);
 		tth = true;
-		if(IItemRendererHandler.hasKey(stack))
+		if(Handler.hasKey(stack))
 			super.renderItemModel(stack, bakedmodel, transform, leftHanded);
 		else
 			this.child.renderItemModel(stack,bakedmodel,transform,leftHanded);//make other mods have their transform types since forge doesn't freaken store it anywhere
@@ -76,9 +76,9 @@ public class IItemRendererRenderItem extends RenderItem {
 	@Override
 	public void renderItemModelIntoGUI(ItemStack stack, int x, int y, IBakedModel bakedmodel)
 	{
-		IItemRendererHandler.handleCameraTransforms(TransformType.GUI);
+		Handler.handleCameraTransforms(TransformType.GUI);
 		tth = true;
-		if(IItemRendererHandler.hasKey(stack))
+		if(Handler.hasKey(stack))
 			super.renderItemModelIntoGUI(stack, x, y, bakedmodel);
 		else
 			this.child.renderItemModelIntoGUI(stack,x,y,bakedmodel);

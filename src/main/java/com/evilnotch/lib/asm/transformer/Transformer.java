@@ -1,4 +1,4 @@
-package com.evilnotch.lib.asm;
+package com.evilnotch.lib.asm.transformer;
 
 import java.io.File;
 import java.util.List;
@@ -9,6 +9,10 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
+import com.evilnotch.lib.asm.ConfigCore;
+import com.evilnotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.asm.util.MCWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;

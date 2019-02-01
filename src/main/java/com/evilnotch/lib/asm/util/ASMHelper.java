@@ -1,4 +1,4 @@
-package com.evilnotch.lib.asm;
+package com.evilnotch.lib.asm.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import com.evilnotch.lib.api.MCPSidedString;
+import com.evilnotch.lib.asm.FMLCorePlugin;
 
 public class ASMHelper 
 {	

@@ -1,4 +1,4 @@
-package com.evilnotch.lib.asm;
+package com.evilnotch.lib.asm.transformer;
 
 import static org.objectweb.asm.Opcodes.ALOAD;
 
@@ -20,6 +20,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.MCPSidedString;
+import com.evilnotch.lib.asm.util.ASMHelper;
 
 
 public class CapTransformer {
@@ -458,13 +459,13 @@ public class CapTransformer {
 		ASMHelper.addFeild(classNode, "capContainer", "Lcom/evilnotch/lib/minecraft/content/capability/registry/CapContainer;","Lcom/evilnotch/lib/minecraft/content/capability/registry/CapContainer<" + classType + ">;");
 		
     	ASMHelper.addInterface(classNode, "com/evilnotch/lib/minecraft/content/capability/registry/ICapProvider");
-    	MethodNode getCap = ASMHelper.addMethod(classNode,"com/evilnotch/lib/asm/Caps.class", "getCapContainer", "()Lcom/evilnotch/lib/minecraft/content/capability/registry/CapContainer;");
-    	ASMHelper.patchMethod(getCap, name, "com/evilnotch/lib/asm/Caps");
+    	MethodNode getCap = ASMHelper.addMethod(classNode,"com/evilnotch/lib/asm/gen/Caps.class", "getCapContainer", "()Lcom/evilnotch/lib/minecraft/content/capability/registry/CapContainer;");
+    	ASMHelper.patchMethod(getCap, name, "com/evilnotch/lib/asm/gen/Caps");
     	
-    	MethodNode setCap = ASMHelper.addMethod(classNode,"com/evilnotch/lib/asm/Caps.class", "setCapContainer", "(Lcom/evilnotch/lib/minecraft/content/capability/registry/CapContainer;)V");
-    	ASMHelper.patchMethod(setCap, name, "com/evilnotch/lib/asm/Caps");
+    	MethodNode setCap = ASMHelper.addMethod(classNode,"com/evilnotch/lib/asm/gen/Caps.class", "setCapContainer", "(Lcom/evilnotch/lib/minecraft/content/capability/registry/CapContainer;)V");
+    	ASMHelper.patchMethod(setCap, name, "com/evilnotch/lib/asm/gen/Caps");
     	
-    	MethodNode get = ASMHelper.addMethod(classNode,"com/evilnotch/lib/asm/Caps.class", "getCapability", "(Lnet/minecraft/util/ResourceLocation;)Lcom/evilnotch/lib/minecraft/content/capability/ICapability;");
-    	ASMHelper.patchMethod(get, name, "com/evilnotch/lib/asm/Caps");
+    	MethodNode get = ASMHelper.addMethod(classNode,"com/evilnotch/lib/asm/gen/Caps.class", "getCapability", "(Lnet/minecraft/util/ResourceLocation;)Lcom/evilnotch/lib/minecraft/content/capability/ICapability;");
+    	ASMHelper.patchMethod(get, name, "com/evilnotch/lib/asm/gen/Caps");
 	}
 }
