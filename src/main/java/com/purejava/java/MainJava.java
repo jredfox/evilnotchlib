@@ -1,20 +1,18 @@
 package com.purejava.java;
 
+import java.io.File;
 import java.util.Set;
 
+import com.evilnotch.lib.api.mcp.MCPMappings;
+import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
-import com.evilnotch.lib.util.JavaUtil;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.nbt.NBTTagLong;
-import net.minecraft.nbt.NBTTagShort;
 
 public class MainJava {
 	

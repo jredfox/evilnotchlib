@@ -1,6 +1,8 @@
 package com.evilnotch.lib.minecraft.network;
 
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
+import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -19,7 +21,7 @@ public abstract class MessegeBase<REQ extends IMessage> implements IMessageHandl
         } 
         else
         {
-            handleClientSide(message, ClientProxy.getPlayer() );
+            handleClientSide(message, PlayerUtil.getClientPlayer());
         }
         return null;
     }

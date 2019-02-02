@@ -1,6 +1,6 @@
 package com.evilnotch.lib.minecraft.content.command;
 
-import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.TeleportUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -53,7 +53,7 @@ public class CMDTeleport extends CommandTeleport{
      */
     public void doTeleport(Entity e,MinecraftServer server, CommandBase.CoordinateArg argX, CommandBase.CoordinateArg argY, CommandBase.CoordinateArg argZ, CommandBase.CoordinateArg argYaw, CommandBase.CoordinateArg argPitch) throws WrongUsageException
     {
-    	EntityUtil.teleportStackAtIndex(e, server, argX.getResult(), argY.getResult(), argZ.getResult(), (float)argYaw.getResult(), (float)argPitch.getResult(), e.dimension);
+    	TeleportUtil.teleportStackAtIndex(e, server, argX.getResult(), argY.getResult(), argZ.getResult(), (float)argYaw.getResult(), (float)argPitch.getResult(), e.dimension);
     }
 
 }

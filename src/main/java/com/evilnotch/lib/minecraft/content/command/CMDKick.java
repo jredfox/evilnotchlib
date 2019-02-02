@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -49,7 +50,7 @@ public class CMDKick extends CommandBase {
 		if(e instanceof EntityPlayerMP)
 		{
 			EntityPlayerMP player = (EntityPlayerMP)e;
-			EntityUtil.disconnectPlayer(player,new TextComponentString(msg));
+			PlayerUtil.disconnectPlayer(player,new TextComponentString(msg));
 		}
 	}
 	

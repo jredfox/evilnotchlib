@@ -13,6 +13,7 @@ import net.minecraftforge.common.config.Property;
 public class Config {
 
 	public static boolean debug = false;
+	public static boolean debug_worldNeedy = false;
 	public static File cfg = null;
 	public static boolean tpAllowCrossDim = false;
 	public static boolean replaceTP = true;
@@ -33,6 +34,7 @@ public class Config {
 		Configuration config = new Configuration(cfg);
 		config.load();
 		debug = config.get("general", "debug", false).getBoolean();
+		debug_worldNeedy = config.get("general", "debug_worldNeedy", false).getBoolean();
 		tpAllowCrossDim = config.get("general","tpAllowCrossDim",true).getBoolean();
 		replaceTP = config.get("general","tpReplace",true).getBoolean();
 		seedF3 = config.get("general","seedF3",true).getBoolean();

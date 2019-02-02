@@ -1317,5 +1317,13 @@ public class JavaUtil {
 			locs.add(new ResourceLocation(str));
 		return locs;
 	}
+	public static long[] arrayToStaticLong(List<Long> li) 
+	{
+		long[] list = new long[li.size()];
+		for(int i=0;i<li.size();i++)
+			list[i] = li.get(i);
+		return list;
+	}
+
 	
 }

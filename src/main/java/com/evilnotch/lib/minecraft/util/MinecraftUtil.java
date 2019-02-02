@@ -42,10 +42,13 @@ public class MinecraftUtil {
 		   g.addGameRule(ruleName, "" + g.getBoolean(ruleName), type);
    }
 
-   public static SoundEvent getSoundEvent(ResourceLocation soundEventIN) {
+   public static SoundEvent getSoundEvent(ResourceLocation soundEventIN) 
+   {
 	 return SoundEvent.REGISTRY.getObject(soundEventIN);
    }
-   public static ResourceLocation getSoundLoc(SoundEvent sound){
+   
+   public static ResourceLocation getSoundLoc(SoundEvent sound)
+   {
 	 return SoundEvent.REGISTRY.getNameForObject(sound);
    }
    

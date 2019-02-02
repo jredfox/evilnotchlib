@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.TeleportUtil;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.command.CommandBase;
@@ -40,6 +41,7 @@ public class CMDDim extends CommandTeleport{
     /**
      * Callback for when the command is executed
      */
+    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         int index = 0;
@@ -59,7 +61,7 @@ public class CMDDim extends CommandTeleport{
        		int dim = flag ? Integer.parseInt(arg) : toPlayer.dimension;
        		if(flag)
        		{
-       			EntityUtil.teleportSpawn(fromPlayer, server, dim);
+       			TeleportUtil.teleportSpawn(fromPlayer, server, dim);
        			return;
        		}
        		if(toPlayer instanceof EntityLivingBase && fromPlayer instanceof EntityLivingBase)
@@ -87,7 +89,7 @@ public class CMDDim extends CommandTeleport{
     			throw new WrongUsageException("commands.evilnotchlib.tp.usage", new Object[0]);
     		
     		int dimension = Integer.parseInt(dim);
-    		EntityUtil.teleportSpawn(e, server, dimension);
+    		TeleportUtil.teleportSpawn(e, server, dimension);
         }
         else if (args.length >= 4)
         {
@@ -152,15 +154,15 @@ public class CMDDim extends CommandTeleport{
     {
     	if(this.wholeStack())
     	{
-    		EntityUtil.teleportStack(entity, server, x, y, z,yaw,pitch, traveldim);
+    		TeleportUtil.teleportStack(entity, server, x, y, z,yaw,pitch, traveldim);
     	}
     	else if(this.stackAtIndex() )
     	{
-    		EntityUtil.teleportStackAtIndex(entity, server, x, y, z,yaw,pitch, traveldim);
+    		TeleportUtil.teleportStackAtIndex(entity, server, x, y, z,yaw,pitch, traveldim);
     	}
     	else
     	{
-    		EntityUtil.telePortEntitySync(entity, server, x, y, z,yaw,pitch, traveldim);
+    		TeleportUtil.telePortEntitySync(entity, server, x, y, z,yaw,pitch, traveldim);
     	}
     }
 	public boolean wholeStack()

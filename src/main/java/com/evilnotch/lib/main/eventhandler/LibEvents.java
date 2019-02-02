@@ -1,6 +1,5 @@
 package com.evilnotch.lib.main.eventhandler;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,33 +9,18 @@ import java.util.Map;
 import java.util.Set;
 
 import com.evilnotch.lib.minecraft.content.tick.TickReg;
-import com.evilnotch.lib.minecraft.event.PickEvent;
-import com.evilnotch.lib.minecraft.event.TileStackSyncEvent;
-import com.evilnotch.lib.minecraft.network.NetWorkHandler;
-import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
-import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.simple.PointId;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -86,7 +70,7 @@ public class LibEvents {
 				if(point.getX() >= point.getY())
 				{
 					it.remove();
-					EntityUtil.disconnectPlayer(connection.player,new TextComponentString(point.id));
+					PlayerUtil.disconnectPlayer(connection.player,new TextComponentString(point.id));
 				}
 			}
 			isKickerIterating = false;

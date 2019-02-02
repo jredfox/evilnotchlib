@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.loader.LoaderGen;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.content.block.BasicBlock;
 import com.evilnotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;
@@ -42,9 +43,9 @@ public class LangRegistry {
 		joinLang(BasicItem.itemlangs);
 		joinLang(BasicCreativeTab.creativeTabLang);
 		
-		ClientProxy.checkRootFile();
+		LoaderGen.checkRootFile();
 		HashMap<File,ConfigLang> cfgs = new HashMap();
-		populateLang(ClientProxy.root,langs,cfgs);
+		populateLang(LoaderGen.root,langs,cfgs);
 		
 		if(langlistClient == null)
 		{

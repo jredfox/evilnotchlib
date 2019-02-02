@@ -3,8 +3,7 @@ package com.evilnotch.lib.minecraft.nbt;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.api.mcp.MCPSidedString;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.nbt.NBTTagLongArray;
 
@@ -33,14 +32,6 @@ public class NBTArrayLong extends NBTTagLongArray implements INBTWrapperArray{
 	@Override
 	public void toVanilla()
 	{
-		this.data = arrayToStaticLong(this.values);
+		this.data = JavaUtil.arrayToStaticLong(this.values);
 	}
-
-	public long[] arrayToStaticLong(List<Long> li) {
-		long[] list = new long[li.size()];
-		for(int i=0;i<li.size();i++)
-			list[i] = li.get(i);
-		return list;
-	}
-
 }

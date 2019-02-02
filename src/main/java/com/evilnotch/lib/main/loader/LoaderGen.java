@@ -1,8 +1,15 @@
 package com.evilnotch.lib.main.loader;
 
+import java.io.File;
+
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.minecraft.content.auto.json.JsonGen;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
 
 public class LoaderGen {
+	
+	public static File root = null;
 	
 	public static void load()
 	{
@@ -17,7 +24,7 @@ public class LoaderGen {
 		 */
 		try
 		{
-			MainJava.proxy.jsonGen();
+			JsonGen.jsonGen();
 		}
 		catch(Exception ee)
 		{
@@ -27,7 +34,16 @@ public class LoaderGen {
 
 	private static void loadLang() 
 	{
-		MainJava.proxy.lang();
+		LangRegistry.registerLang();
+	}
+	
+	public static void checkRootFile() 
+	{
+		if(root != null)
+			return;
+		root = new File(Config.cfg.getParentFile().getParentFile().getParentFile().getParentFile(),"src/main/resources/assets");
+		if(!root.exists())
+			root.mkdirs();
 	}
 
 }

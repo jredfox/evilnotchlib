@@ -15,12 +15,18 @@ import net.minecraft.nbt.NBTTagList;
 
 public class NBTUtil {
 	
-	public static NBTTagCompound getNBTFromString(String str){
+	public static NBTTagCompound getNBTFromString(String str)
+	{
 		if(JavaUtil.isStringNullOrEmpty(str))
 			return null;
-		try{
+		try
+		{
 			return JsonToNBT.getTagFromJson(str);
-		}catch(Exception e){}
+		}
+		catch(Exception e)
+		{
+			
+		}
 		return null;
 	}
 	/**
@@ -104,13 +110,16 @@ public class NBTUtil {
 	{
 		if(!file.exists())
 		{
-			try {
+			try 
+			{
 				
 				File parent = file.getParentFile();
 				if(!parent.exists())
 					parent.mkdirs();
 				file.createNewFile();
-			} catch (Throwable e) {
+			} 
+			catch (Throwable e) 
+			{
 				e.printStackTrace();
 				return;
 			}

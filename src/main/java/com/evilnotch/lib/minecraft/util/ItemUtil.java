@@ -15,24 +15,8 @@ public class ItemUtil {
 		return ForgeRegistries.ITEMS.getKey(item);
 	}
 	
-	/**
-	 * Returns the string of the classes tool if any
-	 */
-	public static String getToolClass(ItemStack stack)
+	public static boolean hasToolClass(ItemStack stack,String blockclazz) 
 	{
-		String str = null;
-		Set<String> list = stack.getItem().getToolClasses(stack);
-		Iterator<String> it = list.iterator();
-		while (it.hasNext())
-		{
-			String tool = it.next();
-			if(tool != null)
-				str = tool;
-		}
-		return str;
-	}
-
-	public static boolean hasToolClass(ItemStack stack,String blockclazz) {
 		String str = null;
 		Set<String> list = stack.getItem().getToolClasses(stack);
 		Iterator<String> it = list.iterator();

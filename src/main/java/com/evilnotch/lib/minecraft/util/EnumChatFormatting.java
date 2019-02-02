@@ -1,6 +1,7 @@
 package com.evilnotch.lib.minecraft.util;
 
 public class EnumChatFormatting {
+	
 	public static final String BLACK = "\u00A7" + "0";
 	public static final String DARK_BLUE = "\u00A7" + "1";
 	public static final String DARK_GREEN ="\u00A7" + "2";

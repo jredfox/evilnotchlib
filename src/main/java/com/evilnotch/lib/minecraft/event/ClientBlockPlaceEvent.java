@@ -17,7 +17,8 @@ public class ClientBlockPlaceEvent extends BlockEvent{
        private final IBlockState placedAgainst;
        private final EnumHand hand;
 
-       public ClientBlockPlaceEvent(@Nonnull BlockSnapshot blockSnapshot, @Nonnull IBlockState placedAgainst, @Nonnull EntityPlayer player, @Nonnull EnumHand hand) {
+       public ClientBlockPlaceEvent(@Nonnull BlockSnapshot blockSnapshot, @Nonnull IBlockState placedAgainst, @Nonnull EntityPlayer player, @Nonnull EnumHand hand) 
+       {
            super(blockSnapshot.getWorld(), blockSnapshot.getPos(), blockSnapshot.getCurrentBlock());
            this.player = player;
            this.blockSnapshot = blockSnapshot;
@@ -27,7 +28,6 @@ public class ClientBlockPlaceEvent extends BlockEvent{
        }
 
        public EntityPlayer getPlayer() { return player; }
-       @Nonnull
        @Deprecated
        public ItemStack getItemInHand() { return player.getHeldItem(hand); }
        public BlockSnapshot getBlockSnapshot() { return blockSnapshot; }

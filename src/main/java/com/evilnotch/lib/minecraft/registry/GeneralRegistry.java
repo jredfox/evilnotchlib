@@ -13,6 +13,7 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.minecraft.content.client.ClientUUID;
 import com.evilnotch.lib.minecraft.content.recipe.ShapelessRecipe;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.simple.PairObj;
@@ -22,12 +23,15 @@ import net.minecraft.block.material.Material;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameRules.Value;
+import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -249,6 +253,11 @@ public class GeneralRegistry {
 	public static void addShapedRecipe(ItemStack output, Object... params) 
 	{
 		GameRegistry.addShapedRecipe(new ResourceLocation(MinecraftUtil.getActiveModDomain() + ":" + recipeIndex++), new ResourceLocation("recipes"), output, params);
+	}
+
+	public static void registerClientCommand(ICommand cmd) 
+	{
+		ClientCommandHandler.instance.registerCommand(cmd);
 	}
 
 }

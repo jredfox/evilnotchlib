@@ -86,6 +86,12 @@ public class BlockApi {
 		b.blockMapColor = m;
 	}
 	
+	public static void setHarvestTool(Block b,int meta,String s)
+	{
+		String[] tools = (String[]) ReflectionUtil.getObject(b, Block.class, "harvestTool");
+		tools[meta] = s;
+	}
+	
 	public static void printBlock(Block b)
 	{
 		String tool = b.getHarvestTool(b.getDefaultState());
@@ -124,13 +130,6 @@ public class BlockApi {
 		if(sound == null)
 			return null;
 		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.soundTypes,sound);
-	}
-
-	//setters
-	public static void setHarvestTool(Block b,int meta,String s)
-	{
-		String[] tools = (String[]) ReflectionUtil.getObject(b, Block.class, "harvestTool");
-		tools[meta] = s;
 	}
 
 	public static String getHarvestTool(Block b, int meta) 

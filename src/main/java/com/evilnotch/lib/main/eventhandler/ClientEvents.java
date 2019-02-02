@@ -2,28 +2,19 @@ package com.evilnotch.lib.main.eventhandler;
 
 import java.util.List;
 
-import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.minecraft.content.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.content.client.Seeds;
 import com.evilnotch.lib.minecraft.content.tick.TickReg;
-import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
-import com.evilnotch.lib.minecraft.util.NBTUtil;
-import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.simple.RomanNumerals;
+import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -31,6 +22,15 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class ClientEvents {
+	
+	/**
+	 * future:Generate models with textures coming from the registry name
+	 */
+	@SubscribeEvent(priority=EventPriority.HIGH)
+	public void modeltest(ModelRegistryEvent event)
+	{
+		JsonGen.modelReg();
+	}
 	
 	/**
 	 * this is so data get's cleared on client side only that needs to not be stored all the time or is attatched per world
@@ -78,11 +78,11 @@ public class ClientEvents {
 	@SubscribeEvent
 	public void kickSelf(GuiOpenEvent e)
 	{
-		if(e.getGui() == null || !(e.getGui() instanceof GuiDisconnected) || EntityUtil.msgShutdown == null)
+		if(e.getGui() == null || !(e.getGui() instanceof GuiDisconnected) || PlayerUtil.msgShutdown == null)
 			return;
 		GuiDisconnected old = (GuiDisconnected)e.getGui();
-		e.setGui(new GuiDisconnected(new GuiMainMenu(),"disconnect.lost", EntityUtil.msgShutdown) );
-		EntityUtil.msgShutdown = null;
+		e.setGui(new GuiDisconnected(new GuiMainMenu(),"disconnect.lost", PlayerUtil.msgShutdown) );
+		PlayerUtil.msgShutdown = null;
 	}
 	
 }

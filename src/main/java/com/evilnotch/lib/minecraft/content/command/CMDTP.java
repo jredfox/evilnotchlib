@@ -1,7 +1,7 @@
 package com.evilnotch.lib.minecraft.content.command;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.TeleportUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -65,7 +65,7 @@ public class CMDTP extends CommandTP {
                     throw new CommandException("commands.tp.notSameDimension", new Object[0]);
                 }
                     
-                EntityUtil.teleportStackAtIndex(entity, server, entity1.posX, entity1.posY, entity1.posZ, entity1.rotationYaw, entity1.rotationPitch, entity1.dimension);
+                TeleportUtil.teleportStackAtIndex(entity, server, entity1.posX, entity1.posY, entity1.posZ, entity1.rotationYaw, entity1.rotationPitch, entity1.dimension);
 
                 notifyCommandListener(sender, this, "commands.tp.success", new Object[] {entity.getName(), entity1.getName()});
             }
@@ -73,7 +73,7 @@ public class CMDTP extends CommandTP {
     }
     public void teleportEntity(Entity e,MinecraftServer server, CommandBase.CoordinateArg argX, CommandBase.CoordinateArg argY, CommandBase.CoordinateArg argZ, CommandBase.CoordinateArg argYaw, CommandBase.CoordinateArg argPitch) throws WrongUsageException
     {
-    	EntityUtil.teleportStackAtIndex(e, server, argX.getResult(), argY.getResult(), argZ.getResult(), (float)argYaw.getResult(), (float)argPitch.getResult(), e.dimension);
+    	TeleportUtil.teleportStackAtIndex(e, server, argX.getResult(), argY.getResult(), argZ.getResult(), (float)argYaw.getResult(), (float)argPitch.getResult(), e.dimension);
     }
 
 }

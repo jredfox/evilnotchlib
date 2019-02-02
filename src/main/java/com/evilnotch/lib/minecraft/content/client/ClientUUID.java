@@ -2,7 +2,7 @@ package com.evilnotch.lib.minecraft.content.client;
 
 import java.util.UUID;
 
-import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -26,7 +26,7 @@ public class ClientUUID extends CommandBase implements IClientCommand{
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		UUID id = Minecraft.getMinecraft().player.getUniqueID();
-		EntityUtil.sendClipBoard("", "", Minecraft.getMinecraft().player, "UUID:", id.toString());
+		PlayerUtil.sendClipBoard("", "", Minecraft.getMinecraft().player, "UUID:", id.toString());
 	}
 
 	@Override
