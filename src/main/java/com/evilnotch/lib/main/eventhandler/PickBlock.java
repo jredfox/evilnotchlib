@@ -184,7 +184,7 @@ public class PickBlock {
         boolean flag1 = packetIn.getSlotId() >= 1 && packetIn.getSlotId() <= 45;
         boolean flag2 = itemstack.isEmpty() || itemstack.getMetadata() >= 0 && itemstack.getCount() <= 64 && !itemstack.isEmpty();
 
-        int itemDropThreshold = (int) ReflectionUtil.getObject(player.connection, NetHandlerPlayServer.class, LoaderFields.itemDropThreshold);
+        int itemDropThreshold = player.connection.itemDropThreshold;
         if (flag1 && flag2)
         {
             if (itemstack.isEmpty())
@@ -200,7 +200,7 @@ public class PickBlock {
         }
         else if (flag && flag2 && itemDropThreshold < 200)
         {
-        	ReflectionUtil.setObject(player.connection, itemDropThreshold + 20, NetHandlerPlayServer.class, LoaderFields.itemDropThreshold);
+        	player.connection.itemDropThreshold = itemDropThreshold + 20;
             EntityItem entityitem = player.dropItem(itemstack, true);
 
             if (entityitem != null)

@@ -11,31 +11,47 @@ public class ReflectionUtil {
 	
 	public static Object getObject(Object instance,Class clazz,String str)
 	{
-		try{
+		try
+		{
 			return ReflectionHelper.findField(clazz, str).get(instance);
-		}catch(Exception e){e.printStackTrace(); return null;}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace(); 
+			return null;
+		}
 	}
 	
 	public static void setObject(Object instance,Object toset,Class clazz,String str)
 	{
-		try{
+		try
+		{
 			ReflectionHelper.findField(clazz, str).set(instance,toset);
-		}catch(Exception e){e.printStackTrace();}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * Warning use at your own risk this is getting dangerous make sure you know what you are doing
 	 */
 	public static void setFinalObject(Object instance,Object toset,Class clazz,String strfeild)
 	{
-		try{
-		Field field = ReflectionHelper.findField(clazz,strfeild);
-		field.setAccessible(true);
-
-	    Field modifiersField = Field.class.getDeclaredField("modifiers");
-	    modifiersField.setAccessible(true);
-	    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-	    field.set(instance, toset);
-		}catch(Throwable t){t.printStackTrace();}
+		try
+		{
+			Field field = ReflectionHelper.findField(clazz,strfeild);
+			field.setAccessible(true);
+		
+			Field modifiersField = Field.class.getDeclaredField("modifiers");
+	    	modifiersField.setAccessible(true);
+	    	modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+	    	field.set(instance, toset);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
 	}
 
 	public static void invokeMethod(Object instance, Class<? extends GuiScreen> clazz, String mName,Object[] parameterobjs,Class[] param) 

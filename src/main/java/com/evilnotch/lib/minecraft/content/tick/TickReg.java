@@ -11,7 +11,8 @@ public class TickReg {
 	public static int tickCountServer;
 	public static int tickCountClient;
 	
-	public static void tickClient(){
+	public static void tickClient()
+	{
 		for(ITick t : clientTick)
 			t.tick();
 		tickCountClient++;
@@ -19,7 +20,8 @@ public class TickReg {
 			tickCountClient = 0;
 	}
 	
-	public static void tickServer(){
+	public static void tickServer()
+	{
 		for(ITick t : serverTick)
 			t.tick();
 		tickCountServer++;

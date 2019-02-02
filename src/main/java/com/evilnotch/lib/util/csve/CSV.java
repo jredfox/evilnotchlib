@@ -1,4 +1,4 @@
-package com.evilnotch.lib.util.csv;
+package com.evilnotch.lib.util.csve;
 
 import java.util.ArrayList;
 

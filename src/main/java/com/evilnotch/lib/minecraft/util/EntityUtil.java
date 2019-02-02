@@ -23,7 +23,6 @@ import org.apache.logging.log4j.Level;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.loader.LoaderFields;
@@ -566,12 +565,12 @@ public class EntityUtil {
 
 	public static SaveHandler getPlayerDataManager(PlayerList playerList) 
 	{
-		return (SaveHandler) ReflectionUtil.getObject(playerList, PlayerList.class, LoaderFields.playerDataManager);
+		return (SaveHandler) playerList.playerDataManager;
 	}
 	
 	public static DataFixer getDataFixer(SaveHandler handler) 
 	{
-		return (DataFixer) ReflectionUtil.getObject(handler, SaveHandler.class, LoaderFields.dataFixer);
+		return (DataFixer) handler.dataFixer;
 	}
 	
 	//Returns true for survival mode unless debug mode is on
@@ -1180,25 +1179,18 @@ public class EntityUtil {
 	 */
 	public static void captureCoords(EntityPlayerMP player)
 	{
-		try
-		{
-			NetHandlerPlayServer connection = player.connection;
-			LoaderFields.capture.invoke(connection);
-			
-			ReflectionUtil.setObject(connection, player.getLowestRidingEntity(), NetHandlerPlayServer.class, LoaderFields.lowestRiddenEnt);
-			
-			ReflectionUtil.setObject(connection, player.posX, NetHandlerPlayServer.class, LoaderFields.lowestRiddenX);
-			ReflectionUtil.setObject(connection, player.posY, NetHandlerPlayServer.class, LoaderFields.lowestRiddenY);
-			ReflectionUtil.setObject(connection, player.posZ, NetHandlerPlayServer.class, LoaderFields.lowestRiddenZ);
-			
-			ReflectionUtil.setObject(connection, player.posX, NetHandlerPlayServer.class, LoaderFields.lowestRiddenX1);
-			ReflectionUtil.setObject(connection, player.posY, NetHandlerPlayServer.class, LoaderFields.lowestRiddenY1);
-			ReflectionUtil.setObject(connection, player.posZ, NetHandlerPlayServer.class, LoaderFields.lowestRiddenZ1);
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-		}
+		NetHandlerPlayServer connection = player.connection;
+		connection.captureCurrentPosition();
+		
+		connection.lowestRiddenEnt = player.getLowestRidingEntity();
+		
+		connection.lowestRiddenX = player.posX;
+		connection.lowestRiddenY = player.posY;
+		connection.lowestRiddenZ = player.posZ;
+		
+		connection.lowestRiddenX1 = player.posX;
+		connection.lowestRiddenY1 = player.posY;
+		connection.lowestRiddenZ1 = player.posZ;
 	}
 	
 	/**
@@ -1329,8 +1321,7 @@ public class EntityUtil {
         {
         	try
         	{
-        		LoaderFields.methodEnt_copyDataFromOld.setAccessible(true);
-        		LoaderFields.methodEnt_copyDataFromOld.invoke(newEntity, entity);
+        		newEntity.copyDataFromOld(entity);
         		newEntity.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
         		//hotfix for minecarts and anything else that breaks onDeath() method
         		if(newEntity instanceof IInventory)
@@ -1368,19 +1359,11 @@ public class EntityUtil {
      */
     public static void removeDragonBars(World end) 
     {
-    	try
-    	{
-    		DragonFightManager fightManager = ((WorldProviderEnd)end.provider).getDragonFightManager();
-    		if(fightManager != null)
-    		{
-    			LoaderFields.method_dragonManager.setAccessible(true);
-    			LoaderFields.method_dragonManager.invoke(fightManager);
-    		}
-    	}
-    	catch(Throwable t)
-    	{
-    		t.printStackTrace();
-    	}
+		DragonFightManager fightManager = ((WorldProviderEnd)end.provider).getDragonFightManager();
+		if(fightManager != null)
+		{
+			fightManager.updateplayers();
+		}
     }
 	/**
      *supports teleporting entities from location to location in the same dimension doesn't support actual cross dimensional teleport
@@ -1557,18 +1540,20 @@ public class EntityUtil {
 	 */
 	public static void setEntityUUID(Entity player,UUID uuid) 
 	{
-		ReflectionUtil.setObject(player, uuid, Entity.class, LoaderFields.entityUniqueID);
-		ReflectionUtil.setObject(player, uuid.toString(), Entity.class, LoaderFields.cachedUniqueIdString);
+		player.entityUniqueID = uuid;
+		player.cachedUniqueIdString = uuid.toString();
 	}
 	/**
 	 * this alters both the uuid of the player object and the gameprofile uuid
 	 */
-	public static void setPlayerUUID(EntityPlayer player,UUID uuid) {
-		ReflectionUtil.setFinalObject(player.getGameProfile(), uuid, GameProfile.class, LoaderFields.gameProfileId);
+	public static void setPlayerUUID(EntityPlayer player,UUID uuid) 
+	{
+		ReflectionUtil.setFinalObject(player.getGameProfile(), uuid, GameProfile.class, "id");
 		setEntityUUID(player,uuid);
 	}
 
-	public static UUID getServerPlayerUUID(GameProfile profile) {
+	public static UUID getServerPlayerUUID(GameProfile profile) 
+	{
 		File file = EntityUtil.getPlayerFileNameSafley(profile);//updates player file synced to uuid on login
 		NBTTagCompound nbt = NBTUtil.getFileNBT(file);
 		return UUID.fromString(nbt.getString("uuid"));
@@ -1585,7 +1570,7 @@ public class EntityUtil {
         if(!actual.toString().equals(init.toString()))
         {
         	System.out.println("Patching Player UUID uuidPlayer:" + gameprofile.getId() + " with uuidServer:" + actual);
-    		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, LoaderFields.gameProfileId);
+    		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, "id");
     		VanillaBugFixes.playerFlags.add(gameprofile.getName());
         }
 	}

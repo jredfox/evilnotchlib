@@ -26,74 +26,66 @@ public class BlockApi {
 	//getters
 	public static float getBlockHardness(Block b)
 	{
-		return (float)ReflectionUtil.getObject(b, Block.class, LoaderFields.blockHardness);
+		return b.blockHardness;
 	}
+	
 	public static ResourceLocation getBlockString(Block b)
 	{
 		return BlockUtil.getStringId(b);
 	}
+	
 	public static ResourceLocation getItemString(Item item)
 	{
 		return ItemUtil.getStringId(item);
 	}
-	public static Material getblockmaterial(Block b) {
-		return (Material) ReflectionUtil.getObject(b, Block.class, LoaderFields.blockMaterial);
-	}
-	public static String getHarvestTool(Block b,int meta){
-		return ((String[]) ReflectionUtil.getObject(b, Block.class, LoaderFields.harvestTool))[meta];
-	}
-	public static float getBlastResistence(Block b) {
-		return (Float)ReflectionUtil.getObject(b, Block.class, LoaderFields.blastResistence);
+	
+	public static Material getblockmaterial(Block b) 
+	{
+		return b.blockMaterial;
 	}
 	
-	//setters
-	public static void setHarvestTool(Block b,int meta,String s)
+	public static String getHarvestTool(Block b,IBlockState state)
 	{
-		String[] tools = (String[]) ReflectionUtil.getObject(b, Block.class, LoaderFields.harvestTool);
-		tools[meta] = s;
+		return b.getHarvestTool(state);
 	}
+	
+	public static float getBlastResistence(Block b) 
+	{
+		return b.blockResistance;
+	}
+	
 	public static void setStepSound(Block b,SoundType type)
 	{
-		ReflectionUtil.setObject(b, type, Block.class, LoaderFields.blockSoundType);
+		b.blockSoundType = type;
 	}
+	
 	public static void setTransLucent(Block b, boolean boole)
 	{
-		ReflectionUtil.setObject(b, boole, Block.class, LoaderFields.translucent);
+		b.translucent = boole;
 	}
+	
 	public static void setBlasResistence(Block b, float f)
 	{	
-		ReflectionUtil.setObject(b, f, Block.class, LoaderFields.blockResistance);
+		b.blockResistance = f;
 	}
+	
 	public static void setEnableStats(Block b, boolean boole)
 	{
-		ReflectionUtil.setObject(b, boole, Block.class, LoaderFields.enableStats);
+		b.enableStats = boole;
 	}
-	public static void setisTileProvider(Block b, boolean boole)
+	
+	public static void setMaterial(Block b, Material m, boolean mapColor)
 	{
-		ReflectionUtil.setObject(b, boole, Block.class, LoaderFields.isTileProvider);
+		b.blockMaterial = m;
+		if(mapColor)
+			b.blockMapColor = m.getMaterialMapColor();
 	}
-	public static void setMaterial(Block b, Material m,String toolclazz)
+	
+	public static void setMapColor(Block b, MapColor m)
 	{
-		setMaterial(b,m,false,toolclazz);
+		b.blockMapColor = m;
 	}
-	public static void setMaterial(Block b, Material m,boolean setMatColor,String toolclazz)
-	{
-		ReflectionUtil.setFinalObject(b, m, Block.class, LoaderFields.blockMaterial);
-		if(setMatColor)
-			ReflectionUtil.setFinalObject(b, m.getMaterialMapColor(), Block.class, LoaderFields.blockMaterialMapColor);
-		
-		//if people want null tool classes they can use setHarvestLevel
-		if(toolclazz != null)
-		{
-			java.util.Iterator<IBlockState> it = b.getBlockState().getValidStates().iterator();
-			while (it.hasNext())
-			{
-				IBlockState state = it.next();
-				setHarvestTool(b,b.getMetaFromState(state),toolclazz);
-			}
-		}
-        blocksModified.add(b.getRegistryName() );
-	}
+	
 	public static void printBlock(Block b)
 	{
 		String tool = b.getHarvestTool(b.getDefaultState());
@@ -105,6 +97,7 @@ public class BlockApi {
 				" flameE:" + Blocks.FIRE.getEncouragement(b) + " flame:" + Blocks.FIRE.getFlammability(b) + 
 				" slip:" + b.slipperiness + " light:" + b.getLightValue(b.getDefaultState()));
 	}
+	
 	/**
 	 * Only supports whatever is registered via my mod
 	 * Get block material from material registry
@@ -113,23 +106,37 @@ public class BlockApi {
 	{
 		return GeneralRegistry.blockmats.get(s);
 	}
+	
 	public static SoundType getSoundType(ResourceLocation s)
 	{
 		return GeneralRegistry.soundTypes.get(s);
 	}
-	public static ResourceLocation getMaterialLoc(Material mat){
+	
+	public static ResourceLocation getMaterialLoc(Material mat)
+	{
 		if(mat == null)
 			return null;
 		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.blockmats,mat);
 	}
-	public static ResourceLocation getSoundTypeLoc(SoundType sound) {
+	
+	public static ResourceLocation getSoundTypeLoc(SoundType sound) 
+	{
 		if(sound == null)
 			return null;
 		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.soundTypes,sound);
 	}
-	public static void printMaterialMapColor(Block b) {
-		MapColor color = (MapColor) ReflectionUtil.getObject(b, Block.class, "blockMapColor");
-		System.out.println("colorValue:" + color.colorValue);
+
+	//setters
+	public static void setHarvestTool(Block b,int meta,String s)
+	{
+		String[] tools = (String[]) ReflectionUtil.getObject(b, Block.class, "harvestTool");
+		tools[meta] = s;
+	}
+
+	public static String getHarvestTool(Block b, int meta) 
+	{
+		String[] tools = (String[]) ReflectionUtil.getObject(b, Block.class, "harvestTool");
+		return tools[meta];
 	}
 	
 }

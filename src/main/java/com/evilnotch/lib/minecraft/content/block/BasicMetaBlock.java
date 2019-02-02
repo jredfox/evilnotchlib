@@ -93,8 +93,9 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 		}
 	}
 	
-	public void setStateConstructor(IProperty prop) {
-		ReflectionUtil.setFinalObject(this, this.createBlockState(), Block.class, LoaderFields.blockstate);
+	public void setStateConstructor(IProperty prop) 
+	{
+		this.blockState = this.createBlockState();
         this.setDefaultState(this.blockState.getBaseState().withProperty(prop, getDefaultValue(prop)));
 	}
 

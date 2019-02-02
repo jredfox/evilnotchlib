@@ -96,7 +96,7 @@ public class ArmorMat implements IEnumContainer{
 	 
 	 @Override
 	 public String toString(){
-		 return "\"" + this.enumName + "\" = [\"" + this.textureName + "\"," + this.durability + ",[" + JavaUtil.getIntsAsString(this.damageReductionAmountArray) + "]," + this.enchantability + ",\"" + LoaderFields.getSoundEventAsLoc(this.soundEvent) + "\"," + this.toughness + "f]";
+		 return "\"" + this.enumName + "\" = [\"" + this.textureName + "\"," + this.durability + ",[" + JavaUtil.getIntsAsString(this.damageReductionAmountArray) + "]," + this.enchantability + ",\"" + this.soundEvent.getRegistryName() + "\"," + this.toughness + "f]";
 	 }
 
 }

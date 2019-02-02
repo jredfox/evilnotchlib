@@ -7,8 +7,8 @@ import java.util.List;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.csv.CSV;
-import com.evilnotch.lib.util.csv.CSVE;
+import com.evilnotch.lib.util.csve.CSV;
+import com.evilnotch.lib.util.csve.CSVE;
 
 import net.minecraftforge.common.MinecraftForge;
 

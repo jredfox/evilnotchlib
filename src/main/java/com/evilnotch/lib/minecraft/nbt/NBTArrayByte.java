@@ -37,8 +37,7 @@ public class NBTArrayByte extends NBTTagByteArray implements INBTWrapperArray{
 	@Override
 	public void toVanilla()
 	{
-		String name = new MCPSidedString("data","field_74754_a").toString();
-		ReflectionUtil.setObject(this, JavaUtil.arrayToStaticBytes(this.bytes), NBTTagByteArray.class, name);
+		this.data = JavaUtil.arrayToStaticBytes(this.bytes);
 	}
 
 }

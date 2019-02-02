@@ -95,6 +95,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 			this.itemblock = itemblock;
 		}
 	}
+	
 	protected void fillProperties(BlockProperties props) 
 	{
 		if(props != null)
@@ -110,7 +111,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 			
 			if(props.mat != null)
 			{
-				BlockApi.setMaterial(this, props.mat,true,props.harvestTool);
+				BlockApi.setMaterial(this, props.mat, true);
 			}
 			
 			if(props.sound != null)

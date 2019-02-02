@@ -33,8 +33,7 @@ public class NBTArrayLong extends NBTTagLongArray implements INBTWrapperArray{
 	@Override
 	public void toVanilla()
 	{
-		String name = new MCPSidedString("data","field_193587_b").toString();
-		ReflectionUtil.setObject(this, arrayToStaticLong(this.values), NBTTagLongArray.class, name);
+		this.data = arrayToStaticLong(this.values);
 	}
 
 	public long[] arrayToStaticLong(List<Long> li) {

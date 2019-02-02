@@ -27,6 +27,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.GameRules.Value;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -188,7 +189,7 @@ public class GeneralRegistry {
     			keys.remove();
     		}
     	}
-    	Set<ICommand> cmds = (Set<ICommand>) ReflectionUtil.getObject(manager, CommandHandler.class, LoaderFields.commandSet);
+    	Set<ICommand> cmds = ((CommandHandler)manager).commandSet;
     	Iterator<ICommand> it = cmds.iterator();
     	while(it.hasNext())
     	{
@@ -209,7 +210,7 @@ public class GeneralRegistry {
 	}
 	public static void removeActiveGameRules(GameRules g)
 	{
-		TreeMap<String, Object> map = (TreeMap<String, Object>) ReflectionUtil.getObject(g, GameRules.class, LoaderFields.gameRuleMap);
+		TreeMap<String, Value> map = g.rules;
 		for(String s : gameRulesRemove)
 		{
 			map.remove(s);

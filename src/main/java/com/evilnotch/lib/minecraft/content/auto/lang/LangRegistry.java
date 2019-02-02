@@ -53,14 +53,14 @@ public class LangRegistry {
 		if(langlistClient == null)
 		{
 			LanguageManager manager = Minecraft.getMinecraft().getLanguageManager();
-			Locale l = (Locale)ReflectionUtil.getObject(manager, LanguageManager.class, LoaderFieldsClient.CURRENT_LOCALE);
-			Map<String, String> map = (Map<String, String>) ReflectionUtil.getObject(l, Locale.class, LoaderFieldsClient.properties);
+			Locale l = manager.CURRENT_LOCALE;
+			Map<String, String> map = l.properties;
 			langlistClient = map;
 		}
 		if(langlist == null)
 		{
-			LanguageMap manager = (LanguageMap) ReflectionUtil.getObject(null, I18n.class, LoaderFields.lang_localizedName);
-			langlist = (Map<String, String>) ReflectionUtil.getObject(manager, LanguageMap.class, MCPMappings.getField(LanguageMap.class, "languageList"));
+			LanguageMap manager = I18n.localizedName;
+			langlist = manager.languageList;
 		}
 		currentLang = getCurrentLang();
 		//inject lang into mc ignoring if it has it already since in dev code is supreme

@@ -34,8 +34,7 @@ public class NBTArrayInt extends NBTTagIntArray implements INBTWrapperArray{
 	@Override
 	public void toVanilla()
 	{
-		String name = new MCPSidedString("intArray","field_74749_a").toString();
-		ReflectionUtil.setObject(this, JavaUtil.arrayToStaticInts(this.values), NBTTagIntArray.class, name);
+		this.intArray = JavaUtil.arrayToStaticInts(this.values);
 	}
 
 }
