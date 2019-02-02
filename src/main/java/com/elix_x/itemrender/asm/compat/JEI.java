@@ -41,7 +41,6 @@ public class JEI {
 				if(type.desc.equals("mezz/jei/api/ingredients/ISlowRenderItem"))
 				{
 					spot = type;
-					System.out.println(spot.getOpcode() + " next:" + spot.getNext().getOpcode() );
 					while(spot.getOpcode() != Opcodes.IFNE)
 					{
 						spot = spot.getNext();

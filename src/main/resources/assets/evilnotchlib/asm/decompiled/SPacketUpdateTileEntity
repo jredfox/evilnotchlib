@@ -1,8 +1,8 @@
 package net.minecraft.network.play.server;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+
+import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -18,8 +18,6 @@ public class SPacketUpdateTileEntity implements Packet<INetHandlerPlayClient>
     /** Used only for vanilla tile entities */
     protected int tileEntityType;
     protected NBTTagCompound nbt;
-    
-    public static Set<BlockPos> toIgnore = new HashSet();
 
     public SPacketUpdateTileEntity()
     {
@@ -57,10 +55,9 @@ public class SPacketUpdateTileEntity implements Packet<INetHandlerPlayClient>
      */
     public void processPacket(INetHandlerPlayClient handler)
     {
-    	if(this.toIgnore.contains(this.blockPos))
+    	if(IgnoreTilePacket.ignoreTiles.contains(this.blockPos))
     	{
-//    		System.out.println("Ignoring packet for tile:" + this.blockPos);
-    		this.toIgnore.remove(this.blockPos);
+    		IgnoreTilePacket.ignoreTiles.remove(this.blockPos);
     		return;
     	}
         handler.handleUpdateTileEntity(this);

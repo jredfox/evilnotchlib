@@ -21,7 +21,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		System.out.println(JavaUtil.isStringInt("-1.23"));
+		
 	}
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)
 	{

@@ -104,7 +104,7 @@ public class Transformer implements IClassTransformer
                 break;
                 
                 case 5:
-                	return ASMHelper.replaceClass(inputBase + "SPacketUpdateTileEntity");
+                	ASMHelper.replaceMethod(classNode, inputBase + "SPacketUpdateTileEntity", "processPacket", "(Lnet/minecraft/network/play/INetHandlerPlayClient;)V", "func_148833_a");
                 case 6:
                 	if(FMLCorePlugin.isObf)
                 		ASMHelper.replaceMethod(classNode, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "func_184337_a");

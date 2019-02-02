@@ -7,6 +7,7 @@ import java.util.Set;
 import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.TileStackSyncEvent;
+import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
@@ -100,7 +101,7 @@ public class VanillaBugFixes {
         if(e.world.isRemote)
         {
         	if(e.tile instanceof TileEntityMobSpawner)
-        		SPacketUpdateTileEntity.toIgnore.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
+        		IgnoreTilePacket.ignoreTiles.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
         }
 	}
 	
