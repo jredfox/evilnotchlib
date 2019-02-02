@@ -6,11 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.loader.LoaderFields;
-import com.evilnotch.lib.main.loader.LoaderFieldsClient;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.content.block.BasicBlock;
 import com.evilnotch.lib.minecraft.content.client.creativetab.BasicCreativeTab;

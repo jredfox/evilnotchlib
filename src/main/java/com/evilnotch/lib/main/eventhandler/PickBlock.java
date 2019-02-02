@@ -200,7 +200,7 @@ public class PickBlock {
         }
         else if (flag && flag2 && itemDropThreshold < 200)
         {
-        	player.connection.itemDropThreshold = itemDropThreshold + 20;
+        	player.connection.itemDropThreshold += 20;
             EntityItem entityitem = player.dropItem(itemstack, true);
 
             if (entityitem != null)

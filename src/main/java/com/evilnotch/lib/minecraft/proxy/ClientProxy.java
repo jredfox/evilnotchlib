@@ -11,11 +11,8 @@ import org.json.simple.JSONObject;
 
 import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.ClientEvents;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
-import com.evilnotch.lib.main.loader.LoaderFields;
-import com.evilnotch.lib.main.loader.LoaderFieldsClient;
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
@@ -64,7 +61,6 @@ public class ClientProxy extends ServerProxy{
 	{
 		super.preinit(e);
 		
-		LoaderFieldsClient.cacheFields();
 		registerEvents();
 	}
 	private void registerEvents() 

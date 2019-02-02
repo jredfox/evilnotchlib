@@ -55,21 +55,21 @@ public class MCPMappings {
 	{
 		MCPEntry e = getEntry(clazz,strname, fields);
 		if(e != null)
-			return e.srg;
+			return e.mcp.ob;
 		return null;
 	}
 	public static String getMethodOb(Class clazz, String strname)
 	{
 		MCPEntry e = getEntry(clazz,strname, methods);
 		if(e != null)
-			return e.srg;
+			return e.mcp.ob;
 		return null;
 	}
 	public static MCPEntry getEntryFromOb(String ob,ArrayList<MCPEntry> list)
 	{
 		for(MCPEntry e : list)
 		{
-			if(e.srg.equals(ob))
+			if(e.mcp.ob.equals(ob))
 				return e;
 		}
 		return null;
@@ -78,7 +78,7 @@ public class MCPMappings {
 	{
 		for(MCPEntry e : list)
 		{
-			String name = e.name;
+			String name = e.mcp.deob;
 			if(name.equals(field))
 			{
 				ArrayList<Class> clazzes = e.getClasses();
@@ -91,6 +91,7 @@ public class MCPMappings {
 		}
 		return null;
 	}
+	
 	public static void cacheMCPApplicable(File dir)
 	{
 		if(!isCached)
@@ -112,10 +113,8 @@ public class MCPMappings {
 		
 		JavaUtil.moveFileFromJar(MainJava.class, strfield,dirFields, false);
 		JavaUtil.moveFileFromJar(MainJava.class, strmethod, dirMethods, false);
-//		JavaUtil.moveFileFromJar(MainJava.class, strparams, dirParams, false);  #unsupported right now
 		CSVE field = new CSVE(dirFields);
 		CSVE method = new CSVE(dirMethods);
-//		CSVE par = new CSVE(dirParams);
 		
 		for(CSV csv : field.list)
 		{

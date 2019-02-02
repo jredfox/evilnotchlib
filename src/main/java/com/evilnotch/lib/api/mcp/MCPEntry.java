@@ -5,18 +5,22 @@ import java.util.ArrayList;
 import com.evilnotch.lib.main.Config;
 
 public class MCPEntry {
-	public String srg = null;
-	public String name = null;
+	
+	public MCPSidedString mcp = null;
 	public ArrayList<String> classes = new ArrayList();
 	public ArrayList<Class> actualClasses = new ArrayList();
 	
-	public MCPEntry(String strsrg, String strname,ArrayList<String> clazz)
+	public MCPEntry(String srg, String name,ArrayList<String> clazz)
 	{
-		try{
-			this.srg = strsrg;
-			this.name = strname;
+		try
+		{
+			this.mcp = MCPSidedString.getMCPSidedStringSRG(srg, name);
 			this.classes = clazz;
-		}catch(Exception e){e.printStackTrace();}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	@Override
 	public String toString()
@@ -24,7 +28,7 @@ public class MCPEntry {
 		String s = "";
 		for(String c : classes)
 			s += c + ",";
-		return this.srg + "," + this.name + "," + s;
+		return this.mcp.ob + "," + this.mcp.deob + "," + s;
 	}
 	/**
 	 * hotfix
@@ -35,10 +39,11 @@ public class MCPEntry {
 		if(!(obj instanceof MCPEntry) )
 			return false;
 		MCPEntry e = (MCPEntry) obj;
-		return this.srg.equals(e.srg) && this.name.equals(e.name) && this.classes.equals(e.classes);
+		return this.mcp.ob.equals(e.mcp.ob) && this.mcp.deob.equals(e.mcp.deob) && this.classes.equals(e.classes);
 	}
-	public ArrayList<Class> getClasses() {
-		
+	
+	public ArrayList<Class> getClasses() 
+	{	
 		//optimization
 		if(this.actualClasses.size() > 0)
 			return this.actualClasses;
@@ -46,10 +51,13 @@ public class MCPEntry {
 		ArrayList<Class> clazzes = new ArrayList();
 		for(String str : this.classes)
 		{
-			try{
+			try
+			{
 				Class c = Class.forName(str.replaceAll("/", "."));
 				clazzes.add(c);
-			}catch(Throwable t){
+			}
+			catch(Throwable t)
+			{
 				if(Config.debug)
 					t.printStackTrace();
 			}
