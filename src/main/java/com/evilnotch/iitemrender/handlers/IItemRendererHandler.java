@@ -1,4 +1,4 @@
-package com.elix_x.itemrender.handlers;
+package com.evilnotch.iitemrender.handlers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,9 @@ import net.minecraft.item.ItemStack;
 public class IItemRendererHandler {
 
 	private static Map<Item, IItemRenderer> renderers = new HashMap<>();
+	/**
+	 * this field gets updated when ForgeHooksClient#handleCameraTransforms()
+	 */
 	private static TransformType currentTransformType;
 
 	public static IItemRenderer getIItemRenderer(Item item)

@@ -1,4 +1,4 @@
-package com.elix_x.itemrender.handlers;
+package com.evilnotch.iitemrender.handlers;
 
 import javax.annotation.Nullable;
 

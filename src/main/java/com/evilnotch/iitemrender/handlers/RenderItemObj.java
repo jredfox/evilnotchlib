@@ -1,8 +1,9 @@
-package com.elix_x.itemrender.handlers;
+package com.evilnotch.iitemrender.handlers;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -17,9 +18,9 @@ public class RenderItemObj extends RenderItem {
 	
 	public RenderItem child;
 
-	public RenderItemObj(RenderItem renderItem, TextureManager textureManager, ItemColors itemColors)
+	public RenderItemObj(RenderItem renderItem)
 	{
-		super(textureManager, renderItem.getItemModelMesher().getModelManager(), itemColors);
+		super(Minecraft.getMinecraft().renderEngine, renderItem.getItemModelMesher().getModelManager(), Minecraft.getMinecraft().getItemColors());
 		this.child = renderItem;
 		this.itemModelMesher = this.child.itemModelMesher;
 	}
@@ -42,23 +43,5 @@ public class RenderItemObj extends RenderItem {
 			this.child.renderItemOverlayIntoGUI(fr, itemstack, xPosition, yPosition, text);
 			IItemRendererHandler.renderItemOverlayIntoGUIPost(this, fr, itemstack, xPosition, yPosition, text);
 		}
-	}
-
-	@Override
-	public void renderItemModel(ItemStack stack, IBakedModel bakedmodel, TransformType transform, boolean leftHanded)
-	{
-		if(IItemRendererHandler.hasKey(stack))
-			super.renderItemModel(stack, bakedmodel, transform, leftHanded);
-		else
-			this.child.renderItemModel(stack,bakedmodel,transform,leftHanded);//make other mods have their transform types since forge doesn't freaken store it anywhere
-	}
-
-	@Override
-	public void renderItemModelIntoGUI(ItemStack stack, int x, int y, IBakedModel bakedmodel)
-	{
-		if(IItemRendererHandler.hasKey(stack))
-			super.renderItemModelIntoGUI(stack, x, y, bakedmodel);
-		else
-			this.child.renderItemModelIntoGUI(stack,x,y,bakedmodel);
 	}
 }
