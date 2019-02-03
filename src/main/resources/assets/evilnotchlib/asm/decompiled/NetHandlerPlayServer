@@ -137,7 +137,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
      * 200
      */
     private int chatSpamThresholdCount;
-    private int itemDropThreshold;
+    public int itemDropThreshold;
     private final IntHashMap<Short> pendingTransactions = new IntHashMap<Short>();
     private double firstGoodX;
     private double firstGoodY;
@@ -145,13 +145,13 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
     private double lastGoodX;
     private double lastGoodY;
     private double lastGoodZ;
-    private Entity lowestRiddenEnt;
-    private double lowestRiddenX;
-    private double lowestRiddenY;
-    private double lowestRiddenZ;
-    private double lowestRiddenX1;
-    private double lowestRiddenY1;
-    private double lowestRiddenZ1;
+    public Entity lowestRiddenEnt;
+    public double lowestRiddenX;
+    public double lowestRiddenY;
+    public double lowestRiddenZ;
+    public double lowestRiddenX1;
+    public double lowestRiddenY1;
+    public double lowestRiddenZ1;
     private Vec3d targetPos;
     private int teleportId;
     private int lastPositionUpdate;
@@ -272,7 +272,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         }
     }
 
-    private void captureCurrentPosition()
+    public void captureCurrentPosition()
     {
         this.firstGoodX = this.player.posX;
         this.firstGoodY = this.player.posY;

@@ -6,8 +6,6 @@ import net.minecraftforge.common.config.Configuration;
 
 public class ConfigCore {
 	
-	public static boolean playerOwnerAlwaysFix = true;
-	
 	public static boolean asm_playerlist = true;
 	public static boolean asm_furnace = true;
 	public static boolean asm_clientPlaceEvent = true;
@@ -35,8 +33,6 @@ public class ConfigCore {
 		asm_enchantments = config.get("asm","enchantmentNameFix",true).getBoolean();
 		
 		cfgIndex = config.get("debug","cfgIndex",cfgIndex).getInt();
-		
-		playerOwnerAlwaysFix = config.get("general", "playerOwnerSwapAlwaysFix", true).getBoolean();
 		config.save();
 	}
 

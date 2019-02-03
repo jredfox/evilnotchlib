@@ -1,16 +1,12 @@
 package net.minecraft.item;
 
-import com.evilnotch.lib.minecraft.event.TileStackSyncEvent;
-import com.evilnotch.lib.minecraft.event.TileStackSyncEvent.Merge;
-import com.evilnotch.lib.minecraft.event.TileStackSyncEvent.Permissions;
-import com.evilnotch.lib.minecraft.event.TileStackSyncEvent.Post;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 
-import java.io.PrintStream;
-import java.util.List;
-import javax.annotation.Nullable;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.PlacedBlockTrigger;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
@@ -20,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -28,11 +23,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.registries.IRegistryDelegate;
 
 public class ItemBlock
   extends Item
@@ -71,7 +63,7 @@ public class ItemBlock
   public static boolean setTileEntityNBT(World worldIn, @Nullable EntityPlayer player, BlockPos pos, ItemStack stackIn)
   {
     NBTTagCompound nbt = stackIn.getSubCompound("BlockEntityTag");
-    return TileEntityUtil.setTileNBT(worldIn, player, pos, stackIn, nbt,true);
+    return TileEntityUtil.setTileNBT(worldIn, player, pos, nbt,true);
   }
   
   @SideOnly(Side.CLIENT)

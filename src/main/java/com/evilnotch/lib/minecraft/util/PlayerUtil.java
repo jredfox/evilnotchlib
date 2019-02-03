@@ -3,6 +3,7 @@ package com.evilnotch.lib.minecraft.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.UUID;
 
 import com.evilnotch.lib.api.ReflectionUtil;
@@ -15,7 +16,6 @@ import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -35,6 +35,11 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class PlayerUtil {
+	
+	/**
+	 * used on player login so it doesn't parse twice will self empty login complete so don't expect data to be here long
+	 */
+    public static HashMap<UUID,NBTTagCompound> nbts = new HashMap();
 	
     /**
      * default url vanilla format
@@ -93,36 +98,6 @@ public class PlayerUtil {
 			return new File(VanillaBugFixes.playerDataNames,username + ".dat");
 	}
 	
-	/**
-	 * Returns the uuidFile or cached file based on uuid boolean
-	 * @param player
-	 * @param uuid
-	 * @return player file
-	 */
-	public static File getPlayerFileSafley(EntityPlayer player,boolean uuid)
-	{
-		File file = getPlayerFile(player,uuid);
-		if(uuid)
-		{
-			if(!file.exists())
-			{
-				NBTTagCompound nbt = EntityUtil.getEntityNBT(player);
-				updatePlayerFile(file,nbt);
-			}
-			return file;
-		}
-		else
-		{
-			if(!file.exists())
-			{
-				NBTTagCompound nbt = new NBTTagCompound();
-				nbt.setString("uuid", player.getUniqueID().toString() );
-				updatePlayerFile(file,nbt);
-			}
-			return file;
-		}
-	}
-	
 	public static File getPlayerFileNameSafley(GameProfile profile)
 	{
 		File file = getPlayerFile(profile.getName(),false);
@@ -145,44 +120,18 @@ public class PlayerUtil {
 	
 	public static NBTTagCompound getPlayerFileNBT(String display,EntityPlayerMP player,boolean uuidDir) 
 	{
-		return getPlayerFileNBT(display,player.mcServer.getPlayerList(),uuidDir);
+		return getPlayerFileNBT(getPlayerFile(player, uuidDir),player.mcServer.getPlayerList());
 	}
 	
 	/**
 	 * Gets cached playerdata from filename don't call unless you have the exact string
 	 */
-	public static NBTTagCompound getPlayerFileNBT(String display,PlayerList playerlist,boolean uuidDir) 
+	public static NBTTagCompound getPlayerFileNBT(File f, PlayerList list) 
 	{
-		FileInputStream stream = null;
-		NBTTagCompound nbt = null;
-		try
-		{
-			stream = !uuidDir ? new FileInputStream(new File(VanillaBugFixes.playerDataNames,display + ".dat")) : new FileInputStream(new File(VanillaBugFixes.playerDataDir,display + ".dat"));
-			nbt = CompressedStreamTools.readCompressed(stream);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			nbt = null;
-		}
-		finally
-		{
-			if(stream != null)
-			{
-				try
-				{
-					stream.close();
-				}
-				catch (IOException e)
-				{
-					System.out.println("unable to close input stream for player:" + display + ".dat");
-				}
-			}
-		}
-		//fix player's nbt
+		NBTTagCompound nbt = NBTUtil.getFileNBTSafley(f);
 		if(nbt != null)
 		{
-			nbt = getFixedPlayerNBT(playerlist,nbt);
+			nbt = getFixedPlayerNBT(list,nbt);
 		}
 		return nbt;
 	}
@@ -251,8 +200,6 @@ public class PlayerUtil {
 
 	public static boolean isPlayerOwner(EntityPlayerMP player)
 	{
-		if(!LoaderMain.isClient)
-			return false;
 		return player.getName().equals(player.getServer().getServerOwner());
 	}
 

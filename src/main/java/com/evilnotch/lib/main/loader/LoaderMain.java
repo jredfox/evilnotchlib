@@ -20,6 +20,7 @@ import com.evilnotch.lib.minecraft.content.world.FakeWorld;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommand;
@@ -96,7 +97,7 @@ public class LoaderMain {
 	{
 		//prevent memory leaks
 		TickReg.garbageCollectServer();
-		EntityUtil.nbts.clear();
+		PlayerUtil.nbts.clear();
 		VanillaBugFixes.playerFlags.clear();
 		LibEvents.kicker.clear();
 		LibEvents.isKickerIterating = false;

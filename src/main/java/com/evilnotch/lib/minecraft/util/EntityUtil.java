@@ -134,11 +134,6 @@ public class EntityUtil {
 	public static Set<ResourceLocation> ent_blacklist = new HashSet();//List of all failed Entities
 	public static Set<ResourceLocation> ent_blacklist_commandsender = new HashSet();//List of all failed Entities
 	public static Set<ResourceLocation> ent_blacklist_nbt = new HashSet();
-	
-	/**
-	 * used on player login so it doesn't parse twice will self empty login complete so don't expect data to be here long
-	 */
-    public static HashMap<UUID,NBTTagCompound> nbts = new HashMap();
     
 	public static String getEntityString(Entity e)
 	{
@@ -969,6 +964,17 @@ public class EntityUtil {
 		{
 			t.printStackTrace();
 		}
+	}
+	
+	public static float getRotationYaw(NBTTagCompound nbt)
+	{
+		NBTTagList nbttaglist3 = nbt.getTagList("Rotation", 5);
+		return nbttaglist3.getFloatAt(0);
+	}
+	public static float getRotationPitch(NBTTagCompound nbt)
+	{
+		NBTTagList nbttaglist3 = nbt.getTagList("Rotation", 5);
+		return nbttaglist3.getFloatAt(1);
 	}
 
 }

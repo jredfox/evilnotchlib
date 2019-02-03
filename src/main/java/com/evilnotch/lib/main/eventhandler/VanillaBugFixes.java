@@ -101,7 +101,10 @@ public class VanillaBugFixes {
         if(e.world.isRemote)
         {
         	if(e.tile instanceof TileEntityMobSpawner)
+        	{
         		IgnoreTilePacket.ignoreTiles.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
+        		System.out.println("here");
+        	}
         }
 	}
 	

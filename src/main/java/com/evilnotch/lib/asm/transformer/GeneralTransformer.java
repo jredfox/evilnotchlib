@@ -47,7 +47,7 @@ public class GeneralTransformer {
 		 MethodNode method = ASMHelper.getMethodNode(playerList, method_name, method_desc);
 		 InsnList toInsert = new InsnList();
          toInsert.add(new VarInsnNode(ALOAD,1));
-         toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/EntityUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
+         toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
          method.instructions.insertBefore(ASMHelper.getFirstInstruction(method, Opcodes.ALOAD),toInsert);
 	}
 

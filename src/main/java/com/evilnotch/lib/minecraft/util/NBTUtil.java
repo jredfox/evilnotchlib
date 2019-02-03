@@ -92,16 +92,6 @@ public class NBTUtil {
 		}
 		return nbt;
 	}
-	public static float getRotationYaw(NBTTagCompound nbt)
-	{
-		NBTTagList nbttaglist3 = nbt.getTagList("Rotation", 5);
-		return nbttaglist3.getFloatAt(0);
-	}
-	public static float getRotationPitch(NBTTagCompound nbt)
-	{
-		NBTTagList nbttaglist3 = nbt.getTagList("Rotation", 5);
-		return nbttaglist3.getFloatAt(1);
-	}
 	
 	/**
 	 * update nbt file checks
@@ -126,27 +116,12 @@ public class NBTUtil {
 		}
 		updateNBTFile(file,nbt);
 	}
+	
 	public static NBTTagCompound getFileNBTSafley(File file) 
-	{
-		if(!file.exists())
-		{
-			try
-			{
-				File parent = file.getParentFile();
-				if(!parent.exists())
-					parent.mkdirs();
-				file.createNewFile();
-				updateNBTFile(file, new NBTTagCompound());
-				return new NBTTagCompound();//optimized way
-			}
-			catch(Throwable t)
-			{
-				t.printStackTrace();
-				return null;
-			}
-		}
-		return getFileNBT(file);
+	{	
+		return file.exists() ? getFileNBT(file) : null;
 	}
+	
 	public static NBTTagList getNBTTagListSafley(NBTTagCompound tag, String name, int type) 
 	{
 		if(tag == null)
