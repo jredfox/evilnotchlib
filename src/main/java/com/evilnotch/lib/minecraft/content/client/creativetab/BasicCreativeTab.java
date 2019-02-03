@@ -1,10 +1,8 @@
 package com.evilnotch.lib.minecraft.content.client.creativetab;
 
-import java.util.ArrayList;
-
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -15,8 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BasicCreativeTab extends CreativeTabs{
 	
 	public ItemStack display = null;
-	public static ArrayList<LangEntry> creativeTabLang = new ArrayList();
-
+	
 	public BasicCreativeTab(ResourceLocation label,ItemStack display,LangEntry... langlist) {
 		this(label,display,"items.png",true,langlist);
 	}
@@ -38,7 +35,7 @@ public class BasicCreativeTab extends CreativeTabs{
 		{
 			lang.langId = "itemGroup." + id.toString().replaceAll(":", ".");
 			lang.loc = id;
-			creativeTabLang.add(lang);
+			LangRegistry.add(lang);
 		}
 	}
 	@SideOnly(Side.CLIENT)

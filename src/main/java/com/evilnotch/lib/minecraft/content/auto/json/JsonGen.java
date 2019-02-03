@@ -40,43 +40,57 @@ import net.minecraftforge.client.model.ModelLoader;
 public class JsonGen {
 	
 	
-	public static void jsonGen() throws Exception
+	public static void jsonGen()
 	{
 		if(!LoaderMain.isDeObfuscated)
 		{
 			return;
 		}
-		LoaderGen.checkRootFile();
-		boolean flag = false;
-		for(IBasicItem i : LoaderItems.items)
+		try
 		{
-			if(!i.registerModel())
+			LoaderGen.checkRootFile();
+			boolean flag = false;
+			for(IBasicItem i : LoaderItems.items)
 			{
-				continue;
-			}
-			String domain = i.getRegistryName().getResourceDomain();
-			boolean compiled = MinecraftUtil.isModCompiled(domain);
-			if(compiled)
-				continue;
-			
-			JSONObject json = null;
-			ResourceLocation loc = i.getRegistryName();
-			if(i instanceof ItemAxe || i instanceof ItemHoe || i instanceof ItemPickaxe || i instanceof ItemSpade || i instanceof ItemSword)
-			{
-				json = getJSONItem("item/handheld", i);
-				File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
-				if(!file.exists())
+				if(!i.registerModel())
 				{
-					flag = true;
-					JavaUtil.saveJSONSafley(json, file);
+					continue;
 				}
-			}
-			else if(i.isMeta())
-			{
-				for(int index=0;index<=i.getMaxMeta();index++)
+				String domain = i.getRegistryName().getResourceDomain();
+				boolean compiled = MinecraftUtil.isModCompiled(domain);
+				if(compiled)
+					continue;
+			
+				JSONObject json = null;
+				ResourceLocation loc = i.getRegistryName();
+				if(i instanceof ItemAxe || i instanceof ItemHoe || i instanceof ItemPickaxe || i instanceof ItemSpade || i instanceof ItemSword)
 				{
-					json = getJSONItem("item/generated", i,index);
-					File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + index + ".json");
+					json = getJSONItem("item/handheld", i);
+					File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
+					if(!file.exists())
+					{
+						flag = true;
+						JavaUtil.saveJSONSafley(json, file);
+					}
+				}
+				else if(i.isMeta())
+				{
+					for(int index=0;index<=i.getMaxMeta();index++)
+					{
+						json = getJSONItem("item/generated", i,index);
+						File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + index + ".json");
+						if(!file.exists())
+						{
+							flag = true;
+							JavaUtil.saveJSONSafley(json, file);
+						}
+					}
+				}
+				else
+				{
+					//for both item armor and regular items this is the parent
+					json = getJSONItem("item/generated", i);
+					File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
 					if(!file.exists())
 					{
 						flag = true;
@@ -84,63 +98,73 @@ public class JsonGen {
 					}
 				}
 			}
-			else
+		
+			for(IBasicBlock b : LoaderBlocks.blocks)
 			{
-				//for both item armor and regular items this is the parent
-				json = getJSONItem("item/generated", i);
-				File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
-				if(!file.exists())
+				if(!b.registerModel())
 				{
-					flag = true;
-					JavaUtil.saveJSONSafley(json, file);
+					if(Config.debug)
+						System.out.println("skipping model no model reeg found:" + b.getRegistryName());
+					continue;
 				}
-			}
-		}
-		for(IBasicBlock b : LoaderBlocks.blocks)
-		{
-			if(!b.registerModel())
-			{
-				if(Config.debug)
-					System.out.println("skipping model no model reeg found:" + b.getRegistryName());
-				continue;
-			}
-			ResourceLocation loc = b.getRegistryName();
+				ResourceLocation loc = b.getRegistryName();
 			
-			String domain = loc.getResourceDomain();
-			boolean compiled = MinecraftUtil.isModCompiled(domain);
-			if(compiled)
-			{
-				if(Config.debug)
-					System.out.println("skipping model gen for:" + loc);
-				continue;
-			}
-			
-			//blockstate gen
-			List<String> names = b.getBlockStatesNames();
-			
-			//block model gen
-			if(b.isMeta())
-			{
-				//blockstates
-				JSONObject bs = getJSONBlockState(names,b);
-				File fbs = new File(LoaderGen.root,loc.getResourceDomain() + "/blockstates/" + loc.getResourcePath() + ".json");
-				if(!fbs.exists())
-					flag = true;
-				JavaUtil.saveJSONSafley(bs, fbs);
-				
-				for(String s : names)
+				String domain = loc.getResourceDomain();
+				boolean compiled = MinecraftUtil.isModCompiled(domain);
+				if(compiled)
 				{
-					String prop = s.split("=")[1];
-					
-					JSONObject block = getModelBlock(b,prop);
-					File mBlockFile = new File(LoaderGen.root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + "_" + prop + ".json");
-					if(!mBlockFile.exists())
+					if(Config.debug)
+						System.out.println("skipping model gen for:" + loc);
+					continue;
+				}
+			
+				//blockstate gen
+				List<String> names = b.getBlockStatesNames();
+			
+				//block model gen
+				if(b.isMeta())
+				{
+					//blockstates
+					JSONObject bs = getJSONBlockState(names,b);
+					File fbs = new File(LoaderGen.root,loc.getResourceDomain() + "/blockstates/" + loc.getResourcePath() + ".json");
+					if(!fbs.exists())
 						flag = true;
-					JavaUtil.saveJSONSafley(block, mBlockFile);
+					JavaUtil.saveJSONSafley(bs, fbs);
+				
+					for(String s : names)
+					{
+						String prop = s.split("=")[1];
 					
-					//itemblock part
-					JSONObject item = getJSONBlockItem(b,prop);
-					File itemFile = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + prop + ".json");
+						JSONObject block = getModelBlock(b,prop);
+						File mBlockFile = new File(LoaderGen.root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + "_" + prop + ".json");
+						if(!mBlockFile.exists())
+							flag = true;
+						JavaUtil.saveJSONSafley(block, mBlockFile);
+					
+						//itemblock part
+						JSONObject item = getJSONBlockItem(b,prop);
+						File itemFile = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + prop + ".json");
+						if(!itemFile.exists())
+						{
+							flag = true;
+							JavaUtil.saveJSONSafley(item, itemFile);
+						}
+					}
+				}
+				else
+				{
+					JSONObject block = getModelBlock(b,names.get(0));
+					File bmodel = new File(LoaderGen.root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
+					
+					if(!bmodel.exists())
+					{
+						flag = true;
+						JavaUtil.saveJSONSafley(block, bmodel);
+					}
+				
+					JSONObject item = getJSONBlockItem(b,names.get(0));
+					File itemFile = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
+				
 					if(!itemFile.exists())
 					{
 						flag = true;
@@ -148,31 +172,15 @@ public class JsonGen {
 					}
 				}
 			}
-			else
+			if(flag)
 			{
-				JSONObject block = getModelBlock(b,names.get(0));
-				File bmodel = new File(LoaderGen.root,loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
-				
-				if(!bmodel.exists())
-				{
-					flag = true;
-					JavaUtil.saveJSONSafley(block, bmodel);
-				}
-				
-				JSONObject item = getJSONBlockItem(b,names.get(0));
-				File itemFile = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
-				
-				if(!itemFile.exists())
-				{
-					flag = true;
-					JavaUtil.saveJSONSafley(item, itemFile);
-				}
+				System.out.println("refreshing resources as a new json has been generated");
+				Minecraft.getMinecraft().refreshResources();
 			}
 		}
-		if(flag)
+		catch(Exception e)
 		{
-			System.out.println("refreshing resources as a new json has been generated");
-			Minecraft.getMinecraft().refreshResources();
+			e.printStackTrace();
 		}
 	}
 

@@ -13,28 +13,8 @@ public class LoaderGen {
 	
 	public static void load()
 	{
-		loadLang();
-		loadJSON();
-	}
-
-	private static void loadJSON() 
-	{
-		/**
-		 * if world capabilities are still not registered by init that is a mod's issue for the world and not mine
-		 */
-		try
-		{
-			JsonGen.jsonGen();
-		}
-		catch(Exception ee)
-		{
-			ee.printStackTrace();
-		}
-	}
-
-	private static void loadLang() 
-	{
 		LangRegistry.registerLang();
+		JsonGen.jsonGen();
 	}
 	
 	public static void checkRootFile() 

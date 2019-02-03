@@ -21,20 +21,7 @@ public class RenderItemObj extends RenderItem {
 	{
 		super(textureManager, renderItem.getItemModelMesher().getModelManager(), itemColors);
 		this.child = renderItem;
-		try 
-		{
-			Field modifiers = Field.class.getDeclaredField("modifiers");
-			modifiers.setAccessible(true);
-			Field itemModelMesher = ReflectionHelper.findField(RenderItem.class, "itemModelMesher", "field_175059_m");
-			itemModelMesher.setAccessible(true);
-			modifiers.set(itemModelMesher, itemModelMesher.getModifiers() & (~Modifier.FINAL));
-			itemModelMesher.set(this, renderItem.getItemModelMesher());
-		} 
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			FMLCommonHandler.instance().exitJava(-1, true);
-		}
+		this.itemModelMesher = this.child.itemModelMesher;
 	}
 
 	@Override

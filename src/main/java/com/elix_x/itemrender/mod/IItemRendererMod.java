@@ -35,34 +35,36 @@ public class IItemRendererMod {
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		IReloadableResourceManager mcResourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+		IReloadableResourceManager resourceManager = (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
 
-		if(mcResourceManager instanceof SimpleReloadableResourceManager)
+		if(resourceManager instanceof SimpleReloadableResourceManager)
 		{
-			List<IResourceManagerReloadListener> reloadListeners = ReflectionHelper.getPrivateValue(SimpleReloadableResourceManager.class, (SimpleReloadableResourceManager) mcResourceManager, "reloadListeners", "field_110546_b");
+			List<IResourceManagerReloadListener> reloadListeners = ((SimpleReloadableResourceManager)resourceManager).reloadListeners;
 			reloadListeners.remove(Minecraft.getMinecraft().getItemRenderer());
 			reloadListeners.remove(Minecraft.getMinecraft().entityRenderer);
 			reloadListeners.remove(Minecraft.getMinecraft().renderGlobal);
 		}
+		
+		Minecraft mc = Minecraft.getMinecraft();
+		RenderItem renderItem = new RenderItemObj(mc.renderItem, mc.renderEngine, mc.getItemColors());
+		mc.renderItem = renderItem;
 
-		RenderItem renderItem = new RenderItemObj(Minecraft.getMinecraft().getRenderItem(), Minecraft.getMinecraft().renderEngine, Minecraft.getMinecraft().getItemColors());
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderItem, new MCPSidedString("renderItem", "field_175621_X").toString());
-
-		RenderManager renderManager = new RenderManager(Minecraft.getMinecraft().renderEngine, renderItem);
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderManager, new MCPSidedString("renderManager", "field_175616_W").toString());
-
-		ItemRenderer itemRenderer = new ItemRenderer(Minecraft.getMinecraft());
-		mcResourceManager.registerReloadListener(renderItem);
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), itemRenderer, new MCPSidedString("itemRenderer", "field_175620_Y").toString());
-
-		EntityRenderer entityRenderer = new EntityRenderer(Minecraft.getMinecraft(), mcResourceManager);
-		mcResourceManager.registerReloadListener(entityRenderer);
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), entityRenderer, new MCPSidedString("entityRenderer", "field_71460_t").toString());
-
-		RenderGlobal renderGlobal = new RenderGlobal(Minecraft.getMinecraft());
-		mcResourceManager.registerReloadListener(renderGlobal);
-		ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), renderGlobal, new MCPSidedString("renderGlobal", "field_71438_f").toString());
+		RenderManager renderManager = new RenderManager(mc.renderEngine, renderItem);
+		mc.renderManager = renderManager;
+		
+		ItemRenderer itemRenderer = new ItemRenderer(mc);
+		resourceManager.registerReloadListener(renderItem);
+		mc.itemRenderer = itemRenderer;
+		
+		EntityRenderer entityRenderer = new EntityRenderer(mc, resourceManager);
+		resourceManager.registerReloadListener(entityRenderer);
+		mc.entityRenderer = entityRenderer;
+		
+		RenderGlobal renderGlobal = new RenderGlobal(mc);
+		resourceManager.registerReloadListener(renderGlobal);
+		mc.renderGlobal = renderGlobal;
 	}
+	
 	/**
 	 * add jei support to the tabs
 	 */

@@ -33,16 +33,11 @@ public class LangRegistry {
 	public static  Map<String,String> langlist = null;
 
 	public static void registerLang() 
-	{
+	{	
 		if(!LoaderMain.isDeObfuscated)
 		{
-			System.out.println("lan generation only occurs in dev enviorment on client:");
 			return;
 		}
-		joinLang(BasicBlock.blocklangs);
-		joinLang(BasicItem.itemlangs);
-		joinLang(BasicCreativeTab.creativeTabLang);
-		
 		LoaderGen.checkRootFile();
 		HashMap<File,ConfigLang> cfgs = new HashMap();
 		populateLang(LoaderGen.root,langs,cfgs);
@@ -60,30 +55,21 @@ public class LangRegistry {
 			langlist = manager.languageList;
 		}
 		currentLang = getCurrentLang();
+		
 		//inject lang into mc ignoring if it has it already since in dev code is supreme
 		for(ConfigLang cfg : cfgs.values())
 		{
 			if(!cfg.file.getName().endsWith(currentLang + ".lang"))
 			{
-				System.out.println("skipping cfgFile:" + cfg.file.getName() );
 				continue;
 			}
-			for(ILine l : cfg.lines)
-			{
-				ILineHead line = (ILineHead)l;
-				String key = line.getId();
-				String value = (String) line.getHead();
-				if(Config.debug)
-					System.out.println("injecting:" + line);
-				langlistClient.put(key,value);
-				if(Config.debug)
-					System.out.println("injectingServer:" + line);
-				langlist.put(key,value);
-			}
+			injectClientLang(cfg);
 		}
+		clear();
 	}
 
-	public static void joinLang(List<LangEntry> itemlangs) {
+	public static void joinLang(List<LangEntry> itemlangs) 
+	{
 		for(LangEntry lang : itemlangs)
 			langs.add(lang);
 	}
@@ -128,23 +114,32 @@ public class LangRegistry {
 	/**
 	 * Create fast utf-8 instanceof ConfigLang then do manual injections
 	 */
-	public void injectClientLang(File f) 
+	public static void injectClientLang(File f) 
 	{
 		ConfigLang cfg = new ConfigLang(f);
 		injectClientLang(cfg);
 	}
 
-	public void injectClientLang(ConfigLang cfg) 
+	public static void injectClientLang(ConfigLang cfg) 
 	{
 		for(ILine l : cfg.lines)
 		{
 			ILineHead line = (ILineHead)l;
 			String key = line.getId();
 			String value = (String) line.getHead();
-			if(!langlistClient.containsKey(key))
-				langlistClient.put(key,value);
+			langlistClient.put(key,value);
+			langlist.put(key,value);
 		}
 	}
 
+	public static void add(LangEntry entry) 
+	{
+		langs.add(entry);
+	}
+	
+	public static void clear() 
+	{
+		langs.clear();
+	}
 
 }

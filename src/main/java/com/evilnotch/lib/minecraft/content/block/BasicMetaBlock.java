@@ -8,6 +8,7 @@ import java.util.Set;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.content.block.item.IMetaName;
 import com.evilnotch.lib.minecraft.content.block.item.ItemBlockMeta;
 import com.evilnotch.lib.minecraft.content.block.property.IPropertyMeta;
@@ -89,7 +90,7 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 		{
 			entry.langId = "tile." + unlocalname + "_" + entry.meta + ".name";
 			entry.loc = id;
-			blocklangs.add(entry);
+			LangRegistry.add(entry);
 		}
 	}
 	

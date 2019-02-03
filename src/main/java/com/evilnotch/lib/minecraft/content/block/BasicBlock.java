@@ -12,6 +12,7 @@ import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.LineArray;
@@ -41,9 +42,6 @@ public class BasicBlock extends Block implements IBasicBlock{
 	public ItemBlock itemblock = null;
 	public BlockProperties blockprops = null;
 	public List<String> cacheStates;
-	
-	
-	public static ArrayList<LangEntry> blocklangs = new ArrayList();//is static so each object doesn't have a new arraylist optimized for finding and going through
 	
 	public BasicBlock(ResourceLocation id,LangEntry... lang) {
 		this(Material.ROCK,id,lang);
@@ -152,7 +150,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 		{
 			entry.langId = "tile." + unlocalname + ".name";
 			entry.loc = id;
-			blocklangs.add(entry);
+			LangRegistry.add(entry);
 		}
 	}
 	

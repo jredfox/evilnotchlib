@@ -1,6 +1,7 @@
 package com.evilnotch.lib.minecraft.content.item;
 
 import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,7 @@ public class BasicItemMeta extends BasicItem{
 		{
 			entry.langId = "item." + unlocalname + "_" + entry.meta + ".name";
 			entry.loc = id;
-			itemlangs.add(entry);
+			LangRegistry.add(entry);
 		}
 	}
 	

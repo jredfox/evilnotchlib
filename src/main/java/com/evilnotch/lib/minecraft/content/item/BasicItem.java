@@ -1,10 +1,8 @@
 package com.evilnotch.lib.minecraft.content.item;
 
-import java.util.ArrayList;
-
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.content.item.armor.ArmorMat;
 import com.evilnotch.lib.minecraft.content.item.tool.ToolMat;
 import com.evilnotch.lib.util.line.LineArray;
@@ -19,8 +17,6 @@ public class BasicItem extends Item implements IBasicItem{
 	public boolean hasregister = false;
 	public boolean hasmodel = false;
 	public boolean haslang = false;
-	
-	public static ArrayList<LangEntry> itemlangs = new ArrayList();//is static so each object doesn't have a new arraylist optimized for finding and going through
 	
 	public BasicItem(ResourceLocation id,LangEntry...langlist){
 		this(id,null,langlist);
@@ -53,7 +49,7 @@ public class BasicItem extends Item implements IBasicItem{
 		{
 			entry.langId = "item." + unlocalname + ".name";
 			entry.loc = id;
-			itemlangs.add(entry);
+			LangRegistry.add(entry);
 		}
 	}
 

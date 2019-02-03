@@ -15,18 +15,24 @@ public class LangEntry {
 	/**
 	 * use this one if your manually calling it for advanced constructors in basic items/blocks
 	 */
-	public LangEntry(String display,String langType){
+	public LangEntry(String display,String langType)
+	{
 		this.langDisplayName = display;
 		this.langType = langType;
 	}
-	public LangEntry(String display,String langType,String meta){
+	
+	public LangEntry(String display,String langType,String meta)
+	{
 		this.langDisplayName = display;
 		this.langType = langType;
 		this.meta = meta;
 	}
 	
 	@Override
-	public String toString(){return this.getString();}
+	public String toString()
+	{
+		return this.getString();
+	}
 	
 	public String getString()
 	{
@@ -34,7 +40,8 @@ public class LangEntry {
 	}
 	
 	@Override
-	public boolean equals(Object obj){
+	public boolean equals(Object obj)
+	{
 		if(!(obj instanceof LangEntry))
 			return false;
 		LangEntry lang = (LangEntry)obj;

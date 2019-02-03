@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.minecraft.content.auto.lang.LangEntry;
+import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.content.item.BasicItem;
 import com.evilnotch.lib.minecraft.content.item.IBasicItem;
 
@@ -50,7 +51,7 @@ public class ItemBasicSpade extends ItemSpade implements IBasicItem{
 		{
 			entry.langId = "item." + unlocalname + ".name";
 			entry.loc = id;
-			BasicItem.itemlangs.add(entry);
+			LangRegistry.add(entry);
 		}
 	}
 	
