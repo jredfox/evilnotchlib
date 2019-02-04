@@ -1,15 +1,12 @@
 package com.evilnotch.lib.minecraft.util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
-import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
 import com.evilnotch.lib.util.JavaUtil;
@@ -19,7 +16,6 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
@@ -30,6 +26,9 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.GameType;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldProviderEnd;
+import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -248,6 +247,15 @@ public class PlayerUtil {
 	    p.getServerWorld().getEntityTracker().removePlayerFromTrackers(p);
 	    p.getServerWorld().getEntityTracker().untrack(p);
 	}
+	
+    /**
+     * Call this after player is removed from the world
+     */
+    public static void removeDragonBars(World end) 
+    {
+		DragonFightManager fightManager = ((WorldProviderEnd)end.provider).getDragonFightManager();
+		fightManager.updateplayers();
+    }
 	
 	/**
 	 * shows player for all users
