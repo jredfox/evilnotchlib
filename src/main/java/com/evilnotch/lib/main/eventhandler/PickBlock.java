@@ -7,6 +7,7 @@ import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketHand;
 import com.evilnotch.lib.minecraft.network.packet.PacketPickBlock;
 import com.evilnotch.lib.minecraft.network.packet.PacketPickEntity;
+import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -93,7 +94,7 @@ public class PickBlock {
 
         if (te != null)
         {
-           storeTEInStack(result, te);
+           TileEntityUtil.storeTEInStack(result, te);
         }
         
         if (isCreative)
@@ -209,34 +210,5 @@ public class PickBlock {
             }
         }
 	}
-
-	/**
-	 * this is a method that will store te to the stack saving everything including mob spawner delay
-	 */
-    public static void storeTEInStack(ItemStack stack, TileEntity te)
-    {
-        NBTTagCompound nbttagcompound = te.writeToNBT(new NBTTagCompound());
-        nbttagcompound.removeTag("x");
-        nbttagcompound.removeTag("y");
-        nbttagcompound.removeTag("z");
-        nbttagcompound.removeTag("id");
-
-        if (stack.getItem() == Items.SKULL && nbttagcompound.hasKey("Owner"))
-        {
-            NBTTagCompound nbttagcompound2 = nbttagcompound.getCompoundTag("Owner");
-            NBTTagCompound nbttagcompound3 = new NBTTagCompound();
-            nbttagcompound3.setTag("SkullOwner", nbttagcompound2);
-            stack.setTagCompound(nbttagcompound3);
-        }
-        else
-        {
-            stack.setTagInfo("BlockEntityTag", nbttagcompound);
-            NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-            NBTTagList nbttaglist = new NBTTagList();
-            nbttaglist.appendTag(new NBTTagString("(+NBT)"));
-            nbttagcompound1.setTag("Lore", nbttaglist);
-            stack.setTagInfo("display", nbttagcompound1);
-        }
-    }
 
 }

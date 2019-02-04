@@ -1,0 +1,77 @@
+package lumien.custommainmenu.handler;
+
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.fml.common.eventhandler.*;
+import net.minecraft.client.gui.*;
+import net.minecraftforge.fml.common.*;
+import lumien.custommainmenu.*;
+import org.apache.logging.log4j.*;
+import lumien.custommainmenu.gui.*;
+import java.util.*;
+import net.minecraft.client.*;
+
+public class CMMEventHandler
+{
+    public long displayMs;
+    
+    public CMMEventHandler() {
+        this.displayMs = -1L;
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void initGuiPostEarly(final GuiScreenEvent.InitGuiEvent.Post event) {
+        if (event.getGui() instanceof GuiCustom) {
+            final GuiCustom custom = (GuiCustom)event.getGui();
+            if (custom.guiConfig.name.equals("mainmenu")) {
+                event.setButtonList((List)new ArrayList());
+            }
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void initGuiPost(final GuiScreenEvent.InitGuiEvent.Post event) {
+        if (event.getGui() instanceof GuiCustom) {
+            final GuiCustom fake = (GuiCustom)event.getGui();
+            final HashMap<Integer, GuiButton> removedButtons = new HashMap<Integer, GuiButton>();
+            final Iterator<GuiButton> iterator = event.getButtonList().iterator();
+            while (iterator.hasNext()) {
+                final GuiButton b;
+                final GuiButton o = b = iterator.next();
+                if (!(b instanceof GuiCustomButton)) {
+                    iterator.remove();
+                    removedButtons.put(b.id, b);
+                    if (b.id == 666 && Loader.isModLoaded("OpenEye")) {
+                        CustomMainMenu.INSTANCE.logger.log(Level.INFO, "Found OpenEye button, use a wrapped button to config this. (" + b.id + ")");
+                    }
+                    else if (b.id == 404 && Loader.isModLoaded("VersionChecker")) {
+                        CustomMainMenu.INSTANCE.logger.log(Level.INFO, "Found VersionChecker button, use a wrapped button to config this. (" + b.id + ")");
+                    }
+                    else {
+                        CustomMainMenu.INSTANCE.logger.log(Level.INFO, "Found unsupported button, use a wrapped button to config this. (" + b.id + ")");
+                    }
+                }
+            }
+            final Iterator<GuiButton> blist = fake.getButtonList().iterator();
+            while (blist.hasNext()) {
+                final GuiButton o = blist.next();
+                if (o instanceof GuiCustomWrappedButton) {
+                    final GuiCustomWrappedButton b2 = (GuiCustomWrappedButton)o;
+                    CustomMainMenu.INSTANCE.logger.log(Level.INFO, "Initiating Wrapped Button " + b2.wrappedButtonID + " with " + removedButtons.get(b2.wrappedButtonID));
+                    b2.init((GuiButton)removedButtons.get(b2.wrappedButtonID));
+                }
+            }
+        }
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void renderScreenPost(final GuiScreenEvent.DrawScreenEvent.Post event) {
+        if (this.displayMs != -1L) {
+            if (System.currentTimeMillis() - this.displayMs < 5000L) {
+                Minecraft.getMinecraft().fontRenderer.drawStringWithShadow("Error loading config file, see console for more information", 0.0f, 80.0f, 16711680);
+            }
+            else {
+                this.displayMs = -1L;
+            }
+        }
+    }
+}

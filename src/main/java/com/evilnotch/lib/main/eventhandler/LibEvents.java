@@ -48,36 +48,35 @@ public class LibEvents {
 			 msgs.remove(s);
 	 }
 	 
-		/**
-		 * entity player connection to point id(ticks existed, max tick count,String msg)
-		 * the connection is kept even on respawn so there is no glitching this kicker
-		 */
-		public static HashMap<NetHandlerPlayServer,PointId> kicker = new HashMap();
-		public static boolean isKickerIterating = false;
-		@SubscribeEvent
-		public void kick(TickEvent.ServerTickEvent e)
-		{
-			if(e.phase != Phase.END || kicker.isEmpty())
-				return;
-
+	/**
+	 * entity player connection to point id(ticks existed, max tick count,String msg)
+	 * the connection is kept even on respawn so there is no glitching this kicker
+	*/
+	public static HashMap<NetHandlerPlayServer,PointId> kicker = new HashMap();
+	public static boolean isKickerIterating = false;
+	@SubscribeEvent
+	public void kick(TickEvent.ServerTickEvent e)
+	{
+		if(e.phase != Phase.END || kicker.isEmpty())
+			return;
 			Iterator<Map.Entry<NetHandlerPlayServer,PointId> > it = kicker.entrySet().iterator();
-			while(it.hasNext())
+		while(it.hasNext())
+		{
+			isKickerIterating = true;
+			Map.Entry<NetHandlerPlayServer,PointId> pair = it.next();
+			NetHandlerPlayServer connection = pair.getKey();
+			PointId point = pair.getValue();
+			if(point.getX() >= point.getY())
 			{
-				isKickerIterating = true;
-				Map.Entry<NetHandlerPlayServer,PointId> pair = it.next();
-				NetHandlerPlayServer connection = pair.getKey();
-				PointId point = pair.getValue();
-				if(point.getX() >= point.getY())
-				{
-					it.remove();
-					PlayerUtil.disconnectPlayer(connection.player,new TextComponentString(point.id));
-				}
+				it.remove();
+				PlayerUtil.disconnectPlayer(connection.player,new TextComponentString(point.id));
 			}
-			isKickerIterating = false;
-			
-			for(PointId p : kicker.values())
-				p.setLocation(p.getX() + 1,p.getY());
 		}
+		isKickerIterating = false;
+		
+		for(PointId p : kicker.values())
+			p.setLocation(p.getX() + 1,p.getY());
+	}
 	
 	/**
 	 * Attempt to re-instantiate the entity caches for broken entities when the world is no longer fake

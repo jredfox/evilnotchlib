@@ -262,7 +262,7 @@ public class PlayerUtil {
 	 */
 	public static void showPlayer(EntityPlayerMP p) 
 	{
-	       p.getServerWorld().getEntityTracker().track(p);
+		p.getServerWorld().getEntityTracker().track(p);
 	}
 	
 	public static void broadCastMessege(String msg) 

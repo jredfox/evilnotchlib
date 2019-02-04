@@ -135,8 +135,6 @@ public class RenderTransformer  implements IClassTransformer{
 		  toInsert.add(new TypeInsnNode(Opcodes.NEW, "com/evilnotch/iitemrender/handlers/RenderItemObj"));
 		  toInsert.add(new InsnNode(Opcodes.DUP));
 		  method.instructions.insert(start,toInsert);
-		  
-		  //at the end of the line construct RenderItemObj()
 		  method.instructions.insert(end,new MethodInsnNode(Opcodes.INVOKESPECIAL,"com/evilnotch/iitemrender/handlers/RenderItemObj", "<init>", "(Lnet/minecraft/client/renderer/RenderItem;)V", false));
 	}
 

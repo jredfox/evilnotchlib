@@ -1,0 +1,127 @@
+package lumien.custommainmenu.gui;
+
+import net.minecraftforge.fml.relauncher.*;
+import net.minecraft.client.renderer.texture.*;
+import net.minecraft.util.*;
+import net.minecraft.client.renderer.*;
+import lumien.custommainmenu.*;
+import lumien.custommainmenu.configuration.elements.*;
+import java.util.*;
+import lumien.custommainmenu.configuration.*;
+import net.minecraft.client.gui.*;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.common.*;
+import net.minecraftforge.fml.common.eventhandler.*;
+import java.io.*;
+
+@SideOnly(Side.CLIENT)
+public class GuiCustom extends GuiScreen implements GuiYesNoCallback
+{
+    public static Config config;
+    int buttonCounter;
+    ArrayList textLabels;
+    public Object beingChecked;
+    public GuiConfig guiConfig;
+    protected DynamicTexture viewportTexture;
+    protected ResourceLocation backgroundTexture;
+    protected String splashText;
+    private boolean loadedSplashText;
+    
+    public GuiCustom(final GuiConfig guiConfig) {
+    }
+    
+    public List getButtonList() {
+        return this.buttonList;
+    }
+    
+    private void loadSplashTexts() {
+    }
+    
+    public void initGui() {
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.shadeModel(7425);
+        GlStateManager.shadeModel(7424);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        if (!this.loadedSplashText && this.guiConfig.splashText != null) {
+            if (this.guiConfig.splashText.synced) {
+                this.splashText = CustomMainMenu.INSTANCE.config.getGUI("mainmenu").splashText;
+            }
+            else {
+                this.loadSplashTexts();
+            }
+            this.loadedSplashText = true;
+        }
+        this.textLabels = new ArrayList();
+        this.buttonCounter = 0;
+        this.viewportTexture = new DynamicTexture(256, 256);
+        this.backgroundTexture = this.mc.getTextureManager().getDynamicTextureLocation("background", this.viewportTexture);
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        if (calendar.get(2) + 1 == 11 && calendar.get(5) == 9) {
+            this.splashText = "Happy birthday, ez!";
+        }
+        else if (calendar.get(2) + 1 == 6 && calendar.get(5) == 1) {
+            this.splashText = "Happy birthday, Notch!";
+        }
+        else if (calendar.get(2) + 1 == 12 && calendar.get(5) == 24) {
+            this.splashText = "Merry X-mas!";
+        }
+        else if (calendar.get(2) + 1 == 1 && calendar.get(5) == 1) {
+            this.splashText = "Happy new year!";
+        }
+        else if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31) {
+            this.splashText = "OOoooOOOoooo! Spooky!";
+        }
+        int idCounter = 6000;
+        for (final Button b : this.guiConfig.customButtons) {
+            if (b.wrappedButtonID != -1) {
+                this.buttonList.add(this.alignButton(b, (GuiCustomButton)new GuiCustomWrappedButton(idCounter, b.wrappedButtonID, b)));
+            }
+            else {
+                this.buttonList.add(this.alignButton(b, new GuiCustomButton(idCounter, b)));
+            }
+            ++idCounter;
+        }
+        for (final Label t : this.guiConfig.customLabels) {
+            this.textLabels.add(new GuiCustomLabel(this, t, this.modX(t.posX, t.alignment), this.modY(t.posY, t.alignment)));
+        }
+    }
+    
+    private GuiCustomButton alignButton(final Button configButton, final GuiCustomButton guiButton) {
+        return guiButton;
+    }
+    
+    private int modX(final int posX, final Alignment alignment) {
+        return 0;
+    }
+    
+    private int modY(final int posY, final Alignment alignment) {
+        return 0;
+    }
+    
+    protected void actionPerformed(final GuiButton button) throws IOException {
+        if (button instanceof GuiCustomWrappedButton && this.guiConfig.name.equals("mainmenu")) {
+            final GuiCustomWrappedButton wrapped = (GuiCustomWrappedButton)button;
+            if (wrapped.wrappedButton != null) {
+                final GuiScreenEvent.ActionPerformedEvent.Pre event = new GuiScreenEvent.ActionPerformedEvent.Pre((GuiScreen)this, wrapped.wrappedButton, (List)new ArrayList());
+                if (MinecraftForge.EVENT_BUS.post((Event)event)) {
+                    return;
+                }
+                event.getButton().playPressSound(this.mc.getSoundHandler());
+                if (this.equals(this.mc.currentScreen)) {
+                    MinecraftForge.EVENT_BUS.post((Event)new GuiScreenEvent.ActionPerformedEvent.Post((GuiScreen)this, wrapped.wrappedButton, (List)new ArrayList()));
+                }
+            }
+        }
+        else if (button.id >= 6000 && button instanceof GuiCustomButton) {
+            final GuiCustomButton custom = (GuiCustomButton)button;
+            if (custom.b.action != null) {
+                custom.b.action.perform((Object)custom.b, this);
+            }
+        }
+    }
+}

@@ -45,7 +45,6 @@ public class LoaderItems {
 
 	public static void registerItems() 
 	{
-		//registries
 		for(IBasicItem i : LoaderItems.items)
 		{
 			if(i.register())

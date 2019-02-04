@@ -86,6 +86,7 @@ public class LoaderMain {
 		GeneralRegistry.load();
 		loadEvents();
 	}
+	
 	private static void loadEvents() 
 	{
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
