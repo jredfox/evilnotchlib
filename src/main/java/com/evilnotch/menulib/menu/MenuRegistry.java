@@ -17,6 +17,7 @@ import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.line.config.ConfigLine;
 import com.evilnotch.menulib.ConfigMenu;
+import com.evilnotch.menulib.compat.ProxyMod;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -25,7 +26,7 @@ import net.minecraftforge.fml.common.Loader;
 
 public class MenuRegistry {
 	
-	protected static ArrayList<IMenu> menus = new ArrayList();
+	protected static List<IMenu> menus = new ArrayList();
 	public static int indexMenu = 0;
 	protected static IMenu currentMenu = null;
 	
@@ -68,49 +69,26 @@ public class MenuRegistry {
 		getCurrentMenu().onClose();	
 		indexMenu = getNext(indexMenu);
 		currentMenu = menus.get(indexMenu);
-		try
-		{
-			doModSupport();
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-		}
+		ProxyMod.menuChange();
 		Minecraft.getMinecraft().getSoundHandler().stopSounds();
 		currentMenu.onOpen();
+		Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.createCurrentGui());
 	}
-	
 	/**
-	 * yes I am fixing mods music
+	 * used by button guis to advanced current gui to the next gui
 	 */
-	protected static void doModSupport() throws Throwable
-	{
-		if(Loader.isModLoaded("thebetweenlands"))
-		{
-			Class s = Class.forName("thebetweenlands.client.handler.MusicHandler");
-			Object instance = ReflectionUtil.getObject(null, s, "INSTANCE");
-			ReflectionUtil.setObject(instance, false, s, "hasBlMainMenu");//sets it to false to garentee it will not play till the next cik
-		}
-	}
-	
 	public static void advancePreviousMenu()
 	{
 		getCurrentMenu().onClose();
 		indexMenu = getPrevious(indexMenu);
 		currentMenu = menus.get(indexMenu);
-		try
-		{
-			doModSupport();
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-		}
+		ProxyMod.menuChange();
 		Minecraft.getMinecraft().getSoundHandler().stopSounds();
 		currentMenu.onOpen();
+		Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.createCurrentGui());
 	}
 	
-	public static int getNext(int index) 
+	protected static int getNext(int index) 
 	{
 		if(index + 1 == MenuRegistry.getMenus().size() )
 			return 0;
@@ -118,7 +96,7 @@ public class MenuRegistry {
 		return index;
 	}
 	
-	public static int getPrevious(int index) 
+	protected static int getPrevious(int index) 
 	{
 		if( (index -1) == -1)
 			return menus.size()-1;
@@ -151,104 +129,16 @@ public class MenuRegistry {
 		return currentMenu;
 	}
 	
-	/**
-	 * re-orders menus based on configured results rather then coders overrides
-	 */
-	public static void reOrder()
-	{
-		if(ConfigMenu.menuWhiteList)
-		{
-			ArrayList<IMenu> newMenus = new ArrayList();
-			for(ResourceLocation loc : ConfigMenu.whiteListConfig)
-			{
-				IMenu menu = MenuRegistry.getMenu(loc);
-				if(menu == null)
-					System.out.print("[MenuLib/ERR] Null Menu Skipping:" + loc + "\n");
-				else
-					newMenus.add(menu);
-			}
-			menus = newMenus;
-			return;
-		}
-		
-		if(ConfigMenu.menusConfig.isEmpty())
-		{
-			//error catch
-			System.out.print("[MenuLib/ERR] Returning Menu Size Configured List 0\nReturning And Repairing Config:\n");
-			ConfigMenu.saveMenus(getIds());
-			return;
-		}
-		else if(menus.size() != ConfigMenu.menusConfig.size())
-		{
-			//error catch sizes must be the same
-			System.out.print("[MenuLib/ERR] Size Not Same As Codded Switch WhiteList on if your removing GUIS\nRepairing Config!\n");
-			ConfigMenu.saveMenus(getIds());
-			return;
-		}
-		else if(!checkMenus())
-		{
-			System.out.print("[MenuLib/ERR] Config content isn't the same as coded saving ids");
-			ConfigMenu.saveMenus(getIds());
-			return;
-		}
-		else
-		{
-			//default ordering system from config
-			ArrayList newMenus = new ArrayList();
-			for(int i=0;i<menus.size();i++)
-			{
-				ResourceLocation loc = ConfigMenu.menusConfig.get(i);
-				IMenu menu = getMenu(loc);
-				if(menu == null)
-				{
-					LoaderMain.logger.log(Level.FATAL, "[MenuLib/ERR] Null Menu For Resource Location: " + loc + "\nInput Not Accepted Skipping Menu List Reparing Config");
-					ConfigMenu.saveMenus(getIds());
-					return;
-				}
-				newMenus.add(menu);
-			}
-			menus = newMenus;
-		}
-	}
-	/**
-	 * returns true if the check succeeded in matching all coded locs with all configured ones
-	 */
-	public static boolean checkMenus() 
-	{
-		for(IMenu menu : menus)
-		{
-			ResourceLocation menuLoc = menu.getId();
-			if(!ConfigMenu.menusConfig.contains(menuLoc))
-				return false;
-		}
-		return true;
-	}
-	
-	public static List<ResourceLocation> getIds() 
-	{
-		ArrayList<ResourceLocation> locs = new ArrayList();
-		for(IMenu menu : menus)
-			locs.add(menu.getId());
-		return locs;
-	}
-	public static IMenu getMenu(ResourceLocation loc) 
-	{
-		for(IMenu menu : menus)
-			if(menu.getId().equals(loc))
-				return menu;
-		return null;
-	}
-
-	public static ArrayList<IMenu> getMenus() 
+	public static List<IMenu> getMenus() 
 	{
 		return menus;
 	}
-
+	
 	public static int getMenuSize() 
 	{
 		return menus.size();
 	}
-
+	
 	public static boolean containsMenu(Class clazz) 
 	{
 		for(int i=0;i<menus.size();i++)
@@ -258,57 +148,74 @@ public class MenuRegistry {
 		}
 		return false;
 	}
-	
-	public static void setCurrentMenu(ResourceLocation loc)
+	/**
+	 * re-order the menus list also skip any menus that are disabled
+	 */
+	public static void init() 
 	{
-		IMenu menu = null;
-		int index = 0;
-		for(int i=0;i<menus.size();i++)
+		if(checkLists())
 		{
-			IMenu m = menus.get(i);
-			if(m.getId().equals(loc))
+			reorderLists();
+		}
+		else
+		{
+			System.out.println("MainMenus Config Resseting Checks failed");
+			ConfigMenu.saveMenus(menus);
+		}
+	}
+
+	private static boolean checkLists() 
+	{
+		if(menus.size() != ConfigMenu.mainMenus.size())
+			return false;
+		for(IMenu menu : menus)
+		{
+			ResourceLocation menuloc = menu.getId();
+			if(configHasMenu(menuloc))
+				return false;
+		}
+		return true;
+	}
+
+	private static void reorderLists() 
+	{
+		List<IMenu> list = new ArrayList<IMenu>();
+		for(LineArray line : ConfigMenu.mainMenus)
+		{
+			//if disabled return
+			if(!line.getBoolean())
+				continue;
+			ResourceLocation loc = line.getResourceLocation();
+			if(line.hasStringMeta())
 			{
-				menu = m;
-				index = i;
+				IMenu menu = new Menu(ReflectionUtil.classForName(line.getMetaString()),loc);
+				list.add(menu);
+			}
+			else
+			{
+				IMenu menu = getMenu(loc);
+				list.add(menu);
 			}
 		}
-		if(menu == null)
-			LoaderMain.logger.log(Level.ERROR,"[MenuLib/ERR] Unable to find Current Index for Requested Menu");
-		indexMenu = index;
-		currentMenu = menu;
+		menus = list;
 	}
 	
-	/**
-	 * Reorder menus or if client overrides using whitelist do only the whitelist
-	 */
-	public static void loadInit() 
-	{	
-		//register user registered menus
-		File f = new File(ConfigMenu.cfgmenu.getParent(),"menulib.cfg");
-		List<String> comments = JavaUtil.asStringList(new String[]{"Menu Lib Configuration File. Register Other Mod's Main Menus That refuse to do it themselves :(","Format is: \"modid:mainmenu\" = \"class.full.name\""});
-		ConfigBase cfg = new ConfigLine(f,comments);
-		cfg.loadConfig();
-		
-		if(Loader.isModLoaded("thebetweenlands"))
+	public static boolean configHasMenu(ResourceLocation loc) 
+	{
+		for(LineArray line : ConfigMenu.mainMenus)
+			if(line.getResourceLocation().equals(loc))
+				return true;
+		return false;
+	}
+
+	public static IMenu getMenu(ResourceLocation loc) 
+	{
+		for(IMenu menu : menus)
 		{
-			cfg.addLine(new LineArray("\"thebetweenlands:mainmenu\" = \"thebetweenlands.client.gui.menu.GuiBLMainMenu\""));
-			cfg.saveConfig(false, false, true);
+			if(menu.getId().equals(loc))
+				return menu;
 		}
-		for(ILine line : cfg.lines)
-		{
-			ILineHead head = (ILineHead)line;
-			try
-			{
-				MenuRegistry.registerGuiMenu((Class<? extends GuiScreen>) Class.forName(head.getString()), line.getResourceLocation());
-			}
-			catch(Throwable t)
-			{
-				System.out.print("[MenuLib/ERR] Unable to Locate class skipping menu registration for:" + line + "\n");
-			}
-		}
-		
-		MenuRegistry.reOrder();
-		MenuRegistry.setCurrentMenu(ConfigMenu.currentMenuIndex);
+		return null;
 	}
 
 }

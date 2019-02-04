@@ -23,6 +23,8 @@ public class MenuCMM implements IMenu{
 	
 	public GuiScreen gui;
 	
+	public static final ResourceLocation bTexture = new ResourceLocation("minecraft:textures/gui/widgets.png");
+	
 	static
 	{
 		try 
@@ -101,7 +103,7 @@ public class MenuCMM implements IMenu{
 	@Override
 	public ResourceLocation getButtonTexture() 
 	{
-		return new ResourceLocation("textures/gui/widgets.png");
+		return bTexture;
 	}
 
 	@Override

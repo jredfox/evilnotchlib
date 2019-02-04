@@ -1,5 +1,6 @@
 package com.evilnotch.menulib;
 
+import com.evilnotch.menulib.compat.ProxyMod;
 import com.evilnotch.menulib.compat.menu.MenuCMM;
 import com.evilnotch.menulib.eventhandler.GuiEventHandler;
 import com.evilnotch.menulib.menu.MenuRegistry;
@@ -28,6 +29,7 @@ public class MenuLib {
 	@EventHandler
 	public void preinit(FMLPreInitializationEvent event)
 	{
+		ProxyMod.isModsLoaded();
 		ConfigMenu.loadMenuLib(event.getModConfigurationDirectory());
 		registerMenus();
 		MinecraftForge.EVENT_BUS.register(new GuiEventHandler());
@@ -36,17 +38,13 @@ public class MenuLib {
 	@EventHandler
 	public void postinit(FMLPostInitializationEvent event)
 	{
-		MenuRegistry.loadInit();
+		MenuRegistry.init();
 	}
 	
 	private static void registerMenus() 
 	{
-		cmm = Loader.isModLoaded("custommainmenu");
-		if(cmm)
-		{
-			MenuRegistry.registerIMenu(new MenuCMM());
-		}
-		else
+		ProxyMod.register();
+		if(!ProxyMod.cmm)
 		{
 			MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
 		}

@@ -116,13 +116,11 @@ public class GuiEventHandler {
 		if(e.getButton().id == 498)
 		{
 			MenuRegistry.advancePreviousMenu();
-			Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.createCurrentGui());
-			ConfigMenu.saveMenuIndex();
+			ConfigMenu.saveMenuIndex();//keep the save index seperatly for more options on modders
 		}
 		else if(e.getButton().id == 499)
 		{
 			MenuRegistry.advanceNextMenu();
-			Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.createCurrentGui());
 			ConfigMenu.saveMenuIndex();
 		}
 	}
