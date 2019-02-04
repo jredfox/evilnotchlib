@@ -125,7 +125,18 @@ public class MenuRegistry {
 		index--;
 		return index;
 	}
-
+	/**
+	 * creates a new gui from the current IMenu
+	 */
+	public static GuiScreen createCurrentGui()
+	{
+		IMenu menu = getCurrentMenu();
+		GuiScreen screen = menu.createGui();
+		return screen;
+	}
+	/**
+	 * gets the current gui from the current IMenu without creating a new one for custom stuffs
+	 */
 	public static GuiScreen getCurrentGui()
 	{
 		IMenu menu = getCurrentMenu();

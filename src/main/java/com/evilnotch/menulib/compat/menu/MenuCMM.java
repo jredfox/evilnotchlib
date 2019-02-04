@@ -16,6 +16,12 @@ public class MenuCMM implements IMenu{
 	public static Class cmm;
 	public static Class configClass;
 	public static Class guiCustom;
+	public static Method loadSplashTexts;
+	
+	public static Object configInstance;
+	public static Method getGui;
+	
+	public GuiScreen gui;
 	
 	static
 	{
@@ -24,8 +30,16 @@ public class MenuCMM implements IMenu{
 			cmm = Class.forName("lumien.custommainmenu.CustomMainMenu");
 			configClass = Class.forName("lumien.custommainmenu.configuration.Config");
 			guiCustom =  Class.forName("lumien.custommainmenu.gui.GuiCustom");
+			
+			loadSplashTexts = guiCustom.getDeclaredMethod("loadSplashTexts");
+			loadSplashTexts.setAccessible(true);
+			
+			Object instance = ReflectionUtil.getObject(null, cmm, "INSTANCE");
+			configInstance = ReflectionUtil.getObject(instance, cmm, "config");
+			getGui = ReflectionUtil.getMethod(configClass, "getGUI", String.class);
+			getGui.setAccessible(true);
 		} 
-		catch (ClassNotFoundException e) 
+		catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) 
 		{
 			e.printStackTrace();
 		}
@@ -40,12 +54,9 @@ public class MenuCMM implements IMenu{
 	@Override
 	public void onOpen() 
 	{
-		Method m  = null;
 		try 
 		{
-			m = guiCustom.getDeclaredMethod("loadSplashTexts");
-			m.setAccessible(true);
-			m.invoke(MenuRegistry.getCurrentGui());
+			loadSplashTexts.invoke(MenuRegistry.getCurrentGui());
 		} 
 		catch (Throwable t) 
 		{
@@ -56,12 +67,17 @@ public class MenuCMM implements IMenu{
 	@Override
 	public GuiScreen getGui() 
 	{
+		return this.gui;
+	}
+	
+	@Override
+	public GuiScreen createGui()
+	{
 		try 
 		{
-			Object instance = ReflectionUtil.getObject(null, cmm, "INSTANCE");
-			Object config = ReflectionUtil.getObject(instance, cmm, "config");
-			Method m = ReflectionUtil.getMethod(configClass, "getGUI", String.class);
-			return (GuiScreen) m.invoke(config, "mainmenu");
+			GuiScreen gui = (GuiScreen) getGui.invoke(configInstance, "mainmenu");
+			this.gui = gui;
+			return this.getGui();
 		} 
 		catch (Throwable t) 
 		{
@@ -80,18 +96,6 @@ public class MenuCMM implements IMenu{
 	public ResourceLocation getId() 
 	{
 		return new ResourceLocation("custommainmenu:mainmenu");
-	}
-
-	@Override
-	public boolean allowButtonOverlay() 
-	{
-		return true;
-	}
-
-	@Override
-	public void setAllowButtonOverlay(boolean toset) 
-	{
-		
 	}
 
 	@Override

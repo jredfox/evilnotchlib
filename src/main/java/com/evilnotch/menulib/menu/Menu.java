@@ -14,8 +14,9 @@ public class Menu implements IMenu {
 	public ResourceLocation id = null;
 	public Constructor ctr = null;
 	public Class clazz = null;
+	public GuiScreen gui;
+	
 	public ResourceLocation bTexture = new ResourceLocation("textures/gui/widgets.png");
-	protected boolean allowButton = true;
 	
 	public static final GuiBasicButton lbutton = new GuiBasicButton(498,5,5,20,20,"<");
 	public static final GuiBasicButton rbutton = new GuiBasicButton(499,30,5,20,20,">");
@@ -51,49 +52,15 @@ public class Menu implements IMenu {
 	public void onOpen() {}
 
 	@Override
-	public GuiScreen getGui() 
-	{
-		try
-		{
-			return (GuiScreen) ctr.newInstance();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
 	public ResourceLocation getId() 
 	{
 		return this.id;
-	}
-
-	/**
-	 * set this to false to use your own buttons for switching menus
-	 */
-	@Override
-	public boolean allowButtonOverlay() 
-	{
-		return this.allowButton;
-	}
-	
-	@Override
-	public void setAllowButtonOverlay(boolean b)
-	{
-		this.allowButton = b;
 	}
 
 	@Override
 	public Class<? extends GuiScreen> getGuiClass() 
 	{
 		return this.clazz;
-	}
-	@Override
-	public void setButtonTexture(ResourceLocation loc)
-	{
-		this.bTexture  = loc;
 	}
 
 	@Override
@@ -103,13 +70,46 @@ public class Menu implements IMenu {
 	}
 	
 	@Override
+	public void setButtonTexture(ResourceLocation loc)
+	{
+		this.bTexture = loc;
+	}
+	
+	@Override
 	public GuiButton getLeftButton() 
 	{
-		return ConfigMenu.fancyPage ? fancyLButton : lbutton;
+		GuiBasicButton button = ConfigMenu.fancyPage ? fancyLButton : lbutton;
+		button.setButtonTexture(this.getButtonTexture());
+		return button;
 	}
+	
 	@Override
 	public GuiButton getRightButton()
 	{
-		return ConfigMenu.fancyPage ? fancyRButton : rbutton;
+		GuiBasicButton button = ConfigMenu.fancyPage ? fancyRButton : rbutton;
+		button.setButtonTexture(this.getButtonTexture());
+		return button;
 	}
+
+	@Override
+	public GuiScreen createGui() 
+	{
+		try
+		{
+			this.gui = (GuiScreen) ctr.newInstance();
+			return this.getGui();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public GuiScreen getGui() 
+	{
+		return this.gui;
+	}
+	
 }

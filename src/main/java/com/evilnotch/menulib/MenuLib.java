@@ -21,7 +21,7 @@ public class MenuLib {
 	public static final String NAME = "Menu Lib";
 	public static final String VERSION = "0.9";
 	/**
-	 * is cmm installed yes(true) or no(false)?
+	 * is cmm installed
 	 */
 	public static boolean cmm = false;
 	
@@ -29,15 +29,7 @@ public class MenuLib {
 	public void preinit(FMLPreInitializationEvent event)
 	{
 		ConfigMenu.loadMenuLib(event.getModConfigurationDirectory());
-		cmm = Loader.isModLoaded("custommainmenu");
-		//don't add vanilla menu to list if cmm is installed
-		if(!cmm)
-			MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
-		else
-		{
-			MenuRegistry.registerIMenu(new MenuCMM());
-		}
-//		MenuRegistry.registerGuiMenu(MainMenuAetherTest.class, new ResourceLocation("menulib:aether_test"));
+		registerMenus();
 		MinecraftForge.EVENT_BUS.register(new GuiEventHandler());
 	}
 	
@@ -45,6 +37,19 @@ public class MenuLib {
 	public void postinit(FMLPostInitializationEvent event)
 	{
 		MenuRegistry.loadInit();
+	}
+	
+	private static void registerMenus() 
+	{
+		cmm = Loader.isModLoaded("custommainmenu");
+		if(cmm)
+		{
+			MenuRegistry.registerIMenu(new MenuCMM());
+		}
+		else
+		{
+			MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
+		}
 	}
 
 }

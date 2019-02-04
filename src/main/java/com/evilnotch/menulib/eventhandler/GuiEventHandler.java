@@ -49,8 +49,9 @@ public class GuiEventHandler {
 	{
 		GuiScreen gui = e.getGui();
 		if(gui == null)
+		{
 			return;
-//		System.out.println(e.getGui().getClass());
+		}
 		if(!(gui instanceof GuiMainMenu) && !MenuRegistry.containsMenu(gui.getClass() ) )
 		{
 			return;
@@ -65,19 +66,23 @@ public class GuiEventHandler {
 	{
 		GuiScreen gui = e.getGui();
 		if(gui == null)
+		{
 			return;
+		}
 		if(!(gui instanceof GuiFakeMenu))
 		{
 			return;
 		}
-		e.setGui(MenuRegistry.getCurrentGui());
+		e.setGui(MenuRegistry.createCurrentGui());
 	}
 	@SubscribeEvent
 	public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post e)
 	{
 		GuiScreen gui = e.getGui();
 		if(gui == null)
+		{
 			return;
+		}
 		if(MenuRegistry.getMenuSize() > 1)
 		{
 			Class clazz = gui.getClass();
@@ -86,11 +91,16 @@ public class GuiEventHandler {
 				return;
 			}
 			IMenu menu = MenuRegistry.getCurrentMenu();
-			if(menu.allowButtonOverlay())
+			List<GuiButton> li = e.getButtonList();
+			GuiButton lbutton = menu.getLeftButton();
+			GuiButton rbutton = menu.getRightButton();
+			if(lbutton != null)
 			{
-				List<GuiButton> li = e.getButtonList();
-				li.add(menu.getLeftButton());
-				li.add(menu.getRightButton());
+				li.add(lbutton);
+			}
+			if(rbutton != null)
+			{
+				li.add(rbutton);
 			}
 		}
 	}
@@ -98,22 +108,21 @@ public class GuiEventHandler {
 	public void guiButtonClick(GuiScreenEvent.ActionPerformedEvent.Pre e)
 	{
 		GuiScreen gui = e.getGui();
-		if(gui == null)
+		if(gui == null || !MenuRegistry.containsMenu(gui.getClass()))
+		{
 			return;
-		Class clazz = gui.getClass();
-		if(!MenuRegistry.containsMenu(clazz))
-			return;
-
+		}
+		
 		if(e.getButton().id == 498)
 		{
 			MenuRegistry.advancePreviousMenu();
-			Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.getCurrentGui());
+			Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.createCurrentGui());
 			ConfigMenu.saveMenuIndex();
 		}
 		else if(e.getButton().id == 499)
 		{
 			MenuRegistry.advanceNextMenu();
-			Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.getCurrentGui());
+			Minecraft.getMinecraft().displayGuiScreen(MenuRegistry.createCurrentGui());
 			ConfigMenu.saveMenuIndex();
 		}
 	}

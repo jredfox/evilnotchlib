@@ -23,17 +23,21 @@ public class MenuLibTransformer implements IClassTransformer{
 	
     public static final List<String> clazzes = (List<String>)JavaUtil.<String>asArray(new Object[]
     {
-    		"lumien.custommainmenu.handler.CMMEventHandler",
-    		"lumien.custommainmenu.gui.GuiCustom",
-    		"net.minecraft.client.audio.MusicTicker"
+   		"net.minecraft.client.audio.MusicTicker",
+    	"lumien.custommainmenu.handler.CMMEventHandler",
+    	"lumien.custommainmenu.gui.GuiCustom",
     });
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) 
 	{
 		if(bytes == null)
+		{
 			return null;
+		}
+		
 		int index = clazzes.indexOf(transformedName);
+		
         try 
         {
 			return index != -1 ? transform(index, bytes, FMLCorePlugin.isObf) : bytes;
@@ -48,37 +52,30 @@ public class MenuLibTransformer implements IClassTransformer{
 	public byte[] transform(int index, byte[] bytes, boolean isObf) throws IOException 
 	{
 		String name =  clazzes.get(index);
-		System.out.println("MenuLib Transforming:" + name);
 		ClassNode classNode = ASMHelper.getClassNode(bytes);
 		String inputBase = "assets/menulib/asm/" + (isObf ? "srg/" : "deob/");
+		
+		System.out.println("MenuLib Transforming:" + name);
+		
 		switch (index)
 		{
 			case 0:
-				return ASMHelper.replaceClass(inputBase + "CMMEventHandler");//99% re-coded edited or removed as his ideas where wrong
-			case 1:
-				MethodNode node = ASMHelper.replaceMethod(classNode, inputBase + "GuiCustom", "initGui", "()V", "func_73866_w_");
-				
-				if(isObf)
-				for(AbstractInsnNode n : node.instructions.toArray())
-				{
-					if(n instanceof FieldInsnNode)
-					{
-						FieldInsnNode feild = (FieldInsnNode)n;
-						if(feild.name.equals("backgroundTexture"))
-						{
-							feild.name = "field_110351_G";//patch call
-						}
-					}
-				}
-				ASMHelper.replaceMethod(classNode, inputBase + "GuiCustom","actionPerformed", "(Lnet/minecraft/client/gui/GuiButton;)V", "func_146284_a");
-			break;
-			case 2:
 				ASMHelper.replaceMethod(classNode, inputBase + "MusicTicker", "update", "()V", "func_73660_a");
 				ASMHelper.addMethod(classNode, inputBase + "MusicTicker", "isMenu", "(Lnet/minecraft/client/gui/GuiScreen;)Z");
 			break;
+			
+			case 1:
+				return ASMHelper.replaceClass(inputBase + "CMMEventHandler");//99% re-coded edited or removed as his ideas where wrong
+			
+			case 2:
+				MethodNode node = ASMHelper.replaceMethod(classNode, inputBase + "GuiCustom", "initGui", "()V", "func_73866_w_");
+				ASMHelper.replaceMethod(classNode, inputBase + "GuiCustom","actionPerformed", "(Lnet/minecraft/client/gui/GuiButton;)V", "func_146284_a");
+			break;
 		}
+		
 		ASMHelper.clearCacheNodes();
-        ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        
+		ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(classWriter);
         
         index += 16;
