@@ -59,29 +59,6 @@ public class VanillaBugFixes {
 			playerFlags.remove(e.player.getName());
 		}
 	}
-
-	/**
-	 * if it's not the right tool set the break speed to 0
-	 */
-    /*@SubscribeEvent
-    public void breakFix(PlayerEvent.BreakSpeed e)
-    {
-    	EntityPlayer p = e.getEntityPlayer();
-    	ItemStack stack = EntityUtil.getActiveItemStack(p,EnumHand.MAIN_HAND);
-    	if(stack.isEmpty() || !(stack.getItem() instanceof ItemTool))
-    		return;
-    	
-    	IBlockState state =  e.getState();
-    	Block b = state.getBlock();
-    	String blockclazz = BlockUtil.getToolFromBlock(b,b.getMetaFromState(state),state);
-
-    	boolean hasItemClazz = ItemUtil.hasToolClass(stack,blockclazz);
-    	
-    	if(!hasItemClazz && blockclazz != null && BlockApi.blocksModified.contains(b.getRegistryName() ))
-    	{
-    		e.setNewSpeed(1.0F);
-    	}
-    }*/
 	
 	@SubscribeEvent
 	public void tilesync(TileStackSyncEvent.Merge e)
@@ -103,7 +80,6 @@ public class VanillaBugFixes {
         	if(e.tile instanceof TileEntityMobSpawner)
         	{
         		IgnoreTilePacket.ignoreTiles.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
-        		System.out.println("here");
         	}
         }
 	}

@@ -102,7 +102,7 @@ public class RenderTransformer  implements IClassTransformer{
 		 
 		  InsnList toInsert0 = new InsnList();
 	      toInsert0.add(new VarInsnNode(ALOAD,1));
-	      toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/elix_x/itemrender/handlers/IItemRendererHandler", "handleCameraTransforms", "(Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;)V", false));
+	      toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/iitemrender/handlers/IItemRendererHandler", "handleCameraTransforms", "(Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;)V", false));
 	      camera.instructions.insertBefore(ASMHelper.getFirstInstruction(camera, Opcodes.ALOAD), toInsert0);
 	}
 	
@@ -132,12 +132,12 @@ public class RenderTransformer  implements IClassTransformer{
 		  }
 		 
 		  InsnList toInsert = new InsnList();
-		  toInsert.add(new TypeInsnNode(Opcodes.NEW, "com/elix_x/itemrender/handlers/RenderItemObj"));
+		  toInsert.add(new TypeInsnNode(Opcodes.NEW, "com/evilnotch/iitemrender/handlers/RenderItemObj"));
 		  toInsert.add(new InsnNode(Opcodes.DUP));
 		  method.instructions.insert(start,toInsert);
 		  
 		  //at the end of the line construct RenderItemObj()
-		  method.instructions.insert(end,new MethodInsnNode(Opcodes.INVOKESPECIAL,"com/elix_x/itemrender/handlers/RenderItemObj", "<init>", "(Lnet/minecraft/client/renderer/RenderItem;)V", false));
+		  method.instructions.insert(end,new MethodInsnNode(Opcodes.INVOKESPECIAL,"com/evilnotch/iitemrender/handlers/RenderItemObj", "<init>", "(Lnet/minecraft/client/renderer/RenderItem;)V", false));
 	}
 
 }

@@ -49,21 +49,29 @@ public class TileEntityUtil {
 	}
 	
 	/**
-	 * set a tile entity nbt as placing it with an itemstack
+	 * use this for server side only dungoens and commands
 	 */
-	public static boolean setTileNBT(World worldIn, @Nullable EntityPlayer player, BlockPos pos, NBTTagCompound stack, boolean blockData)
+	public static boolean setTileNBT(World worldIn, TileEntity tile, NBTTagCompound nbt, boolean blockData)
 	{
-		return setTileNBT(worldIn, worldIn.getTileEntity(pos), player, pos, stack, blockData);
+		return setTileNBT(worldIn, tile, null, nbt, blockData);
 	}
 	
 	/**
+	 * use this for itemblock placement
+	 */
+	public static boolean setTileNBT(World worldIn, EntityPlayer player, BlockPos pos, NBTTagCompound nbt, boolean blockData)
+	{
+		return setTileNBT(worldIn,worldIn.getTileEntity(pos),player,nbt,blockData);
+	}
+
+	/**
 	 * set a tile entity nbt from like a command block or dungeon tweaks
 	 */
-	public static boolean setTileNBT(World worldIn,TileEntity tile, EntityPlayer player, BlockPos pos, NBTTagCompound nbt, boolean blockData)
+	public static boolean setTileNBT(World worldIn,TileEntity tile, EntityPlayer player, NBTTagCompound nbt, boolean blockData)
 	{
-	   if (tile != null)
+	   if (tile != null && nbt != null)
 	   {
-	   	  TileStackSyncEvent.Permissions permissions = new TileStackSyncEvent.Permissions(ItemStack.EMPTY, pos, tile, player, worldIn, blockData);
+	   	  TileStackSyncEvent.Permissions permissions = new TileStackSyncEvent.Permissions(ItemStack.EMPTY, tile, player, worldIn, blockData);
 	   	  permissions.canUseCommand = true;
 	   	  MinecraftForge.EVENT_BUS.post(permissions);
 	   	  if ((permissions.opsOnly) && (!permissions.canUseCommand))
@@ -73,12 +81,13 @@ public class TileEntityUtil {
 	   	  NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
 	   	  NBTTagCompound copyTile = tileData.copy();
 	       
-	   	  TileStackSyncEvent.Merge mergeEvent = new TileStackSyncEvent.Merge(ItemStack.EMPTY, pos, tile, player, worldIn, blockData, tileData, nbt);
+	   	  TileStackSyncEvent.Merge mergeEvent = new TileStackSyncEvent.Merge(ItemStack.EMPTY, tile, player, worldIn, blockData, tileData, nbt);
 	   	  MinecraftForge.EVENT_BUS.post(mergeEvent);
 	   	  tileData = mergeEvent.tileData;
 	   	  nbt = mergeEvent.nbt;
 	       
 	   	  tileData.merge(nbt);
+	   	  BlockPos pos = tile.getPos();
 	   	  tileData.setInteger("x", pos.getX());
 	   	  tileData.setInteger("y", pos.getY());
 	   	  tileData.setInteger("z", pos.getZ());
@@ -87,7 +96,7 @@ public class TileEntityUtil {
 	   	  {
 	   		tile.readFromNBT(tileData);
 	   		tile.markDirty();
-	       	TileStackSyncEvent.Post event = new TileStackSyncEvent.Post(ItemStack.EMPTY, pos, tile, player, worldIn, blockData);
+	       	TileStackSyncEvent.Post event = new TileStackSyncEvent.Post(ItemStack.EMPTY, tile, player, worldIn, blockData);
 	       	MinecraftForge.EVENT_BUS.post(event);
 	       	return true;
 	      }

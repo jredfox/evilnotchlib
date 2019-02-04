@@ -48,7 +48,7 @@ public class Transformer implements IClassTransformer
     public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
     	String name = classesBeingTransformed.get(index);
-    	System.out.println("Transforming: " + name);
+    	System.out.println("Transforming: " + name + " index:" + index);
     	
         try
         {
@@ -102,14 +102,11 @@ public class Transformer implements IClassTransformer
                 		return classToTransform;
                 	ASMHelper.replaceMethod(classNode, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "func_179224_a");
                 break;
-                
                 case 5:
                 	ASMHelper.replaceMethod(classNode, inputBase + "SPacketUpdateTileEntity", "processPacket", "(Lnet/minecraft/network/play/INetHandlerPlayClient;)V", "func_148833_a");
+                break;
                 case 6:
-                	if(FMLCorePlugin.isObf)
                 		ASMHelper.replaceMethod(classNode, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "func_184337_a");
-                	else
-                		ASMHelper.replaceClass(inputBase + "NetHandlerPlayServer");//to fix all them no such field errors in mdk
                 break;
                 //custom capability system to the Entity.class
                 case 7:

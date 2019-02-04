@@ -59,7 +59,7 @@ public class MCPEntry {
 			catch(Throwable t)
 			{
 				if(Config.debug)
-					t.printStackTrace();
+					System.out.println("Class Not Found:" + str);
 			}
 		}
 		this.actualClasses = clazzes;

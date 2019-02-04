@@ -13,6 +13,9 @@ public class TileStackSyncEvent extends Event{
 	public ItemStack stack;
 	public BlockPos pos;
 	public TileEntity tile;
+	/**
+	 * player can be null for stuff like commands and dungeons
+	 */
 	public EntityPlayer player;
 	public World world;
 	/**
@@ -22,10 +25,10 @@ public class TileStackSyncEvent extends Event{
 	/**
 	 * the base class for all the tile stack sync events do not use this directly
 	 */
-	public TileStackSyncEvent(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data)
+	public TileStackSyncEvent(ItemStack stack,TileEntity tile,EntityPlayer player,World w,boolean data)
 	{
 		this.stack = stack;
-		this.pos = pos;
+		this.pos = tile.getPos();
 		this.tile = tile;
 		this.player = player;
 		this.world = w;
@@ -41,9 +44,9 @@ public class TileStackSyncEvent extends Event{
 		public boolean opsOnly;
 		public boolean canUseCommand;
 		
-		public Permissions(ItemStack item,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data)
+		public Permissions(ItemStack item,TileEntity tile,EntityPlayer player,World w,boolean data)
 		{
-			super(item,pos,tile,player,w,data);
+			super(item,tile,player,w,data);
 			this.opsOnly = tile.onlyOpsCanSetNbt();
 			this.canUseCommand = player != null && player.canUseCommand(2, "");
 		}
@@ -56,9 +59,9 @@ public class TileStackSyncEvent extends Event{
 		public NBTTagCompound tileData;
 		public NBTTagCompound nbt;
 		
-		public Merge(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data,NBTTagCompound tileData,NBTTagCompound stackNBT)
+		public Merge(ItemStack stack,TileEntity tile,EntityPlayer player,World w,boolean data,NBTTagCompound tileData,NBTTagCompound stackNBT)
 		{
-			super(stack,pos,tile,player,w,data);
+			super(stack,tile,player,w,data);
 			this.tileData = tileData;
 			this.nbt = stackNBT;
 		}
@@ -69,9 +72,9 @@ public class TileStackSyncEvent extends Event{
 	 */
 	public static class Post extends TileStackSyncEvent
 	{
-		public Post(ItemStack stack,BlockPos pos,TileEntity tile,EntityPlayer player,World w,boolean data)
+		public Post(ItemStack stack,TileEntity tile,EntityPlayer player,World w,boolean data)
 		{
-			super(stack,pos,tile,player,w,data);
+			super(stack,tile,player,w,data);
 		}
 	}
 

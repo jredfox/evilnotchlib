@@ -20,9 +20,8 @@ public class RenderItemObj extends RenderItem {
 
 	public RenderItemObj(RenderItem renderItem)
 	{
-		super(Minecraft.getMinecraft().renderEngine, renderItem.getItemModelMesher().getModelManager(), Minecraft.getMinecraft().getItemColors());
+		super(Minecraft.getMinecraft().getTextureManager(), renderItem.getItemModelMesher().getModelManager(), Minecraft.getMinecraft().getItemColors());
 		this.child = renderItem;
-		this.itemModelMesher = this.child.itemModelMesher;
 	}
 
 	@Override

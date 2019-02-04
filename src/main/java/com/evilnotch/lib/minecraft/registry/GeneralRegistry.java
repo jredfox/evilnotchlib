@@ -228,7 +228,6 @@ public class GeneralRegistry {
 			PairObj<String,Object> pair = it.next();
 			if(s.equals(pair.getKey()))
 			{
-				System.out.println("found and removing:" + pair);
 				it.remove();
 				break;
 			}

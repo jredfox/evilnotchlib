@@ -88,13 +88,17 @@ public class MainJava {
 	}
 	
 	/**
-	 * save all capabilities on server closing since player logout events don't fire then
+	 * clear various data from memory
 	 */
 	@Mod.EventHandler
 	public void serverStopping(FMLServerStoppingEvent event)
 	{	
 		LoaderMain.serverStopping();
 	}
+	
+	/**
+	 * register all commands
+	 */
 	@Mod.EventHandler
 	public void commandRegister(FMLServerStartingEvent e)
 	{

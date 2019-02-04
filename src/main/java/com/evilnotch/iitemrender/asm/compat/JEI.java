@@ -55,7 +55,7 @@ public class JEI {
 		JumpInsnNode spotting = (JumpInsnNode)spot;
 		int varLoad = ASMHelper.getLocalVarIndexFromOwner(method,"Lnet/minecraft/item/ItemStack;");
 		InsnList toInsert = new InsnList();
-		toInsert.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/elix_x/itemrender/asm/compat/JEI", "slowItems", "Ljava/util/Set;"));
+		toInsert.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/iitemrender/asm/compat/JEI", "slowItems", "Ljava/util/Set;"));
 		toInsert.add(new VarInsnNode(ALOAD,varLoad));
    		toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"net/minecraft/item/ItemStack", new MCPSidedString("getItem","func_77973_b").toString(), "()Lnet/minecraft/item/Item;", false));
    		toInsert.add(new MethodInsnNode(Opcodes.INVOKEINTERFACE,"java/util/Set", "contains", "(Ljava/lang/Object;)Z", true));
