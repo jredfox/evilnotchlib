@@ -7,7 +7,9 @@ import java.util.List;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.ILine;
 import com.evilnotch.lib.util.line.LineArray;
+import com.evilnotch.lib.util.line.config.ConfigLine;
 import com.evilnotch.menulib.menu.IMenu;
 import com.evilnotch.menulib.menu.MenuRegistry;
 
@@ -43,15 +45,7 @@ public class ConfigMenu {
 		currentMenuIndex = new ResourceLocation(config.get("menulib", "currentMenuIndex", "minecraft:mainmenu").getString());
 		
 		String[] order = config.get("menulib", "menus", new String[]{""},"to disable menu append equals false at the end of it. The order of the list will be the order of the menus").getStringList();
-		for(String s : order)
-		{
-			if(s == null || JavaUtil.toWhiteSpaced(s).equals(""))
-				continue;
-			LineArray line = new LineArray(s);
-			if(!line.hasHead())
-				line.setHead(true);
-			mainMenus.add(line);
-		}
+		resetMenus(order);
 		
 		String[] clList = config.getStringList("classes_allowed", "music", new String[]{"lumien.custommainmenu.gui.GuiCustom"}, "this is a whitelist of menus not extending GuiMainMenu that require vanilla music");
 		for(String s : clList)
@@ -75,21 +69,45 @@ public class ConfigMenu {
 		
 		config.save();
 	}
+	
+	private static void resetMenus(String[] order) 
+	{
+		mainMenus.clear();
+		for(String s : order)
+		{
+			if(s == null || JavaUtil.toWhiteSpaced(s).equals(""))
+				continue;
+			LineArray line = new LineArray(s);
+			if(!line.hasHead())
+				line.setHead(true);
+			mainMenus.add(line);
+		}
+	}
 
 	public static void saveMenus(List<IMenu> menus) 
 	{
 		Configuration config = new Configuration(cfgmenu);
 		config.load();
 		
-		String[] list = new String[menus.size()];
-		for(int i=0;i<menus.size();i++)
+		List<String> list = new ArrayList();
+		for(IMenu menu : menus)
 		{
-			list[i] = menus.get(i).getId().toString();
+			list.add(menu.getId().toString());
 		}
-		Property prop = config.get("menulib", "menu_order", list,"to disable menu append equals false at the end of it. The order of the list will be the order of the menus");
-		prop.set(list);
+		for(LineArray line : mainMenus)
+		{
+			if(!list.contains(line.getResourceLocation().toString()))
+			{
+				list.add(line.toString());
+			}
+		}
+		String[] strlist = JavaUtil.toStaticStringArray(list);
+		Property prop = config.get("menulib", "menus", new String[]{""},"to disable menu append equals false at the end of it. The order of the list will be the order of the menus");
+		prop.set(strlist);
 		
 		config.save();
+		
+		resetMenus(strlist);
 	}
 
 	public static void saveMenuIndex() 

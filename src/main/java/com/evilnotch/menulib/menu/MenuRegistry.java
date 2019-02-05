@@ -153,28 +153,23 @@ public class MenuRegistry {
 	 */
 	public static void init() 
 	{
-		if(checkLists())
-		{
-			reorderLists();
-		}
-		else
-		{
-			System.out.println("MainMenus Config Resseting Checks failed");
-			ConfigMenu.saveMenus(menus);
-		}
+		checkLists();
+		reorderLists();
 	}
 
-	private static boolean checkLists() 
+	private static void checkLists() 
 	{
-		if(menus.size() != ConfigMenu.mainMenus.size())
-			return false;
+		boolean isDirty = false;
 		for(IMenu menu : menus)
 		{
 			ResourceLocation menuloc = menu.getId();
-			if(configHasMenu(menuloc))
-				return false;
+			if(!configHasMenu(menuloc))
+			{
+				System.out.println("Menu Lib: resseting config to add new menus");
+				ConfigMenu.saveMenus(menus);
+				break;
+			}
 		}
-		return true;
 	}
 
 	private static void reorderLists() 

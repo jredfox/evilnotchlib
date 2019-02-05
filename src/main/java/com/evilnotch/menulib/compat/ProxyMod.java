@@ -3,9 +3,11 @@ package com.evilnotch.menulib.compat;
 import java.lang.reflect.Method;
 
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.menulib.ConfigMenu;
 import com.evilnotch.menulib.compat.menu.MenuCMM;
 import com.evilnotch.menulib.menu.MenuRegistry;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 
 public class ProxyMod {
@@ -27,6 +29,10 @@ public class ProxyMod {
 	{	
 		if(cmm)
 			MenuRegistry.registerIMenu(new MenuCMM());
+		if(thebetweenlands)
+		{
+			MenuRegistry.registerGuiMenu(ReflectionUtil.classForName("thebetweenlands.client.gui.menu.GuiBLMainMenu"),new ResourceLocation("thebetweenlands:mainmenu"));
+		}
 	}
 	
 	/**

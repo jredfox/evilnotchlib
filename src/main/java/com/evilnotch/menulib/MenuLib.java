@@ -29,7 +29,6 @@ public class MenuLib {
 	@EventHandler
 	public void preinit(FMLPreInitializationEvent event)
 	{
-		ProxyMod.isModsLoaded();
 		ConfigMenu.loadMenuLib(event.getModConfigurationDirectory());
 		registerMenus();
 		MinecraftForge.EVENT_BUS.register(new GuiEventHandler());
@@ -43,6 +42,7 @@ public class MenuLib {
 	
 	private static void registerMenus() 
 	{
+		ProxyMod.isModsLoaded();
 		ProxyMod.register();
 		if(!ProxyMod.cmm)
 		{
