@@ -115,8 +115,6 @@ public class MenuRegistry {
 	
 	public static IMenu getCurrentMenu()
 	{
-		if(currentMenu == null)
-			currentMenu = menus.get(indexMenu);
 		return currentMenu;
 	}
 	
@@ -144,41 +142,60 @@ public class MenuRegistry {
 	 */
 	public static void init() 
 	{
-		checkLists();
+		checkConfig();
 		reorderLists();
 		setConfigIndex();
 	}
 
 	public static void setConfigIndex() 
 	{
-		setMenu(ConfigMenu.currentMenuIndex);
+		if(!setMenu(ConfigMenu.currentMenuIndex))
+		{
+			setMenu(0);
+			ConfigMenu.saveMenuIndex();//correct the configs index
+		}
 	}
 
-	public static void setMenu(ResourceLocation loc) 
+	public static void setMenu(int i) 
+	{
+		indexMenu = i;
+		currentMenu = menus.get(i);
+	}
+
+	public static boolean setMenu(ResourceLocation loc) 
 	{
 		int index = getIndex(loc);
 		if(index == -1)
 		{
 			System.out.println("null menu for index:" + ConfigMenu.currentMenuIndex);
-			return;
+			return false;
 		}
-		indexMenu = index;
-		setMenu(menus.get(index));
+		setMenu(index);
+		return true;
 	}
 
-	private static void checkLists() 
+	public static void checkConfig() 
 	{
 		if(ConfigMenu.isDirty)
+		{
 			ConfigMenu.saveMenus(menus);
+			if(ConfigMenu.displayNewMenu)
+			{
+				ResourceLocation loc = ConfigMenu.mainMenus.get(ConfigMenu.mainMenus.size()-1).getResourceLocation();//when adding a new menu display it
+				ConfigMenu.saveMenuIndex(loc);
+			}
+		}
 	}
 
-	private static void reorderLists() 
+	public static void reorderLists() 
 	{
 		List<IMenu> list = new ArrayList<IMenu>();
 		for(LineArray line : ConfigMenu.mainMenus)
 		{
 			if(!line.getBoolean())
+			{
 				continue;
+			}
 			ResourceLocation loc = line.getResourceLocation();
 			if(line.hasStringMeta())
 			{
@@ -215,12 +232,7 @@ public class MenuRegistry {
 		return null;
 	}
 
-	private static void setMenu(IMenu menu) 
-	{
-		currentMenu = menu;
-	}
-
-	private static int getIndex(ResourceLocation loc) 
+	public static int getIndex(ResourceLocation loc) 
 	{
 		for(int i=0;i<menus.size();i++)
 		{

@@ -24,6 +24,7 @@ public class ConfigMenu {
 	public static List<Class> musicAllow = new ArrayList();
 	public static List<Class> musicDeny = new ArrayList();
 	public static boolean fancyPage = false;
+	public static boolean displayNewMenu = true;
 	public static ResourceLocation currentMenuIndex = null;
 	public static File cfgmenu = null;
 	
@@ -38,8 +39,9 @@ public class ConfigMenu {
 		
 		config.load();
 		fancyPage = config.get("menulib","fancyMenuPage",false).getBoolean();
-		currentMenuIndex = new ResourceLocation(config.get("menulib", "currentMenuIndex", "minecraft:mainmenu").getString());
-		
+		displayNewMenu = config.get("menulib","displayNewMenu",true).getBoolean();
+		currentMenuIndex = new ResourceLocation(config.get("menulib", "currentMenuIndex", "").getString());
+
 		String[] order = config.get("menulib", "menus", new String[]{""},"to disable menu append equals false at the end of it. The order of the list will be the order of the menus").getStringList();
 		resetMenus(order);
 		
@@ -86,6 +88,14 @@ public class ConfigMenu {
 		Configuration config = new Configuration(cfgmenu);
 		config.load();
 		
+		//set the initial index to the first menu when generating the config
+		if(currentMenuIndex.toString().trim().isEmpty())
+		{
+			currentMenuIndex = mainMenus.get(0).getResourceLocation();
+			Property prop = config.get("menulib", "currentMenuIndex", "minecraft:mainmenu");
+			prop.set(currentMenuIndex.toString());
+		}
+		
 		List<String> list = new ArrayList();
 		for(LineArray line : mainMenus)
 		{
@@ -110,13 +120,17 @@ public class ConfigMenu {
 		isDirty = false;
 	}
 
-	public static void saveMenuIndex() 
+	public static void saveMenuIndex()
+	{
+		saveMenuIndex(MenuRegistry.getCurrentMenu().getId());
+	}
+	
+	public static void saveMenuIndex(ResourceLocation loc) 
 	{
 		long stamp = System.currentTimeMillis();
 		Configuration config = new Configuration(cfgmenu);
 		config.load();
 		Property prop = config.get("menulib", "currentMenuIndex", "minecraft:mainmenu");
-		ResourceLocation loc = MenuRegistry.getCurrentMenu().getId();
 		prop.set(loc.toString());
 		currentMenuIndex = loc;
 		config.save();

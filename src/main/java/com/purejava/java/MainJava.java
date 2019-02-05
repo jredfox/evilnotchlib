@@ -1,9 +1,10 @@
 package com.purejava.java;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
-import com.evilnotch.lib.util.line.LineArray;
 
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
@@ -15,8 +16,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		LineArray arr = new LineArray("modid:block = FaLsE");
-		System.out.println(arr.getString());
+		
 	}
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)
 	{

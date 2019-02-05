@@ -18,7 +18,7 @@ public interface IMenu {
 	 */
 	public GuiScreen createGui();
 	/**
-	 * grabs current gui genereted from createGui()
+	 * grabs current gui generated from createGui()
 	 */
 	public GuiScreen getGui();
 	/**
