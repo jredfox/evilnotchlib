@@ -20,7 +20,6 @@ import net.minecraftforge.common.config.Property;
 
 public class ConfigMenu {
 	
-	//menu lib
 	public static List<LineArray> mainMenus = new ArrayList();
 	public static List<Class> musicAllow = new ArrayList();
 	public static List<Class> musicDeny = new ArrayList();
@@ -127,7 +126,7 @@ public class ConfigMenu {
 		}
 	}
 	/**
-	 * call this for inputing another mods main menu into the config
+	 * don't call this till after the config has loaded
 	 */
 	public static void saveMenuToConfig(ResourceLocation loc) 
 	{
@@ -138,7 +137,8 @@ public class ConfigMenu {
 		}
 	}
 	/**
-	 * call this for inputing another mods main menu into the config
+	 *  don't call this till after the config is loaded. Use this method if you choose not to register the IMenu directly. 
+	 *  Currently only in use for the betweenlands to show people they can input custom entries
 	 */
 	public static void saveMenuToConfig(ResourceLocation loc, String clazz, boolean enabled) 
 	{

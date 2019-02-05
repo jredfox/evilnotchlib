@@ -34,7 +34,6 @@ public class ProxyMod {
 		{
 			ConfigMenu.saveMenuToConfig(new ResourceLocation("thebetweenlands:mainmenu"), "thebetweenlands.client.gui.menu.GuiBLMainMenu", true);
 		}
-		MenuRegistry.registerGuiMenu(MainMenuAetherTest.class, new ResourceLocation("test"));
 	}
 	
 	/**
