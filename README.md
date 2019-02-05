@@ -49,14 +49,14 @@ CSVE: basic implementation of comma seperated values with a varible system in pl
 Json model generation(Basic MC Lib)
 Lang generation(Basic MC Lib)
 Dyanmic Tranlsation Event(let's you override ItemStack#getDisplayName())
-TileStackSync Events fires on both client and server allows for denial of permissions
+TileStackSync Events fires on whatever sides that the tile data gets set to this usually includes both client and server player can be null if the event is fired from command block or dungeons.
 Adds the seed to f3 again per world
 ASMHelper allows you to: replace methods,replace classes, and other usefull stuffs as well as make it easier to do per line injections
 remove methods,add methods, add fields, remove fields
-PickBlockEvent(allows you to override what the block returns via middle click)
-PickEntityEvent(allows you to override what the entity returns via middle click)
+PickEvent.Block(allows you to override what the block returns via middle click)
+PickEvent.Entity(allows you to override what the entity returns via middle click)
 FakeWorld allows you to instatiate entities before a main world is even loaded you will have to exception handle for broken entities
-NBTPathAPI allows for deep comparsions of nbt based upon logic type as well as comparing has tags merging nbt and compiling back into normal nbt
+NBTPathAPI(Not Working Quite Yet) allows for deep comparsions of nbt based upon logic type as well as comparing has tags merging nbt and compiling back into normal nbt
 
 Future:
 Font Renderer
@@ -66,11 +66,7 @@ Lan Skin Host Fix
 Instalation This as a Dependancy:
 ```
 Install forge mdk mc version
-Create a libs folder and put the version of EvilNotch Lib you need
+Place a compiled or deobfuscated evil notch lib jar into the libs folder
+run gradlew setupDecompWorkspace eclipse
 Go into eclipse java build path and add the jar
-Installl the build.gradle and remove the jar section if the lib is compiled
-Go into EvilNotLib jar > src > main > resources > evilnotchlib > asm > decompiled
-Drag and drop what patched decompiled classes you need and rename to acess any new method/feilds. Decompiled asm is now supported
-When compiling your mod make sure you delete the net/minecraft folder as it's not needed because in compiled it's done using asm
-That's it your all setup and ready to use all of the features and new forge events :)
 ```
