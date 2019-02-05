@@ -28,6 +28,9 @@ public class ConfigMenu {
 	public static ResourceLocation currentMenuIndex = null;
 	public static File cfgmenu = null;
 	
+	public static int leftButtonId = 498;
+	public static int rightButtonId = 499;
+	
 	/**
 	 * load all configurations for menu lib
 	 */
@@ -41,8 +44,10 @@ public class ConfigMenu {
 		fancyPage = config.get("menulib","fancyMenuPage",false).getBoolean();
 		displayNewMenu = config.get("menulib","displayNewMenu",true).getBoolean();
 		currentMenuIndex = new ResourceLocation(config.get("menulib", "currentMenuIndex", "").getString());
+		leftButtonId = config.get("menulib","buttonLeftId",leftButtonId).getInt();
+		rightButtonId = config.get("menulib","buttonRightId",rightButtonId).getInt();
 
-		String[] order = config.get("menulib", "menus", new String[]{""},"to disable menu append equals false at the end of it. The order of the list will be the order of the menus").getStringList();
+		String[] order = config.get("menulib", "menus", new String[]{""},"format of menus is \"modid:mainmenu <class> = true/false\" changeing the menu order will change it in game").getStringList();
 		resetMenus(order);
 		
 		String[] clList = config.getStringList("classes_allowed", "music", new String[]{"lumien.custommainmenu.gui.GuiCustom"}, "this is a whitelist of menus not extending GuiMainMenu that require vanilla music");
@@ -113,8 +118,9 @@ public class ConfigMenu {
 			}
 		}
 		String[] strlist = JavaUtil.toStaticStringArray(list);
-		Property prop = config.get("menulib", "menus", new String[]{""},"to disable menu append equals false at the end of it. The order of the list will be the order of the menus");
+		Property prop = config.get("menulib", "menus", strlist);
 		prop.set(strlist);
+		prop.setComment("format of menus is \"modid:mainmenu <class> = true/false\" changeing the menu order will change it in game");
 		
 		config.save();
 		isDirty = false;

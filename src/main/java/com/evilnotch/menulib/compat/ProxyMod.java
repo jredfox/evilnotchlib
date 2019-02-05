@@ -32,7 +32,7 @@ public class ProxyMod {
 			MenuRegistry.registerIMenu(new MenuCMM());
 		if(thebetweenlands)
 		{
-			ConfigMenu.saveMenuToConfig(new ResourceLocation("thebetweenlands:mainmenu"), "thebetweenlands.client.gui.menu.GuiBLMainMenu", true);
+			MenuRegistry.registerGuiMenu(ReflectionUtil.classForName("thebetweenlands.client.gui.menu.GuiBLMainMenu"), new ResourceLocation("thebetweenlands:mainmenu"));
 		}
 	}
 	

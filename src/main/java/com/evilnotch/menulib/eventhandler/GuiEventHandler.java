@@ -20,27 +20,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class GuiEventHandler {
 	
-	@SubscribeEvent
-	public void canPlayMusic(MenuMusicEvent e)
-	{
-		for(Class c : ConfigMenu.musicDeny)
-		{
-			if(JavaUtil.isClassExtending(c, e.gui.getClass()))
-			{
-				e.canPlay = false;
-				return;
-			}
-		}
-		for(Class c : ConfigMenu.musicAllow)
-		{
-			if(JavaUtil.isClassExtending(c, e.gui.getClass()))
-			{
-				e.canPlay = true;
-				break;
-			}
-		}
-	}
-	
 	/**
 	 * set the gui to something mods are never going to be looking at
 	 */
@@ -115,12 +94,12 @@ public class GuiEventHandler {
 			return;
 		}
 		
-		if(e.getButton().id == 498)
+		if(e.getButton().id == ConfigMenu.leftButtonId)
 		{
 			MenuRegistry.advancePreviousMenu();
-			ConfigMenu.saveMenuIndex();//keep the save index seperatly for more options on modders
+			ConfigMenu.saveMenuIndex();//keep the save index separately for more options on modders
 		}
-		else if(e.getButton().id == 499)
+		else if(e.getButton().id == ConfigMenu.rightButtonId)
 		{
 			MenuRegistry.advanceNextMenu();
 			ConfigMenu.saveMenuIndex();

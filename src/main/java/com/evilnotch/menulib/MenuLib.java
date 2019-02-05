@@ -3,6 +3,7 @@ package com.evilnotch.menulib;
 import com.evilnotch.menulib.compat.ProxyMod;
 import com.evilnotch.menulib.compat.menu.MenuCMM;
 import com.evilnotch.menulib.eventhandler.GuiEventHandler;
+import com.evilnotch.menulib.eventhandler.MusicEventHandler;
 import com.evilnotch.menulib.menu.MenuRegistry;
 import com.evilnotch.menulib.test.MainMenuAetherTest;
 
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = MenuLib.MODID,name = MenuLib.NAME, version = MenuLib.VERSION, clientSideOnly = true,dependencies = "after:custommainmenu")
+@Mod(modid = MenuLib.MODID,name = MenuLib.NAME, version = MenuLib.VERSION, clientSideOnly = true,dependencies = "required-after:evilnotchlib;after:custommainmenu")
 public class MenuLib {
 	
 	public static final String MODID = "menulib";
@@ -28,6 +29,7 @@ public class MenuLib {
 		ConfigMenu.loadMenuLib(event.getSuggestedConfigurationFile());
 		registerMenus();
 		MinecraftForge.EVENT_BUS.register(new GuiEventHandler());
+		MinecraftForge.EVENT_BUS.register(new MusicEventHandler());
 	}
 	
 	@EventHandler

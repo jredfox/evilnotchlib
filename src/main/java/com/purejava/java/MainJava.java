@@ -1,7 +1,6 @@
 package com.purejava.java;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 import java.util.Set;
 
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
@@ -10,13 +9,14 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.config.Configuration;
 
 public class MainJava {
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		
+
 	}
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)
 	{

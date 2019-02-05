@@ -18,11 +18,11 @@ public class Menu implements IMenu {
 	
 	public ResourceLocation bTexture = new ResourceLocation("textures/gui/widgets.png");
 	
-	public static final GuiBasicButton lbutton = new GuiBasicButton(498,5,5,20,20,"<");
-	public static final GuiBasicButton rbutton = new GuiBasicButton(499,30,5,20,20,">");
+	public static final GuiBasicButton lbutton = new GuiBasicButton(ConfigMenu.leftButtonId,5,5,20,20,"<");
+	public static final GuiBasicButton rbutton = new GuiBasicButton(ConfigMenu.rightButtonId,30,5,20,20,">");
 	
-	public static final GuiBasicButton fancyLButton = new GuiBasicButton(498,5,5,64,20,"previous");
-	public static final GuiBasicButton fancyRButton = new GuiBasicButton(499,74,5,64,20,"next");
+	public static final GuiBasicButton fancyLButton = new GuiBasicButton(ConfigMenu.leftButtonId,5,5,64,20,"previous");
+	public static final GuiBasicButton fancyRButton = new GuiBasicButton(ConfigMenu.rightButtonId,74,5,64,20,"next");
 	
 
 	public Menu(Class<? extends GuiScreen> clazz,ResourceLocation id)
