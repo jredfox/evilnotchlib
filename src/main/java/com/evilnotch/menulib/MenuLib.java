@@ -20,16 +20,12 @@ public class MenuLib {
 	
 	public static final String MODID = "menulib";
 	public static final String NAME = "Menu Lib";
-	public static final String VERSION = "0.9";
-	/**
-	 * is cmm installed
-	 */
-	public static boolean cmm = false;
+	public static final String VERSION = "1.0";
 	
 	@EventHandler
 	public void preinit(FMLPreInitializationEvent event)
 	{
-		ConfigMenu.loadMenuLib(event.getModConfigurationDirectory());
+		ConfigMenu.loadMenuLib(event.getSuggestedConfigurationFile());
 		registerMenus();
 		MinecraftForge.EVENT_BUS.register(new GuiEventHandler());
 	}
@@ -43,11 +39,11 @@ public class MenuLib {
 	private static void registerMenus() 
 	{
 		ProxyMod.isModsLoaded();
-		ProxyMod.register();
 		if(!ProxyMod.cmm)
 		{
 			MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
 		}
+		ProxyMod.register();
 	}
 
 }

@@ -1,28 +1,17 @@
 package com.evilnotch.menulib.menu;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.logging.log4j.Level;
-
 import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.line.ILine;
-import com.evilnotch.lib.util.line.ILineHead;
 import com.evilnotch.lib.util.line.LineArray;
-import com.evilnotch.lib.util.line.config.ConfigBase;
-import com.evilnotch.lib.util.line.config.ConfigLine;
 import com.evilnotch.menulib.ConfigMenu;
 import com.evilnotch.menulib.compat.ProxyMod;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
 
 public class MenuRegistry {
 	
@@ -33,6 +22,7 @@ public class MenuRegistry {
 	public static void registerIMenu(IMenu menu)
 	{
 		menus.add(menu);
+		ConfigMenu.saveMenuToConfig(menu.getId());
 	}
 	
 	/**
@@ -44,6 +34,7 @@ public class MenuRegistry {
 	{
 		IMenu menu = new Menu(guiClazz,id);
 		menus.add(menu);
+		ConfigMenu.saveMenuToConfig(id);
 		return menu;
 	}
 	
@@ -155,21 +146,30 @@ public class MenuRegistry {
 	{
 		checkLists();
 		reorderLists();
+		setConfigIndex();
+	}
+
+	public static void setConfigIndex() 
+	{
+		setMenu(ConfigMenu.currentMenuIndex);
+	}
+
+	public static void setMenu(ResourceLocation loc) 
+	{
+		int index = getIndex(loc);
+		if(index == -1)
+		{
+			System.out.println("null menu for index:" + ConfigMenu.currentMenuIndex);
+			return;
+		}
+		indexMenu = index;
+		setMenu(menus.get(index));
 	}
 
 	private static void checkLists() 
 	{
-		boolean isDirty = false;
-		for(IMenu menu : menus)
-		{
-			ResourceLocation menuloc = menu.getId();
-			if(!configHasMenu(menuloc))
-			{
-				System.out.println("Menu Lib: resseting config to add new menus");
-				ConfigMenu.saveMenus(menus);
-				break;
-			}
-		}
+		if(ConfigMenu.isDirty)
+			ConfigMenu.saveMenus(menus);
 	}
 
 	private static void reorderLists() 
@@ -177,30 +177,32 @@ public class MenuRegistry {
 		List<IMenu> list = new ArrayList<IMenu>();
 		for(LineArray line : ConfigMenu.mainMenus)
 		{
-			//if disabled return
 			if(!line.getBoolean())
 				continue;
 			ResourceLocation loc = line.getResourceLocation();
 			if(line.hasStringMeta())
 			{
-				IMenu menu = new Menu(ReflectionUtil.classForName(line.getMetaString()),loc);
+				Class c = ReflectionUtil.classForName(line.getMetaString());
+				if(c == null)
+				{
+					System.out.println("null class when parsing menu for:" + line.getMetaString());
+					continue;
+				}
+				IMenu menu = new Menu(c,loc);
 				list.add(menu);
 			}
 			else
 			{
 				IMenu menu = getMenu(loc);
+				if(menu == null)
+				{
+					System.out.println("null menu when parsing found for:" + loc);
+					continue;
+				}
 				list.add(menu);
 			}
 		}
 		menus = list;
-	}
-	
-	public static boolean configHasMenu(ResourceLocation loc) 
-	{
-		for(LineArray line : ConfigMenu.mainMenus)
-			if(line.getResourceLocation().equals(loc))
-				return true;
-		return false;
 	}
 
 	public static IMenu getMenu(ResourceLocation loc) 
@@ -213,4 +215,19 @@ public class MenuRegistry {
 		return null;
 	}
 
+	private static void setMenu(IMenu menu) 
+	{
+		currentMenu = menu;
+	}
+
+	private static int getIndex(ResourceLocation loc) 
+	{
+		for(int i=0;i<menus.size();i++)
+		{
+			IMenu menu = menus.get(i);
+			if(menu.getId().equals(loc))
+				return i;
+		}
+		return -1;
+	}
 }

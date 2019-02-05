@@ -33,10 +33,7 @@ public class ConfigMenu {
 	 */
 	public static void loadMenuLib(File d) 
 	{
-		if(cfgmenu == null)
-		{
-			cfgmenu = new File(d,"menulib/config.cfg");
-		}
+		cfgmenu = d;
 		
 		Configuration config = new Configuration(cfgmenu);
 		
@@ -83,22 +80,27 @@ public class ConfigMenu {
 			mainMenus.add(line);
 		}
 	}
-
+	
+	public static boolean isDirty = false;
 	public static void saveMenus(List<IMenu> menus) 
 	{
 		Configuration config = new Configuration(cfgmenu);
 		config.load();
 		
 		List<String> list = new ArrayList();
-		for(IMenu menu : menus)
-		{
-			list.add(menu.getId().toString());
-		}
 		for(LineArray line : mainMenus)
 		{
 			if(!list.contains(line.getResourceLocation().toString()))
 			{
-				list.add(line.toString());
+				if(!line.getBoolean())
+					list.add(line.toString());
+				else
+				{
+					String s = line.getMetaString();
+					if(!s.isEmpty())
+						s = " <" + s + ">";
+					list.add(line.getResourceLocation() + s);
+				}
 			}
 		}
 		String[] strlist = JavaUtil.toStaticStringArray(list);
@@ -106,8 +108,7 @@ public class ConfigMenu {
 		prop.set(strlist);
 		
 		config.save();
-		
-		resetMenus(strlist);
+		isDirty = false;
 	}
 
 	public static void saveMenuIndex() 
@@ -125,5 +126,36 @@ public class ConfigMenu {
 			JavaUtil.printTime(stamp, "Saved Current Menu:");
 		}
 	}
+	/**
+	 * call this for inputing another mods main menu into the config
+	 */
+	public static void saveMenuToConfig(ResourceLocation loc) 
+	{
+		if(!hasMenu(loc))
+		{
+			mainMenus.add(new LineArray(loc.toString() + " = " + true));
+			isDirty = true;
+		}
+	}
+	/**
+	 * call this for inputing another mods main menu into the config
+	 */
+	public static void saveMenuToConfig(ResourceLocation loc, String clazz, boolean enabled) 
+	{
+		if(!hasMenu(loc))
+		{
+			mainMenus.add(new LineArray(loc + " <" + clazz + ">" + " = " + enabled));
+			isDirty = true;
+		}
+	}
+	
+	public static boolean hasMenu(ResourceLocation loc) 
+	{
+		for(LineArray line : ConfigMenu.mainMenus)
+			if(line.getResourceLocation().equals(loc))
+				return true;
+		return false;
+	}
+
 
 }

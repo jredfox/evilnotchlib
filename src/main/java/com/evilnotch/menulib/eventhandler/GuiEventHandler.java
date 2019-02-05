@@ -74,6 +74,8 @@ public class GuiEventHandler {
 			return;
 		}
 		e.setGui(MenuRegistry.createCurrentGui());
+		IMenu menu = MenuRegistry.getCurrentMenu();
+		menu.onOpen();
 	}
 	@SubscribeEvent
 	public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post e)

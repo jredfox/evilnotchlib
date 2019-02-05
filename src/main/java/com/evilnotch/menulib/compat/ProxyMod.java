@@ -6,6 +6,7 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.menulib.ConfigMenu;
 import com.evilnotch.menulib.compat.menu.MenuCMM;
 import com.evilnotch.menulib.menu.MenuRegistry;
+import com.evilnotch.menulib.test.MainMenuAetherTest;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
@@ -31,8 +32,9 @@ public class ProxyMod {
 			MenuRegistry.registerIMenu(new MenuCMM());
 		if(thebetweenlands)
 		{
-			MenuRegistry.registerGuiMenu(ReflectionUtil.classForName("thebetweenlands.client.gui.menu.GuiBLMainMenu"),new ResourceLocation("thebetweenlands:mainmenu"));
+			ConfigMenu.saveMenuToConfig(new ResourceLocation("thebetweenlands:mainmenu"), "thebetweenlands.client.gui.menu.GuiBLMainMenu", true);
 		}
+		MenuRegistry.registerGuiMenu(MainMenuAetherTest.class, new ResourceLocation("test"));
 	}
 	
 	/**
