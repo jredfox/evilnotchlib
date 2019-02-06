@@ -1,12 +1,8 @@
 package com.evilnotch.menulib.compat;
 
-import java.lang.reflect.Method;
-
 import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.menulib.ConfigMenu;
 import com.evilnotch.menulib.compat.menu.MenuCMM;
 import com.evilnotch.menulib.menu.MenuRegistry;
-import com.evilnotch.menulib.test.MainMenuAetherTest;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;

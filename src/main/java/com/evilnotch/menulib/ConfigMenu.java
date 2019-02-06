@@ -147,6 +147,7 @@ public class ConfigMenu {
 			JavaUtil.printTime(stamp, "Saved Current Menu:");
 		}
 	}
+	
 	/**
 	 * don't call this till after the config has loaded
 	 */
