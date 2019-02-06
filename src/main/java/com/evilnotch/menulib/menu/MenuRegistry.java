@@ -179,7 +179,7 @@ public class MenuRegistry {
 	{
 		if(ConfigMenu.isDirty)
 		{
-			ConfigMenu.saveMenus(menus);
+			ConfigMenu.saveMenus();
 			if(ConfigMenu.displayNewMenu)
 			{
 				ResourceLocation loc = ConfigMenu.mainMenus.get(ConfigMenu.mainMenus.size()-1).getResourceLocation();//when adding a new menu display it

@@ -106,7 +106,10 @@ public class Transformer implements IClassTransformer
                 	ASMHelper.replaceMethod(classNode, inputBase + "SPacketUpdateTileEntity", "processPacket", "(Lnet/minecraft/network/play/INetHandlerPlayClient;)V", "func_148833_a");
                 break;
                 case 6:
-                		ASMHelper.replaceMethod(classNode, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "func_184337_a");
+                		if(obfuscated)
+                			ASMHelper.replaceMethod(classNode, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "func_184337_a");
+                		else
+                			return ASMHelper.replaceClass(inputBase + "NetHandlerPlayServer");
                 break;
                 //custom capability system to the Entity.class
                 case 7:

@@ -31,6 +31,8 @@ public class ConfigMenu {
 	public static int leftButtonId = 498;
 	public static int rightButtonId = 499;
 	
+	private static final String menu_comment = "format of menus is \"modid:mainmenu <class> = true/false\" changeing the menu order will change it in game";
+	
 	/**
 	 * load all configurations for menu lib
 	 */
@@ -47,7 +49,7 @@ public class ConfigMenu {
 		leftButtonId = config.get("menulib","buttonLeftId",leftButtonId).getInt();
 		rightButtonId = config.get("menulib","buttonRightId",rightButtonId).getInt();
 
-		String[] order = config.get("menulib", "menus", new String[]{""},"format of menus is \"modid:mainmenu <class> = true/false\" changeing the menu order will change it in game").getStringList();
+		String[] order = config.get("menulib", "menus", new String[]{""},menu_comment).getStringList();
 		resetMenus(order);
 		
 		String[] clList = config.getStringList("classes_allowed", "music", new String[]{"lumien.custommainmenu.gui.GuiCustom"}, "this is a whitelist of menus not extending GuiMainMenu that require vanilla music");
@@ -88,7 +90,7 @@ public class ConfigMenu {
 	}
 	
 	public static boolean isDirty = false;
-	public static void saveMenus(List<IMenu> menus) 
+	public static void saveMenus() 
 	{
 		Configuration config = new Configuration(cfgmenu);
 		config.load();
@@ -118,9 +120,8 @@ public class ConfigMenu {
 			}
 		}
 		String[] strlist = JavaUtil.toStaticStringArray(list);
-		Property prop = config.get("menulib", "menus", strlist);
+		Property prop = config.get("menulib", "menus", strlist,menu_comment);
 		prop.set(strlist);
-		prop.setComment("format of menus is \"modid:mainmenu <class> = true/false\" changeing the menu order will change it in game");
 		
 		config.save();
 		isDirty = false;
@@ -139,6 +140,7 @@ public class ConfigMenu {
 		Property prop = config.get("menulib", "currentMenuIndex", "minecraft:mainmenu");
 		prop.set(loc.toString());
 		currentMenuIndex = loc;
+		config.get("menulib", "menus", new String[]{""},menu_comment);
 		config.save();
 		if(Config.debug)
 		{
