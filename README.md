@@ -68,7 +68,7 @@ Instalation This as a Dependancy:
 ```
 Install forge mdk mc version
 Place a compiled or deobfuscated evil notch lib jar into the libs folder
-Place the aceess transformer found in the met-inf folder into src/main/resources
+in build.gradle put this into your minecraft section "useDepAts = true"
 run gradlew setupDecompWorkspace eclipse
 Go into eclipse java build path and add the jar
 ```
