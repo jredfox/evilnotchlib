@@ -4,7 +4,7 @@ this is a library with minecraft and some forge bug fixes. It allows modders to 
 Embeded Libraries:
 ```
 Simple JSON(With Modifications): https://github.com/fangyidong/json-simple
-IItemRenderer(converted and modified to fix bugs) by elix_x found here: https://github.com/Elix-x/IItem-Renderer
+IItemRenderer(re-writen) originally by elix_x found here: https://github.com/Elix-x/IItem-Renderer
 ObfHelper & MCWriter: by squeek502 found here:https://github.com/squeek502/ASMHelper/tree/1.10.x/raw/squeek/asmhelper
 ```
 
@@ -34,7 +34,8 @@ Features:
 ```
 Capability System unlike forges mine is easy to use and understand as well as an ICapTick version for all objects that can tick
 MCPMappings and ReflectionUtil API: ability to get and set objects with ease
-Menu Lib: allows for modders to register their menu for multiple menu browsing
+Menu Lib(split from mod in 1.2.3 release): allows for modders to register their menu for multiple menu browsing
+IItemRenderer(split from mod in 1.2.3 release)
 BlockAPI: set objects in blocks for coders
 Basic MC Lib:ability to make modding easier automation for registration and lang
 GeneralRegistry: registry for commands, sound types and other general stuffs regsiter stuff here for compatibility
