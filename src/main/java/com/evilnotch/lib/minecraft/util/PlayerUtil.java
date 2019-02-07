@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
+import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
@@ -194,7 +195,7 @@ public class PlayerUtil {
 
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
 	{
-		LibEvents.kicker.put(p.connection, new PointId(0,ticks,msg) );
+		TickServerEvent.kicker.put(p.connection, new PointId(0,ticks,msg) );
 	}
 
 	public static boolean isPlayerOwner(EntityPlayerMP player)
@@ -267,7 +268,7 @@ public class PlayerUtil {
 	
 	public static void broadCastMessege(String msg) 
 	{
-		LibEvents.msgs.add(msg);
+		TickServerEvent.msgs.add(msg);
 	}
 
 }

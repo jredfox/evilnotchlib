@@ -27,56 +27,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 public class LibEvents {
 	
-	public static int mTick = 0;
-	public static final List<String> msgs = new ArrayList();
-	@SubscribeEvent
-	public void mTick(ServerTickEvent e)
-	{
-		 if(e.phase != Phase.END || msgs.isEmpty())
+	 @SubscribeEvent
+	 public void tickServer(ServerTickEvent e)
+	 {
+		 if(e.phase != Phase.END)
 			 return;
-		 Set<String> toRemove = new HashSet();
-		 for(String msg : msgs)
-		 {
-			MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
-			for(EntityPlayerMP p : mcServer.getPlayerList().getPlayers())
-			{
-				p.sendMessage(new TextComponentString(msg));
-			}
-			toRemove.add(msg);
-		 }
-		 for(String s : toRemove)
-			 msgs.remove(s);
+		 
+		 TickReg.tickServer();
 	 }
-	 
-	/**
-	 * entity player connection to point id(ticks existed, max tick count,String msg)
-	 * the connection is kept even on respawn so there is no glitching this kicker
-	*/
-	public static HashMap<NetHandlerPlayServer,PointId> kicker = new HashMap();
-	public static boolean isKickerIterating = false;
-	@SubscribeEvent
-	public void kick(TickEvent.ServerTickEvent e)
-	{
-		if(e.phase != Phase.END || kicker.isEmpty())
-			return;
-			Iterator<Map.Entry<NetHandlerPlayServer,PointId> > it = kicker.entrySet().iterator();
-		while(it.hasNext())
-		{
-			isKickerIterating = true;
-			Map.Entry<NetHandlerPlayServer,PointId> pair = it.next();
-			NetHandlerPlayServer connection = pair.getKey();
-			PointId point = pair.getValue();
-			if(point.getX() >= point.getY())
-			{
-				it.remove();
-				PlayerUtil.disconnectPlayer(connection.player,new TextComponentString(point.id));
-			}
-		}
-		isKickerIterating = false;
-		
-		for(PointId p : kicker.values())
-			p.setLocation(p.getX() + 1,p.getY());
-	}
 	
 	/**
 	 * Attempt to re-instantiate the entity caches for broken entities when the world is no longer fake
@@ -94,12 +52,5 @@ public class LibEvents {
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_nbt,w);
 		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_commandsender,w);
-	 }
-	 @SubscribeEvent
-	 public void tickServer(ServerTickEvent e)
-	 {
-		 if(e.phase != Phase.END)
-			 return;
-		 TickReg.tickServer();
 	 }
 }

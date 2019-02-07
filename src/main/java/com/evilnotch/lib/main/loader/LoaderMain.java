@@ -93,16 +93,17 @@ public class LoaderMain {
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
 		MinecraftForge.EVENT_BUS.register(new LoaderMain());
 	}
-
+	/**
+	 * prevent memory leaks
+	 */
 	public static void serverStopping() 
 	{
-		//prevent memory leaks
-		TickReg.garbageCollectServer();
-		PlayerUtil.nbts.clear();
+		TickReg.garbageCollectServer();	
+		VanillaBugFixes.worlDir = null;
+		VanillaBugFixes.playerDataDir = null;
+		VanillaBugFixes.playerDataNames = null;
 		VanillaBugFixes.playerFlags.clear();
-		LibEvents.kicker.clear();
-		LibEvents.isKickerIterating = false;
-		LibEvents.msgs.clear();
+		PlayerUtil.nbts.clear();
 	}
 
 	public static void serverStart(FMLServerStartingEvent e) 

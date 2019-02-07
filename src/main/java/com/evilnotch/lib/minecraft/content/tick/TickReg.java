@@ -5,8 +5,8 @@ import java.util.List;
 
 public class TickReg {
 	
-	public static List<ITickServer> serverTick = new ArrayList();
-	public static List<ITickClient> clientTick = new ArrayList();
+	public static List<ITick> serverTick = new ArrayList();
+	public static List<ITick> clientTick = new ArrayList();
 	
 	public static int tickCountServer;
 	public static int tickCountClient;
@@ -29,34 +29,34 @@ public class TickReg {
 			tickCountServer = 0;
 	}
 	
-	public static void regServer(ITickServer server)
+	public static void regServer(ITick server)
 	{
 		serverTick.add(server);
 	}
 	
-	public static void regClient(ITickClient c)
+	public static void regClient(ITick c)
 	{
 		clientTick.add(c);
 	}
 	
 	public static void garbageCollectServer()
 	{
-		for(ITickServer t : serverTick)
+		for(ITick t : serverTick)
 			t.garbageCollect();
 	}
 	
 	public static void garbageCollectClient()
 	{
-		for(ITickClient t : clientTick)
+		for(ITick t : clientTick)
 			t.garbageCollect();
 	}
 	
-	public static boolean isRightCountServer(int ticks)
+	public static boolean isRightTickServer(int ticks)
 	{
 		return tickCountServer % ticks == 0;
 	}
 	
-	public static boolean isRightCountClient(int ticks)
+	public static boolean isRightTickClient(int ticks)
 	{
 		return tickCountClient % ticks == 0;
 	}

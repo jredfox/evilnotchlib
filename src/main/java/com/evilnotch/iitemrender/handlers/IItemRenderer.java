@@ -27,6 +27,7 @@ public interface IItemRenderer {
 
 	/**
 	 * Called before {@link ItemStack} is being rendered. You can cancel rendering by returning <b>FALSE</b>.
+	 * return false to stop vanilla rendering the itemstack
 	 * @param renderItem {@link RenderItem} instance that will render the item stack
 	 * @param itemstack {@link ItemStack} that will be rendered
 	 * @param model {@link IBakedModel} that will be used to render it

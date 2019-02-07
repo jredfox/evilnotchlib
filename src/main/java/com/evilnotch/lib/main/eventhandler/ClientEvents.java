@@ -32,6 +32,15 @@ public class ClientEvents {
 		JsonGen.modelReg();
 	}
 	
+	@SubscribeEvent
+	public void tickClient(ClientTickEvent e)
+	{
+		 if(e.phase != Phase.END)
+			 return;
+		 
+		 TickReg.tickClient();
+	}
+	
 	/**
 	 * this is so data get's cleared on client side only that needs to not be stored all the time or is attatched per world
 	 */
@@ -40,15 +49,6 @@ public class ClientEvents {
 	{
 		TickReg.garbageCollectClient();
 		Seeds.clearSeeds();
-	}
-	
-	@SubscribeEvent
-	public void tickClient(ClientTickEvent e)
-	{
-		 if(e.phase != Phase.END)
-			 return;
-		 
-		 TickReg.tickClient();
 	}
 	
 	/**
@@ -72,6 +72,7 @@ public class ClientEvents {
 			index++;
 		}
 	}
+	
 	/**
 	 * if you get booted from your own world
 	 */

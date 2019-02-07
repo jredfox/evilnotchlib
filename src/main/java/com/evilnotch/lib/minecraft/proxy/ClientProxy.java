@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.ClientEvents;
+import com.evilnotch.lib.main.eventhandler.TickClientEvent;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.main.loader.LoaderMain;
@@ -22,6 +23,8 @@ import com.evilnotch.lib.minecraft.content.client.ClientUUID;
 import com.evilnotch.lib.minecraft.content.client.block.ModelPart;
 import com.evilnotch.lib.minecraft.content.client.block.StateMapperSupreme;
 import com.evilnotch.lib.minecraft.content.item.IBasicItem;
+import com.evilnotch.lib.minecraft.content.tick.ITick;
+import com.evilnotch.lib.minecraft.content.tick.TickReg;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
@@ -67,6 +70,7 @@ public class ClientProxy extends ServerProxy{
 	public void initMod()
 	{
 		super.initMod();
+		TickReg.regClient(new TickClientEvent());
 	}
 	
 	@Override

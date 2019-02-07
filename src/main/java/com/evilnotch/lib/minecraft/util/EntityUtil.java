@@ -125,7 +125,7 @@ public class EntityUtil {
 	public static boolean cached = false;
 	public static Set<ResourceLocation> end_ents = new HashSet<ResourceLocation>();
 	
-	public static Set<ResourceLocation> forgemobs = new HashSet();//forge mobs that are entity living
+//	public static Set<ResourceLocation> forgemobs = new HashSet();//forge mobs that are entity living
 	public static HashMap<ResourceLocation,String[]> living = new HashMap();
 	public static HashMap<ResourceLocation,String[]> nonliving = new HashMap();
 	public static HashMap<ResourceLocation,String[]> livingbase = new HashMap();
@@ -842,7 +842,7 @@ public class EntityUtil {
 			System.out.println("blacklist:" + ent_blacklist);
 			System.out.println("blacklistNBT:" + ent_blacklist_nbt);
 			System.out.println("blacklist CMD:" + ent_blacklist_commandsender);
-			if(Config.debug)
+			if(Config.debug_worldNeedy)
 				System.out.println("worldNeedyMobs:" + ents_worldneedy);
 		}
 		
@@ -924,15 +924,20 @@ public class EntityUtil {
 			LoaderMain.logger.log(Level.ERROR,"Entity Serialization Has Been Broken When Reading It's Own NBT Report to mod autoher:" + loc);
 		}
 	}
+	
+	public static boolean isForgeMob(ResourceLocation loc)
+	{
+		return !loc.getResourceDomain().equals("minecraft");
+	}
 
 	/**
-	 * Warning is bound to change in backported versions
+	 * this isn't useful in versions after 1.10.2
 	 */
 	@Deprecated
 	public static void cacheForgeMob(ResourceLocation loc) 
 	{
-		if(!loc.getResourceDomain().equals("minecraft"))
-			forgemobs.add(loc);
+//		if(!loc.getResourceDomain().equals("minecraft"))
+//			forgemobs.add(loc);
 	}
 
 	public static void cacheWorldNeedy(ResourceLocation loc) 
@@ -971,6 +976,7 @@ public class EntityUtil {
 		NBTTagList nbttaglist3 = nbt.getTagList("Rotation", 5);
 		return nbttaglist3.getFloatAt(0);
 	}
+	
 	public static float getRotationPitch(NBTTagCompound nbt)
 	{
 		NBTTagList nbttaglist3 = nbt.getTagList("Rotation", 5);
