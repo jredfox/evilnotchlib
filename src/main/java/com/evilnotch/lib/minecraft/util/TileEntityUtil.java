@@ -52,7 +52,7 @@ public class TileEntityUtil {
 	}
 	
 	/**
-	 * use this for server side only dungoens and commands
+	 * use this for server side only dungeons and commands
 	 */
 	public static boolean setTileNBT(World worldIn, TileEntity tile, NBTTagCompound nbt, boolean blockData)
 	{
@@ -68,13 +68,14 @@ public class TileEntityUtil {
 	}
 
 	/**
-	 * set a tile entity nbt from like a command block or dungeon tweaks
+	 * set a tile entity nbt if player is null it means its server side only with command block or dungeons
 	 */
 	public static boolean setTileNBT(World worldIn,TileEntity tile, EntityPlayer player, NBTTagCompound nbt, boolean blockData)
 	{
 	   if (tile != null && nbt != null)
 	   {
-	   	  TileStackSyncEvent.Permissions permissions = new TileStackSyncEvent.Permissions(ItemStack.EMPTY, tile, player, worldIn, blockData);
+		   ItemStack stack = player == null ? ItemStack.EMPTY : player.getActiveItemStack();
+	   	  TileStackSyncEvent.Permissions permissions = new TileStackSyncEvent.Permissions(stack, tile, player, worldIn, blockData);
 	   	  permissions.canUseCommand = true;
 	   	  MinecraftForge.EVENT_BUS.post(permissions);
 	   	  if ((permissions.opsOnly) && (!permissions.canUseCommand))
@@ -84,7 +85,7 @@ public class TileEntityUtil {
 	   	  NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
 	   	  NBTTagCompound copyTile = tileData.copy();
 	       
-	   	  TileStackSyncEvent.Merge mergeEvent = new TileStackSyncEvent.Merge(ItemStack.EMPTY, tile, player, worldIn, blockData, tileData, nbt);
+	   	  TileStackSyncEvent.Merge mergeEvent = new TileStackSyncEvent.Merge(stack, tile, player, worldIn, blockData, tileData, nbt);
 	   	  MinecraftForge.EVENT_BUS.post(mergeEvent);
 	   	  tileData = mergeEvent.tileData;
 	   	  nbt = mergeEvent.nbt;
@@ -99,7 +100,7 @@ public class TileEntityUtil {
 	   	  {
 	   		tile.readFromNBT(tileData);
 	   		tile.markDirty();
-	       	TileStackSyncEvent.Post event = new TileStackSyncEvent.Post(ItemStack.EMPTY, tile, player, worldIn, blockData);
+	       	TileStackSyncEvent.Post event = new TileStackSyncEvent.Post(stack, tile, player, worldIn, blockData);
 	       	MinecraftForge.EVENT_BUS.post(event);
 	       	return true;
 	      }

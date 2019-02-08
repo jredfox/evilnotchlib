@@ -13,10 +13,7 @@ public class ServerProxy {
 	public void proxyStart() {}
 	public void preinit(FMLPreInitializationEvent e){}
 	
-	public void initMod() 
-	{
-		MinecraftForge.EVENT_BUS.register(new TickServerEvent());
-	}
+	public void initMod() {}
 	/**
 	 * generate lan files and inject here
 	 */

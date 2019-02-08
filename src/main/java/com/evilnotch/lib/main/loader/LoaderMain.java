@@ -9,6 +9,7 @@ import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
+import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.content.block.IBasicBlock;
 import com.evilnotch.lib.minecraft.content.item.IBasicItem;
@@ -92,6 +93,7 @@ public class LoaderMain {
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
 		MinecraftForge.EVENT_BUS.register(new LoaderMain());
+		TickReg.regServer(new TickServerEvent());
 	}
 	/**
 	 * prevent memory leaks

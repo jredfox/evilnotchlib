@@ -35,7 +35,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.world.chunk.Chunk",
     	"net.minecraft.world.chunk.storage.AnvilChunkLoader",//caps for chunks need readFromNBT() and writeToNBT()
     	"net.minecraft.client.Minecraft",
-    	"net.minecraft.enchantment.Enchantment"
+    	"net.minecraft.enchantment.Enchantment",
+    	"net.minecraft.tileentity.MobSpawnerBaseLogic"
     });
     
     @Override
@@ -140,6 +141,9 @@ public class Transformer implements IClassTransformer
                 	if(!ConfigCore.asm_enchantments)
                 		return classToTransform;
                 	ASMHelper.replaceMethod(classNode, inputBase + "Enchantment", "getTranslatedName", "(I)Ljava/lang/String;", "func_77316_c");
+                break;
+                case 15:
+                	
                 break;
             }
             

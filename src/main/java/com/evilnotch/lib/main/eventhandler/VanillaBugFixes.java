@@ -14,11 +14,14 @@ import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.BlockUtil;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.ItemUtil;
+import com.evilnotch.lib.minecraft.util.PlayerUtil;
+import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
@@ -26,6 +29,7 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumFacing;
@@ -48,6 +52,9 @@ public class VanillaBugFixes {
 	public static File playerDataDir = null;
 	
 	public static Set<String> playerFlags = new HashSet();
+	/**
+	 * send the corrected uuid of the player to the client
+	 */
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void join(PlayerLoggedInEvent e)
 	{
@@ -133,48 +140,34 @@ public class VanillaBugFixes {
   	{
   		World w = e.getWorld();
   		EntityPlayer p = e.getEntityPlayer();
-  	
-  		if(p == null || w == null || w.isRemote || e.getHand() == null)
-  			return;
   		ItemStack stack = p.getHeldItem(e.getHand());
   		BlockPos pos = e.getPos();
-  		EnumFacing face = e.getFace();
-  		if(pos == null || face == null)
+  		
+  		if(!(stack.getItem() instanceof ItemMonsterPlacer))
   			return;
   		
   		TileEntity tile = w.getTileEntity(pos);
-  		IBlockState state =  w.getBlockState(pos);
   		
-  		if (stack == null || stack.getItem() != Items.SPAWN_EGG || tile == null || !(tile instanceof TileEntityMobSpawner) || state == null)
+  		if (!(tile instanceof TileEntityMobSpawner))
+  		{
   			return;
+  		}
   		
-  		  if (tile instanceof TileEntityMobSpawner)
-  		  {
-  			  NBTTagCompound nbt = new NBTTagCompound();
-  		   	  tile.writeToNBT(nbt);
-  		   	  ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
-  			  String name = loc == null ? null : loc.toString();
-  			  if(name == null)
-  				  return;
-  			  
-  			  //spawndata reset
-  			  NBTTagCompound data = new NBTTagCompound();
-  			  data.setString("id", loc.toString());
-  			  nbt.setTag("SpawnData", data);
-  			  
-  			  //spawn potentials reset
-  			  NBTTagList pot = new NBTTagList();
-  			  pot.appendTag(new WeightedSpawnerEntity(1,data.copy()).toCompoundTag() );
-  			  nbt.setTag("SpawnPotentials", pot);
-  			  
-  			  if (!p.capabilities.isCreativeMode)
-  			       stack.shrink(1);
-  			  
-  			  tile.readFromNBT(nbt);
-  			  tile.markDirty();
-  			  w.notifyBlockUpdate(pos, state, w.getBlockState(pos), 3);
-  			  e.setCanceled(true);
-  		  }
+  		NBTTagCompound nbt = new NBTTagCompound();
+  		NBTTagCompound data = new NBTTagCompound();
+  		ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
+  		data.setString("id", loc.toString());
+  		nbt.setTag("SpawnData", data);
+  		TileEntityUtil.setTileNBT(w, tile, p, nbt, false);
+  		
+  		p.swingArm(e.getHand());
+  		
+		if (!p.capabilities.isCreativeMode)
+		{
+			stack.shrink(1);
+		}
+		
+  		e.setCanceled(true);
   	}
 
 }
