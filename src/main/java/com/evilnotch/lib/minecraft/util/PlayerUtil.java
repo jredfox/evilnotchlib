@@ -64,6 +64,7 @@ public class PlayerUtil {
     {
     	sendClipBoard(pc,c,p,messege,url,true);
     }
+    
     public static void sendClipBoard(String pc,String c,EntityPlayer p ,String messege,String url,boolean copyURL)
     {
     	TextComponentString str = new TextComponentString(pc + messege + " " + c + EnumChatFormatting.UNDERLINE + url);
@@ -294,11 +295,24 @@ public class PlayerUtil {
 			MinecraftUtil.cancelEvent(e,e.getClass(),b);
 		}
 	}
-
+	/**
+	 * call this when your done overriding an items function in RightClickBlockEvent
+	 */
 	public static void rightClickBlockSucess(RightClickBlock e, EntityPlayer p) 
 	{
   		swingHand(p,e.getHand());
 		cancelRightClickBlock(e,true);
+	}
+	
+	/**
+	 * don't hard code consuming items everywhere use this
+	 */
+	public static void consumeItem(EntityPlayer p, ItemStack stack) 
+	{
+		if (!p.capabilities.isCreativeMode)
+		{
+			stack.shrink(1);
+		}
 	}
 
 }

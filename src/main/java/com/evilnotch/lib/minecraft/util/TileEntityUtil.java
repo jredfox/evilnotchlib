@@ -2,6 +2,7 @@ package com.evilnotch.lib.minecraft.util;
 
 import javax.annotation.Nullable;
 
+import com.evilnotch.lib.minecraft.event.TileDataEvent;
 import com.evilnotch.lib.minecraft.event.TileStackSyncEvent;
 
 import net.minecraft.block.state.IBlockState;
@@ -52,25 +53,51 @@ public class TileEntityUtil {
 	}
 	
 	/**
-	 * use this for server side only dungeons and commands
+	 * set a tile entity nbt from anything except when placing an itemstack
 	 */
-	public static boolean setTileNBT(World worldIn, TileEntity tile, NBTTagCompound nbt, boolean blockData)
+	public static boolean setTileNBT(World worldIn,TileEntity tile, NBTTagCompound nbt)
 	{
-		return setTileNBT(worldIn, tile, null, nbt, blockData);
+	   if (tile != null && nbt != null)
+	   {
+	   	  NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
+	   	  NBTTagCompound copyTile = tileData.copy();
+	       
+	   	  TileDataEvent.Merge mergeEvent = new TileDataEvent.Merge(tile, worldIn, tileData, nbt);
+	   	  MinecraftForge.EVENT_BUS.post(mergeEvent);
+	   	  tileData = mergeEvent.tileData;
+	   	  nbt = mergeEvent.nbt;
+	       
+	   	  tileData.merge(nbt);
+	   	  BlockPos pos = tile.getPos();
+	   	  tileData.setInteger("x", pos.getX());
+	   	  tileData.setInteger("y", pos.getY());
+	   	  tileData.setInteger("z", pos.getZ());
+	   	  
+	   	  if (!tileData.equals(copyTile))
+	   	  {
+	   		 tile.readFromNBT(tileData);
+	   		 tile.markDirty();
+	   		 TileDataEvent.Post event = new TileDataEvent.Post(tile, worldIn);
+	   		 MinecraftForge.EVENT_BUS.post(event);
+	   		 return true;
+	   	  }
+	   }
+	   return false;
 	}
 	
+	
 	/**
-	 * use this for itemblock placement
+	 * used for itemblock placement
 	 */
-	public static boolean setTileNBT(World worldIn, EntityPlayer player, BlockPos pos, NBTTagCompound nbt, boolean blockData)
+	public static boolean placeTileNBT(World worldIn, BlockPos pos, EntityPlayer player, NBTTagCompound nbt, boolean blockData)
 	{
-		return setTileNBT(worldIn,worldIn.getTileEntity(pos),player,nbt,blockData);
+		return placeTileNBT(worldIn,worldIn.getTileEntity(pos),player,nbt,blockData);
 	}
 
 	/**
-	 * set a tile entity nbt if player is null it means its server side only with command block or dungeons
+	 * set a tile entity nbt from an Itemstack use
 	 */
-	public static boolean setTileNBT(World worldIn,TileEntity tile, EntityPlayer player, NBTTagCompound nbt, boolean blockData)
+	public static boolean placeTileNBT(World worldIn,TileEntity tile, EntityPlayer player, NBTTagCompound nbt, boolean blockData)
 	{
 	   if (tile != null && nbt != null)
 	   {
@@ -138,7 +165,7 @@ public class TileEntityUtil {
     }
     
     /**
-     * player can be null but, use when avalible
+     * player can be null but, use when available
      */
 	public static void setSpawnerId(ResourceLocation loc, TileEntity tile, World w, EntityPlayer p) 
 	{
@@ -146,6 +173,7 @@ public class TileEntityUtil {
   		NBTTagCompound data = new NBTTagCompound();
   		data.setString("id", loc.toString());
   		nbt.setTag("SpawnData", data);
-  		TileEntityUtil.setTileNBT(w, tile, p, nbt, false);
+  		TileEntityUtil.setTileNBT(w, tile, nbt);
 	}
+	
 }

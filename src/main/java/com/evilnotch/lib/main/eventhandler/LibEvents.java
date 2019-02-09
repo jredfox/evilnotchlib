@@ -12,6 +12,7 @@ import com.evilnotch.lib.minecraft.content.tick.TickReg;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
+import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairObj;
 import com.evilnotch.lib.util.simple.PointId;
 
@@ -48,16 +49,24 @@ public class LibEvents {
 	 @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
 	 public void canceler(Event e)
 	 {
-		 Side side = FMLCommonHandler.instance().getEffectiveSide();
-		 if(cancelerClient != null && cancelerClient.toIgnore != e && e.getClass().equals(cancelerClient.clazz) && Side.CLIENT == side)
+		 //looks dirty code but, really it's an optimization. I don't want to get the effective side dynamically on tick events when I don't have to
+		 if(cancelerClient != null)
 		 {
-			 e.setCanceled(cancelerClient.setIsCanceled);
-			 cancelerClient = null;
+			 Side side = FMLCommonHandler.instance().getEffectiveSide();
+			 if(Side.CLIENT == side && cancelerClient.toIgnore != e && e.getClass().equals(cancelerClient.clazz))
+			 {
+				 e.setCanceled(cancelerClient.setIsCanceled);
+				 cancelerClient = null;
+			 }
 		 }
-		 if(cancelerServer != null && cancelerServer.toIgnore != e && e.getClass().equals(cancelerServer.clazz) && Side.SERVER == side)
+		 if(cancelerServer != null)
 		 {
-			 e.setCanceled(cancelerServer.setIsCanceled);
-			 cancelerServer = null;
+			 Side side = FMLCommonHandler.instance().getEffectiveSide();
+			 if(Side.SERVER == side && cancelerServer.toIgnore != e && e.getClass().equals(cancelerServer.clazz))
+			 {
+				 e.setCanceled(cancelerServer.setIsCanceled);
+				 cancelerServer = null;
+			 }
 		 }
 	 }
 	

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.evilnotch.lib.minecraft.event.PickEvent;
+import com.evilnotch.lib.minecraft.event.TileDataEvent;
 import com.evilnotch.lib.minecraft.event.TileStackSyncEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
@@ -56,19 +57,35 @@ public class VanillaBugFixes {
 		}
 	}
 	
-	@SubscribeEvent
+	/**
+	 * data fixers
+	 */
+	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void tilesync(TileStackSyncEvent.Merge e)
 	{
-		TileEntity tileentity = e.tile;
-        if(tileentity instanceof TileEntityMobSpawner && !e.nbt.hasKey("SpawnPotentials"))
-        {
-        	NBTTagList list = new NBTTagList();
-        	list.appendTag(new WeightedSpawnerEntity(1,(NBTTagCompound) e.nbt.getTag("SpawnData").copy() ).toCompoundTag());
-        	e.nbt.setTag("SpawnPotentials", list);
-        }
+		fixSpawner(e.tile,e.nbt);
 	}
 	
-	@SubscribeEvent
+	/**
+	 * data fixers
+	 */
+	@SubscribeEvent(priority=EventPriority.HIGH)
+	public void tilesync(TileDataEvent.Merge e)
+	{
+		fixSpawner(e.tile,e.nbt);
+	}
+	
+	private void fixSpawner(TileEntity tile, NBTTagCompound nbt) 
+	{
+        if(tile instanceof TileEntityMobSpawner && !nbt.hasKey("SpawnPotentials"))
+        {
+        	NBTTagList list = new NBTTagList();
+        	list.appendTag(new WeightedSpawnerEntity(1,(NBTTagCompound) nbt.getTag("SpawnData").copy() ).toCompoundTag());
+        	nbt.setTag("SpawnPotentials", list);
+        }
+	}
+
+	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void tilesync(TileStackSyncEvent.Post e)
 	{
         if(e.world.isRemote && e.tile instanceof TileEntityMobSpawner)
@@ -93,7 +110,7 @@ public class VanillaBugFixes {
 	/**
 	 * fix heads being on backwards when you start tracking a player
 	 */
-	@SubscribeEvent
+	 @SubscribeEvent(priority=EventPriority.HIGH)
 	public void headFix(PlayerEvent.StartTracking e)
 	{
 		if(!(e.getTarget() instanceof EntityPlayerMP))
@@ -105,7 +122,7 @@ public class VanillaBugFixes {
 	/**
 	 * use to occur up till integrated server then easter egg stopped working
 	 */
-    @SubscribeEvent
+    @SubscribeEvent(priority=EventPriority.HIGH)
     public void notchFix(PlayerDropsEvent e)
     {
     	EntityPlayer player = e.getEntityPlayer();
@@ -138,11 +155,7 @@ public class VanillaBugFixes {
   		}
   		ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
   		TileEntityUtil.setSpawnerId(loc, tile, w, p);
-
-		if (!p.capabilities.isCreativeMode)
-		{
-			stack.shrink(1);
-		}
+  		PlayerUtil.consumeItem(p,stack);
   		PlayerUtil.rightClickBlockSucess(e,p);
   	}
 
