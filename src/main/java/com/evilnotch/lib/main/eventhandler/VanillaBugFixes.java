@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.evilnotch.lib.minecraft.event.PickEvent;
-import com.evilnotch.lib.minecraft.event.TileDataEvent;
-import com.evilnotch.lib.minecraft.event.TileStackSyncEvent;
+import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
+import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
@@ -61,32 +61,18 @@ public class VanillaBugFixes {
 	 * data fixers
 	 */
 	@SubscribeEvent(priority=EventPriority.HIGH)
-	public void tilesync(TileStackSyncEvent.Merge e)
-	{
-		fixSpawner(e.tile,e.nbt);
-	}
-	
-	/**
-	 * data fixers
-	 */
-	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void tilesync(TileDataEvent.Merge e)
 	{
-		fixSpawner(e.tile,e.nbt);
-	}
-	
-	private void fixSpawner(TileEntity tile, NBTTagCompound nbt) 
-	{
-        if(tile instanceof TileEntityMobSpawner && !nbt.hasKey("SpawnPotentials"))
+        if(e.tile instanceof TileEntityMobSpawner && !e.nbt.hasKey("SpawnPotentials"))
         {
         	NBTTagList list = new NBTTagList();
-        	list.appendTag(new WeightedSpawnerEntity(1,(NBTTagCompound) nbt.getTag("SpawnData").copy() ).toCompoundTag());
-        	nbt.setTag("SpawnPotentials", list);
+        	list.appendTag(new WeightedSpawnerEntity(1,(NBTTagCompound) e.nbt.getTag("SpawnData").copy() ).toCompoundTag());
+        	e.nbt.setTag("SpawnPotentials", list);
         }
 	}
 
 	@SubscribeEvent(priority=EventPriority.HIGH)
-	public void tilesync(TileStackSyncEvent.Post e)
+	public void tilesync(BlockDataEvent.Post e)
 	{
         if(e.world.isRemote && e.tile instanceof TileEntityMobSpawner)
         {
@@ -154,7 +140,7 @@ public class VanillaBugFixes {
   			return;
   		}
   		ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
-  		TileEntityUtil.setSpawnerId(loc, tile, w, p);
+  		TileEntityUtil.setSpawnerId(loc, tile,p);
   		PlayerUtil.consumeItem(p,stack);
   		PlayerUtil.rightClickBlockSucess(e,p);
   	}

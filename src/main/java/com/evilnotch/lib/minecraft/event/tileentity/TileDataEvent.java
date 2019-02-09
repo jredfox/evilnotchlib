@@ -1,4 +1,4 @@
-package com.evilnotch.lib.minecraft.event;
+package com.evilnotch.lib.minecraft.event.tileentity;
 
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 
@@ -10,15 +10,15 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class TileDataEvent extends Event{
 	
-	public BlockPos pos;
 	public TileEntity tile;
 	public World world;
+	public BlockPos pos;
 	
-	public TileDataEvent(TileEntity tile,World w)
+	public TileDataEvent(TileEntity tile)
 	{
-		this.pos = tile.getPos();
 		this.tile = tile;
-		this.world = w;
+		this.world = tile.getWorld();
+		this.pos = tile.getPos();
 	}
 	
 	public static class Merge extends TileDataEvent
@@ -26,9 +26,9 @@ public class TileDataEvent extends Event{
 		public NBTTagCompound tileData;
 		public NBTTagCompound nbt;
 		
-		public Merge(TileEntity tile, World w, NBTTagCompound tileData, NBTTagCompound nbt) 
+		public Merge(TileEntity tile, NBTTagCompound tileData, NBTTagCompound nbt) 
 		{
-			super(tile,w);
+			super(tile);
 			this.tileData = tileData == null ? TileEntityUtil.getTileNBT(tile) : tileData;
 			this.nbt = nbt;
 		}	
@@ -36,10 +36,10 @@ public class TileDataEvent extends Event{
 	
 	public static class Post extends TileDataEvent
 	{
-		public Post(TileEntity tile, World w) 
+		public Post(TileEntity tile) 
 		{
-			super(tile,w);
-		}	
+			super(tile);
+		}
 	}
 
 }

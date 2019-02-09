@@ -1,9 +1,8 @@
 package com.evilnotch.lib.minecraft.util;
 
-import javax.annotation.Nullable;
-
-import com.evilnotch.lib.minecraft.event.TileDataEvent;
-import com.evilnotch.lib.minecraft.event.TileStackSyncEvent;
+import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
+import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
+import com.evilnotch.lib.minecraft.event.tileentity.TileUseItemEvent;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,16 +52,16 @@ public class TileEntityUtil {
 	}
 	
 	/**
-	 * set a tile entity nbt from anything except when placing an itemstack
+	 * set a TileEntity's nbt without a player using an Item
 	 */
-	public static boolean setTileNBT(World worldIn,TileEntity tile, NBTTagCompound nbt)
+	public static boolean setTileNBT(TileEntity tile, NBTTagCompound nbt)
 	{
 	   if (tile != null && nbt != null)
 	   {
 	   	  NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
 	   	  NBTTagCompound copyTile = tileData.copy();
 	       
-	   	  TileDataEvent.Merge mergeEvent = new TileDataEvent.Merge(tile, worldIn, tileData, nbt);
+	   	  TileDataEvent.Merge mergeEvent = new TileDataEvent.Merge(tile, tileData, nbt);
 	   	  MinecraftForge.EVENT_BUS.post(mergeEvent);
 	   	  tileData = mergeEvent.tileData;
 	   	  nbt = mergeEvent.nbt;
@@ -77,7 +76,7 @@ public class TileEntityUtil {
 	   	  {
 	   		 tile.readFromNBT(tileData);
 	   		 tile.markDirty();
-	   		 TileDataEvent.Post event = new TileDataEvent.Post(tile, worldIn);
+	   		 TileDataEvent.Post event = new TileDataEvent.Post(tile);
 	   		 MinecraftForge.EVENT_BUS.post(event);
 	   		 return true;
 	   	  }
@@ -85,24 +84,65 @@ public class TileEntityUtil {
 	   return false;
 	}
 	
+	/**
+	 * set a tile's nbt with option of player denial of permissions and work with the itemstack
+	 */
+	public static boolean setTileNBT(TileEntity tile, NBTTagCompound nbt, EntityPlayer player)
+	{
+		if (tile != null && nbt != null)
+		{
+			ItemStack stack = player == null ? ItemStack.EMPTY : player.getActiveItemStack();
+			TileUseItemEvent.Permissions permissions = new TileUseItemEvent.Permissions(stack, tile, player);
+		   	permissions.canUseCommand = true;
+		   	MinecraftForge.EVENT_BUS.post(permissions);
+		   	if ((permissions.opsOnly) && (!permissions.canUseCommand))
+		   	{
+		    	return false;
+		   	}
+		   	NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
+		   	NBTTagCompound copyTile = tileData.copy();
+		       
+		   	TileUseItemEvent.Merge mergeEvent = new TileUseItemEvent.Merge(stack, tile, player, tileData, nbt);
+		   	MinecraftForge.EVENT_BUS.post(mergeEvent);
+		   	tileData = mergeEvent.tileData;
+		   	nbt = mergeEvent.nbt;
+		       
+		   	tileData.merge(nbt);
+		   	BlockPos pos = tile.getPos();
+		   	tileData.setInteger("x", pos.getX());
+		   	tileData.setInteger("y", pos.getY());
+		   	tileData.setInteger("z", pos.getZ());
+		   	  
+		   	if (!tileData.equals(copyTile))
+		   	{
+		   		tile.readFromNBT(tileData);
+		   		tile.markDirty();
+		   		TileUseItemEvent.Post event = new TileUseItemEvent.Post(stack, tile, player);
+		       	MinecraftForge.EVENT_BUS.post(event);
+		       	return true;
+		    }
+		 }
+		 return false;
+	}
+	
 	
 	/**
-	 * used for itemblock placement
+	 * used for ItemBlock placement
 	 */
-	public static boolean placeTileNBT(World worldIn, BlockPos pos, EntityPlayer player, NBTTagCompound nbt, boolean blockData)
+	public static boolean placeTileNBT(World worldIn, BlockPos pos, EntityPlayer player, NBTTagCompound nbt)
 	{
-		return placeTileNBT(worldIn,worldIn.getTileEntity(pos),player,nbt,blockData);
+		return placeTileNBT(worldIn.getTileEntity(pos),player,nbt);
 	}
 
 	/**
-	 * set a tile entity nbt from an Itemstack use
+	 * set a tile entity nbt on placement of like a block or special item
 	 */
-	public static boolean placeTileNBT(World worldIn,TileEntity tile, EntityPlayer player, NBTTagCompound nbt, boolean blockData)
+	public static boolean placeTileNBT(TileEntity tile, EntityPlayer player, NBTTagCompound nbt)
 	{
 	   if (tile != null && nbt != null)
 	   {
-		   ItemStack stack = player == null ? ItemStack.EMPTY : player.getActiveItemStack();
-	   	  TileStackSyncEvent.Permissions permissions = new TileStackSyncEvent.Permissions(stack, tile, player, worldIn, blockData);
+		  ItemStack stack = player == null ? ItemStack.EMPTY : player.getActiveItemStack();
+	   	  BlockDataEvent.Permissions permissions = new BlockDataEvent.Permissions(stack, tile, player);
 	   	  permissions.canUseCommand = true;
 	   	  MinecraftForge.EVENT_BUS.post(permissions);
 	   	  if ((permissions.opsOnly) && (!permissions.canUseCommand))
@@ -112,7 +152,7 @@ public class TileEntityUtil {
 	   	  NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
 	   	  NBTTagCompound copyTile = tileData.copy();
 	       
-	   	  TileStackSyncEvent.Merge mergeEvent = new TileStackSyncEvent.Merge(stack, tile, player, worldIn, blockData, tileData, nbt);
+	   	  BlockDataEvent.Merge mergeEvent = new BlockDataEvent.Merge(stack, tile, player, tileData, nbt);
 	   	  MinecraftForge.EVENT_BUS.post(mergeEvent);
 	   	  tileData = mergeEvent.tileData;
 	   	  nbt = mergeEvent.nbt;
@@ -127,7 +167,7 @@ public class TileEntityUtil {
 	   	  {
 	   		tile.readFromNBT(tileData);
 	   		tile.markDirty();
-	       	TileStackSyncEvent.Post event = new TileStackSyncEvent.Post(stack, tile, player, worldIn, blockData);
+	   		BlockDataEvent.Post event = new BlockDataEvent.Post(stack, tile, player);
 	       	MinecraftForge.EVENT_BUS.post(event);
 	       	return true;
 	      }
@@ -164,16 +204,24 @@ public class TileEntityUtil {
         }
     }
     
+	public static void setSpawnerId(ResourceLocation loc, TileEntity tile) 
+	{
+		setSpawnerId(loc,tile,null);
+	}
+	
     /**
-     * player can be null but, use when available
+     * if player is placing a mob spawner do not use this method as this is for non placeTileNBT() methods
      */
-	public static void setSpawnerId(ResourceLocation loc, TileEntity tile, World w, EntityPlayer p) 
+	public static void setSpawnerId(ResourceLocation loc, TileEntity tile, EntityPlayer player) 
 	{
   		NBTTagCompound nbt = new NBTTagCompound();
   		NBTTagCompound data = new NBTTagCompound();
   		data.setString("id", loc.toString());
   		nbt.setTag("SpawnData", data);
-  		TileEntityUtil.setTileNBT(w, tile, nbt);
+  		if(player != null)
+  			TileEntityUtil.setTileNBT(tile, nbt, player);
+  		else
+  			TileEntityUtil.setTileNBT(tile, nbt);
 	}
 	
 }
