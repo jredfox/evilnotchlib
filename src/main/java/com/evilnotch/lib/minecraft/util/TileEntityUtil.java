@@ -136,4 +136,16 @@ public class TileEntityUtil {
             stack.setTagInfo("display", nbttagcompound1);
         }
     }
+    
+    /**
+     * player can be null but, use when avalible
+     */
+	public static void setSpawnerId(ResourceLocation loc, TileEntity tile, World w, EntityPlayer p) 
+	{
+  		NBTTagCompound nbt = new NBTTagCompound();
+  		NBTTagCompound data = new NBTTagCompound();
+  		data.setString("id", loc.toString());
+  		nbt.setTag("SpawnData", data);
+  		TileEntityUtil.setTileNBT(w, tile, p, nbt, false);
+	}
 }

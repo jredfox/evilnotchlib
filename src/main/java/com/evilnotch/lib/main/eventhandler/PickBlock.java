@@ -1,7 +1,5 @@
 package com.evilnotch.lib.main.eventhandler;
 
-import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketHand;
@@ -10,20 +8,16 @@ import com.evilnotch.lib.minecraft.network.packet.PacketPickEntity;
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.CPacketCreativeInventoryAction;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,67 +37,68 @@ public class PickBlock {
             	NetWorkHandler.INSTANCE.sendToServer(new PacketPickEntity(target));
             return false;
         }
-        
-        ItemStack result;
-        boolean isCreative = player.capabilities.isCreativeMode;
-        TileEntity te = null;
 
         if (target.typeOfHit == RayTraceResult.Type.BLOCK)
         {
-            IBlockState state = world.getBlockState(target.getBlockPos());
+        	BlockPos pos = target.getBlockPos();
+            IBlockState state = world.getBlockState(pos);
+            ItemStack stack = ItemStack.EMPTY;
+            TileEntity tile = null;
+            boolean canPick;
+            boolean copyTe;
+            
+            stack = state.getBlock().getPickBlock(state, target, world, pos, player);
 
-            if (state.getBlock().isAir(state, world, target.getBlockPos()))
-            {
-                return false;
-            }
-
-            result = state.getBlock().getPickBlock(state, target, world, target.getBlockPos(), player);
-            PickEvent.Block event = new PickEvent.Block(result,target,player,world,state);
+            PickEvent.Block event = new PickEvent.Block(stack,target,player,world,state);
             MinecraftForge.EVENT_BUS.post(event);
-            isCreative = event.canPick;
-            result = event.current;
-            boolean copyTe = event.copyTE;
+           
+            stack = event.current;
+            tile = event.tile;
+            canPick = event.canPick;
+            copyTe = event.copyTE;
             
-            if (isCreative && copyTe)
-                te = event.tile;
-            
-            if (result.isEmpty())
+            if (!canPick || stack.isEmpty())
             {
             	return false;
             }
-        }
-        else
-        {
-            if (target.typeOfHit != RayTraceResult.Type.ENTITY || target.entityHit == null)
-            {
-                return false;
-            }
-            result = target.entityHit.getPickedResult(target);
-            PickEvent.Entity event = new PickEvent.Entity(result,target,player,world);
-            MinecraftForge.EVENT_BUS.post(event);
-            result = event.current;
-            isCreative = event.canPick;
-            if(!isCreative)
-            	return false;
             
-            if (result.isEmpty())
+            if (copyTe)
+            {
+            	TileEntityUtil.storeTEInStack(stack, tile);
+            }
+            return setPickedStack(player,stack);
+        }
+        else if(target.typeOfHit == RayTraceResult.Type.ENTITY)
+        {
+            if (target.entityHit == null)
             {
                 return false;
             }
-        }
-
-        if (te != null)
-        {
-           TileEntityUtil.storeTEInStack(result, te);
+            ItemStack stack = target.entityHit.getPickedResult(target);
+            boolean canPick;
+            
+            PickEvent.Entity event = new PickEvent.Entity(stack,target,player,world);
+            MinecraftForge.EVENT_BUS.post(event);
+            stack = event.current;
+            canPick = event.canPick;
+            
+            if(!canPick || stack.isEmpty())
+            {
+            	return false;
+            }
+            
+            return setPickedStack(player,stack);
         }
         
-        if (isCreative)
-        {
-            setPickedItemStack(player.inventory, result);
-            processCreativeInventoryAction((EntityPlayerMP) player, new CPacketCreativeInventoryAction(36 + player.inventory.currentItem, player.getHeldItem(EnumHand.MAIN_HAND)));
-        }
+        return false;
+	}
+	
+    private static boolean setPickedStack(EntityPlayer player, ItemStack stack) 
+    {
+        setPickedItemStack(player.inventory, stack);
+        processCreativeInventoryAction((EntityPlayerMP) player, new CPacketCreativeInventoryAction(36 + player.inventory.currentItem, player.getHeldItem(EnumHand.MAIN_HAND)));
         
-        int slot = getSlotFor(player.inventory, result);
+        int slot = getSlotFor(player.inventory, stack);
         if (slot != -1)
         {
             if (InventoryPlayer.isHotbar(slot))
@@ -116,11 +111,10 @@ public class PickBlock {
             
             return true;
         }
-        
         return false;
 	}
-	
-    public static int getSlotFor(InventoryPlayer inv, ItemStack stack)
+
+	public static int getSlotFor(InventoryPlayer inv, ItemStack stack)
     {
         for (int i = 0; i < inv.mainInventory.size(); ++i)
         {

@@ -8,6 +8,7 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
 import com.evilnotch.lib.util.JavaUtil;
@@ -32,6 +33,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.storage.SaveHandler;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -270,6 +273,32 @@ public class PlayerUtil {
 	public static void broadCastMessege(String msg) 
 	{
 		TickServerEvent.msgs.add(msg);
+	}
+	
+	/**
+	 * swings the hand of the player like using an item
+	 */
+	public static void swingHand(EntityPlayer p, EnumHand hand) 
+	{
+		p.swingArm(hand);
+	}
+	
+	/**
+	 * if you override function of x item then call this so the offhand doesn't fire next
+	 */
+	public static void cancelRightClickBlock(PlayerInteractEvent.RightClickBlock e, boolean b) 
+	{
+		e.setCanceled(true);
+		if(e.getHand() == EnumHand.MAIN_HAND)
+		{
+			MinecraftUtil.cancelEvent(e,e.getClass(),b);
+		}
+	}
+
+	public static void rightClickBlockSucess(RightClickBlock e, EntityPlayer p) 
+	{
+  		swingHand(p,e.getHand());
+		cancelRightClickBlock(e,true);
 	}
 
 }

@@ -25,4 +25,10 @@ public class PairObj<K,V> {
 		PairObj compare = (PairObj)obj;
 		return this.obj1.equals(compare.obj1) && this.obj2.equals(compare.obj2);
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "<" + this.obj1 + "," + this.obj2 + ">";
+	}
 }

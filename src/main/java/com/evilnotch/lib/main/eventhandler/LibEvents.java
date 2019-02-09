@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.evilnotch.lib.minecraft.content.tick.TickReg;
+import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
+import com.evilnotch.lib.util.simple.PairObj;
 import com.evilnotch.lib.util.simple.PointId;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,12 +20,17 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class LibEvents {
 	
@@ -34,6 +41,24 @@ public class LibEvents {
 			 return;
 		 
 		 TickReg.tickServer();
+	 }
+	 
+	 public static EventCanceler cancelerClient = null;
+	 public static EventCanceler cancelerServer = null;
+	 @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
+	 public void canceler(Event e)
+	 {
+		 Side side = FMLCommonHandler.instance().getEffectiveSide();
+		 if(cancelerClient != null && cancelerClient.toIgnore != e && e.getClass().equals(cancelerClient.clazz) && Side.CLIENT == side)
+		 {
+			 e.setCanceled(cancelerClient.setIsCanceled);
+			 cancelerClient = null;
+		 }
+		 if(cancelerServer != null && cancelerServer.toIgnore != e && e.getClass().equals(cancelerServer.clazz) && Side.SERVER == side)
+		 {
+			 e.setCanceled(cancelerServer.setIsCanceled);
+			 cancelerServer = null;
+		 }
 	 }
 	
 	/**

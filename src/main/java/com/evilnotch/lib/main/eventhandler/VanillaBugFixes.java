@@ -4,36 +4,25 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.TileStackSyncEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
-import com.evilnotch.lib.minecraft.util.BlockUtil;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
-import com.evilnotch.lib.minecraft.util.ItemUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -82,23 +71,19 @@ public class VanillaBugFixes {
 	@SubscribeEvent
 	public void tilesync(TileStackSyncEvent.Post e)
 	{
-        if(e.world.isRemote)
+        if(e.world.isRemote && e.tile instanceof TileEntityMobSpawner)
         {
-        	if(e.tile instanceof TileEntityMobSpawner)
-        	{
-        		IgnoreTilePacket.ignoreTiles.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
-        	}
+        	IgnoreTilePacket.ignoreTiles.add(e.pos);//tells your client to ignore the next tile entity packet sent to you
         }
 	}
 	
 	/**
 	 * fix mob spawner returning null stack
-	 * @param e
 	 */
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void pick(PickEvent.Block e)
 	{
-		if(e.tile instanceof TileEntityMobSpawner)
+		if(e.current.isEmpty() && e.tile instanceof TileEntityMobSpawner)
 		{
 			Block b = e.state.getBlock();
 			e.current = new ItemStack(b,1,b.getMetaFromState(e.state));
@@ -135,7 +120,7 @@ public class VanillaBugFixes {
 	/**
      * This fixes the vanilla ItemMonsterSpawner Bugs
      */
-    @SubscribeEvent
+    @SubscribeEvent(priority=EventPriority.HIGH)
   	public void onVanillaEgg(PlayerInteractEvent.RightClickBlock e)
   	{
   		World w = e.getWorld();
@@ -145,29 +130,20 @@ public class VanillaBugFixes {
   		
   		if(!(stack.getItem() instanceof ItemMonsterPlacer))
   			return;
-  		
   		TileEntity tile = w.getTileEntity(pos);
   		
   		if (!(tile instanceof TileEntityMobSpawner))
   		{
   			return;
   		}
-  		
-  		NBTTagCompound nbt = new NBTTagCompound();
-  		NBTTagCompound data = new NBTTagCompound();
   		ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
-  		data.setString("id", loc.toString());
-  		nbt.setTag("SpawnData", data);
-  		TileEntityUtil.setTileNBT(w, tile, p, nbt, false);
-  		
-  		p.swingArm(e.getHand());
-  		
+  		TileEntityUtil.setSpawnerId(loc, tile, w, p);
+
 		if (!p.capabilities.isCreativeMode)
 		{
 			stack.shrink(1);
 		}
-		
-  		e.setCanceled(true);
+  		PlayerUtil.rightClickBlockSucess(e,p);
   	}
 
 }

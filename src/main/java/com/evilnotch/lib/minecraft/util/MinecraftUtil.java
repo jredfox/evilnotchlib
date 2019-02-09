@@ -4,17 +4,24 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.minecraft.event.EventCanceler;
+import com.evilnotch.lib.util.simple.PairObj;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameRules.ValueType;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLContainer;
 import net.minecraftforge.fml.common.InjectedModContainer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class MinecraftUtil {
 	
@@ -97,6 +104,23 @@ public class MinecraftUtil {
 	   ModContainer mc = Loader.instance().activeModContainer();
 	   String prefix = mc == null || (mc instanceof InjectedModContainer && ((InjectedModContainer)mc).wrappedContainer instanceof FMLContainer) ? "minecraft" : mc.getModId().toLowerCase();
 	   return prefix;
+   }
+   
+   public static void cancelCurrentEvent(Class clazz, boolean setCanceled) 
+   {
+	   cancelEvent(null, clazz, setCanceled);
+   }
+   
+   /**
+    * current event is the event to ignore. Pass in null not to ignore the current event. This also works for uncanceling events.
+    */
+   public static void cancelEvent(Event currentEvent, Class clazz, boolean setCanceled) 
+   {
+	   Side side = FMLCommonHandler.instance().getEffectiveSide();
+	   if(side == Side.CLIENT)
+		   LibEvents.cancelerClient = new EventCanceler(currentEvent, clazz, setCanceled, side);
+	   else
+		   LibEvents.cancelerServer = new EventCanceler(currentEvent, clazz, setCanceled, side);
    }
 
 }
