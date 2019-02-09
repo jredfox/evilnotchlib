@@ -63,7 +63,7 @@ public class ItemBlock
   public static boolean setTileEntityNBT(World worldIn, @Nullable EntityPlayer player, BlockPos pos, ItemStack stackIn)
   {
     NBTTagCompound nbt = stackIn.getSubCompound("BlockEntityTag");
-    return TileEntityUtil.placeTileNBT(worldIn, pos, player, nbt,true);
+    return TileEntityUtil.placeTileNBT(worldIn, pos, player, nbt);
   }
   
   @SideOnly(Side.CLIENT)
