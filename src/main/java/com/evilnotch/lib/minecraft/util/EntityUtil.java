@@ -772,21 +772,30 @@ public class EntityUtil {
 				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod autoher:" + loc);
 				continue;
 			}
+			
 			Entity e = EntityUtil.createEntityByNameQuietly(loc, world,true);
+			if(e == null)
+			{
+				ent_blacklist.add(loc);//Entity failed cache it's string id for debugging
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity Creation Failed Report to mod autoher:" + loc);
+				continue;
+			}
+			
+			String translation = TransLateEntity(e, world);
+			if(translation == null)
+			{
+				ent_blacklist.add(loc);//Entity failed cache it's string id for debugging
+				LoaderMain.logger.log(Level.ERROR,"Translation of Entity Failed Skipping:" + loc);
+				continue;
+			}
+			
 			if(e instanceof EntityEndermite || e instanceof EntityShulker)
 				end_ents.add(loc);
 			
 			boolean living = e instanceof EntityLiving; 
 			boolean base = e instanceof EntityLivingBase && !(e instanceof EntityLiving);
 			boolean nonliving = !(e instanceof EntityLivingBase);
-
-			String translation = TransLateEntity(e, world);
-			if(e == null || translation == null)
-			{
-				ent_blacklist.add(loc);//Entity failed cache it's string id for debugging
-				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity Creation/Translation Failed Report to mod autoher:" + loc);
-				continue;
-			}
+			
 			ent_blacklist.remove(loc);
 			NBTTagCompound tag = getEntityNBTSafley(e);
 //			cacheWorldNeedy(loc);
@@ -812,7 +821,7 @@ public class EntityUtil {
 				{
 					String[] names = new String[3];
 					names[0] = EntityUtil.getUnlocalizedName(e);
-					names[1] = I18n.translateToLocal(names[0]);
+					names[1] = translation;
 					names[2] = EntityUtil.getColor(e);
 				
 				if(living)
