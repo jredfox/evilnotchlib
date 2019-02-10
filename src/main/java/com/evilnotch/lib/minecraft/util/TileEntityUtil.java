@@ -87,11 +87,10 @@ public class TileEntityUtil {
 	/**
 	 * set a tile's nbt with option of player denial of permissions and work with the itemstack
 	 */
-	public static boolean setTileNBT(TileEntity tile, NBTTagCompound nbt, EntityPlayer player)
+	public static boolean setTileNBT(TileEntity tile, NBTTagCompound nbt, EntityPlayer player, ItemStack stack)
 	{
 		if (tile != null && nbt != null)
 		{
-			ItemStack stack = player == null ? ItemStack.EMPTY : player.getActiveItemStack();
 			TileUseItemEvent.Permissions permissions = new TileUseItemEvent.Permissions(stack, tile, player);
 		   	permissions.canUseCommand = true;
 		   	MinecraftForge.EVENT_BUS.post(permissions);
@@ -129,19 +128,18 @@ public class TileEntityUtil {
 	/**
 	 * used for ItemBlock placement
 	 */
-	public static boolean placeTileNBT(World worldIn, BlockPos pos, EntityPlayer player, NBTTagCompound nbt)
+	public static boolean placeTileNBT(World worldIn, BlockPos pos, NBTTagCompound nbt, EntityPlayer player, ItemStack stack)
 	{
-		return placeTileNBT(worldIn.getTileEntity(pos),player,nbt);
+		return placeTileNBT(worldIn.getTileEntity(pos),nbt,player,stack);
 	}
 
 	/**
 	 * set a tile entity nbt on placement of like a block or special item
 	 */
-	public static boolean placeTileNBT(TileEntity tile, EntityPlayer player, NBTTagCompound nbt)
+	public static boolean placeTileNBT(TileEntity tile, NBTTagCompound nbt, EntityPlayer player, ItemStack stack)
 	{
 	   if (tile != null && nbt != null)
 	   {
-		  ItemStack stack = player == null ? ItemStack.EMPTY : player.getActiveItemStack();
 	   	  BlockDataEvent.Permissions permissions = new BlockDataEvent.Permissions(stack, tile, player);
 	   	  permissions.canUseCommand = true;
 	   	  MinecraftForge.EVENT_BUS.post(permissions);
@@ -206,20 +204,20 @@ public class TileEntityUtil {
     
 	public static void setSpawnerId(ResourceLocation loc, TileEntity tile) 
 	{
-		setSpawnerId(loc,tile,null);
+		setSpawnerId(loc,tile,null,null);
 	}
 	
     /**
      * if player is placing a mob spawner do not use this method as this is for non placeTileNBT() methods
      */
-	public static void setSpawnerId(ResourceLocation loc, TileEntity tile, EntityPlayer player) 
+	public static void setSpawnerId(ResourceLocation loc, TileEntity tile, EntityPlayer player, ItemStack stack) 
 	{
   		NBTTagCompound nbt = new NBTTagCompound();
   		NBTTagCompound data = new NBTTagCompound();
   		data.setString("id", loc.toString());
   		nbt.setTag("SpawnData", data);
   		if(player != null)
-  			TileEntityUtil.setTileNBT(tile, nbt, player);
+  			TileEntityUtil.setTileNBT(tile, nbt, player, stack);
   		else
   			TileEntityUtil.setTileNBT(tile, nbt);
 	}

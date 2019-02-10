@@ -140,7 +140,7 @@ public class VanillaBugFixes {
   			return;
   		}
   		ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
-  		TileEntityUtil.setSpawnerId(loc, tile,p);
+  		TileEntityUtil.setSpawnerId(loc, tile, p, stack);
   		PlayerUtil.consumeItem(p,stack);
   		PlayerUtil.rightClickBlockSucess(e,p);
   	}
