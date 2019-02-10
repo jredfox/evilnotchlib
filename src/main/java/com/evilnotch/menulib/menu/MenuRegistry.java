@@ -143,8 +143,8 @@ public class MenuRegistry {
 	 */
 	public static void init() 
 	{
-		checkConfig();
 		reorderLists();
+		checkConfig();
 		setConfigIndex();
 	}
 
@@ -179,23 +179,25 @@ public class MenuRegistry {
 	{
 		if(ConfigMenu.isDirty)
 		{
-			ConfigMenu.saveMenus();
 			if(ConfigMenu.displayNewMenu)
 			{
 				ResourceLocation loc = ConfigMenu.mainMenus.get(ConfigMenu.mainMenus.size()-1).getResourceLocation();//when adding a new menu display it
 				if(!loc.equals(ConfigMenu.currentMenuIndex))
 				{
-					ConfigMenu.saveMenuIndex(loc);
+					ConfigMenu.currentMenuIndex = loc;
 				}
 			}
+			ConfigMenu.saveMenusAndIndex();
 		}
 	}
 
 	public static void reorderLists() 
 	{
 		List<IMenu> list = new ArrayList<IMenu>();
-		for(LineArray line : ConfigMenu.mainMenus)
+		Iterator<LineArray> it = ConfigMenu.mainMenus.iterator();
+		while(it.hasNext())
 		{
+			LineArray line = it.next();
 			if(!line.getBoolean())
 			{
 				continue;
@@ -207,6 +209,7 @@ public class MenuRegistry {
 				if(c == null)
 				{
 					System.out.println("null class when parsing menu for:" + line.getMetaString());
+					it.remove();
 					continue;
 				}
 				IMenu menu = new Menu(c,loc);
@@ -218,6 +221,7 @@ public class MenuRegistry {
 				if(menu == null)
 				{
 					System.out.println("null menu when parsing found for:" + loc);
+					it.remove();
 					continue;
 				}
 				list.add(menu);

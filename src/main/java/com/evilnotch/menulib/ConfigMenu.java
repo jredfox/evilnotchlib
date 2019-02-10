@@ -90,16 +90,16 @@ public class ConfigMenu {
 	}
 	
 	public static boolean isDirty = false;
-	public static void saveMenus() 
+	public static void saveMenusAndIndex() 
 	{
 		Configuration config = new Configuration(cfgmenu);
 		config.load();
 		
 		//set the initial index to the first menu when generating the config
-		if(currentMenuIndex.toString().trim().isEmpty())
+		if(currentMenuIndex.getResourcePath().isEmpty())
 		{
 			currentMenuIndex = mainMenus.get(0).getResourceLocation();
-			Property prop = config.get("menulib", "currentMenuIndex", "minecraft:mainmenu");
+			Property prop = config.get("menulib", "currentMenuIndex", "");
 			prop.set(currentMenuIndex.toString());
 		}
 		
@@ -119,12 +119,22 @@ public class ConfigMenu {
 				}
 			}
 		}
+		
+		setConfigIndex(config,currentMenuIndex);
+		
+		//fix comment dissapearing
 		String[] strlist = JavaUtil.toStaticStringArray(list);
 		Property prop = config.get("menulib", "menus", strlist,menu_comment);
 		prop.set(strlist);
 		
 		config.save();
 		isDirty = false;
+	}
+
+	private static void setConfigIndex(Configuration config,ResourceLocation loc) 
+	{
+		Property prop_index = config.get("menulib", "currentMenuIndex", "");
+		prop_index.set(loc.toString());
 	}
 
 	public static void saveMenuIndex()
@@ -137,8 +147,7 @@ public class ConfigMenu {
 		long stamp = System.currentTimeMillis();
 		Configuration config = new Configuration(cfgmenu);
 		config.load();
-		Property prop = config.get("menulib", "currentMenuIndex", "minecraft:mainmenu");
-		prop.set(loc.toString());
+		setConfigIndex(config,loc);
 		currentMenuIndex = loc;
 		config.get("menulib", "menus", new String[]{""},menu_comment);
 		config.save();

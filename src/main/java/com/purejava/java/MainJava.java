@@ -9,6 +9,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 
 public class MainJava {
@@ -16,7 +17,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-
+		System.out.println(new ResourceLocation("").getResourcePath().isEmpty());
 	}
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)
 	{
