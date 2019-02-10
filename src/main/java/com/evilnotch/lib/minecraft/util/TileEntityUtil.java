@@ -91,7 +91,7 @@ public class TileEntityUtil {
 	{
 		if (tile != null && nbt != null)
 		{
-			TileUseItemEvent.Permissions permissions = new TileUseItemEvent.Permissions(stack, tile, player);
+			TileUseItemEvent.Permissions permissions = new TileUseItemEvent.Permissions(tile, player, stack);
 		   	permissions.canUseCommand = true;
 		   	MinecraftForge.EVENT_BUS.post(permissions);
 		   	if ((permissions.opsOnly) && (!permissions.canUseCommand))
@@ -101,7 +101,7 @@ public class TileEntityUtil {
 		   	NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
 		   	NBTTagCompound copyTile = tileData.copy();
 		       
-		   	TileUseItemEvent.Merge mergeEvent = new TileUseItemEvent.Merge(stack, tile, player, tileData, nbt);
+		   	TileUseItemEvent.Merge mergeEvent = new TileUseItemEvent.Merge(tile, player, stack, tileData, nbt);
 		   	MinecraftForge.EVENT_BUS.post(mergeEvent);
 		   	tileData = mergeEvent.tileData;
 		   	nbt = mergeEvent.nbt;
@@ -116,7 +116,7 @@ public class TileEntityUtil {
 		   	{
 		   		tile.readFromNBT(tileData);
 		   		tile.markDirty();
-		   		TileUseItemEvent.Post event = new TileUseItemEvent.Post(stack, tile, player);
+		   		TileUseItemEvent.Post event = new TileUseItemEvent.Post(tile, player, stack);
 		       	MinecraftForge.EVENT_BUS.post(event);
 		       	return true;
 		    }
@@ -140,7 +140,7 @@ public class TileEntityUtil {
 	{
 	   if (tile != null && nbt != null)
 	   {
-	   	  BlockDataEvent.Permissions permissions = new BlockDataEvent.Permissions(stack, tile, player);
+	   	  BlockDataEvent.Permissions permissions = new BlockDataEvent.Permissions(tile, player, stack);
 	   	  permissions.canUseCommand = true;
 	   	  MinecraftForge.EVENT_BUS.post(permissions);
 	   	  if ((permissions.opsOnly) && (!permissions.canUseCommand))
@@ -150,7 +150,7 @@ public class TileEntityUtil {
 	   	  NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
 	   	  NBTTagCompound copyTile = tileData.copy();
 	       
-	   	  BlockDataEvent.Merge mergeEvent = new BlockDataEvent.Merge(stack, tile, player, tileData, nbt);
+	   	  BlockDataEvent.Merge mergeEvent = new BlockDataEvent.Merge(tile, player, stack, tileData, nbt);
 	   	  MinecraftForge.EVENT_BUS.post(mergeEvent);
 	   	  tileData = mergeEvent.tileData;
 	   	  nbt = mergeEvent.nbt;
@@ -165,7 +165,7 @@ public class TileEntityUtil {
 	   	  {
 	   		tile.readFromNBT(tileData);
 	   		tile.markDirty();
-	   		BlockDataEvent.Post event = new BlockDataEvent.Post(stack, tile, player);
+	   		BlockDataEvent.Post event = new BlockDataEvent.Post(tile, player, stack);
 	       	MinecraftForge.EVENT_BUS.post(event);
 	       	return true;
 	      }

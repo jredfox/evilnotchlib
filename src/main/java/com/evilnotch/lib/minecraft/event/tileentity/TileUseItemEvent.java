@@ -31,7 +31,7 @@ public class TileUseItemEvent extends TileDataEvent{
 		public boolean opsOnly;
 		public boolean canUseCommand;
 		
-		public Permissions(ItemStack stack, TileEntity tile, EntityPlayer player)
+		public Permissions(TileEntity tile, EntityPlayer player, ItemStack stack)
 		{
 			super(tile);
 			this.opsOnly = tile.onlyOpsCanSetNbt();
@@ -50,7 +50,7 @@ public class TileUseItemEvent extends TileDataEvent{
 		public ItemStack stack;
 		public EntityPlayer player;
 		
-		public Merge(ItemStack stack, TileEntity tile, EntityPlayer player, NBTTagCompound tileData, NBTTagCompound stackNBT)
+		public Merge(TileEntity tile, EntityPlayer player, ItemStack stack, NBTTagCompound tileData, NBTTagCompound stackNBT)
 		{
 			super(tile,tileData,stackNBT);
 			
@@ -68,7 +68,7 @@ public class TileUseItemEvent extends TileDataEvent{
 		public ItemStack stack;
 		public EntityPlayer player;
 		
-		public Post(ItemStack stack, TileEntity tile, EntityPlayer player)
+		public Post(TileEntity tile, EntityPlayer player, ItemStack stack)
 		{
 			super(tile);
 			this.stack = stack;

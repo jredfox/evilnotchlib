@@ -17,9 +17,9 @@ public class BlockDataEvent {
 	{
 		public boolean isVanilla;
 		
-		public Permissions(ItemStack stack, TileEntity tile, EntityPlayer player) 
+		public Permissions(TileEntity tile, EntityPlayer player, ItemStack stack) 
 		{
-			super(stack, tile, player);
+			super(tile, player, stack);
 			this.isVanilla = isVanilla(stack);
 		}
 	}
@@ -28,9 +28,9 @@ public class BlockDataEvent {
 	{
 		public boolean isVanilla;
 
-		public Merge(ItemStack stack, TileEntity tile, EntityPlayer player, NBTTagCompound tileData, NBTTagCompound stackNBT)
+		public Merge(TileEntity tile, EntityPlayer player, ItemStack stack, NBTTagCompound tileData, NBTTagCompound stackNBT)
 		{
-			super(stack, tile, player, tileData, stackNBT);
+			super(tile, player, stack, tileData, stackNBT);
 			this.isVanilla = isVanilla(stack);
 		}
 	}
@@ -39,9 +39,9 @@ public class BlockDataEvent {
 	{
 		public boolean isVanilla;
 
-		public Post(ItemStack stack, TileEntity tile, EntityPlayer player) 
+		public Post(TileEntity tile, EntityPlayer player, ItemStack stack) 
 		{
-			super(stack, tile, player);
+			super(tile, player, stack);
 			this.isVanilla = isVanilla(stack);
 		}
 	}
