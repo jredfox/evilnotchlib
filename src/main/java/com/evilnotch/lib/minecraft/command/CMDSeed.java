@@ -9,6 +9,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.server.CommandOp;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -31,7 +32,7 @@ public class CMDSeed extends CommandBase {
     @Override
     public int getRequiredPermissionLevel()
     {
-        return Config.seedF3 ? 0 : super.getRequiredPermissionLevel();
+        return Config.seedF3 ? 0 : 2;
     }
 
     /**

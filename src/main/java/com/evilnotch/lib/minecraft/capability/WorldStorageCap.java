@@ -59,14 +59,12 @@ public class WorldStorageCap extends WorldSavedData{
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
 		this.capContainer.readFromNBT(this.world, nbt);
-		System.out.println("Parsing:" + nbt);
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
 		this.capContainer.writeToNBT(this.world, nbt);
-		System.out.println("Saving:" + nbt);
 		return nbt;
 	}
 

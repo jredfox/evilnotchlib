@@ -52,7 +52,7 @@ public class MainJava {
 	 * register all commands
 	 */
 	@Mod.EventHandler
-	public void commandRegister(FMLServerStartingEvent e)
+	public void serverStart(FMLServerStartingEvent e)
 	{
 		LoaderMain.serverStart(e);
 	}
