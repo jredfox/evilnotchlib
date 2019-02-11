@@ -5,12 +5,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketSeedDeny implements IMessage{
 	
-	public PacketSeedDeny(){}
-	
 	public int dimension;
+	
 	public PacketSeedDeny(int d)
 	{
 		this.dimension = d;
+	}
+	
+	public PacketSeedDeny()
+	{
+		
 	}
 
 	@Override

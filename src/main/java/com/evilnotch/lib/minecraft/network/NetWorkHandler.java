@@ -50,6 +50,7 @@ public class NetWorkHandler {
 		registerMessage(PacketPickBlockHandler.class, PacketPickBlock.class, Side.SERVER);
 		registerMessage(PacketPickEntityHandler.class, PacketPickEntity.class, Side.SERVER);
 	}
+	
 	protected static void registerMessage(Class handler, Class packet, Side side)
 	{
 		INSTANCE.registerMessage(handler, packet, networkid++, side);

@@ -35,6 +35,9 @@ public class PacketYawPitchHandler extends MessegeBase<PacketYawPitch>{
 	}
 
 	@Override
-	public void handleServerSide(PacketYawPitch message, EntityPlayer player) {}
+	public void handleServerSide(PacketYawPitch message, EntityPlayer player) 
+	{
+		
+	}
 
 }

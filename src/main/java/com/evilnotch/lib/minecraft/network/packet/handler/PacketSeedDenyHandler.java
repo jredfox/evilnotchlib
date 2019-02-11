@@ -22,6 +22,7 @@ public class PacketSeedDenyHandler extends MessegeBase<PacketSeedDeny>{
 	@Override
 	public void handleServerSide(PacketSeedDeny message, EntityPlayer player) 
 	{
+		
 	}
 
 }

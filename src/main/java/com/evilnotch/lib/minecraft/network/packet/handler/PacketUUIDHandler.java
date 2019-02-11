@@ -19,7 +19,9 @@ public class PacketUUIDHandler extends MessegeBase<PacketUUID>{
 	}
 
 	@Override
-	public void handleServerSide(PacketUUID message, EntityPlayer player) {
+	public void handleServerSide(PacketUUID message, EntityPlayer player) 
+	{
+		
 	}
 
 }

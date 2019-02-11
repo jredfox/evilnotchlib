@@ -7,20 +7,25 @@ public class PacketHand implements IMessage{
 	
 	public int slot;
 	
-	public PacketHand(){}
-	
 	public PacketHand(int index)
 	{
 		this.slot = index;
 	}
+	
+	public PacketHand()
+	{
+		
+	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) {
+	public void fromBytes(ByteBuf buf) 
+	{
 		this.slot = buf.readInt();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) {
+	public void toBytes(ByteBuf buf) 
+	{
 		buf.writeInt(this.slot);
 	}
 

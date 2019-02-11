@@ -9,11 +9,14 @@ public class PacketUUID implements IMessage{
 	
 	public UUID uuid = null;
 	
-	public PacketUUID(){}
-	
 	public PacketUUID(UUID id)
 	{
 		this.uuid = id;
+	}
+	
+	public PacketUUID()
+	{
+		
 	}
 
 	@Override

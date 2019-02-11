@@ -13,7 +13,11 @@ public class PacketSeed implements IMessage{
 		this.dim = d;
 		this.seed = s;
 	}
-	public PacketSeed(){}
+	
+	public PacketSeed()
+	{
+		
+	}
 	
 	@Override
 	public void fromBytes(ByteBuf buf) 

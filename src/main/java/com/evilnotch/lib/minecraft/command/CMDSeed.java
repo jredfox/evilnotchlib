@@ -14,7 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
-public class CMDSeedGet extends CommandBase {
+public class CMDSeed extends CommandBase {
 	
     /**
      * Gets the name of the command

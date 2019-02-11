@@ -44,6 +44,7 @@ public class BlockUtil {
 		
 		return itool;
 	}
+	
 	public static String getToolFromFirstMeta(Block b) 
 	{
         for (int i=0;i<16;i++)
@@ -65,6 +66,7 @@ public class BlockUtil {
         }
         return null;
 	}
+	
     /**
      * Spawns this Block's drops into the World as EntityItems.
      */

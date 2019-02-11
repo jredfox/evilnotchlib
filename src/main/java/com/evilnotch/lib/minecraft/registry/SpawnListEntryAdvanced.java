@@ -78,7 +78,9 @@ public class SpawnListEntryAdvanced extends SpawnListEntry{
         		 tags.put(e, this);//override everything if nbt isn't null
              return e;
          }
-         public boolean newActualInstance(World w,double x, double y, double z){
+         
+         public boolean newActualInstance(World w,double x, double y, double z)
+         {
         	 return EntityUtil.spawnEntityEntry(w,this,x,y,z);
          }
 

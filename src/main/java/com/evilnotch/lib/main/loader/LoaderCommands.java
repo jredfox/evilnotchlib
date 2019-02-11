@@ -3,7 +3,7 @@ package com.evilnotch.lib.main.loader;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.command.CMDDim;
 import com.evilnotch.lib.minecraft.command.CMDKick;
-import com.evilnotch.lib.minecraft.command.CMDSeedGet;
+import com.evilnotch.lib.minecraft.command.CMDSeed;
 import com.evilnotch.lib.minecraft.command.CMDStack;
 import com.evilnotch.lib.minecraft.command.CMDTP;
 import com.evilnotch.lib.minecraft.command.CMDTeleport;
@@ -24,7 +24,7 @@ public class LoaderCommands {
 		GeneralRegistry.registerCommand(new CMDKick());
 		
 		//replacements
-		GeneralRegistry.replaceVanillaCommand("seed", new CMDSeedGet());
+		GeneralRegistry.replaceVanillaCommand("seed", new CMDSeed());
 		if(Config.replaceTP)
 		{
 			GeneralRegistry.replaceVanillaCommand("tp",new CMDTP());

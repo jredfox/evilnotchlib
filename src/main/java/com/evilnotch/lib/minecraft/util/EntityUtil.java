@@ -146,6 +146,7 @@ public class EntityUtil {
     	String unlocal = getUnlocalizedName(loc);
     	return unlocal != null ? unlocal : getUnlocalizedName(EntityUtil.createEntityFromNBTQuietly(loc, nbt, w));
     }
+    
     /**
      * pull unlocalized name from the cache
      */
@@ -210,6 +211,7 @@ public class EntityUtil {
 	    
 	   return entityName;
 	}
+	
 	/**
 	 * get command sender name and returns null if vanilla does it's funky general thing
 	 */
@@ -355,6 +357,7 @@ public class EntityUtil {
 	{	
 		return getEntityJockey(compound,worldIn,x,y,z,useInterface,attemptSpawn,null);
 	}
+	
 	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic) 
 	{	
         Entity entity = getEntity(compound,worldIn,new BlockPos(x,y,z),useInterface,logic);
@@ -857,6 +860,7 @@ public class EntityUtil {
 		
 		cached = true;
 	}
+	
 	public static void cacheEndEnts(List<Biome.SpawnListEntry> mr_renchen_dies)
     {
 		for (Biome.SpawnListEntry b : mr_renchen_dies)

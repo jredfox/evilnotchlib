@@ -29,6 +29,7 @@ public class NBTUtil {
 		}
 		return null;
 	}
+	
 	/**
 	 * update a nbt file with no checks if file exists
 	 */
@@ -128,6 +129,7 @@ public class NBTUtil {
 			return new NBTTagList();
 		return tag.getTagList(name, type);
 	}
+	
 	/**
 	 * this process is heavy don't use on tick cache at least one nbtpath api and both if at all possible
 	 * @return
@@ -142,6 +144,7 @@ public class NBTUtil {
 		NBTPathApi apiCompare = new NBTPathApi(toCompare);
 		return apiBase.equalsLogic(type, apiCompare);
 	}
+	
 	/**
 	 * merge nbt at a deep level unlike vanilla is an actual merge and will keep tags from both sides if they are tagcompounds and conflict with names
 	 * if you need specific tags removed you need to implement this yourself this is simply a deep merging
@@ -152,6 +155,7 @@ public class NBTUtil {
 		NBTPathApi apiCompare = new NBTPathApi(toCompare);
 		apiBase.merge(apiCompare);
 	}
+	
 	/**
 	 * unlike merge doesn't override the other tags compounds if they have the path only if non existent at a deep level of comparison
 	 */

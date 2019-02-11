@@ -15,17 +15,23 @@ public class PacketYawPitch implements IMessage{
 		this.pitch = pitch;
 		this.id = id;
 	}
-	public PacketYawPitch(){}
+	
+	public PacketYawPitch()
+	{
+		
+	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) {
+	public void fromBytes(ByteBuf buf) 
+	{
 		this.yaw = buf.readFloat();
 		this.pitch = buf.readFloat();
 		this.id = buf.readInt();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) {
+	public void toBytes(ByteBuf buf) 
+	{
 		buf.writeFloat(this.yaw);
 		buf.writeFloat(this.pitch);
 		buf.writeInt(this.id);

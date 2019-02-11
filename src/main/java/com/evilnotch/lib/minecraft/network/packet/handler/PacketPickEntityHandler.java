@@ -12,7 +12,10 @@ import net.minecraft.util.math.RayTraceResult;
 public class PacketPickEntityHandler extends MessegeBase<PacketPickEntity>{
 
 	@Override
-	public void handleClientSide(PacketPickEntity message, EntityPlayer player) {}
+	public void handleClientSide(PacketPickEntity message, EntityPlayer player) 
+	{
+		
+	}
 
 	@Override
 	public void handleServerSide(PacketPickEntity message, EntityPlayer player) 

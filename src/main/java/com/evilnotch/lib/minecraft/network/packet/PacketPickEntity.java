@@ -10,12 +10,15 @@ public class PacketPickEntity implements IMessage{
 	public Vec3d vec;
 	public int entityId;
 	
-	public PacketPickEntity(){}
-	
 	public PacketPickEntity(RayTraceResult trace)
 	{
 		this.vec = trace.hitVec;
 		this.entityId = trace.entityHit.getEntityId();
+	}
+	
+	public PacketPickEntity()
+	{
+		
 	}
 	
 	@Override

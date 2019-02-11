@@ -27,6 +27,9 @@ public class PacketYawHeadHandler extends MessegeBase<PacketYawHead>{
 	}
 
 	@Override
-	public void handleServerSide(PacketYawHead message, EntityPlayer player) {}
+	public void handleServerSide(PacketYawHead message, EntityPlayer player) 
+	{
+		
+	}
 
 }

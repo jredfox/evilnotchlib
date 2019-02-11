@@ -8,13 +8,19 @@ public class PacketClipBoard implements IMessage{
 
 	public String str = null;
 	
-	public PacketClipBoard(){}
-	public PacketClipBoard(String s){
+	public PacketClipBoard(String s)
+	{
 		this.str = s;
+	}
+	
+	public PacketClipBoard()
+	{
+		
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) {
+	public void fromBytes(ByteBuf buf) 
+	{
 		this.str = ByteBufUtils.readUTF8String(buf);
 	}
 

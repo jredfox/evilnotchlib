@@ -8,21 +8,27 @@ public class PacketYawOffset implements IMessage{
 	public float yawOffsetRender = 0.0F;
 	public int id;
 	
-	public PacketYawOffset(){}
 	public PacketYawOffset(float yaw,int id)
 	{
 		this.yawOffsetRender = yaw;
 		this.id = id;
 	}
+	
+	public PacketYawOffset()
+	{
+		
+	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) {
+	public void fromBytes(ByteBuf buf) 
+	{
 		this.yawOffsetRender = buf.readFloat();
 		this.id = buf.readInt();
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf) {
+	public void toBytes(ByteBuf buf) 
+	{
 		buf.writeFloat(this.yawOffsetRender);
 		buf.writeInt(this.id);
 	}

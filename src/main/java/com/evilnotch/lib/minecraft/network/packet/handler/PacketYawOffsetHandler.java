@@ -28,6 +28,9 @@ public class PacketYawOffsetHandler extends MessegeBase<PacketYawOffset>{
 	}
 
 	@Override
-	public void handleServerSide(PacketYawOffset message, EntityPlayer player) {}
+	public void handleServerSide(PacketYawOffset message, EntityPlayer player) 
+	{
+		
+	}
 
 }

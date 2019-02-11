@@ -9,7 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 public class PacketHandHandler extends MessegeBase<PacketHand>{
 
 	@Override
-	public void handleClientSide(PacketHand message, EntityPlayer player) {
+	public void handleClientSide(PacketHand message, EntityPlayer player)
+	{
 		Minecraft.getMinecraft().addScheduledTask(() -> 
 		{
 			player.inventory.currentItem = message.slot;
@@ -17,7 +18,8 @@ public class PacketHandHandler extends MessegeBase<PacketHand>{
 	}
 
 	@Override
-	public void handleServerSide(PacketHand message, EntityPlayer player) {
+	public void handleServerSide(PacketHand message, EntityPlayer player) 
+	{
 		Minecraft.getMinecraft().addScheduledTask(() -> 
 		{
 			player.inventory.currentItem = message.slot;

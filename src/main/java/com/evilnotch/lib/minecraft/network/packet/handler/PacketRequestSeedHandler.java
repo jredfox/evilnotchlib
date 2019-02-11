@@ -13,7 +13,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 public class PacketRequestSeedHandler extends MessegeBase<PacketRequestSeed>{
 
 	@Override
-	public void handleClientSide(PacketRequestSeed message, EntityPlayer player) {}
+	public void handleClientSide(PacketRequestSeed message, EntityPlayer player) 
+	{
+		
+	}
 
 	@Override
 	public void handleServerSide(PacketRequestSeed message, EntityPlayer player) 

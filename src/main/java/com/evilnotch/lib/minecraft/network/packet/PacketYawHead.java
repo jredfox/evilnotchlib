@@ -8,12 +8,15 @@ public class PacketYawHead implements IMessage{
 	public float head;
 	public int id;
 	
-	public PacketYawHead(){}
-	
 	public PacketYawHead(float head,int id)
 	{
 		this.head = head;
 		this.id = id;
+	}
+	
+	public PacketYawHead()
+	{
+		
 	}
 
 	@Override

@@ -130,6 +130,7 @@ public class GeneralRegistry {
 	{
 		cmdRemove.add(name);
 	}
+	
 	/**
 	 * remove all commands with this name
 	 */
@@ -145,6 +146,7 @@ public class GeneralRegistry {
 			}
 		}
 	}
+	
 	/**
 	 * remove first command with this name
 	 */
@@ -172,6 +174,7 @@ public class GeneralRegistry {
 	{
 		gameRules.add(new PairObj<String,Object>(name,value));
 	}
+	
 	public static void registerGameRule(String name,int value)
 	{
 		gameRules.add(new PairObj<String,Object>(name,value));
@@ -212,6 +215,7 @@ public class GeneralRegistry {
 	{
 		gameRulesRemove.add(name);
 	}
+	
 	public static void removeActiveGameRules(GameRules g)
 	{
 		TreeMap<String, Value> map = g.rules;
@@ -220,6 +224,7 @@ public class GeneralRegistry {
 			map.remove(s);
 		}
 	}
+	
 	public static void removeModGameRule(String s)
 	{
 		Iterator<PairObj<String,Object>> it = gameRules.iterator();

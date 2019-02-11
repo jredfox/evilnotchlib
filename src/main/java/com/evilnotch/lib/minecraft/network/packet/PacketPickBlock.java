@@ -14,13 +14,16 @@ public class PacketPickBlock implements IMessage{
 	public Vec3d vec;
 	public EnumFacing facing;
 	
-	public PacketPickBlock(){}
-	
 	public PacketPickBlock(RayTraceResult trace)
 	{
 		this.pos = trace.getBlockPos();
 		this.vec = trace.hitVec;
 		this.facing = trace.sideHit;
+	}
+	
+	public PacketPickBlock()
+	{
+		
 	}
 	
 	@Override

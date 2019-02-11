@@ -14,6 +14,7 @@ public class EntityModRegistry {
     {
 		addSpawnList(loc,nbt,weightedProb,min,max,typeOfCreature,biome);
     }
+	
 	public static void removeSpawn(ResourceLocation loc,NBTTagCompound nbt, EnumCreatureType typeOfCreature, Biome biome)
     {
 		removeSpawnList(loc,nbt,typeOfCreature,biome);
@@ -43,6 +44,7 @@ public class EntityModRegistry {
             }
         }
     }
+    
     public static void removeSpawnList(ResourceLocation loc,NBTTagCompound nbt, EnumCreatureType typeOfCreature, Biome... biomes)
     {
     	SpawnListEntryAdvanced advanced = new SpawnListEntryAdvanced(loc,-1,-1,-1,nbt);
