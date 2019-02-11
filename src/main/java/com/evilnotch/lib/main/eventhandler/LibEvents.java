@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.evilnotch.lib.minecraft.content.tick.TickReg;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
+import com.evilnotch.lib.minecraft.tick.TickReg;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;

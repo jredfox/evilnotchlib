@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.evilnotch.lib.minecraft.content.tick.ITick;
+import com.evilnotch.lib.minecraft.tick.ITick;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.simple.PointId;
 

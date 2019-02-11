@@ -2,7 +2,7 @@ package com.evilnotch.menulib.eventhandler;
 
 import java.util.List;
 
-import com.evilnotch.lib.minecraft.content.client.gui.GuiFakeMenu;
+import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiFakeMenu;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.menulib.ConfigMenu;
 import com.evilnotch.menulib.event.MenuMusicEvent;

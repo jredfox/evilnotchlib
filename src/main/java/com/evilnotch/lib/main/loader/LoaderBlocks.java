@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.content.block.IBasicBlock;
+import com.evilnotch.lib.minecraft.basicmc.block.IBasicBlock;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.line.config.ConfigNonMeta;
 

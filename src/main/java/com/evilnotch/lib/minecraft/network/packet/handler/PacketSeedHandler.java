@@ -1,6 +1,6 @@
 package com.evilnotch.lib.minecraft.network.packet.handler;
 
-import com.evilnotch.lib.minecraft.content.client.Seeds;
+import com.evilnotch.lib.minecraft.basicmc.client.Seeds;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.packet.PacketSeed;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;

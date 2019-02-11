@@ -1,8 +1,9 @@
 package com.evilnotch.lib.asm.gen;
 
-import com.evilnotch.lib.minecraft.content.capability.ICapability;
-import com.evilnotch.lib.minecraft.content.capability.registry.CapContainer;
-import com.evilnotch.lib.minecraft.content.capability.registry.ICapProvider;
+import com.evilnotch.lib.minecraft.capability.CapContainer;
+import com.evilnotch.lib.minecraft.capability.ICapability;
+import com.evilnotch.lib.minecraft.capability.ICapabilityProvider;
+import com.evilnotch.lib.minecraft.capability.ICapabilityTick;
 
 import net.minecraft.util.ResourceLocation;
 /**
@@ -10,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
  * @author jredfox
  *
  */
-public class Caps implements ICapProvider{
+public class Caps implements ICapabilityProvider{
 	
 	public CapContainer capContainer = new CapContainer();
 	
@@ -23,6 +24,7 @@ public class Caps implements ICapProvider{
 	{
 		return this.capContainer;
 	}
+	
 	/**
 	 * this method is injected into all ICapProvider Objects then patched and repaired
 	 * @return
@@ -32,6 +34,7 @@ public class Caps implements ICapProvider{
 	{
 		this.capContainer = c;
 	}
+	
 	/**
 	 * this is a universal method for getting a capability from the ICapProvider object
 	 */
@@ -39,6 +42,12 @@ public class Caps implements ICapProvider{
 	public ICapability getCapability(ResourceLocation loc)
 	{
 		return this.capContainer.getCapability(loc);
+	}
+	
+	@Override
+	public ICapabilityTick getCapabilityTick(ResourceLocation loc) 
+	{
+		return this.capContainer.getTickableCapability(loc);
 	}
 	
 }

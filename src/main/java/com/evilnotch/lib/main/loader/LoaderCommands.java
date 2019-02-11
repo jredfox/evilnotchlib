@@ -1,12 +1,12 @@
 package com.evilnotch.lib.main.loader;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.content.command.CMDDim;
-import com.evilnotch.lib.minecraft.content.command.CMDKick;
-import com.evilnotch.lib.minecraft.content.command.CMDSeedGet;
-import com.evilnotch.lib.minecraft.content.command.CMDStack;
-import com.evilnotch.lib.minecraft.content.command.CMDTP;
-import com.evilnotch.lib.minecraft.content.command.CMDTeleport;
+import com.evilnotch.lib.minecraft.command.CMDDim;
+import com.evilnotch.lib.minecraft.command.CMDKick;
+import com.evilnotch.lib.minecraft.command.CMDSeedGet;
+import com.evilnotch.lib.minecraft.command.CMDStack;
+import com.evilnotch.lib.minecraft.command.CMDTP;
+import com.evilnotch.lib.minecraft.command.CMDTeleport;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 
 import net.minecraft.command.ICommand;

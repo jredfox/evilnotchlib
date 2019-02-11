@@ -2,9 +2,9 @@ package com.evilnotch.lib.main.eventhandler;
 
 import java.util.List;
 
-import com.evilnotch.lib.minecraft.content.auto.json.JsonGen;
-import com.evilnotch.lib.minecraft.content.client.Seeds;
-import com.evilnotch.lib.minecraft.content.tick.TickReg;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
+import com.evilnotch.lib.minecraft.basicmc.client.Seeds;
+import com.evilnotch.lib.minecraft.tick.TickReg;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 

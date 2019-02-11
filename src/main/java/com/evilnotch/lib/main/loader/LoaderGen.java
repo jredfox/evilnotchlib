@@ -4,8 +4,8 @@ import java.io.File;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.minecraft.content.auto.json.JsonGen;
-import com.evilnotch.lib.minecraft.content.auto.lang.LangRegistry;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
+import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 
 public class LoaderGen {
 	

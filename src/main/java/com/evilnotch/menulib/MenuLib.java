@@ -42,10 +42,12 @@ public class MenuLib {
 	private static void registerMenus() 
 	{
 		ProxyMod.isModsLoaded();
+		
 		if(!ProxyMod.cmm)
 		{
 			MenuRegistry.registerGuiMenu(GuiMainMenu.class, new ResourceLocation("mainmenu"));
 		}
+		
 		ProxyMod.register();
 	}
 

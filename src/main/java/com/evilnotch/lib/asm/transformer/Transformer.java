@@ -30,12 +30,12 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.network.NetHandlerPlayServer",
     	"net.minecraft.entity.Entity",//capabilities start here
     	"net.minecraft.tileentity.TileEntity",
-    	"net.minecraft.world.World",
+    	"net.minecraft.world.World2",
     	"net.minecraft.world.storage.WorldInfo",
     	"net.minecraft.world.chunk.Chunk",
     	"net.minecraft.world.chunk.storage.AnvilChunkLoader",//caps for chunks need readFromNBT() and writeToNBT()
     	"net.minecraft.client.Minecraft",
-    	"net.minecraft.enchantment.Enchantment"
+    	"net.minecraft.enchantment.Enchantment2"
     });
     
     @Override

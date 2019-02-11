@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.minecraft.content.item.IBasicItem;
-import com.evilnotch.lib.minecraft.content.item.armor.ArmorSet;
-import com.evilnotch.lib.minecraft.content.item.armor.IBasicArmor;
-import com.evilnotch.lib.minecraft.content.item.tool.ToolSet;
+import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
+import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
+import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
+import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.line.config.ConfigNonMeta;

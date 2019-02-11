@@ -2,7 +2,7 @@ package com.evilnotch.menulib.menu;
 
 import java.lang.reflect.Constructor;
 
-import com.evilnotch.lib.minecraft.content.client.gui.GuiBasicButton;
+import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.menulib.ConfigMenu;
 
 import net.minecraft.client.gui.GuiButton;
