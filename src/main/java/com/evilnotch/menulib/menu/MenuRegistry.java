@@ -138,6 +138,7 @@ public class MenuRegistry {
 		}
 		return false;
 	}
+	
 	/**
 	 * re-order the menus list also skip any menus that are disabled
 	 */
@@ -150,11 +151,7 @@ public class MenuRegistry {
 
 	public static void setConfigIndex() 
 	{
-		if(!setMenu(ConfigMenu.currentMenuIndex))
-		{
-			setMenu(0);
-			ConfigMenu.saveMenuIndex();//correct the configs index
-		}
+		setMenu(ConfigMenu.currentMenuIndex);
 	}
 
 	public static void setMenu(int i) 
@@ -168,7 +165,7 @@ public class MenuRegistry {
 		int index = getIndex(loc);
 		if(index == -1)
 		{
-			System.out.println("null menu for index:" + ConfigMenu.currentMenuIndex);
+			System.out.println("null menu when trying to set index:" + ConfigMenu.currentMenuIndex);
 			return false;
 		}
 		setMenu(index);
@@ -227,6 +224,15 @@ public class MenuRegistry {
 			}
 		}
 		menus = list;
+		
+		//more optimized then setting then saving the config twice
+		if(!ConfigMenu.hasMenu(ConfigMenu.currentMenuIndex))
+		{
+			ResourceLocation loc = ConfigMenu.mainMenus.get(0).getResourceLocation();
+			System.out.println("null currentIndex found:" + ConfigMenu.currentMenuIndex + " setting currentIndex to 0:" + loc);
+			ConfigMenu.currentMenuIndex = loc;
+			ConfigMenu.isDirty = true;
+		}
 	}
 
 	public static IMenu getMenu(ResourceLocation loc) 

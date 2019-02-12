@@ -33,7 +33,7 @@ public class TileEntityUtil {
 	public static void setTileEntity(World w,TileEntity tile,BlockPos pos)
 	{
 		w.setTileEntity(pos, tile);
-		updateTileEntity(w,tile,pos);
+		updateTileEntity(w, tile, pos);
 	}
 	
 	/**

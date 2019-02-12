@@ -25,7 +25,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class PickBlock {
 	
 	/**
-	 * a replaced version of forge's hooks for pickblock that allows for event overrides via server side for te data
+	 * a replaced version of forge's hooks for pickblock that allows for event overrides via server side for TE and Entity data
 	 */
 	public static boolean pickBlock(RayTraceResult target, EntityPlayer player, World world)
 	{
