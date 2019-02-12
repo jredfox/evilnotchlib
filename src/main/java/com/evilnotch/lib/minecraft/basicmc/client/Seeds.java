@@ -23,6 +23,7 @@ public class Seeds {
 		}
 		return seeds.get(dim);
 	}
+	
 	/**
 	 * set the proper seed to the dimension
 	 */
@@ -30,6 +31,7 @@ public class Seeds {
 	{
 		seeds.put(dim, "" + seed);
 	}
+	
 	/**
 	 * used for disabling seeds
 	 */

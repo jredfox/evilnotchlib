@@ -3,12 +3,18 @@ package com.evilnotch.lib.minecraft.util;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.util.simple.PairObj;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.GameRules;
@@ -121,6 +127,56 @@ public class MinecraftUtil {
 		   LibEvents.cancelerClient = new EventCanceler(currentEvent, clazz, setCanceled, side);
 	   else
 		   LibEvents.cancelerServer = new EventCanceler(currentEvent, clazz, setCanceled, side);
+   }
+   
+   /**
+    * works with all ICommands
+    */
+   public static boolean checkPermission(EntityPlayerMP p, String name) 
+   {
+	   ICommand cmd = getCommand(p.mcServer, name);
+	   System.out.println(cmd.checkPermission(p.mcServer, p));
+	   return cmd.checkPermission(p.mcServer, p);
+   }
+   
+   /**
+    * requires the ICommand to be instanceof CommandBase
+    */
+   public static int getCommandLevel(EntityPlayerMP p, String name) 
+   {
+	   CommandBase cmd = (CommandBase) getCommand(p.mcServer,name);
+	   return cmd.getRequiredPermissionLevel();
+   }
+
+   public static ICommand getCommand(MinecraftServer mcServer, String name) 
+   {
+	   Map<String,ICommand> cmds =  mcServer.commandManager.getCommands();
+	   for(String s : cmds.keySet())
+	   {
+		   if(s.equals(name))
+			   return cmds.get(s);
+	   }
+	   return null;
+   }
+
+   /**
+    * internal do not use unless your an ICommand overriding checkPermisions(). Instead use canUseCommand() which checks the overriden ICommand can be used by the sender. used by seed command so far
+    */
+   public static boolean canUseCommand(EntityPlayerMP player, int permLevel, String commandName)
+   {
+       if (player.mcServer.getPlayerList().canSendCommands(player.getGameProfile()))
+       {
+          UserListOpsEntry userlistopsentry = (UserListOpsEntry)player.mcServer.getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());
+          if (userlistopsentry != null)
+          {
+            return userlistopsentry.getPermissionLevel() >= permLevel;
+          }
+          else
+          {
+              return player.mcServer.getOpPermissionLevel() >= permLevel;
+          }
+      }
+      return false;
    }
 
 }

@@ -49,6 +49,7 @@ public class RenderTransformer  implements IClassTransformer{
 		int index = classesBeingTransformed.indexOf(transformedName);
 	    return index != -1 ? transform(index, basicClass, FMLCorePlugin.isObf) : basicClass;
 	}
+	
 	/**
 	 * f**k jei
 	 */
@@ -81,9 +82,9 @@ public class RenderTransformer  implements IClassTransformer{
         	
             if(index == ConfigCore.cfgIndex || ConfigCore.cfgIndex == -2)
             {
-          	  String[] a = classesBeingTransformed.get(origin).split("\\.");
-          	  File f = new File(System.getProperty("user.home") + "/Desktop/" + a[a.length-1] + ".class");
-          	  FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
+            	String[] a = classesBeingTransformed.get(origin).split("\\.");
+            	File f = new File(System.getProperty("user.home") + "/Desktop/" + a[a.length-1] + ".class");
+            	FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
             }
             
         	return classWriter.toByteArray();

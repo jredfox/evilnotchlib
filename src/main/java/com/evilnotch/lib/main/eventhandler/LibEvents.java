@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.evilnotch.lib.minecraft.basicmc.client.Seeds;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.tick.TickReg;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
@@ -74,10 +75,13 @@ public class LibEvents {
 	 * Attempt to re-instantiate the entity caches for broken entities when the world is no longer fake
 	 */
 	 public static boolean cachedEnts = false;
+	 public static boolean isRunning;
 	 @SubscribeEvent
 	 public void worldload(WorldEvent.Load e)
 	 {
 		 World ew = e.getWorld();
+		if(ew.isRemote)
+			isRunning = true;
 		 if(!EntityUtil.cached || ew.isRemote || cachedEnts || EntityUtil.ent_blacklist.isEmpty() && EntityUtil.ent_blacklist_nbt.isEmpty() && EntityUtil.ent_blacklist_nbt.isEmpty())
 			 return;
 		 cachedEnts = true;

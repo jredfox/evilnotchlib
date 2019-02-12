@@ -1,8 +1,12 @@
 package com.evilnotch.lib.main;
 
+import com.evilnotch.lib.main.eventhandler.ClientEvents;
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.event.PickEvent.Entity;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -11,7 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 
-@Mod(modid = MainJava.MODID,name = MainJava.NAME, version = MainJava.VERSION)
+@Mod(modid = MainJava.MODID, name = MainJava.NAME, version = MainJava.VERSION)
 public class MainJava {
 	
 	public static final String MODID =  "evilnotchlib";

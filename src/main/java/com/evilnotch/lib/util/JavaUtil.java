@@ -1324,6 +1324,16 @@ public class JavaUtil {
 			list[i] = li.get(i);
 		return list;
 	}
+	
+	public static boolean returnTrue()
+	{
+		return true;
+	}
+	
+	public static boolean returnFalse() 
+	{
+		return false;
+	}
 
 	
 }

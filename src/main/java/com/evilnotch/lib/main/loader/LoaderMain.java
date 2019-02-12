@@ -17,6 +17,7 @@ import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickReg;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
@@ -100,12 +101,7 @@ public class LoaderMain {
 	 */
 	public static void serverStopping() 
 	{
-		TickReg.garbageCollectServer();	
-		VanillaBugFixes.worlDir = null;
-		VanillaBugFixes.playerDataDir = null;
-		VanillaBugFixes.playerDataNames = null;
-		VanillaBugFixes.playerFlags.clear();
-		PlayerUtil.nbts.clear();
+		ServerProxy.clearServerData();
 	}
 
 	public static void serverStart(FMLServerStartingEvent e) 

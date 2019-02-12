@@ -22,6 +22,7 @@ import com.evilnotch.lib.asm.FMLCorePlugin;
 public class ASMHelper 
 {	
 	public static HashMap<String,ClassNode> cacheNodes = new HashMap();
+	
 	/**
 	 * srg support doesn't patch local vars nor instructions
 	 */
@@ -34,7 +35,6 @@ public class ASMHelper
 			origin.localVariables.clear();
 			origin.instructions = toReplace.instructions;
 			origin.localVariables = toReplace.localVariables;
-//			origin.access = toReplace.access;//Temporarily commented out till further testing is done doing this isn't safe without checks
 			origin.annotationDefault = toReplace.annotationDefault;
 			origin.tryCatchBlocks = toReplace.tryCatchBlocks;
 			origin.visibleAnnotations = toReplace.visibleAnnotations;
@@ -76,7 +76,6 @@ public class ASMHelper
 			origin.localVariables.clear();
 			origin.instructions = toReplace.instructions;
 			origin.localVariables = toReplace.localVariables;
-//			origin.access = toReplace.access;
 			origin.annotationDefault = toReplace.annotationDefault;
 			origin.tryCatchBlocks = toReplace.tryCatchBlocks;
 			origin.visibleAnnotations = toReplace.visibleAnnotations;
@@ -88,6 +87,7 @@ public class ASMHelper
 			e.printStackTrace();
 		}
 	}
+	
 	/**
 	 * get a method node from a possble cached classnode
 	 */
@@ -103,6 +103,7 @@ public class ASMHelper
 		cacheNodes.put(inputStream, node);
 		return getMethodNode(node,obMethod,method_desc);
 	}
+	
 	public static MethodNode getMethodNode(Class ourClass, String method_name,String method_desc) throws IOException 
 	{
 		String className = ourClass.getName();
@@ -111,6 +112,7 @@ public class ASMHelper
 		ClassNode node = getClassNode(stream);
 		return getMethodNode(node,method_name,method_desc);
 	}
+	
 	public static MethodNode getMethodNode(ClassNode classNode, String method_name, String method_desc) 
 	{
 		for (MethodNode method : classNode.methods)
@@ -122,6 +124,7 @@ public class ASMHelper
 		}
 		return null;
 	}
+	
 	/**
 	 * get a ClassNode from an input stream
 	 * @throws IOException
@@ -131,15 +134,18 @@ public class ASMHelper
 		byte[] newbyte = IOUtils.toByteArray(stream);
 		return getClassNode(newbyte);
 	}
+	
 	/**
 	 * if you already have the bytes and you don't need the class reader
 	 */
-	public static ClassNode getClassNode(byte[] newbyte) {
+	public static ClassNode getClassNode(byte[] newbyte)
+	{
 		ClassNode classNode = new ClassNode();
 		ClassReader classReader = new ClassReader(newbyte);
 		classReader.accept(classNode,0);
 		return classNode;
 	}
+	
 	/**
 	 * patch all references on the local variable table instanceof of this to a new class
 	 */
@@ -153,6 +159,7 @@ public class ASMHelper
 			}
 		}
 	}
+	
 	/**
 	 * patch previous object owner instructions to new owner with filtering out static fields/method calls
 	 */
@@ -178,24 +185,30 @@ public class ASMHelper
 			}
 		}
 	}
+	
 	/**
 	 * this will determine if the node is static or not
 	 */
-	public static boolean isStaticMethodNode(MethodInsnNode min) {
+	public static boolean isStaticMethodNode(MethodInsnNode min) 
+	{
 		int opcode = min.getOpcode();
 		return Opcodes.INVOKESTATIC == opcode;
 	}
+	
 	/**
 	 *this will determine if the node is static or not
 	 */
-	public static boolean isStaticFeild(FieldInsnNode fin) {
+	public static boolean isStaticFeild(FieldInsnNode fin) 
+	{
 		int opcode = fin.getOpcode();
 		return Opcodes.GETSTATIC == opcode || Opcodes.PUTSTATIC == opcode;
 	}
+	
 	/**
 	 * after editing one class call this for cleanup
 	 */
-	public static void clearCacheNodes() {
+	public static void clearCacheNodes() 
+	{
 		cacheNodes.clear();
 	}
 
@@ -206,10 +219,12 @@ public class ASMHelper
 	 * @return
 	 * @throws IOException
 	 */
-	public static byte[] replaceClass(String inputStream) throws IOException {
+	public static byte[] replaceClass(String inputStream) throws IOException 
+	{
 		InputStream initialStream = ASMHelper.class.getClassLoader().getResourceAsStream(inputStream);
 		return IOUtils.toByteArray(initialStream);
 	}
+	
 	/**
 	 * add an interface to a class
 	 */
@@ -225,6 +240,7 @@ public class ASMHelper
 	{
 		addFeild(node,feildName,desc,null);
 	}
+	
 	/**
 	 * add a object field to the class with optional signature. The paramDesc is a descriptor of the types of a class HashMap<key,value>
 	 */
@@ -233,6 +249,7 @@ public class ASMHelper
 		FieldNode field = new FieldNode(Opcodes.ACC_PUBLIC, feildName, desc, paramDesc,null);
 		node.fields.add(field);
 	}
+	
 	/**
 	 * don't add the method if it's already has it
 	 */
@@ -244,11 +261,13 @@ public class ASMHelper
 			return;
 		classNode.methods.add(method);
 	}
+	
 	/**
 	 * search from the class node if it contains the method
 	 * @return
 	 */
-	public static boolean containsMethod(ClassNode classNode, String method_name, String descriptor) {
+	public static boolean containsMethod(ClassNode classNode, String method_name, String descriptor) 
+	{
 		for(MethodNode node : classNode.methods)
 			if(node.name.equals(method_name) && node.desc.equals(descriptor))
 				return true;
@@ -266,6 +285,7 @@ public class ASMHelper
 		classNode.methods.add(method);
 		return method;
 	}
+	
 	/**
 	 * remove a method don't remove ones that are going to get executed unless you immediately add the same method and descriptor back
 	 * @throws IOException 
@@ -278,6 +298,7 @@ public class ASMHelper
 			classNode.methods.remove(method);
 		}
 	}
+	
 	/**
 	 * find the first instruction to inject
 	 */
@@ -292,10 +313,12 @@ public class ASMHelper
 		}
 		return null;
 	}
+	
 	/**
 	 * getting the first instanceof of this will usually tell you where the initial injection point should be after
 	 */
-	public static LineNumberNode getLineNumberNode(MethodNode method) {
+	public static LineNumberNode getLineNumberNode(MethodNode method) 
+	{
 		for(AbstractInsnNode obj : method.instructions.toArray())
 			if(obj instanceof LineNumberNode)
 				return (LineNumberNode) obj;
@@ -317,18 +340,23 @@ public class ASMHelper
 		}
 		return -1;
 	}
+	
 	/**
 	 * get a constructor since they are MethodNodes
 	 */
-	public static MethodNode getConstructionNode(ClassNode classNode, String desc) {
+	public static MethodNode getConstructionNode(ClassNode classNode, String desc) 
+	{
 		return getMethodNode(classNode, "<init>", desc);
 	}
+	
 	/**
 	 * helpful for finding injection point to the end of constructors
 	 */
-	public static AbstractInsnNode getLastPutField(MethodNode mn) {
+	public static AbstractInsnNode getLastPutField(MethodNode mn) 
+	{
 		return getLastInstruction(mn, Opcodes.PUTFIELD);
 	}
+	
 	/**
 	 * optimized way of getting a last instruction
 	 */
@@ -343,6 +371,7 @@ public class ASMHelper
 		}
 		return null;
 	}
+	
 	/**
 	 * add a brand new method node into the classNode
 	 */
@@ -356,6 +385,7 @@ public class ASMHelper
 		MethodNode node = new MethodNode(opcode, name, desc, null, null);
 		classNode.methods.add(node);
 	}
+	
 	/**
 	 * get a local variable index by it's owner name
 	 */
@@ -368,4 +398,14 @@ public class ASMHelper
 		}
 		return -1;
 	}
+	
+	public static String toString(FieldNode node) 
+	{
+		return node.name + " desc:" + node.desc + " signature:" + node.signature + " access:" + node.access;
+ 	}
+	
+	public static String toString(MethodNode node) 
+	{
+		return node.name + " desc:" + node.desc + " signature:" + node.signature + " access:" + node.access;
+ 	}
 }

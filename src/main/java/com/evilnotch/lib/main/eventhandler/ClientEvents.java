@@ -2,11 +2,14 @@ package com.evilnotch.lib.main.eventhandler;
 
 import java.util.List;
 
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.Seeds;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickReg;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
+import com.evilnotch.menulib.menu.MenuRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
@@ -15,8 +18,10 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
@@ -47,8 +52,9 @@ public class ClientEvents {
 	@SubscribeEvent
 	public void disconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent e)
 	{
-		TickReg.garbageCollectClient();
-		Seeds.clearSeeds();
+		LibEvents.isRunning = false;
+		System.out.println("disconnecting..........................");
+		ClientProxy.clearClientData();
 	}
 	
 	/**
@@ -58,7 +64,7 @@ public class ClientEvents {
 	public void seedTxt(RenderGameOverlayEvent.Text e)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo)
+		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo || !Config.seedDisplay || !LibEvents.isRunning)
 			return;
 		List<String> f3 = e.getLeft();
 		int index = 0;

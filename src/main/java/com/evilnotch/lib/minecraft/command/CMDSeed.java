@@ -1,15 +1,14 @@
 package com.evilnotch.lib.minecraft.command;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.EnumChatFormatting;
+import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.command.server.CommandOp;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -32,7 +31,7 @@ public class CMDSeed extends CommandBase {
     @Override
     public int getRequiredPermissionLevel()
     {
-        return Config.seedF3 ? 0 : 2;
+        return Config.seedOpsOnly ? 2 : 0;
     }
 
     /**
@@ -58,10 +57,14 @@ public class CMDSeed extends CommandBase {
         PlayerUtil.sendClipBoard(EnumChatFormatting.WHITE,EnumChatFormatting.WHITE, (EntityPlayer)sender, "Seed:","" + world.getSeed(),false);
         PlayerUtil.sendClipBoard((EntityPlayerMP)sender,  "Seed:" + world.getSeed());
     }
+    
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
-    	return true;
+    	if(!(sender instanceof EntityPlayerMP))
+    		return false;
+    	//PlayerUtil.isPlayerOwner((EntityPlayerMP) sender)  || 
+    	return MinecraftUtil.canUseCommand((EntityPlayerMP) sender, this.getRequiredPermissionLevel(), "seed");
     }
 
 }

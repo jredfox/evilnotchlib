@@ -17,7 +17,9 @@ public class Config {
 	public static File cfg = null;
 	public static boolean tpAllowCrossDim = false;
 	public static boolean replaceTP = true;
-	public static boolean seedF3 = true;
+	public static boolean seedOpsOnly = false;
+	public static boolean seedDisplay = true;
+	
 	/**
 	 * list of domains that are not acceptable
 	 */
@@ -35,9 +37,10 @@ public class Config {
 		config.load();
 		debug = config.get("general", "debug", false).getBoolean();
 		debug_worldNeedy = config.get("general", "debug_worldNeedy", false).getBoolean();
-		tpAllowCrossDim = config.get("general","tpAllowCrossDim",true).getBoolean();
-		replaceTP = config.get("general","tpReplace",true).getBoolean();
-		seedF3 = config.get("general","seedF3",true).getBoolean();
+		tpAllowCrossDim = config.get("general", "tpAllowCrossDim", true).getBoolean();
+		replaceTP = config.get("general", "tpReplace", true).getBoolean();
+		seedOpsOnly = config.get("general", "seedOpsOnly", false).getBoolean();
+		seedDisplay = config.get("general", "seedF3", true).getBoolean();
 		
 		//entity cache data for black list and allow certain entities to pass through
 		cacheEntDeny = JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));

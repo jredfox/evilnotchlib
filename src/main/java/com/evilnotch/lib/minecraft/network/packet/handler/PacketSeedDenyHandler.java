@@ -15,7 +15,7 @@ public class PacketSeedDenyHandler extends MessegeBase<PacketSeedDeny>{
 	{
 		Minecraft.getMinecraft().addScheduledTask(() ->
 		{
-			Seeds.setSeed(message.dimension, "Server Disabled Seed Request");
+			Seeds.setSeed(message.dimension, "Server Denied Seed Request");
 		});
 	}
 

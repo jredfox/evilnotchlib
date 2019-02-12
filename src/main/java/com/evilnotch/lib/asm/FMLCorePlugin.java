@@ -3,15 +3,16 @@ package com.evilnotch.lib.asm;
 import java.util.Map;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
 @IFMLLoadingPlugin.Name("evilnotchlib-transformer_fixes")
 @IFMLLoadingPlugin.SortingIndex(1001)
 @IFMLLoadingPlugin.MCVersion("1.12.2")
+@TransformerExclusions("com.evilnotch.lib.asm.transformer")
 public class FMLCorePlugin implements IFMLLoadingPlugin
 {
 	public static boolean isObf;
     public static volatile boolean configGenerated = false;
-	
     @Override
     public String[] getASMTransformerClass()
     {
