@@ -50,7 +50,9 @@ CSVE: basic implementation of comma seperated values with a varible system in pl
 Json model generation(Basic MC Lib)
 Lang generation(Basic MC Lib)
 Dyanmic Tranlsation Event(let's you override ItemStack#getDisplayName())
-TileStackSync Events fires on whatever sides that the tile data gets set to this usually includes both client and server player can be null if the event is fired from command block or dungeons.
+TileDataEvents fires when a tile entity's data has been set using evil notch lib's utils
+TileUseItem Events fires when player uses an itemstack and sets tile nbt like spawn egg or spawner but, not always blockdata placement just simple use
+BlockData Events fires on whatever sides that the tile data gets set to this usually includes both client and server player can be null if the event is fired from command block or dungeons.
 Adds the seed to f3 again per world
 ASMHelper allows you to: replace methods,replace classes, and other usefull stuffs as well as make it easier to do per line injections
 remove methods,add methods, add fields, remove fields
