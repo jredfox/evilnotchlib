@@ -67,13 +67,13 @@ public class MusicTicker implements ITickable
             this.playMusic(type);
         }
     }
+    
     /**
      * is the gui a vanilla menu or not
      */
     public boolean isMenu(GuiScreen gui) 
     {
-    	MenuMusicEvent e = new MenuMusicEvent(gui);
-    	MinecraftForge.EVENT_BUS.post(e);
+    	MenuMusicEvent e = MenuMusicEvent.fireMusicEvent(gui);
 		return e.canPlay;
 	}
 
