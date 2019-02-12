@@ -88,8 +88,14 @@ public class ConfigMenu {
 			mainMenus.add(line);
 		}
 	}
-	
+	/**
+	 * does the config need to save
+	 */
 	public static boolean isDirty = false;
+	/**
+	 * does the config have a new menu
+	 */
+	public static boolean addedMenus = false;
 	public static void saveMenusAndIndex() 
 	{
 		Configuration config = new Configuration(cfgmenu);
@@ -166,6 +172,7 @@ public class ConfigMenu {
 		{
 			mainMenus.add(new LineArray(loc.toString() + " = " + true));
 			isDirty = true;
+			addedMenus = true;
 		}
 	}
 	/**
@@ -178,6 +185,7 @@ public class ConfigMenu {
 		{
 			mainMenus.add(new LineArray(loc + " <" + clazz + ">" + " = " + enabled));
 			isDirty = true;
+			addedMenus = true;
 		}
 	}
 	

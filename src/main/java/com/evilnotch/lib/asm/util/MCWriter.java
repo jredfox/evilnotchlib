@@ -3,6 +3,8 @@ package com.evilnotch.lib.asm.util;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
+import net.minecraft.launchwrapper.Launch;
+
 public class MCWriter extends ClassWriter
 {
 	public MCWriter(final int flags) 
@@ -19,7 +21,7 @@ public class MCWriter extends ClassWriter
 	protected String getCommonSuperClass(final String type1, final String type2)
 	{
 		Class<?> c, d;
-		ClassLoader classLoader = getClass().getClassLoader();
+		ClassLoader classLoader = Launch.classLoader;
 		try
 		{
 			c = Class.forName(ObfHelper.toDeobfClassName(type1.replace('/', '.')), false, classLoader);

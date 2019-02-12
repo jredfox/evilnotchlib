@@ -135,7 +135,6 @@ public class MinecraftUtil {
    public static boolean checkPermission(EntityPlayerMP p, String name) 
    {
 	   ICommand cmd = getCommand(p.mcServer, name);
-	   System.out.println(cmd.checkPermission(p.mcServer, p));
 	   return cmd.checkPermission(p.mcServer, p);
    }
    

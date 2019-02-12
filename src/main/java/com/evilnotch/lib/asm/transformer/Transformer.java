@@ -6,15 +6,8 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 
-import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
@@ -25,7 +18,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class Transformer implements IClassTransformer
 {
-    public static final List<String> classesBeingTransformed = (List<String>)JavaUtil.<String>asArray(new Object[]
+    public static final List<String> clazzes = (List<String>)JavaUtil.<String>asArray(new Object[]
     {
     	"net.minecraft.server.management.PlayerList",
     	"net.minecraft.tileentity.TileEntityFurnace",
@@ -48,13 +41,13 @@ public class Transformer implements IClassTransformer
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {
-        int index = classesBeingTransformed.indexOf(transformedName);
+        int index = clazzes.indexOf(transformedName);
         return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
     }
 
 	public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
-    	String name = classesBeingTransformed.get(index);
+    	String name = clazzes.get(index);
     	System.out.println("Transforming: " + name + " index:" + index);
     	
         try

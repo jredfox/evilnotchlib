@@ -11,8 +11,10 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import com.evilnotch.iitemrender.asm.RenderTransformer;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.asm.util.MCWriter;
 import com.evilnotch.lib.util.JavaUtil;
@@ -78,7 +80,7 @@ public class MenuLibTransformer implements IClassTransformer{
 		ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(classWriter);
         
-        index += 16;
+        index += Transformer.clazzes.size() + RenderTransformer.clazzes.size();
         if(index == ConfigCore.cfgIndex || ConfigCore.cfgIndex == -2)
         {
       	  String[] a = name.split("\\.");

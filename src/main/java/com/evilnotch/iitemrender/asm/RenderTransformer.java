@@ -24,6 +24,7 @@ import com.evilnotch.iitemrender.handlers.IItemRendererHandler;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.asm.util.MCWriter;
 import com.evilnotch.lib.util.JavaUtil;
@@ -34,7 +35,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class RenderTransformer  implements IClassTransformer{
 	
-    public static final List<String> classesBeingTransformed = JavaUtil.<String>asArray(new Object[]
+    public static final List<String> clazzes = JavaUtil.<String>asArray(new Object[]
     {
 		"net.minecraftforge.client.ForgeHooksClient",
 		"net.minecraft.client.Minecraft",
@@ -46,7 +47,7 @@ public class RenderTransformer  implements IClassTransformer{
 	{
 		if(basicClass == null)
 			return null;
-		int index = classesBeingTransformed.indexOf(transformedName);
+		int index = clazzes.indexOf(transformedName);
 	    return index != -1 ? transform(index, basicClass, FMLCorePlugin.isObf) : basicClass;
 	}
 	
@@ -78,11 +79,11 @@ public class RenderTransformer  implements IClassTransformer{
         	classNode.accept(classWriter);
         	
         	int origin = index;
-        	index += 14;
+        	index += Transformer.clazzes.size();
         	
             if(index == ConfigCore.cfgIndex || ConfigCore.cfgIndex == -2)
             {
-            	String[] a = classesBeingTransformed.get(origin).split("\\.");
+            	String[] a = clazzes.get(origin).split("\\.");
             	File f = new File(System.getProperty("user.home") + "/Desktop/" + a[a.length-1] + ".class");
             	FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
             }

@@ -179,13 +179,10 @@ public class MenuRegistry {
 	{
 		if(ConfigMenu.isDirty)
 		{
-			if(ConfigMenu.displayNewMenu)
+			if(ConfigMenu.displayNewMenu && ConfigMenu.addedMenus)
 			{
 				ResourceLocation loc = ConfigMenu.mainMenus.get(ConfigMenu.mainMenus.size()-1).getResourceLocation();//when adding a new menu display it
-				if(!loc.equals(ConfigMenu.currentMenuIndex))
-				{
-					ConfigMenu.currentMenuIndex = loc;
-				}
+				ConfigMenu.currentMenuIndex = loc;
 			}
 			ConfigMenu.saveMenusAndIndex();
 		}
@@ -210,6 +207,7 @@ public class MenuRegistry {
 				{
 					System.out.println("null class when parsing menu for:" + line.getMetaString());
 					it.remove();
+					ConfigMenu.isDirty = true;
 					continue;
 				}
 				IMenu menu = new Menu(c,loc);
@@ -222,6 +220,7 @@ public class MenuRegistry {
 				{
 					System.out.println("null menu when parsing found for:" + loc);
 					it.remove();
+					ConfigMenu.isDirty = true;
 					continue;
 				}
 				list.add(menu);
