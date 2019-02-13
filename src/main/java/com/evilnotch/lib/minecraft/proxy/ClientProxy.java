@@ -25,7 +25,7 @@ import com.evilnotch.lib.minecraft.basicmc.client.block.StateMapperSupreme;
 import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.ITick;
-import com.evilnotch.lib.minecraft.tick.TickReg;
+import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairString;
@@ -87,8 +87,9 @@ public class ClientProxy extends ServerProxy{
 	
 	public static void clearClientData()
 	{
-		TickReg.garbageCollectClient();
+		TickRegistry.garbageCollectClient();
 		Seeds.clearSeeds();
+		System.out.println("disconnecting..........................");
 	}
 
 }

@@ -2,7 +2,7 @@ package com.evilnotch.lib.minecraft.proxy;
 
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
-import com.evilnotch.lib.minecraft.tick.TickReg;
+import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -25,7 +25,7 @@ public class ServerProxy {
 	
 	public static void clearServerData()
 	{
-		TickReg.garbageCollectServer();	
+		TickRegistry.garbageCollectServer();	
 		VanillaBugFixes.worlDir = null;
 		VanillaBugFixes.playerDataDir = null;
 		VanillaBugFixes.playerDataNames = null;

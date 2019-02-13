@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = MenuLib.MODID,name = MenuLib.NAME, version = MenuLib.VERSION, clientSideOnly = true,dependencies = "required-after:evilnotchlib;after:custommainmenu")
+@Mod(modid = MenuLib.MODID,name = MenuLib.NAME, version = MenuLib.VERSION, clientSideOnly = true, dependencies = "required-after:evilnotchlib;after:custommainmenu")
 public class MenuLib {
 	
 	public static final String MODID = "menulib";

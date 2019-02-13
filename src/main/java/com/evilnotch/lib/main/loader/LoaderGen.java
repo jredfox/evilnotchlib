@@ -13,8 +13,11 @@ public class LoaderGen {
 	
 	public static void load()
 	{
-		LangRegistry.registerLang();
-		JsonGen.jsonGen();
+		if(LoaderMain.isClient)
+		{
+			LangRegistry.registerLang();
+			JsonGen.jsonGen();
+		}
 	}
 	
 	public static void checkRootFile() 

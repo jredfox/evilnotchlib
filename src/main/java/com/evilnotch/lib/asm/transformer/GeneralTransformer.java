@@ -80,5 +80,14 @@ public class GeneralTransformer {
         insert.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode)start).label));
         node.instructions.insert(start, insert);
 	}
+    
+    /**
+     * patch the bug when opening to lan where the host cannot open command blocks even though cheats are enabled for him but, not everybody else
+     */
+	public static void patchOpenToLan(ClassNode classNode) 
+	{
+		MethodNode method = ASMHelper.getMethodNode(classNode, new MCPSidedString("shareToLAN","func_71206_a").toString(), "(Lnet/minecraft/world/GameType;Z)Ljava/lang/String;");
+		
+	}
 
 }

@@ -124,9 +124,9 @@ public class MinecraftUtil {
    {
 	   Side side = FMLCommonHandler.instance().getEffectiveSide();
 	   if(side == Side.CLIENT)
-		   LibEvents.cancelerClient = new EventCanceler(currentEvent, clazz, setCanceled, side);
+		   LibEvents.cancelerClient.add(new EventCanceler(currentEvent, clazz, setCanceled, side));
 	   else
-		   LibEvents.cancelerServer = new EventCanceler(currentEvent, clazz, setCanceled, side);
+		   LibEvents.cancelerServer.add(new EventCanceler(currentEvent, clazz, setCanceled, side));
    }
    
    /**

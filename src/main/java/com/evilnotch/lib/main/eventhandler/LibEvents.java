@@ -10,7 +10,7 @@ import java.util.Set;
 
 import com.evilnotch.lib.minecraft.basicmc.client.Seeds;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
-import com.evilnotch.lib.minecraft.tick.TickReg;
+import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;
@@ -39,56 +39,46 @@ public class LibEvents {
 	 @SubscribeEvent
 	 public void tickServer(ServerTickEvent e)
 	 {
-		 if(e.phase != Phase.END)
-			 return;
-		 
-		 TickReg.tickServer();
+		 TickRegistry.tickServer(e.phase);
 	 }
 	 
-	 public static EventCanceler cancelerClient = null;
-	 public static EventCanceler cancelerServer = null;
+	 public static List<EventCanceler> cancelerClient = new ArrayList<EventCanceler>();
+	 public static List<EventCanceler> cancelerServer = new ArrayList<EventCanceler>();
 	 @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
 	 public void canceler(Event e)
 	 {
-		 //looks dirty code but, really it's an optimization. I don't want to get the effective side dynamically on tick events when I don't have to
-		 if(cancelerClient != null)
+		 if(cancelerClient.isEmpty() && cancelerServer.isEmpty())
 		 {
-			 Side side = FMLCommonHandler.instance().getEffectiveSide();
-			 if(Side.CLIENT == side && cancelerClient.toIgnore != e && e.getClass().equals(cancelerClient.clazz))
-			 {
-				 e.setCanceled(cancelerClient.setIsCanceled);
-				 cancelerClient = null;
-			 }
-		 }
-		 if(cancelerServer != null)
-		 {
-			 Side side = FMLCommonHandler.instance().getEffectiveSide();
-			 if(Side.SERVER == side && cancelerServer.toIgnore != e && e.getClass().equals(cancelerServer.clazz))
-			 {
-				 e.setCanceled(cancelerServer.setIsCanceled);
-				 cancelerServer = null;
-			 }
-		 }
-	 }
-	
-	/**
-	 * Attempt to re-instantiate the entity caches for broken entities when the world is no longer fake
-	 */
-	 public static boolean cachedEnts = false;
-	 public static boolean isRunning;
-	 @SubscribeEvent
-	 public void worldload(WorldEvent.Load e)
-	 {
-		 World ew = e.getWorld();
-		if(ew.isRemote)
-			isRunning = true;
-		 if(!EntityUtil.cached || ew.isRemote || cachedEnts || EntityUtil.ent_blacklist.isEmpty() && EntityUtil.ent_blacklist_nbt.isEmpty() && EntityUtil.ent_blacklist_nbt.isEmpty())
 			 return;
-		 cachedEnts = true;
-		 World w = e.getWorld();
-		 System.out.println("Attempting to Repair Cache From Re-Instantiating Broken Entities. This gives modders debug onWorldLoad if the exception still occurs");
-		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist,w);
-		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_nbt,w);
-		 EntityUtil.cacheEnts(EntityUtil.ent_blacklist_commandsender,w);
+		 }
+		 
+		 Side side = FMLCommonHandler.instance().getEffectiveSide();
+		 
+		 if(side == side.CLIENT)
+		 {
+			 Iterator<EventCanceler> it = cancelerClient.iterator();
+			 while(it.hasNext())
+			 {
+				 EventCanceler eventCanceler = it.next();
+				 if(eventCanceler.toIgnore != e && e.getClass().equals(eventCanceler.clazz))
+				 {
+					 e.setCanceled(eventCanceler.setIsCanceled);
+					 it.remove();
+				 }
+			 }
+		 }
+		 else
+		 {
+			 Iterator<EventCanceler> it = cancelerServer.iterator();
+			 while(it.hasNext())
+			 {
+				 EventCanceler eventCanceler = it.next();
+				 if(eventCanceler.toIgnore != e && e.getClass().equals(eventCanceler.clazz))
+				 {
+					 e.setCanceled(eventCanceler.setIsCanceled);
+					 it.remove();
+				 }
+			 }
+		 }
 	 }
 }

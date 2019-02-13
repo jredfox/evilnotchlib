@@ -35,12 +35,13 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.world.chunk.storage.AnvilChunkLoader",//caps for chunks need readFromNBT() and writeToNBT()
     	"net.minecraft.client.Minecraft",
     	"net.minecraft.enchantment.Enchantment",
-    	"net.minecraft.entity.player.EntityPlayerMP"
+    	"net.minecraft.entity.player.EntityPlayerMP",
+    	"net.minecraft.server.integrated.IntegratedServer"
     });
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
-    {
+    {	
         int index = clazzes.indexOf(transformedName);
         return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
     }
@@ -152,6 +153,10 @@ public class Transformer implements IClassTransformer
                 case 15:
                 	GeneralTransformer.patchPlayer(classNode);
                 	useClassWriter = true;
+                break;
+                
+                case 16:
+                	GeneralTransformer.patchOpenToLan(classNode);
                 break;
             }
             

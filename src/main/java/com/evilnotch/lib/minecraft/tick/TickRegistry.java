@@ -3,7 +3,10 @@ package com.evilnotch.lib.minecraft.tick;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TickReg {
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+
+public class TickRegistry {
 	
 	public static List<ITick> serverTick = new ArrayList();
 	public static List<ITick> clientTick = new ArrayList();
@@ -11,30 +14,40 @@ public class TickReg {
 	public static int tickCountServer;
 	public static int tickCountClient;
 	
-	public static void tickClient()
+	public static void tickClient(TickEvent.Phase phase)
 	{
 		for(ITick t : clientTick)
-			t.tick();
-		tickCountClient++;
-		if(tickCountClient == Integer.MAX_VALUE)
-			tickCountClient = 0;
+			if(phase == t.getPhase())
+				t.tick();
+		
+		if(phase == Phase.END)
+		{
+			tickCountClient++;
+			if(tickCountClient == Integer.MAX_VALUE)
+				tickCountClient = 0;
+		}
 	}
 	
-	public static void tickServer()
+	public static void tickServer(TickEvent.Phase phase)
 	{
 		for(ITick t : serverTick)
-			t.tick();
-		tickCountServer++;
-		if(tickCountServer == Integer.MAX_VALUE)
-			tickCountServer = 0;
+			if(phase == t.getPhase())
+				t.tick();
+		
+		if(phase == Phase.END)
+		{
+			tickCountServer++;
+			if(tickCountServer == Integer.MAX_VALUE)
+				tickCountServer = 0;
+		}
 	}
 	
-	public static void regServer(ITick server)
+	public static void registerServer(ITick server)
 	{
 		serverTick.add(server);
 	}
 	
-	public static void regClient(ITick c)
+	public static void registerClient(ITick c)
 	{
 		clientTick.add(c);
 	}

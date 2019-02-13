@@ -5,8 +5,9 @@ import java.util.List;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.Seeds;
+import com.evilnotch.lib.minecraft.event.ClientDisconnectEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
-import com.evilnotch.lib.minecraft.tick.TickReg;
+import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.menulib.menu.MenuRegistry;
@@ -40,21 +41,7 @@ public class ClientEvents {
 	@SubscribeEvent
 	public void tickClient(ClientTickEvent e)
 	{
-		 if(e.phase != Phase.END)
-			 return;
-		 
-		 TickReg.tickClient();
-	}
-	
-	/**
-	 * this is so data get's cleared on client side only that needs to not be stored all the time or is attatched per world
-	 */
-	@SubscribeEvent
-	public void disconnect(FMLNetworkEvent.ClientDisconnectionFromServerEvent e)
-	{
-		LibEvents.isRunning = false;
-		System.out.println("disconnecting..........................");
-		ClientProxy.clearClientData();
+		 TickRegistry.tickClient(e.phase);
 	}
 	
 	/**
@@ -64,7 +51,7 @@ public class ClientEvents {
 	public void seedTxt(RenderGameOverlayEvent.Text e)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo || !Config.seedDisplay || !LibEvents.isRunning)
+		if(e.getType() != ElementType.TEXT || !mc.gameSettings.showDebugInfo || !Config.seedDisplay)
 			return;
 		List<String> f3 = e.getLeft();
 		int index = 0;
@@ -90,6 +77,12 @@ public class ClientEvents {
 		GuiDisconnected old = (GuiDisconnected)e.getGui();
 		e.setGui(new GuiDisconnected(new GuiMainMenu(),"disconnect.lost", PlayerUtil.msgShutdown) );
 		PlayerUtil.msgShutdown = null;
+	}
+	
+	@SubscribeEvent
+	public void disconnect(ClientDisconnectEvent e)
+	{
+		ClientProxy.clearClientData();
 	}
 	
 }

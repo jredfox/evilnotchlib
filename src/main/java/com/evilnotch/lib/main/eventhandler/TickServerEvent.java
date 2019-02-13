@@ -40,6 +40,8 @@ public class TickServerEvent implements ITick{
 
 	private void kickPlayers() 
 	{
+		if(kicker.isEmpty())
+			return;
 		Iterator<Map.Entry<NetHandlerPlayServer,PointId> > it = kicker.entrySet().iterator();
 		while(it.hasNext())
 		{
@@ -60,6 +62,8 @@ public class TickServerEvent implements ITick{
 
 	private void sendMsgs() 
 	{
+		if(msgs.isEmpty())
+			return;
 		Iterator<String> it_msg = msgs.iterator();
 		while(it_msg.hasNext())
 		{
@@ -73,12 +77,17 @@ public class TickServerEvent implements ITick{
 		}
 	}
 
-
 	@Override
 	public void garbageCollect() 
 	{
 		msgs.clear();
 		kicker.clear();
+	}
+
+	@Override
+	public Phase getPhase() 
+	{
+		return Phase.END;
 	}
 
 }

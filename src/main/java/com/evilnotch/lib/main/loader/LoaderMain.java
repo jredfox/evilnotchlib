@@ -9,6 +9,7 @@ import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
+import com.evilnotch.lib.main.eventhandler.TickEventClient;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.basicmc.block.IBasicBlock;
@@ -19,7 +20,7 @@ import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
-import com.evilnotch.lib.minecraft.tick.TickReg;
+import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.world.FakeWorld;
@@ -94,8 +95,10 @@ public class LoaderMain {
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
 		MinecraftForge.EVENT_BUS.register(new LoaderMain());
-		TickReg.regServer(new TickServerEvent());
+		TickRegistry.registerServer(new TickServerEvent());
+		TickRegistry.registerClient(new TickEventClient());
 	}
+	
 	/**
 	 * prevent memory leaks
 	 */
@@ -120,12 +123,13 @@ public class LoaderMain {
 	{
 		LoaderItems.registerItems();
 	}
+	
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<Block> event) 
 	{
 		LoaderBlocks.registerBlocks();
 	}
-	//recipe generators for basic toolsets/armorsets that can be auto generated
+	
 	@SubscribeEvent
     public void registerRecipes(RegistryEvent.Register<IRecipe> event) 
 	{
