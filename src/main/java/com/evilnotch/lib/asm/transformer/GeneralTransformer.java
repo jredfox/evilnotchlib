@@ -3,6 +3,8 @@ package com.evilnotch.lib.asm.transformer;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 
+import java.util.List;
+
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -54,7 +56,7 @@ public class GeneralTransformer {
 		 InsnList toInsert = new InsnList();
          toInsert.add(new VarInsnNode(ALOAD, 1));
          toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
-         method.instructions.insertBefore(ASMHelper.getFirstInstruction(method, Opcodes.ALOAD),toInsert);
+         method.instructions.insertBefore(ASMHelper.getFirstInstruction(method, Opcodes.ALOAD), toInsert);
 	}
 	
 	/**
@@ -98,8 +100,12 @@ public class GeneralTransformer {
 			AbstractInsnNode ab = arr[i];
 			if(ab.getOpcode() == Opcodes.ICONST_0 && ab.getPrevious() instanceof FrameNode)
 			{
-				spot = ab;
-				break;
+				List<Object> objs = ((FrameNode)ab.getPrevious()).stack;
+				if(objs != null && objs.contains("net/minecraft/client/entity/EntityPlayerSP"))
+				{
+					spot = ab;
+					break;
+				}
 			}
 		}
 		
