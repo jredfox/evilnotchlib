@@ -35,7 +35,7 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.world.chunk.storage.AnvilChunkLoader",//caps for chunks need readFromNBT() and writeToNBT()
     	"net.minecraft.client.Minecraft",
     	"net.minecraft.enchantment.Enchantment",
-    	"net.minecraft.server.integrated.IntegratedServer #commented_out"
+    	"net.minecraft.server.integrated.IntegratedServer"
     });
     
     @Override
