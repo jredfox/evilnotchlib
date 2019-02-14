@@ -19,7 +19,10 @@ public class PickEvent extends Event{
 	public World world;
 	public boolean canPick;
 	
-	public PickEvent(ItemStack resault,RayTraceResult target, EntityPlayer player, World world)
+	/**
+	 * fires on server side
+	 */
+	public PickEvent(ItemStack resault, RayTraceResult target, EntityPlayer player, World world)
 	{
 		this.initStack = resault.copy();
 		this.current = resault;
@@ -37,7 +40,7 @@ public class PickEvent extends Event{
 		{
 			super(resault, target, player, world);
 			this.target = target.entityHit;
-		}	
+		}
 	}
 	
 	public static class Block extends PickEvent
@@ -47,7 +50,7 @@ public class PickEvent extends Event{
 		public BlockPos pos;
 		public boolean copyTE;
 
-		public Block(ItemStack resault, RayTraceResult target, EntityPlayer player, World world,IBlockState state) 
+		public Block(ItemStack resault, RayTraceResult target, EntityPlayer player, World world, IBlockState state) 
 		{
 			super(resault, target, player, world);
 			this.state = state;

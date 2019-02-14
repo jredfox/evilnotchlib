@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
-import com.evilnotch.lib.minecraft.basicmc.client.Seeds;
-import com.evilnotch.lib.minecraft.event.ClientDisconnectEvent;
+import com.evilnotch.lib.minecraft.client.Seeds;
+import com.evilnotch.lib.minecraft.event.client.ClientDisconnectEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.EntityUtil;

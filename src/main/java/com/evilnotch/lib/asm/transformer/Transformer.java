@@ -35,8 +35,7 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.world.chunk.storage.AnvilChunkLoader",//caps for chunks need readFromNBT() and writeToNBT()
     	"net.minecraft.client.Minecraft",
     	"net.minecraft.enchantment.Enchantment",
-    	"net.minecraft.entity.player.EntityPlayerMP",
-    	"net.minecraft.server.integrated.IntegratedServer"
+    	"net.minecraft.server.integrated.IntegratedServer #commented_out"
     });
     
     @Override
@@ -149,20 +148,14 @@ public class Transformer implements IClassTransformer
                 	}
                 	ASMHelper.replaceMethod(classNode, inputBase + "Enchantment", "getTranslatedName", "(I)Ljava/lang/String;", "func_77316_c");
                 break;
-                
                 case 15:
-                	GeneralTransformer.patchPlayer(classNode);
-                	useClassWriter = true;
-                break;
-                
-                case 16:
                 	GeneralTransformer.patchOpenToLan(classNode);
                 break;
             }
             
             ASMHelper.clearCacheNodes();
 
-            ClassWriter classWriter = useClassWriter ? new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES) : new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
             if(index == ConfigCore.cfgIndex || ConfigCore.cfgIndex == -2)

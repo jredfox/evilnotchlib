@@ -51,7 +51,7 @@ public class VanillaBugFixes {
 		if(!e.player.world.isRemote && playerFlags.contains(e.player.getName()))
 		{
 			EntityPlayerMP playerIn = (EntityPlayerMP) e.player;
-			PacketUUID id = new PacketUUID(playerIn.getUniqueID());
+			PacketUUID id = new PacketUUID(playerIn.getEntityId(), playerIn.getUniqueID());
 			NetWorkHandler.INSTANCE.sendTo(id, playerIn);
 			playerFlags.remove(e.player.getName());
 		}

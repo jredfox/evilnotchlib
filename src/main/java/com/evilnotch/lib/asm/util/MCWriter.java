@@ -20,6 +20,11 @@ public class MCWriter extends ClassWriter
 	@Override
 	protected String getCommonSuperClass(final String type1, final String type2)
 	{
+		if(type2.equals("java/lang/Object"))
+		{
+			return "java/lang/Object";
+		}
+		
 		Class<?> c, d;
 		ClassLoader classLoader = Launch.classLoader;
 		try

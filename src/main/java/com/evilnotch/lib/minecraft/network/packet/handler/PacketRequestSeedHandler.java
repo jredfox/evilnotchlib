@@ -26,7 +26,7 @@ public class PacketRequestSeedHandler extends MessegeBase<PacketRequestSeed>{
 		EntityPlayerMP p = (EntityPlayerMP)player;
 		p.getServerWorld().addScheduledTask(() ->
 		{
-			if(!MinecraftUtil.checkPermission(p, "seed") && !PlayerUtil.isPlayerOwner(p))
+			if(!MinecraftUtil.checkPermission(p, "seed"))
 			{
 				PacketSeedDeny packet = new PacketSeedDeny(message.dim);
 				NetWorkHandler.INSTANCE.sendTo(packet, p);

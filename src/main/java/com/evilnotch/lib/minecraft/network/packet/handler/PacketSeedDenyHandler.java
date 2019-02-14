@@ -1,6 +1,6 @@
 package com.evilnotch.lib.minecraft.network.packet.handler;
 
-import com.evilnotch.lib.minecraft.basicmc.client.Seeds;
+import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.packet.PacketSeedDeny;
 
@@ -15,7 +15,7 @@ public class PacketSeedDenyHandler extends MessegeBase<PacketSeedDeny>{
 	{
 		Minecraft.getMinecraft().addScheduledTask(() ->
 		{
-			Seeds.setSeed(message.dimension, "Server Denied Seed Request");
+			Seeds.setSeed(message.dimension, Seeds.denied);
 		});
 	}
 

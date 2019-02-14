@@ -10,11 +10,19 @@ import net.minecraft.entity.player.EntityPlayer;
 public class PacketUUIDHandler extends MessegeBase<PacketUUID>{
 
 	@Override
-	public void handleClientSide(PacketUUID message, EntityPlayer player) 
+	public void handleClientSide(PacketUUID message, EntityPlayer p) 
 	{
 		Minecraft.getMinecraft().addScheduledTask(() -> 
 		{
-			PlayerUtil.setPlayerUUID(player, message.uuid);
+			EntityPlayer player = Minecraft.getMinecraft().player;
+			if(player.getEntityId() != message.id)
+			{
+				PlayerUtil.setPlayerUUID((EntityPlayer) player.world.getEntityByID(message.id), message.uuid);
+			}
+			else
+			{
+				PlayerUtil.setPlayerUUID(player, message.uuid);
+			}
 		});
 	}
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.evilnotch.lib.minecraft.basicmc.client.Seeds;
+import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
@@ -42,8 +42,8 @@ public class LibEvents {
 		 TickRegistry.tickServer(e.phase);
 	 }
 	 
-	 public static List<EventCanceler> cancelerClient = new ArrayList<EventCanceler>();
-	 public static List<EventCanceler> cancelerServer = new ArrayList<EventCanceler>();
+	 public static final List<EventCanceler> cancelerClient = new ArrayList<EventCanceler>();
+	 public static final List<EventCanceler> cancelerServer = new ArrayList<EventCanceler>();
 	 @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
 	 public void canceler(Event e)
 	 {

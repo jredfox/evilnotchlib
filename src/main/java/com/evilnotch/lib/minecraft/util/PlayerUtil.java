@@ -15,6 +15,7 @@ import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -169,7 +170,7 @@ public class PlayerUtil {
 	public static void setPlayerUUID(EntityPlayer player,UUID uuid) 
 	{
 		ReflectionUtil.setFinalObject(player.getGameProfile(), uuid, GameProfile.class, "id");
-		EntityUtil.setEntityUUID(player,uuid);
+		EntityUtil.setEntityUUID(player, uuid);
 	}
 
 	public static UUID getServerPlayerUUID(GameProfile profile) 
@@ -195,12 +196,12 @@ public class PlayerUtil {
     
 	public static EntityPlayer getClientPlayer()
 	{
-		return FMLClientHandler.instance().getClientPlayerEntity();
+		return Minecraft.getMinecraft().player;
 	}
 
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
 	{
-		TickServerEvent.kicker.put(p.connection, new PointId(0,ticks,msg) );
+		TickServerEvent.kicker.put(p, new PointId(0,ticks,msg) );
 	}
 
 	public static boolean isPlayerOwner(EntityPlayerMP player)

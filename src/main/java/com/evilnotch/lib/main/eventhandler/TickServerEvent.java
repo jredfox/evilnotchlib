@@ -29,7 +29,8 @@ public class TickServerEvent implements ITick{
 	 * entity player connection to point id(ticks existed, max tick count,String msg)
 	 * the connection is kept even on respawn so there is no glitching this kicker
 	*/
-	public static HashMap<NetHandlerPlayServer,PointId> kicker = new HashMap();
+	public static HashMap<EntityPlayerMP,PointId> kicker = new HashMap();
+	
 	@Override
 	public void tick() 
 	{
@@ -42,16 +43,16 @@ public class TickServerEvent implements ITick{
 	{
 		if(kicker.isEmpty())
 			return;
-		Iterator<Map.Entry<NetHandlerPlayServer,PointId> > it = kicker.entrySet().iterator();
+		Iterator<Map.Entry<EntityPlayerMP,PointId> > it = kicker.entrySet().iterator();
 		while(it.hasNext())
 		{
-			Map.Entry<NetHandlerPlayServer,PointId> pair = it.next();
-			NetHandlerPlayServer connection = pair.getKey();
+			Map.Entry<EntityPlayerMP,PointId> pair = it.next();
+			EntityPlayerMP player = pair.getKey();
 			PointId point = pair.getValue();
 			if(point.getX() >= point.getY())
 			{
 				it.remove();
-				PlayerUtil.disconnectPlayer(connection.player,new TextComponentString(point.id));
+				PlayerUtil.disconnectPlayer(player,new TextComponentString(point.id));
 			}
 		}
 			

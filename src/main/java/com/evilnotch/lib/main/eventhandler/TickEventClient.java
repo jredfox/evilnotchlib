@@ -1,6 +1,6 @@
 package com.evilnotch.lib.main.eventhandler;
 
-import com.evilnotch.lib.minecraft.event.ClientDisconnectEvent;
+import com.evilnotch.lib.minecraft.event.client.ClientDisconnectEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.ITick;
 
