@@ -10,6 +10,7 @@ ObfHelper & MCWriter: by squeek502 found here:https://github.com/squeek502/ASMHe
 
 Bug Fixes:
 ```
+fix improper syncing of player persions when opening lan world
 vanilla eggs on spawners
 uuid fix(if uuid doesn't match server patch it)
 uuid fix single player(if you give another person your world you get the right playerdata)
