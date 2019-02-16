@@ -923,7 +923,7 @@ public class EntityUtil {
 		if(tag == null)
 		{
 			ent_blacklist_nbt.add(loc);
-			LoaderMain.logger.log(Level.ERROR,"Entity Serialization Has Been Broken When Reading It's Own NBT Report to mod autoher:" + loc);
+			LoaderMain.logger.log(Level.ERROR,"Entity Broke Writing NBT it returned null" + loc);
 			return;
 		}
 		try
@@ -935,6 +935,8 @@ public class EntityUtil {
 		{
 			ent_blacklist_nbt.add(loc);
 			LoaderMain.logger.log(Level.ERROR,"Entity Serialization Has Been Broken When Reading It's Own NBT Report to mod autoher:" + loc);
+			if(Config.debug)
+				t.printStackTrace();
 		}
 	}
 	

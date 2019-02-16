@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Set;
 
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
+import com.evilnotch.lib.minecraft.util.NBTUtil;
 
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
@@ -17,7 +18,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		System.out.println(new ResourceLocation("").getResourcePath().isEmpty());
+		System.out.println(new NBTPathApi(NBTUtil.getNBTFromString("{ench:[{id:33,lvl:2}]}")));
 	}
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)
 	{

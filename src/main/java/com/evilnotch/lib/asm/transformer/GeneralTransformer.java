@@ -3,6 +3,7 @@ package com.evilnotch.lib.asm.transformer;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.objectweb.asm.Opcodes;
@@ -62,7 +63,7 @@ public class GeneralTransformer {
 	/**
 	 * patch seed check
 	 */
-  /*  public static void patchPlayer(ClassNode classNode) 
+	/*public static void patchPlayer(ClassNode classNode) 
     {    
       	//append && PlayerUtil.isPlayerOwner(this) to EntityPlayerMP#canUseCommand if("seed".equals(cmdName) && mc.isdedicatedServer())
       	MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("canUseCommand","func_70003_b").toString(), "(ILjava/lang/String;)Z");
@@ -117,6 +118,24 @@ public class GeneralTransformer {
 	   	method.instructions.insert(spot, toInsert);
 	   
 	   	method.instructions.remove(spot);
+	}
+	/**
+	 * adds a method call fixNBT() via constructor and adds the method
+	 * @throws IOException 
+	 */
+	public static void patchWeightedSpawner(ClassNode classNode, String className) throws IOException 
+	{
+		MethodNode fixId = ASMHelper.addMethod(classNode, "com/evilnotch/lib/asm/gen/Methods.class", "fixId", "(Lnet/minecraft/nbt/NBTTagCompound;)V");
+		ASMHelper.patchMethod(fixId, className, "com/evilnotch/lib/asm/gen/Methods");
+		
+		MethodNode construct = ASMHelper.getConstructionNode(classNode, "(ILnet/minecraft/nbt/NBTTagCompound;)V");
+		AbstractInsnNode point = ASMHelper.getLastPutField(construct);
+		
+		InsnList list = new InsnList();
+		list.add(new VarInsnNode(ALOAD, 0));
+		list.add(new VarInsnNode(ALOAD, 2));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/WeightedSpawnerEntity", "fixId", "(Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+		construct.instructions.insert(point, list);
 	}
 
 }

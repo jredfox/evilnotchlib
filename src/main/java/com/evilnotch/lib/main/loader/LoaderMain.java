@@ -17,6 +17,7 @@ import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
+import com.evilnotch.lib.minecraft.event.PickEvent.Entity;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
@@ -27,6 +28,8 @@ import com.evilnotch.lib.minecraft.world.FakeWorld;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommand;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;

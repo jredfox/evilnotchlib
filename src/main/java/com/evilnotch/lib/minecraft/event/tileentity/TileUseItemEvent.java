@@ -52,7 +52,7 @@ public class TileUseItemEvent extends TileDataEvent{
 		
 		public Merge(TileEntity tile, EntityPlayer player, ItemStack stack, NBTTagCompound tileData, NBTTagCompound stackNBT)
 		{
-			super(tile,tileData,stackNBT);
+			super(tile, tileData, stackNBT);
 			
 			this.stack = stack;
 			this.player = player;
@@ -71,6 +71,7 @@ public class TileUseItemEvent extends TileDataEvent{
 		public Post(TileEntity tile, EntityPlayer player, ItemStack stack)
 		{
 			super(tile);
+			
 			this.stack = stack;
 			this.player = player;
 		}

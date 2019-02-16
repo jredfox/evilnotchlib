@@ -149,13 +149,14 @@ public class ASMHelper
 	/**
 	 * patch all references on the local variable table instanceof of this to a new class
 	 */
-	public static void patchLocals(MethodNode method,String name)
+	public static void patchLocals(MethodNode method, String name)
 	{
 		for(LocalVariableNode lvn : method.localVariables)
 		{
 			if(lvn.name.equals("this"))
 			{
 				lvn.desc = "L" + name.replace('.', '/') + ";";
+				break;
 			}
 		}
 	}
@@ -163,24 +164,27 @@ public class ASMHelper
 	/**
 	 * patch previous object owner instructions to new owner with filtering out static fields/method calls
 	 */
-	public static void patchInstructions(MethodNode mn, String className, String oldClassName,boolean patchStatic) 
+	public static void patchInstructions(MethodNode mn, String class_name, String class_old,boolean patchStatic) 
 	{
+		String className = class_name.replace('.', '/');
+		String oldClassName = class_old.replace('.', '/');
+		
 		for(AbstractInsnNode ain : mn.instructions.toArray())
 		{
 			if(ain instanceof MethodInsnNode)
 			{
 				MethodInsnNode min = (MethodInsnNode)ain;
-				if(min.owner.equals(oldClassName) && !isStaticMethodNode(min) || patchStatic && min.owner.equals(oldClassName) )
+				if(min.owner.equals(oldClassName) && (!isStaticMethod(min) || patchStatic) )
 				{
-					min.owner=className.replaceAll("\\.", "/");
+					min.owner = className;
 				}
 			}
 			else if(ain instanceof FieldInsnNode)
 			{
 				FieldInsnNode fin = (FieldInsnNode)ain;
-				if(fin.owner.equals(oldClassName) && !isStaticFeild(fin) || patchStatic && fin.owner.equals(oldClassName))
+				if(fin.owner.equals(oldClassName) && (!isStaticFeild(fin) || patchStatic) )
 				{
-					fin.owner=className.replaceAll("\\.", "/");
+					fin.owner = className;
 				}
 			}
 		}
@@ -189,7 +193,7 @@ public class ASMHelper
 	/**
 	 * this will determine if the node is static or not
 	 */
-	public static boolean isStaticMethodNode(MethodInsnNode min) 
+	public static boolean isStaticMethod(MethodInsnNode min) 
 	{
 		int opcode = min.getOpcode();
 		return Opcodes.INVOKESTATIC == opcode;

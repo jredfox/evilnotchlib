@@ -2,7 +2,10 @@ package com.evilnotch.lib.main;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
+import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.world.FakeWorld;
 
+import net.minecraft.entity.item.EntityPainting;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -37,6 +40,7 @@ public class MainJava {
 	public void post(FMLPostInitializationEvent e)
 	{
 		LoaderMain.loadPostInit(e);
+		EntityUtil.cacheEnts();
 	}
 	
 	/**

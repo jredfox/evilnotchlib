@@ -32,10 +32,11 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.world.World",
     	"net.minecraft.world.storage.WorldInfo",
     	"net.minecraft.world.chunk.Chunk",
-    	"net.minecraft.world.chunk.storage.AnvilChunkLoader",//caps for chunks need readFromNBT() and writeToNBT()
+    	"net.minecraft.world.chunk.storage.AnvilChunkLoader",
     	"net.minecraft.client.Minecraft",
     	"net.minecraft.enchantment.Enchantment",
-    	"net.minecraft.server.integrated.IntegratedServer"
+    	"net.minecraft.server.integrated.IntegratedServer",
+    	"net.minecraft.util.WeightedSpawnerEntity"
     });
     
     @Override
@@ -150,6 +151,9 @@ public class Transformer implements IClassTransformer
                 break;
                 case 15:
                 	GeneralTransformer.patchOpenToLan(classNode);
+                break;
+                case 16:
+                	GeneralTransformer.patchWeightedSpawner(classNode, name);
                 break;
             }
             

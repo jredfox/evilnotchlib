@@ -130,7 +130,7 @@ public class TileEntityUtil {
 	 */
 	public static boolean placeTileNBT(World worldIn, BlockPos pos, NBTTagCompound nbt, EntityPlayer player, ItemStack stack)
 	{
-		return placeTileNBT(worldIn.getTileEntity(pos),nbt,player,stack);
+		return placeTileNBT(worldIn.getTileEntity(pos), nbt, player, stack);
 	}
 
 	/**
@@ -140,34 +140,34 @@ public class TileEntityUtil {
 	{
 	   if (tile != null && nbt != null)
 	   {
-	   	  BlockDataEvent.Permissions permissions = new BlockDataEvent.Permissions(tile, player, stack);
-	   	  permissions.canUseCommand = true;
-	   	  MinecraftForge.EVENT_BUS.post(permissions);
-	   	  if ((permissions.opsOnly) && (!permissions.canUseCommand))
-	   	  {
-	       	return false;
-	   	  }
-	   	  NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
-	   	  NBTTagCompound copyTile = tileData.copy();
+	   	   BlockDataEvent.Permissions permissions = new BlockDataEvent.Permissions(tile, player, stack);
+	   	   permissions.canUseCommand = true;
+	   	   MinecraftForge.EVENT_BUS.post(permissions);
+	   	   if ((permissions.opsOnly) && (!permissions.canUseCommand))
+	   	   {
+	        	return false;
+	   	   }
+	   	   NBTTagCompound tileData = tile.writeToNBT(new NBTTagCompound());
+	   	   NBTTagCompound copyTile = tileData.copy();
 	       
-	   	  BlockDataEvent.Merge mergeEvent = new BlockDataEvent.Merge(tile, player, stack, tileData, nbt);
-	   	  MinecraftForge.EVENT_BUS.post(mergeEvent);
-	   	  tileData = mergeEvent.tileData;
-	   	  nbt = mergeEvent.nbt;
+	   	   BlockDataEvent.Merge mergeEvent = new BlockDataEvent.Merge(tile, player, stack, tileData, nbt);
+	   	   MinecraftForge.EVENT_BUS.post(mergeEvent);
+	   	   tileData = mergeEvent.tileData;
+	   	   nbt = mergeEvent.nbt;
 	       
-	   	  tileData.merge(nbt);
-	   	  BlockPos pos = tile.getPos();
-	   	  tileData.setInteger("x", pos.getX());
-	   	  tileData.setInteger("y", pos.getY());
-	   	  tileData.setInteger("z", pos.getZ());
+	   	   tileData.merge(nbt);
+	   	   BlockPos pos = tile.getPos();
+	   	   tileData.setInteger("x", pos.getX());
+	   	   tileData.setInteger("y", pos.getY());
+	   	   tileData.setInteger("z", pos.getZ());
 	   	  
-	   	  if (!tileData.equals(copyTile))
-	   	  {
-	   		tile.readFromNBT(tileData);
-	   		tile.markDirty();
-	   		BlockDataEvent.Post event = new BlockDataEvent.Post(tile, player, stack);
-	       	MinecraftForge.EVENT_BUS.post(event);
-	       	return true;
+	   	   if (!tileData.equals(copyTile))
+	   	   {
+	   	      tile.readFromNBT(tileData);
+	   	      tile.markDirty();
+	   		  BlockDataEvent.Post event = new BlockDataEvent.Post(tile, player, stack);
+	          MinecraftForge.EVENT_BUS.post(event);
+	          return true;
 	      }
 	   }
 	   return false;

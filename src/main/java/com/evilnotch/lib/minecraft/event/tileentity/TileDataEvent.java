@@ -29,7 +29,7 @@ public class TileDataEvent extends Event{
 		public Merge(TileEntity tile, NBTTagCompound tileData, NBTTagCompound nbt) 
 		{
 			super(tile);
-			this.tileData = tileData == null ? TileEntityUtil.getTileNBT(tile) : tileData;
+			this.tileData = tileData;
 			this.nbt = nbt;
 		}	
 	}

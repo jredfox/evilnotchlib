@@ -200,7 +200,7 @@ public class NBTPathApi {
 	/**
 	 * compare nbt based upon logic. the hasTags() operation won't trigger actual comparing
 	 */
-	public boolean equalsLogic(CompareType type,NBTPathApi other)
+	public boolean equalsLogic(CompareType type, NBTPathApi other)
 	{
 		if(type == CompareType.hasTags)
 		{

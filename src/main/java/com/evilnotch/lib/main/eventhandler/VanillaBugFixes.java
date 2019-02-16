@@ -63,7 +63,7 @@ public class VanillaBugFixes {
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void tilesync(TileDataEvent.Merge e)
 	{
-        if(e.tile instanceof TileEntityMobSpawner && !e.nbt.hasKey("SpawnPotentials"))
+        if(e.tile instanceof TileEntityMobSpawner && !e.nbt.hasKey("SpawnPotentials") && e.nbt.hasKey("SpawnData"))
         {
         	NBTTagList list = new NBTTagList();
         	list.appendTag(new WeightedSpawnerEntity(1,(NBTTagCompound) e.nbt.getTag("SpawnData").copy() ).toCompoundTag());
