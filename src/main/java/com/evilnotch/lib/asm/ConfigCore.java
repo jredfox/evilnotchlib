@@ -13,6 +13,7 @@ public class ConfigCore {
 	public static boolean asm_TranslationEvent = true;
 	public static boolean asm_middleClickEvent = true;
 	public static boolean asm_enchantments = true;
+	public static boolean asm_entityPatch = true;
 	
 	public static boolean fixPlayerDataSP;
 	
@@ -34,7 +35,8 @@ public class ConfigCore {
 		asm_TranslationEvent = config.get("asm","dynamicTranslationEvent",true).getBoolean();
 		asm_middleClickEvent = config.get("asm","middleClickEvent",true).getBoolean();
 		asm_enchantments = config.get("asm","enchantmentNameFix",true).getBoolean();
-		
+		asm_entityPatch = config.get("asm","asm_entityPatch",true).getBoolean();
+				
 		fixPlayerDataSP = config.get("general","fixHostPlayerDataSP",true).getBoolean();
 		
 		cfgIndex = config.get("debug","cfgIndex",cfgIndex).getInt();

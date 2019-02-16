@@ -757,7 +757,8 @@ public class EntityUtil {
 			Class clazz = EntityList.getClass(loc);
 			if(clazz == null)
 			{
-				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Class Found Report to mod autoher:" + loc);
+				ent_blacklist.add(loc);
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Class Found Report to mod author:" + loc);
 				continue;
 			}
 			boolean isAbstract = Modifier.isAbstract(clazz.getModifiers());
@@ -772,7 +773,7 @@ public class EntityUtil {
 			catch (Throwable t)
 			{
 				ent_blacklist.add(loc);
-				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod autoher:" + loc);
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod author:" + loc);
 				continue;
 			}
 			
@@ -780,7 +781,7 @@ public class EntityUtil {
 			if(e == null)
 			{
 				ent_blacklist.add(loc);//Entity failed cache it's string id for debugging
-				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity Creation Failed Report to mod autoher:" + loc);
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity Creation Failed Report to mod author:" + loc);
 				continue;
 			}
 			
@@ -801,7 +802,7 @@ public class EntityUtil {
 			
 			ent_blacklist.remove(loc);
 			NBTTagCompound tag = getEntityNBTSafley(e);
-//			cacheWorldNeedy(loc);
+			cacheWorldNeedy(loc);
 			cacheNBTMob(loc,e,tag);
 			getcommandSenderName(e);//forces it to error if it is going to
 			cacheForgeMob(loc);//is depreciated so I know to change it when backporting
@@ -957,7 +958,7 @@ public class EntityUtil {
 
 	public static void cacheWorldNeedy(ResourceLocation loc) 
 	{
-		if(Config.debug_worldNeedy && EntityUtil.createEntityByNameQuietly(loc, null,true) == null)
+		if(Config.debug_worldNeedy && EntityUtil.createEntityByNameQuietly(loc, null, true) == null)
 		{
 			ents_worldneedy.add(loc);
 		}
