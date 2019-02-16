@@ -3,7 +3,7 @@ this is a library with minecraft and some forge bug fixes. It allows modders to 
 
 Embeded Libraries:
 ```
-Simple JSON(With Modifications): https://github.com/fangyidong/json-simple
+Simple JSON(With Modifications): https://github.com/fangyidong/json-simple using this liscense http://www.apache.org/licenses/LICENSE-2.0
 IItemRenderer(re-writen) originally by elix_x found here: https://github.com/Elix-x/IItem-Renderer
 ObfHelper & MCWriter: by squeek502 found here:https://github.com/squeek502/ASMHelper/tree/1.10.x/raw/squeek/asmhelper
 ```
