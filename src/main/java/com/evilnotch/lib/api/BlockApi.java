@@ -122,14 +122,14 @@ public class BlockApi {
 	{
 		if(mat == null)
 			return null;
-		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.blockmats,mat);
+		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.blockmats, mat);
 	}
 	
 	public static ResourceLocation getSoundTypeLoc(SoundType sound) 
 	{
 		if(sound == null)
 			return null;
-		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.soundTypes,sound);
+		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.soundTypes, sound);
 	}
 
 	public static String getHarvestTool(Block b, int meta) 

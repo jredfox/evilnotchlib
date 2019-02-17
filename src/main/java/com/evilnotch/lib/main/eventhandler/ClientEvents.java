@@ -9,16 +9,20 @@ import com.evilnotch.lib.minecraft.event.client.ClientDisconnectEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.NBTUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.menulib.menu.MenuRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -83,6 +87,34 @@ public class ClientEvents {
 	public void disconnect(ClientDisconnectEvent e)
 	{
 		ClientProxy.clearClientData();
+	}
+	
+	@SubscribeEvent
+	public void enchantmentFix(ItemTooltipEvent e)
+	{
+		ItemStack stack = e.getItemStack();
+		NBTTagList ench = stack.getEnchantmentTagList();
+		if(ench.tagCount() == 0)
+		{
+			ench = NBTUtil.getNBTTagListSafley(stack.getTagCompound(), "StoredEnchantments", 10);
+		}
+		if(stack.isEmpty() || ench.tagCount() == 0)
+		{
+			return;
+		}
+		
+		List<String> list = e.getToolTip();
+		for(int i=0;i<list.size();i++)
+		{
+			String s = list.get(i);
+			int index = s.indexOf("enchantment.level.");
+			if(index == -1)
+			{
+				continue;
+			}
+			String fixed = s.substring(0, index) + s.substring(index + "enchantment.level.".length(), s.length());
+			list.set(i, fixed);
+		}
 	}
 	
 }

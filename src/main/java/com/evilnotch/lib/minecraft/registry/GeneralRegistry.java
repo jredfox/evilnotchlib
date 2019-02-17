@@ -191,8 +191,6 @@ public class GeneralRegistry {
     		String s = keys.next();
     		if(cmdRemove.contains(s))
     		{
-    			if(Config.debug)
-    				System.out.println("found and removing:" + s);
     			keys.remove();
     		}
     	}
@@ -204,8 +202,6 @@ public class GeneralRegistry {
     		String s = cmd.getName();
     		if(cmdRemove.contains(s))
     		{
-    			if(Config.debug)
-    				System.out.println("found and removing:" + s);
     			it.remove();
     		}
     	}

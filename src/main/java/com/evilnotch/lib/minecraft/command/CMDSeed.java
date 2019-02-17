@@ -63,6 +63,7 @@ public class CMDSeed extends CommandBase {
     {
     	if(!(sender instanceof EntityPlayerMP))
     		return false;
+    	
     	EntityPlayerMP player = (EntityPlayerMP)sender;
     	return PlayerUtil.isPlayerOwner(player) || MinecraftUtil.canUseCommand(player, this.getRequiredPermissionLevel(), this.getName());
     }

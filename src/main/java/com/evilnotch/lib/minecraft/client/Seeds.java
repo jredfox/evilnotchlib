@@ -21,17 +21,21 @@ public class Seeds {
 		Minecraft mc = Minecraft.getMinecraft();
 		boolean flag = false;
 		int dim = world.provider.getDimension();
+		
 		if(!seeds.containsKey(dim))
 		{
 			seeds.put(dim,"pending...");
 			NetWorkHandler.INSTANCE.sendToServer(new PacketRequestSeed(dim));
 		}
+		
 		if(permisionLevel != mc.player.getPermissionLevel() && permisionLevel != -1)
 		{
 			flag = true;
 		}
+		
 		permisionLevel = mc.player.getPermissionLevel();
 		String seed = seeds.get(dim);
+		
 		if(flag && seed.equals(denied))
 		{
 			seeds.remove(dim);

@@ -127,7 +127,7 @@ public class NBTUtil {
 	{
 		if(tag == null)
 			return new NBTTagList();
-		return tag.getTagList(name, type);
+		return tag.hasKey(name) ? tag.getTagList(name, type) : new NBTTagList();
 	}
 	
 	/**
