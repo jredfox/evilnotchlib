@@ -22,7 +22,9 @@ ItemToolTip Enchantment Fix(if text breaks manually uses enchantment name and ro
 Fixed Player Head Being on backwards when teleporting to them
 Fixed Player shoulders not syning when using /tp,teleport,tpdim
 Fixed Packets of blockstates being sent to the client from the main hand when 
-placing a block in the offhand causing pig issues with silkspawners, and any other tile entities like signs
+Placing a block in the offhand causing pig issues with silkspawners, and any other tile entities like signs
+Fixed WeightedSpawnerEntity constructor not fixing the id tag on construction
+Fixed EntityFallingBlock,EntityHanging,EntityPainting exceptions when simply using the default world constructor
 
 BlockEntityTag fixes:
 sync client changes on the same tick rather then later,don't have to be in creative
