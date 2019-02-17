@@ -80,12 +80,9 @@ public class MenuLibTransformer implements IClassTransformer{
 		ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(classWriter);
         
-        index += Transformer.clazzes.size() + RenderTransformer.clazzes.size();
-        if(index == ConfigCore.cfgIndex || ConfigCore.cfgIndex == -2)
+        if(ConfigCore.dumpASM)
         {
-      	  String[] a = name.split("\\.");
-      	  File f = new File(System.getProperty("user.home") + "/Desktop/" + a[a.length-1] + ".class");
-      	  FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
+        	ASMHelper.dumpFile(name,classWriter);
         }
 		return classWriter.toByteArray();
 	}

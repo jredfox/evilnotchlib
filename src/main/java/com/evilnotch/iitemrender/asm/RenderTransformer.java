@@ -79,13 +79,10 @@ public class RenderTransformer  implements IClassTransformer{
         	classNode.accept(classWriter);
         	
         	int origin = index;
-        	index += Transformer.clazzes.size();
         	
-            if(index == ConfigCore.cfgIndex || ConfigCore.cfgIndex == -2)
+            if(ConfigCore.dumpASM)
             {
-            	String[] a = clazzes.get(origin).split("\\.");
-            	File f = new File(System.getProperty("user.home") + "/Desktop/" + a[a.length-1] + ".class");
-            	FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
+            	ASMHelper.dumpFile(clazzes.get(index), classWriter);
             }
             
         	return classWriter.toByteArray();

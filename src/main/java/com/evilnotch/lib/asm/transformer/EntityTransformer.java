@@ -4,10 +4,19 @@ import java.util.List;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.asm.util.MCWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
@@ -62,6 +71,10 @@ public class EntityTransformer implements IClassTransformer{
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
+            if(ConfigCore.dumpASM)
+            {
+            	ASMHelper.dumpFile(name, classWriter);
+            }
             return classWriter.toByteArray();
         }
         catch(Throwable t)
@@ -70,20 +83,53 @@ public class EntityTransformer implements IClassTransformer{
         }
 		return null;
 	}
-
-	private void transformEntityPainting(ClassNode classNode) {
-		// TODO Auto-generated method stub
+	
+	private void transformEntityHanging(ClassNode classNode) 
+	{
+		MethodNode construct = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
+		AbstractInsnNode point = ASMHelper.getLastMethodInsn(construct, Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/EntityHanging", "setSize", "(FF)V", false);
 		
+		InsnList list = new InsnList();
+		//this.facingDirection = EnumFacing.NORTH;
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/util/EnumFacing", "NORTH", "Lnet/minecraft/util/EnumFacing;"));
+		list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/EntityHanging", new MCPSidedString("facingDirection","field_174860_b").toString(), "Lnet/minecraft/util/EnumFacing;"));
+		
+		//this.hangingPosition = this.getPosition().offset(this.facingDirection);
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/EntityHanging", new MCPSidedString("getPosition","func_180425_c").toString(), "()Lnet/minecraft/util/math/BlockPos;", false));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/EntityHanging", new MCPSidedString("facingDirection","field_174860_b").toString(), "Lnet/minecraft/util/EnumFacing;"));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/math/BlockPos", new MCPSidedString("offset","func_177972_a").toString(), "(Lnet/minecraft/util/EnumFacing;)Lnet/minecraft/util/math/BlockPos;", false));
+		list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/EntityHanging", new MCPSidedString("hangingPosition","field_174861_a").toString(), "Lnet/minecraft/util/math/BlockPos;"));
+		
+		construct.instructions.insert(point, list);
 	}
 
-	private void transformEntityFalling(ClassNode classNode) {
-		// TODO Auto-generated method stub
+	private void transformEntityPainting(ClassNode classNode) 
+	{
+		MethodNode construct = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
 		
+		InsnList list = new InsnList();
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraft/entity/item/EntityPainting$EnumArt", "KEBAB", "Lnet/minecraft/entity/item/EntityPainting$EnumArt;"));
+		list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/item/EntityPainting", new MCPSidedString("art","field_70522_e").toString(), "Lnet/minecraft/entity/item/EntityPainting$EnumArt;"));
+		
+		construct.instructions.insertBefore(ASMHelper.getLastInstruction(construct, Opcodes.RETURN), list);
 	}
-
-	private void transformEntityHanging(ClassNode classNode) {
-		// TODO Auto-generated method stub
+	
+	private void transformEntityFalling(ClassNode classNode) 
+	{
+		MethodNode construct = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
 		
+		InsnList list = new InsnList();
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC,"net/minecraft/init/Blocks", new MCPSidedString("AIR","field_150350_a").toString(), "Lnet/minecraft/block/Block;"));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/block/Block", "getDefaultState", "()Lnet/minecraft/block/state/IBlockState;", false));
+		list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/item/EntityFallingBlock", "fallTile", "Lnet/minecraft/block/state/IBlockState;"));
+		
+		construct.instructions.insertBefore(ASMHelper.getLastInstruction(construct, Opcodes.RETURN), list);
 	}
 
 }

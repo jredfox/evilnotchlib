@@ -1,11 +1,14 @@
 package com.evilnotch.lib.asm.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -412,4 +415,53 @@ public class ASMHelper
 	{
 		return node.name + " desc:" + node.desc + " signature:" + node.signature + " access:" + node.access;
  	}
+
+	public static MethodInsnNode getLastMethodInsn(MethodNode node, int opcode, String owner, String name, String desc, boolean isInterface) 
+	{
+		MethodInsnNode compare = new MethodInsnNode(opcode,owner,name,desc,isInterface);
+		AbstractInsnNode[] list = node.instructions.toArray();
+		for(int i=list.length-1;i>=0;i--)
+		{
+			AbstractInsnNode ab = list[i];
+			if(ab.getOpcode() == opcode && ab instanceof MethodInsnNode && equals(compare,(MethodInsnNode)ab) )
+			{
+				return (MethodInsnNode)ab;
+			}
+		}
+		return null;
+	}
+	
+	public static MethodInsnNode getFirstMethodInsn(MethodNode node, int opcode, String owner, String name, String desc, boolean isInterface) 
+	{
+		MethodInsnNode compare = new MethodInsnNode(opcode,owner,name,desc,isInterface);
+		for(AbstractInsnNode ab : node.instructions.toArray())
+		{
+			if(ab.getOpcode() == opcode && ab instanceof MethodInsnNode && equals(compare,(MethodInsnNode)ab) )
+			{
+				return (MethodInsnNode)ab;
+			}
+		}
+		return null;
+	}
+	
+	public static boolean equals(MethodInsnNode obj1, MethodInsnNode obj2)
+	{
+		return obj1.getOpcode() == obj2.getOpcode() && obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc) && obj1.owner.equals(obj2.owner) && obj1.itf == obj2.itf;
+	}
+	
+	public static boolean equals(FieldNode obj1, FieldNode obj2)
+	{
+		return obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc);
+	}
+	
+	/**
+	 * dumps a file
+	 */
+	public static void dumpFile(String name, ClassWriter classWriter) throws IOException 
+	{
+    	name = name.replace('.', '/');
+    	File f = new File(System.getProperty("user.dir") + "/asm/dumps/" + name + ".class");
+    	f.getParentFile().mkdirs();
+    	FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
+	}
 }

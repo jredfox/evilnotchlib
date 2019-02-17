@@ -23,7 +23,7 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
     	}
         return new String[] {
         		"com.evilnotch.lib.asm.transformer.Transformer",
-        		"com.evilnotch.lib.asm.transformer",
+        		"com.evilnotch.lib.asm.transformer.EntityTransformer",
         		"com.evilnotch.iitemrender.asm.RenderTransformer",
         		"com.evilnotch.menulib.asm.MenuLibTransformer"
         };
@@ -45,6 +45,7 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
     public void injectData(Map<String, Object> data)
     {
     	isObf = (Boolean) data.get("runtimeDeobfuscationEnabled");
+    	
     }
 
     @Override

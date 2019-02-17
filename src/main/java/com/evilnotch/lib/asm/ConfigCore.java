@@ -17,7 +17,7 @@ public class ConfigCore {
 	
 	public static boolean fixPlayerDataSP;
 	
-	public static int cfgIndex = -1;
+	public static boolean dumpASM = false;
 
 	
 	public static void load()
@@ -39,7 +39,7 @@ public class ConfigCore {
 				
 		fixPlayerDataSP = config.get("general","fixHostPlayerDataSP",true).getBoolean();
 		
-		cfgIndex = config.get("debug","cfgIndex",cfgIndex).getInt();
+		dumpASM = config.get("debug","dumpASM",false).getBoolean();
 		config.save();
 	}
 
