@@ -38,6 +38,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
 
 public class PlayerUtil {
 	
@@ -290,10 +291,10 @@ public class PlayerUtil {
 	 */
 	public static void cancelRightClickBlock(PlayerInteractEvent.RightClickBlock e, boolean b) 
 	{
-		e.setCanceled(true);
+		e.setCanceled(b);
 		if(e.getHand() == EnumHand.MAIN_HAND)
 		{
-			MinecraftUtil.cancelEvent(e,e.getClass(),b);
+			MinecraftUtil.cancelEvent(e, e.getClass(), b);
 		}
 	}
 	/**
@@ -301,8 +302,8 @@ public class PlayerUtil {
 	 */
 	public static void rightClickBlockSucess(RightClickBlock e, EntityPlayer p) 
 	{
-  		swingHand(p,e.getHand());
-		cancelRightClickBlock(e,true);
+//		cancelRightClickBlock(e, true);
+  		e.setResult(Result.ALLOW);
 	}
 	
 	/**

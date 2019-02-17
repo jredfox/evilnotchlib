@@ -80,12 +80,13 @@ public class RenderTransformer  implements IClassTransformer{
         	
         	int origin = index;
         	
+        	byte[] bytes = classWriter.toByteArray();
             if(ConfigCore.dumpASM)
             {
-            	ASMHelper.dumpFile(clazzes.get(index), classWriter);
+            	ASMHelper.dumpFile(clazzes.get(index), bytes);
             }
             
-        	return classWriter.toByteArray();
+        	return bytes;
 		}
 		catch (Throwable e) 
 		{

@@ -43,7 +43,6 @@ public class MainJava {
 	public void post(FMLPostInitializationEvent e)
 	{
 		LoaderMain.loadPostInit(e);
-		EntityUtil.cacheEnts();
 	}
 	
 	/**

@@ -119,7 +119,7 @@ public class VanillaBugFixes {
     		e.getDrops().add(player.dropItem(new ItemStack(Items.APPLE, 1), true, false) );
     	}
     }
-	
+    
 	/**
      * This fixes the vanilla ItemMonsterSpawner Bugs
      */
@@ -141,8 +141,7 @@ public class VanillaBugFixes {
   		}
   		ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
   		TileEntityUtil.setSpawnerId(loc, tile, p, stack);
-  		PlayerUtil.consumeItem(p,stack);
-  		PlayerUtil.rightClickBlockSucess(e,p);
+  		PlayerUtil.rightClickBlockSucess(e, p);
   	}
 
 }

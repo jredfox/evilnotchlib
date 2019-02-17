@@ -162,11 +162,12 @@ public class Transformer implements IClassTransformer
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
+            byte[] bytes = classWriter.toByteArray();
             if(ConfigCore.dumpASM)
             {
-            	ASMHelper.dumpFile(name, classWriter);
+            	ASMHelper.dumpFile(name, bytes);
             }
-            return classWriter.toByteArray();
+            return bytes;
         }
         catch (Exception e)
         {

@@ -465,13 +465,21 @@ public class ASMHelper
 	}
 	
 	/**
-	 * dumps a file
+	 * dumps a file from memory
 	 */
 	public static void dumpFile(String name, ClassWriter classWriter) throws IOException 
+	{
+		dumpFile(name,classWriter.toByteArray());
+	}
+	
+	/**
+	 * dumps a file from memory
+	 */
+	public static void dumpFile(String name, byte[] bytes) throws IOException 
 	{
     	name = name.replace('.', '/');
     	File f = new File(System.getProperty("user.dir") + "/asm/dumps/" + name + ".class");
     	f.getParentFile().mkdirs();
-    	FileUtils.writeByteArrayToFile(f, classWriter.toByteArray());
+    	FileUtils.writeByteArrayToFile(f, bytes);
 	}
 }

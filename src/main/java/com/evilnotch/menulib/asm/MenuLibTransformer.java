@@ -51,10 +51,10 @@ public class MenuLibTransformer implements IClassTransformer{
         return bytes;
 	}
 
-	public byte[] transform(int index, byte[] bytes, boolean isObf) throws IOException 
+	public byte[] transform(int index, byte[] clazz, boolean isObf) throws IOException 
 	{
 		String name =  clazzes.get(index);
-		ClassNode classNode = ASMHelper.getClassNode(bytes);
+		ClassNode classNode = ASMHelper.getClassNode(clazz);
 		String inputBase = "assets/menulib/asm/" + (isObf ? "srg/" : "deob/");
 		
 		System.out.println("MenuLib Transforming:" + name);
@@ -80,11 +80,12 @@ public class MenuLibTransformer implements IClassTransformer{
 		ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(classWriter);
         
+        byte[] bytes = classWriter.toByteArray();
         if(ConfigCore.dumpASM)
         {
-        	ASMHelper.dumpFile(name,classWriter);
+        	ASMHelper.dumpFile(name,bytes);
         }
-		return classWriter.toByteArray();
+		return bytes;
 	}
 
 }
