@@ -423,7 +423,7 @@ public class ASMHelper
 		for(int i=list.length-1;i>=0;i--)
 		{
 			AbstractInsnNode ab = list[i];
-			if(ab.getOpcode() == opcode && ab instanceof MethodInsnNode && equals(compare,(MethodInsnNode)ab) )
+			if(ab.getOpcode() == opcode && ab instanceof MethodInsnNode && equals(compare, (MethodInsnNode)ab) )
 			{
 				return (MethodInsnNode)ab;
 			}
@@ -436,7 +436,7 @@ public class ASMHelper
 		MethodInsnNode compare = new MethodInsnNode(opcode,owner,name,desc,isInterface);
 		for(AbstractInsnNode ab : node.instructions.toArray())
 		{
-			if(ab.getOpcode() == opcode && ab instanceof MethodInsnNode && equals(compare,(MethodInsnNode)ab) )
+			if(ab.getOpcode() == opcode && ab instanceof MethodInsnNode && equals(compare, (MethodInsnNode)ab) )
 			{
 				return (MethodInsnNode)ab;
 			}
@@ -449,7 +449,17 @@ public class ASMHelper
 		return obj1.getOpcode() == obj2.getOpcode() && obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc) && obj1.owner.equals(obj2.owner) && obj1.itf == obj2.itf;
 	}
 	
+	public static boolean equals(FieldInsnNode obj1, FieldInsnNode obj2)
+	{
+		return obj1.getOpcode() == obj2.getOpcode() && obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc) && obj1.owner.equals(obj2.owner);
+	}
+	
 	public static boolean equals(FieldNode obj1, FieldNode obj2)
+	{
+		return obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc);
+	}
+	
+	public static boolean equals(MethodNode obj1, MethodNode obj2)
 	{
 		return obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc);
 	}
