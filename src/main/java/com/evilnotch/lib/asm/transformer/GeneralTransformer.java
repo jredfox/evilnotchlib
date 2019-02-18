@@ -59,34 +59,6 @@ public class GeneralTransformer {
          toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
          method.instructions.insertBefore(ASMHelper.getFirstInstruction(method, Opcodes.ALOAD), toInsert);
 	}
-	
-	/**
-	 * patch seed check
-	 */
-	/*public static void patchPlayer(ClassNode classNode) 
-    {    
-      	//append && PlayerUtil.isPlayerOwner(this) to EntityPlayerMP#canUseCommand if("seed".equals(cmdName) && mc.isdedicatedServer())
-      	MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("canUseCommand","func_70003_b").toString(), "(ILjava/lang/String;)Z");
-      	AbstractInsnNode start = null;
-      	for(AbstractInsnNode ab : node.instructions.toArray())
-      	{
-      	   if(ab.getOpcode() == Opcodes.INVOKEVIRTUAL && ab instanceof MethodInsnNode)
-      	   {
-      		  MethodInsnNode m = (MethodInsnNode)ab;
-      		  if(m.owner.equals("net/minecraft/server/MinecraftServer") && m.name.equals(new MCPSidedString("isDedicatedServer","func_71262_S").toString()) && m.desc.equals("()Z"))
-      		  {
-					start = ab.getNext();
-					break;
-      		  }
-      	   }
-      	}
-      	
-      	InsnList insert = new InsnList();
-      	insert.add(new VarInsnNode(ALOAD,0));
-      	insert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "isPlayerOwner", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Z", false));
-        insert.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode)start).label));
-        node.instructions.insert(start, insert);
-	}*/
     
     /**
      * patch the bug when opening to lan where the host cannot open command blocks even though cheats are enabled for him but, not everybody else

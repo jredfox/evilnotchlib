@@ -17,7 +17,7 @@ import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.asm.util.ComputeClassWriter;
-import com.evilnotch.lib.asm.util.MCWriter;
+import com.evilnotch.lib.asm.util.ObfRemappingClassWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;

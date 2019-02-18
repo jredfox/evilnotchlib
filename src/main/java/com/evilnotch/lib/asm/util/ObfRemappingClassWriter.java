@@ -4,15 +4,17 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
 import net.minecraft.launchwrapper.Launch;
-
-public class MCWriter extends ClassWriter
+/**
+ * faster then ComputeClassWriter but, can cause Class Circulatory exceptions while loading classes
+ */
+public class ObfRemappingClassWriter extends ClassWriter
 {
-	public MCWriter(final int flags) 
+	public ObfRemappingClassWriter(final int flags) 
 	{
 		super(flags); 
 	}
 	
-	public MCWriter(final ClassReader classReader, final int flags) 
+	public ObfRemappingClassWriter(final ClassReader classReader, final int flags) 
 	{
 	  super(classReader,flags);
 	}
@@ -29,8 +31,8 @@ public class MCWriter extends ClassWriter
 		ClassLoader classLoader = Launch.classLoader;
 		try
 		{
-			c = Class.forName(ObfHelper.toDeobfClassName(type1.replace('/', '.')), false, classLoader);
-			d = Class.forName(ObfHelper.toDeobfClassName(type2.replace('/', '.')), false, classLoader);
+			c = Class.forName(ObfHelper.toDeobfClassName(type1), false, classLoader);
+			d = Class.forName(ObfHelper.toDeobfClassName(type2), false, classLoader);
 		}
 		catch (Exception e)
 		{
@@ -55,7 +57,7 @@ public class MCWriter extends ClassWriter
 				c = c.getSuperclass();
 			}
 			while (!c.isAssignableFrom(d));
-			return ObfHelper.toObfClassName(c.getName()).replace('.', '/');
+			return ObfHelper.toObfClassName(c.getName());
 		}
 	}
 }

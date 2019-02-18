@@ -3,6 +3,7 @@ package com.evilnotch.lib.asm.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,8 +75,8 @@ public class ComputeClassWriter extends ClassWriter {
         try 
         {
         	//mc patch here to work in obfuscated enviorment
-        	String type1 = ObfHelper.forceToDeobfClassName(t1.replace('.', '/')).replace('.', '/');
-        	String type2 = ObfHelper.forceToDeobfClassName(t2.replace('.', '/')).replace('.', '/');
+        	String type1 = ObfHelper.forceToDeobfClassName(t1);
+        	String type2 = ObfHelper.forceToDeobfClassName(t2);
         	
             ClassReader info1 = typeInfo(type1);
             ClassReader info2 = typeInfo(type2);
@@ -208,7 +209,7 @@ public class ComputeClassWriter extends ClassWriter {
     /**
      * this is the non loaded cache file
      */
-    public static Map<String,ClassReader> byteCache = new ConcurrentHashMap<String,ClassReader>(350); 
+    public static Map<String,ClassReader> byteCache = new HashMap<String,ClassReader>(350); 
     
     /**
      * Returns a ClassReader from the input class. It also deobfuscates it and fetches it when possible from
@@ -223,7 +224,7 @@ public class ComputeClassWriter extends ClassWriter {
     		return new ClassReader(bb);
     	}
     	
-    	String type = ObfHelper.toObfClassName(t.replace('.', '/')).replace('.', '/');
+    	String type = ObfHelper.toObfClassName(t);
     	ClassReader reader = null;
     	if(byteCache.containsKey(type))
     	{

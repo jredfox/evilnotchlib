@@ -19,7 +19,7 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.asm.util.ComputeClassWriter;
-import com.evilnotch.lib.asm.util.MCWriter;
+import com.evilnotch.lib.asm.util.ObfRemappingClassWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.entity.item.EntityFallingBlock;
@@ -44,12 +44,13 @@ public class EntityTransformer implements IClassTransformer{
 
 	private byte[] transform(int index, byte[] classToTransform, boolean isObf) 
 	{
-		if(!ConfigCore.asm_entityPatch)
+		String name = clazzes.get(index);
+		
+		if(!ConfigCore.asm_entityPatch && !name.equals("net.minecraft.entity.player.EntityPlayerMP"))
 		{
 			return classToTransform;
 		}
-    	
-		String name = clazzes.get(index);
+
     	System.out.println("Transforming: " + name + " index:" + index);
     	
         try
@@ -145,7 +146,7 @@ public class EntityTransformer implements IClassTransformer{
 	/**
 	 * patch seed check
 	 */
-    public static void patchPlayer(ClassNode classNode) 
+	public static void patchPlayer(ClassNode classNode) 
     {    
       	//append && PlayerUtil.isPlayerOwner(this) to EntityPlayerMP#canUseCommand if("seed".equals(cmdName) && mc.isdedicatedServer())
       	MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("canUseCommand","func_70003_b").toString(), "(ILjava/lang/String;)Z");
@@ -155,7 +156,7 @@ public class EntityTransformer implements IClassTransformer{
       	   if(ab.getOpcode() == Opcodes.INVOKEVIRTUAL && ab instanceof MethodInsnNode)
       	   {
       		  MethodInsnNode m = (MethodInsnNode)ab;
-      		  if(m.owner.equals("net/minecraft/server/MinecraftServer") && m.name.equals("isDedicatedServer") && m.desc.equals("()Z"))
+      		  if(m.owner.equals("net/minecraft/server/MinecraftServer") && m.name.equals(new MCPSidedString("isDedicatedServer","func_71262_S").toString()) && m.desc.equals("()Z"))
       		  {
 					start = ab.getNext();
 					break;

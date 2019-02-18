@@ -12,7 +12,7 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.asm.util.ComputeClassWriter;
-import com.evilnotch.lib.asm.util.MCWriter;
+import com.evilnotch.lib.asm.util.ObfRemappingClassWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -166,11 +166,9 @@ public class Transformer implements IClassTransformer
             ASMHelper.clearCacheNodes();
        
             ClassWriter classWriter = new ComputeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-            long time = System.currentTimeMillis();
             classNode.accept(classWriter);
             
             byte[] bytes = classWriter.toByteArray();
-            JavaUtil.printTime(time, "Done Writing Class " + name + " ");
             if(ConfigCore.dumpASM)
             {
             	ASMHelper.dumpFile(name, bytes);
