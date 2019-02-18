@@ -1,5 +1,6 @@
 package com.evilnotch.lib.main;
 
+import com.evilnotch.lib.asm.util.ComputeClassWriter;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.util.EntityUtil;

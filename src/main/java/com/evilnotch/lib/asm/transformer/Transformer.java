@@ -11,6 +11,7 @@ import org.objectweb.asm.tree.ClassNode;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.asm.util.ComputeClassWriter;
 import com.evilnotch.lib.asm.util.MCWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
@@ -57,12 +58,12 @@ public class Transformer implements IClassTransformer
             ClassReader classReader = new ClassReader(classToTransform);
             classReader.accept(classNode, 0);
             String inputBase = "assets/evilnotchlib/asm/" + (obfuscated ? "srg/" : "deob/");
-            boolean useClassWriter = false;
             switch(index)
             {
                 case 0:
                 	if(!ConfigCore.asm_playerlist)
                 	{
+                		print(name);
                 		return classToTransform;
                 	}
                 	ASMHelper.replaceMethod(classNode, inputBase + "PlayerList", "getPlayerNBT", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT");
@@ -73,6 +74,7 @@ public class Transformer implements IClassTransformer
                 case 1:
                 	if(!ConfigCore.asm_furnace)
                 	{
+                		print(name);
                 		return classToTransform;
                 	}
                 	ASMHelper.replaceMethod(classNode, inputBase + "TileEntityFurnace", "readFromNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)V", "func_145839_a");
@@ -82,6 +84,7 @@ public class Transformer implements IClassTransformer
                 case 2:
                 	if(!ConfigCore.asm_furnace)
                 	{
+                		print(name);
                 		return classToTransform;
                 	}
                 	ASMHelper.replaceMethod(classNode, inputBase + "GuiFurnace", "getBurnLeftScaled", "(I)I", "func_175382_i");
@@ -102,6 +105,7 @@ public class Transformer implements IClassTransformer
                 case 4:
                 	if(!ConfigCore.asm_setTileNBTFix)
                 	{
+                		print(name);
                 		return classToTransform;
                 	}
                 	ASMHelper.replaceMethod(classNode, inputBase + "ItemBlock", "setTileEntityNBT", "(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)Z", "func_179224_a");
@@ -138,6 +142,7 @@ public class Transformer implements IClassTransformer
                 case 13:
                 	if(!ConfigCore.asm_middleClickEvent)
                 	{
+                		print(name);
                 		return classToTransform;
                 	}
                 	GeneralTransformer.transformMC(classNode);
@@ -145,6 +150,7 @@ public class Transformer implements IClassTransformer
                 case 14:
                 	if(!ConfigCore.asm_enchantments)
                 	{
+                		print(name);
                 		return classToTransform;
                 	}
                 	ASMHelper.replaceMethod(classNode, inputBase + "Enchantment", "getTranslatedName", "(I)Ljava/lang/String;", "func_77316_c");
@@ -158,11 +164,13 @@ public class Transformer implements IClassTransformer
             }
             
             ASMHelper.clearCacheNodes();
-
-            ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+       
+            ClassWriter classWriter = new ComputeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            long time = System.currentTimeMillis();
             classNode.accept(classWriter);
             
             byte[] bytes = classWriter.toByteArray();
+            JavaUtil.printTime(time, "Done Writing Class " + name + " ");
             if(ConfigCore.dumpASM)
             {
             	ASMHelper.dumpFile(name, bytes);
@@ -175,5 +183,14 @@ public class Transformer implements IClassTransformer
         }
         return classToTransform;
     }
+	
+	/**
+	 * after config disables transformation and can't continue based on all asm being disabled for said class use this method.
+	 * If you can disable asm via config and still transforms the class for other things not configurable don't call this method
+	 */
+	private static void print(String name) 
+	{
+		System.out.println("Config Disabled Transformation of class:" + name);
+	}
 
 }

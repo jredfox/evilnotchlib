@@ -17,6 +17,7 @@ import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.asm.util.ComputeClassWriter;
 import com.evilnotch.lib.asm.util.MCWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
@@ -29,7 +30,8 @@ public class EntityTransformer implements IClassTransformer{
     {
     	"net.minecraft.entity.EntityHanging",
     	"net.minecraft.entity.item.EntityFallingBlock",
-    	"net.minecraft.entity.item.EntityPainting"
+    	"net.minecraft.entity.item.EntityPainting",
+    	"net.minecraft.entity.player.EntityPlayerMP"
     });
 
 	@Override
@@ -68,9 +70,13 @@ public class EntityTransformer implements IClassTransformer{
                 case 2:
                 	transformEntityPainting(classNode);
                 break;
+                
+                case 3:
+                	
+                break;
             }
             
-            ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            ClassWriter classWriter = new ComputeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
             byte[] bytes = classWriter.toByteArray();

@@ -92,7 +92,8 @@ public class CapTransformer {
  	    tick.instructions.insert(spotTickNode,isntick);
 	}
 
-	public static void transFormTileEntityCaps(String name, ClassNode classNode, boolean obfuscated) throws IOException {
+	public static void transFormTileEntityCaps(String name, ClassNode classNode, boolean obfuscated) throws IOException 
+	{
     	//add interface and implement methods
     	implementICapProvider(classNode,name,"Lnet/minecraft/tileentity/TileEntity;");
     	
@@ -136,6 +137,7 @@ public class CapTransformer {
    		constructor.instructions.insert(ASMHelper.getLastPutField(constructor), toInsert3);
    	    //tick injection is done by the world since not all tiles are tickable
 	}
+	
 	/**
 	 * add capabilities into the itemstack
 	 * @param name
@@ -205,6 +207,7 @@ public class CapTransformer {
 		MethodNode set = ASMHelper.getMethodNode(classNode, new MCPSidedString("setTagCompound","func_77982_d").toString(), "(Lnet/minecraft/nbt/NBTTagCompound;)V");
 		set.instructions.insertBefore(ASMHelper.getFirstInstruction(set, Opcodes.ALOAD), toInsert4);
 	}
+	
 	/**
 	 * add world capabilities
 	 * @throws IOException 
@@ -226,6 +229,7 @@ public class CapTransformer {
     	MethodNode caps = ASMHelper.getMethodNode(classNode, "initCapabilities", "()V");
     	caps.instructions.insertBefore(ASMHelper.getFirstInstruction(caps, Opcodes.ALOAD),toInject);
 	}
+	
 	/**
 	 * inject the line to make tile entities caps tick safer then screwing around with other people's classes
 	 * @throws IOException 
@@ -288,6 +292,7 @@ public class CapTransformer {
 			}
 		}
 	}
+	
 	/**
 	 * add world caps to WorldInfo.class yes there is alot of line injections blame there being no default constructor
 	 */
@@ -375,6 +380,7 @@ public class CapTransformer {
 		AbstractInsnNode constructSpot = ASMHelper.getLastPutField(construct);
 		construct.instructions.insert(constructSpot, toConstruct);
 	}
+	
 	/**
 	 * injects registering of the caps to chunk and capContainer with interface the rest is handled via forge event since chunks really don't self serialize
 	 * @param classNode

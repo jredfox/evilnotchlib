@@ -16,6 +16,7 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.asm.util.ComputeClassWriter;
 import com.evilnotch.lib.asm.util.MCWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
@@ -77,7 +78,7 @@ public class MenuLibTransformer implements IClassTransformer{
 		
 		ASMHelper.clearCacheNodes();
         
-		ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		ClassWriter classWriter = new ComputeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(classWriter);
         
         byte[] bytes = classWriter.toByteArray();

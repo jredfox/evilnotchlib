@@ -87,7 +87,7 @@ public class ObfHelper
 		if (isObfuscated() && !runsAfterDeobfRemapper())
 			return forceToDeobfClassName(obfClassName);
 		else
-			return obfClassName;
+			return obfClassName.replace('.', '/');
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ObfHelper
 	 */
 	public static String forceToDeobfClassName(String obfClassName)
 	{
-		return FMLDeobfuscatingRemapper.INSTANCE.map(obfClassName.replace('.', '/')).replace('/', '.');
+		return FMLDeobfuscatingRemapper.INSTANCE.map(obfClassName.replace('.', '/'));
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class ObfHelper
 		if (isObfuscated() && !runsAfterDeobfRemapper())
 			return forceToObfClassName(deobfClassName);
 		else
-			return deobfClassName;
+			return deobfClassName.replace('.', '/');
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class ObfHelper
 	 */
 	public static String forceToObfClassName(String deobfClassName)
 	{
-		return FMLDeobfuscatingRemapper.INSTANCE.unmap(deobfClassName.replace('.', '/')).replace('/', '.');
+		return FMLDeobfuscatingRemapper.INSTANCE.unmap(deobfClassName.replace('.', '/'));
 	}
 
 	/**

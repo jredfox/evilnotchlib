@@ -309,11 +309,15 @@ public class PlayerUtil {
 	/**
 	 * don't hard code consuming items everywhere use this
 	 */
-	public static void consumeItem(EntityPlayer p, ItemStack stack) 
+	public static void consumeItem(EntityPlayer p, EnumHand hand, ItemStack stack) 
 	{
 		if (!p.capabilities.isCreativeMode)
 		{
 			stack.shrink(1);
+			if(stack.isEmpty())
+			{
+				net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(p, stack, hand);
+			}
 		}
 	}
 

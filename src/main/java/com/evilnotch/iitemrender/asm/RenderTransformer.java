@@ -2,35 +2,27 @@ package com.evilnotch.iitemrender.asm;
 
 import static org.objectweb.asm.Opcodes.ALOAD;
 
-import java.io.File;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.iitemrender.asm.compat.JEI;
-import com.evilnotch.iitemrender.handlers.IItemRendererHandler;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
-import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.asm.util.MCWriter;
+import com.evilnotch.lib.asm.util.ComputeClassWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
-import it.unimi.dsi.fastutil.bytes.Byte2BooleanSortedMaps.SynchronizedSortedMap;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class RenderTransformer  implements IClassTransformer{
@@ -75,7 +67,7 @@ public class RenderTransformer  implements IClassTransformer{
 			  
 			}
 			ASMHelper.clearCacheNodes();
-	   		ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+	   		ClassWriter classWriter = new ComputeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         	classNode.accept(classWriter);
         	
         	int origin = index;
