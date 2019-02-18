@@ -206,15 +206,14 @@ public class ComputeClassWriter extends ClassWriter {
     }
 
     /**
-     * Returns a ClassReader corresponding to the given class or interface.
-     * 
-     * @param type
-     *            the internal name of a class or interface.
-     * @return the ClassReader corresponding to 'type'.
-     * @throws IOException
-     *             if the bytecode of 'type' cannot be loaded.
+     * this is the non loaded cache file
      */
     public static Map<String,ClassReader> byteCache = new ConcurrentHashMap<String,ClassReader>(350); 
+    
+    /**
+     * Returns a ClassReader from the input class. It also deobfuscates it and fetches it when possible from
+     * loaded classes
+     */
     private ClassReader typeInfo(final String t) throws Exception 
     {
     	String deob = ObfHelper.toDeobfClassName(t);

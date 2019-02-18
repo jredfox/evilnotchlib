@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -72,7 +73,7 @@ public class EntityTransformer implements IClassTransformer{
                 break;
                 
                 case 3:
-                	
+                	patchPlayer(classNode);
                 break;
             }
             
@@ -139,6 +140,34 @@ public class EntityTransformer implements IClassTransformer{
 		list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/entity/item/EntityFallingBlock", new MCPSidedString("fallTile", "field_175132_d").toString(), "Lnet/minecraft/block/state/IBlockState;"));
 		
 		construct.instructions.insertBefore(ASMHelper.getLastInstruction(construct, Opcodes.RETURN), list);
+	}
+	
+	/**
+	 * patch seed check
+	 */
+    public static void patchPlayer(ClassNode classNode) 
+    {    
+      	//append && PlayerUtil.isPlayerOwner(this) to EntityPlayerMP#canUseCommand if("seed".equals(cmdName) && mc.isdedicatedServer())
+      	MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("canUseCommand","func_70003_b").toString(), "(ILjava/lang/String;)Z");
+      	AbstractInsnNode start = null;
+      	for(AbstractInsnNode ab : node.instructions.toArray())
+      	{
+      	   if(ab.getOpcode() == Opcodes.INVOKEVIRTUAL && ab instanceof MethodInsnNode)
+      	   {
+      		  MethodInsnNode m = (MethodInsnNode)ab;
+      		  if(m.owner.equals("net/minecraft/server/MinecraftServer") && m.name.equals("isDedicatedServer") && m.desc.equals("()Z"))
+      		  {
+					start = ab.getNext();
+					break;
+      		  }
+      	   }
+      	}
+      	
+      	InsnList insert = new InsnList();
+      	insert.add(new VarInsnNode(Opcodes.ALOAD,0));
+      	insert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "isPlayerOwner", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Z", false));
+        insert.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode)start).label));
+        node.instructions.insert(start, insert);
 	}
 
 }
