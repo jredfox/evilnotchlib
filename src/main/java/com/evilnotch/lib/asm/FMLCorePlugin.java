@@ -24,8 +24,7 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
         return new String[] {
         		"com.evilnotch.lib.asm.transformer.Transformer",
         		"com.evilnotch.lib.asm.transformer.EntityTransformer",
-        		"com.evilnotch.iitemrender.asm.RenderTransformer",
-        		"com.evilnotch.menulib.asm.MenuLibTransformer"
+        		"com.evilnotch.iitemrender.asm.RenderTransformer"
         };
     }
 

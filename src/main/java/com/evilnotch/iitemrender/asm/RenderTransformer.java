@@ -27,11 +27,6 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class RenderTransformer  implements IClassTransformer{
 	
-	static
-	{
-		MCWriter.resourceDomains.add("net.minecraftforge.client.ForgeHooksClient");
-	}
-	
     public static final List<String> clazzes = JavaUtil.<String>asArray(new Object[]
     {
 		"net.minecraftforge.client.ForgeHooksClient",

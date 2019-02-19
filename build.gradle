@@ -56,7 +56,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+	//embed files("libs/classwriter-hacks-1.0.jar")
 }
 
 processResources {
@@ -80,8 +80,9 @@ processResources {
 }
 jar {
     manifest {
-        attributes 'FMLCorePlugin': 'com.EvilNotch.lib.asm.FMLCorePlugin',
-                   'FMLCorePluginContainsFMLMod': 'false',
-				   'FMLAT': 'evilnotchlib_at.cfg'
+        attributes 'FMLCorePlugin': 'com.evilnotch.lib.asm.FMLCorePlugin'
+        attributes 'FMLCorePluginContainsFMLMod': 'false'
+	    attributes 'FMLAT': 'evilnotchlib_at.cfg'
+		attributes 'ContainedDeps': 'classwriter-hacks-1.0.jar'
     }
 }
