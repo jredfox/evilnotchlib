@@ -78,3 +78,10 @@ in build.gradle put this into your minecraft section "useDepAts = true"
 run gradlew setupDecompWorkspace eclipse
 Go into eclipse java build path and add the jar
 ```
+
+Contributing:
+```
+download the entire source code and install to a new workspace
+run gradlew setupDecompWorkspace eclipse
+your done. In versions older then 1.12 you might need to manully install the classwriter-hacks depdancy
+```
