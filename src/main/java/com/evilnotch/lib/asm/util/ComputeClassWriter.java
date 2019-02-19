@@ -2,24 +2,17 @@ package com.evilnotch.lib.asm.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.RemappingClassAdapter;
-import org.objectweb.asm.tree.ClassNode;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.asm.FMLCorePlugin;
-import com.evilnotch.lib.util.JavaUtil;
 
-import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLRemappingAdapter;
@@ -75,8 +68,8 @@ public class ComputeClassWriter extends ClassWriter {
         try 
         {
         	//mc patch here to work in obfuscated enviorment
-        	String type1 = ObfHelper.forceToDeobfClassName(t1);
-        	String type2 = ObfHelper.forceToDeobfClassName(t2);
+        	String type1 = ObfHelper.forceToDeobfClassName(t1.replace('.', '/')).replace('.', '/');
+        	String type2 = ObfHelper.forceToDeobfClassName(t2.replace('.', '/')).replace('.', '/');
         	
             ClassReader info1 = typeInfo(type1);
             ClassReader info2 = typeInfo(type2);
@@ -207,9 +200,9 @@ public class ComputeClassWriter extends ClassWriter {
     }
 
     /**
-     * this is the non loaded cache file
+     * this is the non loaded cache file of byte[] of classes
      */
-    public static Map<String,ClassReader> byteCache = new HashMap<String,ClassReader>(350); 
+    public static Map<String,ClassReader> offMemoryCache = new HashMap<String,ClassReader>(350); 
     
     /**
      * Returns a ClassReader from the input class. It also deobfuscates it and fetches it when possible from
@@ -217,28 +210,27 @@ public class ComputeClassWriter extends ClassWriter {
      */
     private ClassReader typeInfo(final String t) throws Exception 
     {
-    	String deob = ObfHelper.toDeobfClassName(t);
-    	byte[] bb = getClassBytes(deob.replace('/', '.'));
+    	String deob = ObfHelper.forceToDeobfClassName(t);
+    	ClassReader bb = getClassBytes(deob.replace('/', '.'));
     	if(bb != null)
     	{
-    		return new ClassReader(bb);
+    		return bb;
     	}
     	
     	String type = ObfHelper.toObfClassName(t);
-    	ClassReader reader = null;
-    	if(byteCache.containsKey(type))
+    	if(offMemoryCache.containsKey(type))
     	{
-    		return byteCache.get(type);
+    		return offMemoryCache.get(type);
     	}
     	
         InputStream is = l.getResourceAsStream(type + ".class");
         
         try 
         {
-            reader = new ClassReader(is);
+        	ClassReader reader = new ClassReader(is);
             if(FMLCorePlugin.isObf)
             	reader = patchClass(reader);
-            byteCache.put(type, reader);
+            offMemoryCache.put(type, reader);
             return reader;
         } 
         finally 
@@ -247,8 +239,12 @@ public class ComputeClassWriter extends ClassWriter {
         }
     }
     
-    public Map<String,byte[]> resourceCache = (Map<String, byte[]>) ReflectionUtil.getObject(l, LaunchClassLoader.class, "resourceCache");
-    private byte[] getClassBytes(String deob) 
+    /**
+     * the map between deob class names and their in finished transformed classes. 
+     * Gets populated by a transformer that runs with the sorting index of Integer.MAX_VALUE
+     */
+    public static Map<String,ClassReader> resourceCache = new HashMap<String,ClassReader>(350);
+    private ClassReader getClassBytes(String deob) 
     {	
     	if(resourceCache.containsKey(deob))
     	{

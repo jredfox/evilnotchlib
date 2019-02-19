@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
-FMLCorePlugin: com.evilnotch.lib.asm.FMLCorePlugin
 FMLCorePluginContainsFMLMod: false
+FMLAT: evilnotchlib_at.cfg
+FMLCorePlugin: com.evilnotch.lib.asm.FMLCorePlugin
