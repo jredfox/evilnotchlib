@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions
 @IFMLLoadingPlugin.Name("evilnotchlib-transformer_fixes")
 @IFMLLoadingPlugin.SortingIndex(1001)
 @IFMLLoadingPlugin.MCVersion("1.12.2")
-@TransformerExclusions("com.evilnotch.lib.asm.transformer")
+@TransformerExclusions("com.evilnotch.lib.asm.")
 public class FMLCorePlugin implements IFMLLoadingPlugin
 {
 	public static boolean isObf;

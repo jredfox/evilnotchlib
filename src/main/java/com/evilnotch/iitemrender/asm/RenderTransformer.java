@@ -15,17 +15,22 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import com.evilnotch.classwriter.MCWriter;
 import com.evilnotch.iitemrender.asm.compat.JEI;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.asm.util.ComputeClassWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class RenderTransformer  implements IClassTransformer{
+	
+	static
+	{
+		MCWriter.resourceDomains.add("net.minecraftforge.client.ForgeHooksClient");
+	}
 	
     public static final List<String> clazzes = JavaUtil.<String>asArray(new Object[]
     {
@@ -67,7 +72,7 @@ public class RenderTransformer  implements IClassTransformer{
 			  
 			}
 			ASMHelper.clearCacheNodes();
-	   		ClassWriter classWriter = new ComputeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+	   		ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         	classNode.accept(classWriter);
         	
         	int origin = index;

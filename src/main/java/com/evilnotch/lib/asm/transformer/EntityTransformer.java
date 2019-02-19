@@ -14,11 +14,11 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import com.evilnotch.classwriter.MCWriter;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.asm.util.ComputeClassWriter;
 import com.evilnotch.lib.asm.util.ObfRemappingClassWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
@@ -78,7 +78,7 @@ public class EntityTransformer implements IClassTransformer{
                 break;
             }
             
-            ClassWriter classWriter = new ComputeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
             byte[] bytes = classWriter.toByteArray();

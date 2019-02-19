@@ -1,28 +1,26 @@
 package com.evilnotch.menulib.asm;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import com.evilnotch.iitemrender.asm.RenderTransformer;
+import com.evilnotch.classwriter.MCWriter;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
-import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.asm.util.ComputeClassWriter;
-import com.evilnotch.lib.asm.util.ObfRemappingClassWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class MenuLibTransformer implements IClassTransformer{
+	
+	static
+	{
+		MCWriter.resourceDomains.add("mezz.jei.render.IngredientListBatchRenderer");
+	}
 	
     public static final List<String> clazzes = (List<String>)JavaUtil.<String>asArray(new Object[]
     {
@@ -78,7 +76,7 @@ public class MenuLibTransformer implements IClassTransformer{
 		
 		ASMHelper.clearCacheNodes();
         
-		ClassWriter classWriter = new ComputeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(classWriter);
         
         byte[] bytes = classWriter.toByteArray();

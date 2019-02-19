@@ -8,10 +8,10 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
+import com.evilnotch.classwriter.MCWriter;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.asm.util.ComputeClassWriter;
 import com.evilnotch.lib.asm.util.ObfRemappingClassWriter;
 import com.evilnotch.lib.util.JavaUtil;
 
@@ -165,7 +165,7 @@ public class Transformer implements IClassTransformer
             
             ASMHelper.clearCacheNodes();
        
-            ClassWriter classWriter = new ComputeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             classNode.accept(classWriter);
             
             byte[] bytes = classWriter.toByteArray();
