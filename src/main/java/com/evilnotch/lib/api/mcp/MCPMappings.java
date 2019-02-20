@@ -32,6 +32,8 @@ public class MCPMappings {
 	 */
 	public static String getField(Class clazz, String name)
 	{
+		if(!LoaderMain.isLoadingStage(LoadingStage.PREINIT))
+			throw new RuntimeException("This method can only be called in pre-init");
 		if(LoaderMain.isDeObfuscated)
 			return name;
 		else
@@ -48,6 +50,8 @@ public class MCPMappings {
 	 */
 	public static String getMethod(Class clazz, String name)
 	{
+		if(!LoaderMain.isLoadingStage(LoadingStage.PREINIT))
+			throw new RuntimeException("This method can only be called in pre-init");
 		if(LoaderMain.isDeObfuscated)
 			return name;
 		else

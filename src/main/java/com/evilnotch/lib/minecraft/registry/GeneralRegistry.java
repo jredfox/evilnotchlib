@@ -13,8 +13,8 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderFields;
-import com.evilnotch.lib.minecraft.basicmc.client.ClientUUID;
 import com.evilnotch.lib.minecraft.basicmc.recipe.ShapelessRecipe;
+import com.evilnotch.lib.minecraft.command.client.ClientUUID;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.simple.PairObj;
 

@@ -1,4 +1,4 @@
-package com.evilnotch.lib.minecraft.basicmc.client;
+package com.evilnotch.lib.minecraft.command.client;
 
 import java.util.UUID;
 

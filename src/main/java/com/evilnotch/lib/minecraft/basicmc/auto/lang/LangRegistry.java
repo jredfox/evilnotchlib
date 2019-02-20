@@ -27,10 +27,20 @@ import net.minecraft.util.text.translation.LanguageMap;
 
 public class LangRegistry {
 	
-	public static final List<LangEntry> langs = new ArrayList();
+	private static final List<LangEntry> langs = new ArrayList();
 	public static String currentLang = null;
 	public static Map<String, String> langlistClient = null;
 	public static  Map<String,String> langlist = null;
+	
+	/**
+	 * don't populate the array manually during obfuscated enviorment
+	 */
+	public static void registerLang(LangEntry lang)
+	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
+		langs.add(lang);
+	}
 
 	public static void registerLang() 
 	{	

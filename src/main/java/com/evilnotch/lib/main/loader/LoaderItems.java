@@ -140,6 +140,16 @@ public class LoaderItems {
 			LoaderItems.cfgArmors.saveConfig(true, false, true);
 			LoaderItems.cfgTools.saveConfig(true, false, true);
 		}
+		clearItems();
+	}
+
+	private static void clearItems() 
+	{
+		LoaderItems.items.clear();
+		LoaderItems.armorsets.clear();
+		LoaderItems.toolsets.clear();
+		cfgTools = null;
+		cfgArmors = null;
 	}
 
 }

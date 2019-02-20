@@ -80,6 +80,7 @@ public class LoaderMain {
 		LoaderItems.loadpostinit();
 		LoaderBlocks.loadpostinit();
 		LoaderGen.load();
+		
 	    MainJava.proxy.postinit();//generate lang,generate shadow sizes
 	}
 	

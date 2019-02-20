@@ -42,6 +42,13 @@ public class LoaderBlocks {
 		{
 			LoaderBlocks.cfgBlockProps.saveConfig(true, false, true);
 		}
+		clearBlocks();
+	}
+
+	private static void clearBlocks() 
+	{
+		LoaderBlocks.blocks.clear();
+		cfgBlockProps = null;
 	}
 
 }

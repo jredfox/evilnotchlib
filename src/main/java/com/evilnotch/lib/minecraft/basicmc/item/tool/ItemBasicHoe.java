@@ -14,7 +14,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class ItemBasicHoe extends ItemHoe implements IBasicItem{
 	
-	public ArrayList<LangEntry> langs = new ArrayList();
 	public boolean hasregister = false;
 	public boolean hasmodel = false;
 	public boolean haslang = false;

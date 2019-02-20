@@ -47,21 +47,21 @@ public class MainJava {
 	}
 	
 	/**
-	 * clear various data from memory
-	 */
-	@Mod.EventHandler
-	public void serverStopping(FMLServerStoppingEvent event)
-	{	
-		LoaderMain.serverStopping();
-	}
-	
-	/**
 	 * register all commands
 	 */
 	@Mod.EventHandler
 	public void serverStart(FMLServerStartingEvent e)
 	{
 		LoaderMain.serverStart(e);
+	}
+	
+	/**
+	 * clear various data from memory
+	 */
+	@Mod.EventHandler
+	public void serverStopping(FMLServerStoppingEvent event)
+	{	
+		LoaderMain.serverStopping();
 	}
 	
 }
