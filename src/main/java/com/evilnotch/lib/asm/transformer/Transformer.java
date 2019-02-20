@@ -1,21 +1,31 @@
 package com.evilnotch.lib.asm.transformer;
 
 import java.util.List;
+import java.util.Map;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
 import com.evilnotch.classwriter.MCWriter;
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.simple.DummyMap;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 
 public class Transformer implements IClassTransformer
 {
+	
+	static
+	{
+		stopMemoryOverflow();
+	}
     public static final List<String> clazzes = (List<String>)JavaUtil.<String>asArray(new Object[]
     {
     	"net.minecraft.server.management.PlayerList",
@@ -43,6 +53,17 @@ public class Transformer implements IClassTransformer
         int index = clazzes.indexOf(transformedName);
         return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
     }
+    
+    /**
+     * stop the memory overflowing and new objects from instantiating
+     */
+	public static void stopMemoryOverflow() 
+	{
+		System.out.println("Fixing Forge Dupe Loading Class Cache(net.minecraft.launchwrapper.LaunchClassLoader.resourceCache)");
+		Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
+		init.clear();
+		ReflectionUtil.setObject(Launch.classLoader, new DummyMap<String,byte[]>(), LaunchClassLoader.class, "resourceCache");
+	}
 
 	public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
     {
