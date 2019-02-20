@@ -31,16 +31,6 @@ public class LangRegistry {
 	public static String currentLang = null;
 	public static Map<String, String> langlistClient = null;
 	public static  Map<String,String> langlist = null;
-	
-	/**
-	 * don't populate the array manually during obfuscated enviorment
-	 */
-	public static void registerLang(LangEntry lang)
-	{
-		if(!LoaderMain.isDeObfuscated)
-			return;
-		langs.add(lang);
-	}
 
 	public static void registerLang() 
 	{	
@@ -80,6 +70,8 @@ public class LangRegistry {
 
 	public static void joinLang(List<LangEntry> itemlangs) 
 	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
 		for(LangEntry lang : itemlangs)
 			langs.add(lang);
 	}
@@ -87,7 +79,7 @@ public class LangRegistry {
 	/**
 	 * generate lang files here
 	 */
-	public static void populateLang(File root, List<LangEntry> li,HashMap<File,ConfigLang> map) 
+	private static void populateLang(File root, List<LangEntry> li,HashMap<File,ConfigLang> map) 
 	{
 		for(LangEntry lang : li)
 		{
@@ -124,7 +116,7 @@ public class LangRegistry {
 	/**
 	 * Create fast utf-8 instanceof ConfigLang then do manual injections
 	 */
-	public static void injectClientLang(File f) 
+	private static void injectClientLang(File f) 
 	{
 		ConfigLang cfg = new ConfigLang(f);
 		injectClientLang(cfg);
@@ -144,6 +136,8 @@ public class LangRegistry {
 
 	public static void add(LangEntry entry) 
 	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
 		langs.add(entry);
 	}
 	

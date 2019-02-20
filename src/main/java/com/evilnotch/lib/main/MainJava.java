@@ -1,8 +1,14 @@
 package com.evilnotch.lib.main;
 
+import java.util.Map;
+
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
+import com.google.common.collect.ListMultimap;
 
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -11,6 +17,8 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.patcher.ClassPatch;
+import net.minecraftforge.fml.common.patcher.ClassPatchManager;
 
 @Mod(modid = MainJava.MODID, name = MainJava.NAME, version = MainJava.VERSION)
 public class MainJava {
@@ -44,6 +52,9 @@ public class MainJava {
 	public void complete(FMLLoadCompleteEvent e)
 	{
 		LoaderMain.loadComplete(e);
+		Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
+		Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");
+		System.out.println("Did the clearing keep it's original form? resourceCache" + init.size() + " transformedCache" + transformedCache.size());
 	}
 	
 	/**

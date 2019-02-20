@@ -60,10 +60,14 @@ public class Transformer implements IClassTransformer
      */
 	public static void stopMemoryOverflow() 
 	{
-		System.out.println("Fixing Forge Dupe Loading Class Cache(net.minecraft.launchwrapper.LaunchClassLoader.resourceCache)");
+		System.out.println("Fixing Forge Dupe Loading Byte Class Cache(net.minecraft.launchwrapper.LaunchClassLoader.resourceCache)");
 		Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
 		init.clear();
 		ReflectionUtil.setObject(Launch.classLoader, new DummyMap<String,byte[]>(), LaunchClassLoader.class, "resourceCache");
+		System.out.println("Fixing Forge Dupe Loading Class net.minecraft.launchwrapper.LaunchClassLoader.cachedClasses:");
+		Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");
+		transformedCache.clear();
+		ReflectionUtil.setObject(Launch.classLoader, new DummyMap<String,Class<?>>(), LaunchClassLoader.class, "cachedClasses");
 	}
 
 	public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
