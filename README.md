@@ -11,7 +11,8 @@ ComputeClassWriter(modified and patched for minecraft) found here: https://githu
 
 Bug Fixes:
 ```
-fix improper syncing of player permisions when opening lan world
+fixed forge duping cache of classes which caused massive memory leaks
+fixed improper syncing of player permisions when opening lan world
 vanilla eggs on spawners
 uuid fix(if uuid doesn't match server patch it)
 uuid fix single player(if you give another person your world you get the right playerdata)
