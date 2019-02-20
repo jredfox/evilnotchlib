@@ -40,6 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -54,6 +55,7 @@ public class LoaderMain {
 	public static boolean isClient = false;
 	public static Logger logger;
 	public static World fake_world = null;
+	public static LoadingStage currentLoadingStage = null;
 	
 	public static void loadpreinit(FMLPreInitializationEvent e)
 	{
@@ -65,20 +67,30 @@ public class LoaderMain {
 
 	public static void loadInit(FMLInitializationEvent e)
 	{
+		currentLoadingStage = LoadingStage.INIT;
 		NetWorkHandler.init();
 		MainJava.proxy.initMod();
+		MCPMappings.clearMaps();
 	}
+	
 	public static void loadPostInit(FMLPostInitializationEvent e)
 	{
+		currentLoadingStage = LoadingStage.POSTINIT;
 		fake_world = new FakeWorld();
 		LoaderItems.loadpostinit();
 		LoaderBlocks.loadpostinit();
 		LoaderGen.load();
 	    MainJava.proxy.postinit();//generate lang,generate shadow sizes
 	}
+	
+	public static void loadComplete(FMLLoadCompleteEvent e)
+	{
+		currentLoadingStage = LoadingStage.COMPLETE;
+	}
 
 	private static void loaderMainPreInit(FMLPreInitializationEvent e) 
 	{
+		currentLoadingStage = LoadingStage.PREINIT;
 		isDeObfuscated = !FMLCorePlugin.isObf;
 		logger = e.getModLog();
 		
@@ -137,6 +149,11 @@ public class LoaderMain {
     public void registerRecipes(RegistryEvent.Register<IRecipe> event) 
 	{
 		LoaderItems.registerRecipes(event);
+	}
+
+	public static boolean isLoadingStage(LoadingStage stage) 
+	{
+		return currentLoadingStage == stage;
 	}
 
 }

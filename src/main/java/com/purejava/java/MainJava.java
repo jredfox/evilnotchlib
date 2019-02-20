@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
 import com.evilnotch.lib.minecraft.util.NBTUtil;
 import com.evilnotch.lib.util.simple.DummyMap;
@@ -20,10 +21,9 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		HashMap map = new DummyMap();
-		map.put("aa", "vv");
-		System.out.println(map.get("aa"));
+		
 	}
+	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)
 	{
 		Set<String> olist = other.getKeySet();

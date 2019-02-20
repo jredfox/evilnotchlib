@@ -26,6 +26,7 @@ public class Transformer implements IClassTransformer
 	{
 		stopMemoryOverflow();
 	}
+	
     public static final List<String> clazzes = (List<String>)JavaUtil.<String>asArray(new Object[]
     {
     	"net.minecraft.server.management.PlayerList",

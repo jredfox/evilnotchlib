@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.main.loader.LoadingStage;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.csve.CSV;
 import com.evilnotch.lib.util.csve.CSVE;
@@ -16,7 +17,13 @@ public class MCPMappings {
 	
 	//MCPMAPPINGS API hashmaps cached here only on pre-init
     public static File dirmappings = null;
+    /**
+     * is null before or after pre init
+     */
 	public static List<MCPEntry> fields = new ArrayList();
+	/**
+	 * is null before or after pre init
+	 */
 	public static List<MCPEntry> methods = new ArrayList();
 	public static boolean isCached = false;
 	
@@ -35,6 +42,7 @@ public class MCPMappings {
 			return ob;
 		}
 	}
+	
 	/**
 	 * null proof as long as name isnt' null
 	 */
@@ -53,18 +61,24 @@ public class MCPMappings {
 	
 	public static String getFieldOb(Class clazz, String strname)
 	{
+		if(!LoaderMain.isLoadingStage(LoadingStage.PREINIT))
+			throw new RuntimeException("This method can only be called in pre-init");
 		MCPEntry e = getEntry(clazz,strname, fields);
 		if(e != null)
 			return e.mcp.ob;
 		return null;
 	}
+	
 	public static String getMethodOb(Class clazz, String strname)
 	{
+		if(!LoaderMain.isLoadingStage(LoadingStage.PREINIT))
+			throw new RuntimeException("This method can only be called in pre-init");
 		MCPEntry e = getEntry(clazz,strname, methods);
 		if(e != null)
 			return e.mcp.ob;
 		return null;
 	}
+	
 	public static MCPEntry getEntryFromOb(String ob,ArrayList<MCPEntry> list)
 	{
 		for(MCPEntry e : list)
@@ -74,6 +88,7 @@ public class MCPMappings {
 		}
 		return null;
 	}
+	
 	public static MCPEntry getEntry(Class clazz,String field,List<MCPEntry> list)
 	{
 		for(MCPEntry e : list)
@@ -142,6 +157,15 @@ public class MCPMappings {
 			methods.add(new MCPEntry(csv.list.get(0),csv.list.get(1),list) );
 		}
 		
+	}
+	
+	/**
+	 * after pre init these maps don't need to be stored in memory
+	 */
+	public static void clearMaps() 
+	{
+		MCPMappings.methods.clear();
+		MCPMappings.fields.clear();
 	}
 
 }
