@@ -4,14 +4,11 @@ this is a library with minecraft and some forge bug fixes. It allows modders to 
 Embeded Libraries:
 ```
 Simple JSON(With Modifications): https://github.com/fangyidong/json-simple using this liscense http://www.apache.org/licenses/LICENSE-2.0
-IItemRenderer(re-writen) originally by elix_x found here: https://github.com/Elix-x/IItem-Renderer
-ObfHelper & MCWriter: by squeek502 found here:https://github.com/squeek502/ASMHelper/tree/1.10.x/raw/squeek/asmhelper
-ComputeClassWriter(modified and patched for minecraft) found here: https://github.com/llbit/ow2-asm/blob/master/test/conform/org/objectweb/asm/ClassWriterComputeFramesTest.java#L132
 ```
 
 Bug Fixes:
 ```
-fixed forge duping cache of classes which caused massive memory leaks
+fixed forge duping cache of classes which caused massive memory leaks of resourceCache and classCache in LaunchClass Loader
 fixed improper syncing of player permisions when opening lan world
 vanilla eggs on spawners
 uuid fix(if uuid doesn't match server patch it)
