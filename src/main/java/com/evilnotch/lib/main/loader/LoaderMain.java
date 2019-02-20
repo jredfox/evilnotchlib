@@ -4,8 +4,10 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
@@ -39,6 +41,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -104,8 +107,29 @@ public class LoaderMain {
 		Config.loadConfig(e.getModConfigurationDirectory());
 		GeneralRegistry.load();
 		loadEvents();
+		loadfoamFixFixer();
 	}
-	
+	/**
+	 * stop foamfix fixer from being broken use mine instead
+	 */
+	private static void loadfoamFixFixer() 
+	{
+		if(Loader.isModLoaded("foamfix"))
+		{
+			try
+			{
+				Class foamFixShared = ReflectionUtil.classForName("pl.asie.foamfix.shared.FoamFixShared");
+				Object instance = ReflectionUtil.getObject(null, foamFixShared, "config");
+				ReflectionUtil.setObject(instance, false, ReflectionUtil.classForName("pl.asie.foamfix.shared.FoamFixConfig"), "lwWeakenResourceCache");
+				System.out.println("Successfully Disabled Broken Foamfix's fix on LaunchClassLoader#resourceCache");
+			}
+			catch(Throwable t)
+			{
+				t.printStackTrace();
+			}
+		}
+	}
+
 	private static void loadEvents() 
 	{
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
