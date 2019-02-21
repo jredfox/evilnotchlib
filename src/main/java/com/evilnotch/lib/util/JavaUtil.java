@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -22,7 +23,9 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,6 +40,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -643,6 +647,7 @@ public class JavaUtil {
 		
 		return resault;
 	}
+	
 	/**
 	 * internal use toFileCharacters() instead
 	 */
@@ -1121,7 +1126,7 @@ public class JavaUtil {
 		List<String> list = null;
 		try
 		{
-			reader = new BufferedReader(new InputStreamReader(ConfigBase.class.getClassLoader().getResourceAsStream(inputStream),StandardCharsets.UTF_8));
+			reader = new BufferedReader(new InputStreamReader(JavaUtil.class.getClassLoader().getResourceAsStream(inputStream),StandardCharsets.UTF_8));
 			list = new ArrayList<String>();
 			String s = reader.readLine();
 			
@@ -1158,6 +1163,7 @@ public class JavaUtil {
 		}
 		return list;
 	}
+	
 	/**
 	 * @return the char id based on the generic number object
 	 */
@@ -1309,6 +1315,12 @@ public class JavaUtil {
 		List list = new ArrayList(str.length);
 		for(String s : str)
 			list.add(s);
+		return list;
+	}
+	public static List<String> asStringList(Class[] str) {
+		List list = new ArrayList(str.length);
+		for(Class s : str)
+			list.add(s.getName());
 		return list;
 	}
 	public static List<ResourceLocation> stringToLocArray(String[] list) {

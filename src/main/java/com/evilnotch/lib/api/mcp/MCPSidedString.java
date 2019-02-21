@@ -16,11 +16,6 @@ public class MCPSidedString {
 		this.ob = ob;
 	}
 	
-	public static MCPSidedString getMCPSidedStringSRG(String srg, String deob)
-	{
-		return new MCPSidedString(deob,srg);
-	}
-	
 	public String getSidedString()
 	{
 		return FMLCorePlugin.isObf ? this.ob : this.deob;

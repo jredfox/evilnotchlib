@@ -516,6 +516,8 @@ public class ASMHelper
 	public static String getMethodDescriptor(Class clazz, String name, Class... params)
 	{
 		Method m = ReflectionUtil.getMethod(clazz, name, params);
+		if(m == null)
+			return null;
 	    String s = "(";
 	    for(final Class c:(m.getParameterTypes()))
 	        s+=getTypeForClass(c);

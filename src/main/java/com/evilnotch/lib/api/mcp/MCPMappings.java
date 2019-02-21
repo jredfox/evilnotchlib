@@ -1,11 +1,15 @@
 package com.evilnotch.lib.api.mcp;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.main.loader.LoadingStage;
@@ -17,6 +21,7 @@ import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.config.ConfigLine;
 
 import net.minecraftforge.common.MinecraftForge;
+import scala.tools.nsc.backend.jvm.AsmUtils;
 
 /**
  * get srg name in deob from class and field without having to constantly look everything up yourselves.
@@ -25,22 +30,20 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public class MCPMappings {
 	
-	//MCPMAPPINGS API hashmaps cached here only on pre-init
-    public static File dirmappings = null;
     /**
      * is null before or after pre init
      */
-	public static List<MCPEntry> fields = new ArrayList();
+	public static Map<String,MCPEntry> fields = new HashMap();
 	/**
 	 * is null before or after pre init
 	 */
-	public static List<MCPEntry> methods = new ArrayList();
-	public static boolean isCached = false;
+	public static Map<String,MCPEntry> methods = new HashMap();
 	
 	/**
 	 * the cached data you grabbed
 	 */
 	public static Set<MCPEntry> cached = new HashSet<MCPEntry>();
+	public static boolean isCached = false;
 	
 	/**
 	 * get the srg name without constant lookup of the file in deob only after you get srgname use MCPSidedString(deob,ob) instead
@@ -49,10 +52,10 @@ public class MCPMappings {
 	{
 		throwExceptions();
 		
-		MCPEntry entry = getEntry(clazz, name, fields);
+		MCPEntry entry = getEntry(clazz, name, null, fields);
 		if(entry != null)
 		{
-			cached.add(new MCPEntry(clazz, entry.mcp) );
+			cached.add(new MCPEntry(entry.mcp.deob, entry.mcp.ob, clazz.getName()));
 			return entry.mcp.ob;
 		}
 		return null;
@@ -65,10 +68,15 @@ public class MCPMappings {
 	{
 		throwExceptions();
 		
-		MCPEntry entry = getEntry(clazz, name, methods);
+		String desc = ASMHelper.getMethodDescriptor(clazz, name, params);
+		if(desc == null)
+			return null;
+		MCPEntry entry = getEntry(clazz, name, desc, methods);
 		if(entry != null)
 		{
-			cached.add(entry);
+			String deob = JavaUtil.asStringList(params).toString();
+			deob = "(" + deob.substring(1, deob.length()-1) + ")";
+			cached.add(new MCPEntry(entry.mcp.deob, entry.mcp.ob, deob, desc, clazz.getName()));
 			return entry.mcp.ob;
 		}
 		return null;
@@ -94,9 +102,10 @@ public class MCPMappings {
 		return null;
 	}
 	
-	private static MCPEntry getEntry(Class clazz, String field, List<MCPEntry> list)
+	private static MCPEntry getEntry(Class clazz, String field, String desc, Map<String,MCPEntry> list)
 	{
-		for(MCPEntry e : list)
+		MCPEntry entry = null;
+		for(MCPEntry e : list.values())
 		{
 			String name = e.mcp.deob;
 			if(name.equals(field))
@@ -105,71 +114,117 @@ public class MCPMappings {
 				for(Class c : clazzes)
 				{
 					if(JavaUtil.isClassExtending(c, clazz))
-						return e;
+					{
+						entry = e;
+						break;
+					}
 				}
 			}
 		}
-		return null;
+		
+		if(list == methods && entry != null)
+		{
+			if(!desc.equals(entry.desc.deob))
+				return null;
+		}
+		
+		return entry;
 	}
 	
-	public static void cacheMCPApplicable(File dir)
+	public static void cacheMCPApplicable()
 	{
 		if(!isCached)
-			cacheMCP(dir);
+			cacheMCP();
 	}
 	
-	public static void cacheMCP(File dir)
+	public static void cacheMCP()
 	{
 		if(!LoaderMain.isDeObfuscated)
 			return;
 		isCached = true;
-		dirmappings = new File(dir,MainJava.MODID + "/mcp/" + MinecraftForge.MC_VERSION);
-		if(!dirmappings.exists())
-			dirmappings.mkdirs();
-		String strfield = "/assets/" + MainJava.MODID + "/mcp/" + MinecraftForge.MC_VERSION + "/fields_map.csv";
-		String strmethod = "/assets/" + MainJava.MODID + "/mcp/" + MinecraftForge.MC_VERSION + "/methods_map.csv";
-		String strparams = "/assets/" + MainJava.MODID + "/mcp/" + MinecraftForge.MC_VERSION + "/params.csv";
-		File dirFields = new File(dirmappings,"fields_mappings.csv");
-		File dirMethods = new File(dirmappings,"methods_mappings.csv");
-		File dirParams = new File(dirmappings,"params.csv");
 		
-		JavaUtil.moveFileFromJar(MainJava.class, strfield,dirFields, false);
-		JavaUtil.moveFileFromJar(MainJava.class, strmethod, dirMethods, false);
-		CSVE field = new CSVE(dirFields);
-		CSVE method = new CSVE(dirMethods);
-		
-		for(CSV csv : field.list)
+		File build = new File(new File(System.getProperty("user.dir")).getParentFile(),"build.gradle");
+		List<String> lines = JavaUtil.getFileLines(build,false);
+		String mcp_build = null;
+		for(String s : lines)
 		{
-			ArrayList list = new ArrayList();
-			int i = 0;
-			for(String s : csv.list)
+			String whitespaced = JavaUtil.toWhiteSpaced(s);
+			if(whitespaced.startsWith("mappings=\""))
 			{
-				if(i != 0 && i != 1)
-					list.add(s);
-				i++;
+				mcp_build = JavaUtil.parseQuotes(whitespaced, 0, "\"");
+				break;
 			}
-			fields.add(new MCPEntry(csv.list.get(0),csv.list.get(1),list) );
+		}
+		boolean snapshot = mcp_build.contains("snapshot_");
+		File srgFile = null;
+		if(snapshot)
+		{
+			srgFile = new File(System.getProperty("user.home") + "/.gradle/caches/minecraft/de/oceanlabs/mcp/mcp_snapshot/" + mcp_build.substring("_snapshot".length(), mcp_build.length()) + "/" + MinecraftForge.MC_VERSION + "/srgs/mcp-srg.srg");
+		}
+		else
+		{
+			throw new RuntimeException("Unknown MCP SRGS found for: " + mcp_build + " This is a critical error report this to Evil Notch Lib with your build.gradle and a location of your srg files");
 		}
 		
-		for(CSV csv : method.list)
-		{
-			ArrayList list = new ArrayList();
-			int i = 0;
-			for(String s : csv.list)
-			{
-				if(i != 0 && i != 1)
-					list.add(s);
-				i++;
-			}
-			methods.add(new MCPEntry(csv.list.get(0),csv.list.get(1),list) );
-		}
-		
+		long time = System.currentTimeMillis();
+		parseSRGFile(srgFile);
+		JavaUtil.printTime(time, "Done Parsing SRG:");
 	}
 	
+	private static void parseSRGFile(File srgFile) 
+	{
+		if(!srgFile.exists())
+		{
+			System.out.println("Mac User Detected!");
+			srgFile = new File(srgFile.getAbsolutePath().substring(1, srgFile.getAbsolutePath().length()-1 ));
+		}
+		List<String> list = JavaUtil.getFileLines(srgFile, false);
+		for(String s : list)
+		{
+			if(s.startsWith("CL:"))
+				continue;
+			boolean method = s.startsWith("MD:");
+			
+			String[] parts = s.split("\\s+");
+			String[] clazz_srg = parts[method ? 3 : 2].split("/");
+			String[] clazz_deob = parts[1].split("/");
+			
+			String srg = clazz_srg[clazz_srg.length-1];
+			String deob = clazz_deob[clazz_deob.length-1];
+			StringBuilder b = new StringBuilder();
+			for(int i=0;i<clazz_deob.length-1;i++)
+			{
+				b.append(clazz_deob[i] + "/");
+			}
+			
+			String clazz = b.toString();
+			clazz = clazz.substring(0, clazz.length()-1);//remove the / before and after
+			
+			if(method ? methods.containsKey(srg) : fields.containsKey(srg))
+			{
+				MCPEntry entry = method ? methods.get(srg) : fields.get(srg);
+				entry.classes.add(clazz);
+				continue;
+			}
+			
+			if(method)
+			{
+				String descObf = parts[4];
+				String descDeob = parts[2];
+				MCPEntry entry = new MCPEntry(deob, srg, descDeob, descObf, clazz);
+				methods.put(srg, entry);
+			}
+			else
+			{
+				fields.put(srg, new MCPEntry(deob, srg, clazz));
+			}
+		}
+	}
+
 	/**
 	 * after pre init these maps don't need to be stored in memory
 	 */
-	public static void clearMaps() 
+	public static void init() 
 	{
 		//make the api usable output a user freindly file
 		if(LoaderMain.isDeObfuscated && !cached.isEmpty())
@@ -179,10 +234,15 @@ public class MCPMappings {
 			for(MCPEntry entry : cached)
 			{
 				MCPSidedString str = entry.mcp;
-				cfg.addLine(new Line(entry.classes.get(0) + ", " + "new MCPSidedString(\"" + str.deob + "\", \"" + str.ob + "\")"));
+				cfg.addLine(new Line(entry.classes.get(0) + ", " + "new MCPSidedString(\"" + str.deob + "\", \"" + str.ob + "\"" + ")" + (entry.isMethod() ? ", " + entry.desc.deob + ", " + entry.desc.ob : "" ) ));
 			}
 			cfg.saveConfig();
 		}
+		clearMaps();
+	}
+
+	public static void clearMaps() 
+	{
 		MCPMappings.methods.clear();
 		MCPMappings.fields.clear();
 		MCPMappings.cached.clear();

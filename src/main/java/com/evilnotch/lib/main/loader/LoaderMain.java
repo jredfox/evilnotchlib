@@ -74,7 +74,7 @@ public class LoaderMain {
 	public static void loadInit(FMLInitializationEvent e)
 	{
 		currentLoadingStage = LoadingStage.INIT;
-		MCPMappings.clearMaps();
+		MCPMappings.init();
 		NetWorkHandler.init();
 		MainJava.proxy.initMod();
 	}
@@ -112,7 +112,7 @@ public class LoaderMain {
 		logger = e.getModLog();
 		File dir = e.getModConfigurationDirectory();
 		
-		MCPMappings.cacheMCP(dir);
+		MCPMappings.cacheMCP();
 		LoaderFields.cacheFields();
 		
 		MainJava.proxy.proxyStart();
