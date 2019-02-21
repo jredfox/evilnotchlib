@@ -3,6 +3,7 @@ package com.evilnotch.lib.asm.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
@@ -19,6 +20,7 @@ import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 
@@ -481,5 +483,43 @@ public class ASMHelper
     	File f = new File(System.getProperty("user.dir") + "/asm/dumps/" + name + ".class");
     	f.getParentFile().mkdirs();
     	FileUtils.writeByteArrayToFile(f, bytes);
+	}
+	
+	public static String getTypeForClass(final Class c)
+	{
+	    if(c.isPrimitive())
+	    {
+	        if(c==byte.class)
+	            return "B";
+	        if(c==char.class)
+	            return "C";
+	        if(c==double.class)
+	            return "D";
+	        if(c==float.class)
+	            return "F";
+	        if(c==int.class)
+	            return "I";
+	        if(c==long.class)
+	            return "J";
+	        if(c==short.class)
+	            return "S";
+	        if(c==boolean.class)
+	            return "Z";
+	        if(c==void.class)
+	            return "V";
+	        throw new RuntimeException("Unrecognized primitive "+c);
+	    }
+	    if(c.isArray()) return c.getName().replace('.', '/');
+	    return ('L'+c.getName()+';').replace('.', '/');
+	}
+
+	public static String getMethodDescriptor(Class clazz, String name, Class... params)
+	{
+		Method m = ReflectionUtil.getMethod(clazz, name, params);
+	    String s = "(";
+	    for(final Class c:(m.getParameterTypes()))
+	        s+=getTypeForClass(c);
+	    s+=')';
+	    return s+getTypeForClass(m.getReturnType());
 	}
 }

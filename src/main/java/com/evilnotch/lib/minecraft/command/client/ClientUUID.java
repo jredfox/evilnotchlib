@@ -14,23 +14,27 @@ import net.minecraftforge.client.IClientCommand;
 public class ClientUUID extends CommandBase implements IClientCommand{
 
 	@Override
-	public String getName() {
+	public String getName() 
+	{
 		return "getUUID";
 	}
 
 	@Override
-	public String getUsage(ICommandSender sender) {
+	public String getUsage(ICommandSender sender) 
+	{
 		return "/" + getName();
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException 
+	{
 		UUID id = Minecraft.getMinecraft().player.getUniqueID();
-		PlayerUtil.sendClipBoard("", "", Minecraft.getMinecraft().player, "UUID:", id.toString());
+		PlayerUtil.sendClipBoard(Minecraft.getMinecraft().player, "", "", "UUID:", id.toString());
 	}
 
 	@Override
-	public boolean allowUsageWithoutPrefix(ICommandSender sender, String message) {
+	public boolean allowUsageWithoutPrefix(ICommandSender sender, String message) 
+	{
 		return true;
 	}
 

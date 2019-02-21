@@ -50,30 +50,30 @@ public class PlayerUtil {
     /**
      * default url vanilla format
      */
-    public static void sendURL(EntityPlayer p ,String messege,String url)
+    public static void sendURL(EntityPlayer p, String messege, String url)
     {
     	TextComponentString str = new TextComponentString(EnumChatFormatting.AQUA + messege + " " + EnumChatFormatting.BLUE + EnumChatFormatting.UNDERLINE + url);
     	str.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
     	p.sendMessage(str);
     }
 	
-    public static void printChat(String c_player, String c_msg,EntityPlayer player, String messege)
+    public static void printChat(EntityPlayer player,String c_player, String c_msg, String messege)
 	{
 		player.sendMessage(new TextComponentString(c_player + player.getName() + " " + c_msg + messege) );
 	}
     
-    public static void sendClipBoard(String pc,String c,EntityPlayer p ,String messege,String url)
+    public static void sendClipBoard(EntityPlayer p, String pc, String c, String messege, String url)
     {
-    	sendClipBoard(pc,c,p,messege,url,true);
+    	sendClipBoard(p, pc, c, messege, url, true);
     }
     
-    public static void sendClipBoard(String pc,String c,EntityPlayer p ,String messege,String url,boolean copyURL)
+    public static void sendClipBoard(EntityPlayer p, String pc, String c ,String messege,String url,boolean copyURL)
     {
     	TextComponentString str = new TextComponentString(pc + messege + " " + c + EnumChatFormatting.UNDERLINE + url);
     	str.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
     	p.sendMessage(str);
     	if(copyURL)
-    		sendClipBoard(p,url);
+    		sendClipBoard(p, url);
     }
     
     public static void sendClipBoard(EntityPlayer p, String url)

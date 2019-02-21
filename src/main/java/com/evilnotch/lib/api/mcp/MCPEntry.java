@@ -3,6 +3,7 @@ package com.evilnotch.lib.api.mcp;
 import java.util.ArrayList;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.util.JavaUtil;
 
 public class MCPEntry {
 	
@@ -22,6 +23,13 @@ public class MCPEntry {
 			e.printStackTrace();
 		}
 	}
+	
+	public MCPEntry(Class clazz, MCPSidedString mcp) 
+	{
+		this.mcp = mcp;
+		this.classes = JavaUtil.asArray(clazz);
+	}
+	
 	@Override
 	public String toString()
 	{
@@ -30,6 +38,7 @@ public class MCPEntry {
 			s += c + ",";
 		return this.mcp.ob + "," + this.mcp.deob + "," + s;
 	}
+	
 	/**
 	 * hotfix
 	 */

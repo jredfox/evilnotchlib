@@ -216,7 +216,7 @@ public abstract class ConfigBase {
 	/**
 	 * save config if and only if lines are different or it's forceably saved
 	 */
-	public void saveConfig(boolean alphabitize,boolean force,boolean msg)
+	public void saveConfig(boolean alphabitize, boolean force, boolean msg)
 	{
 		if(alphabitize)
 			this.alphabitize();

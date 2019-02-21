@@ -4,9 +4,11 @@ import java.lang.reflect.Method;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPMappings;
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntitySlime;
@@ -36,9 +38,9 @@ public class LoaderFields {
 			return;
 		try 
 		{
-			chunkLoaded = World.class.getDeclaredMethod(MCPMappings.getMethod(World.class, "isChunkLoaded"), int.class,int.class,boolean.class);
-			setFlag = Entity.class.getDeclaredMethod(MCPMappings.getMethod(Entity.class, "setFlag"), int.class,boolean.class);
-			method_setSlimeSize = EntitySlime.class.getDeclaredMethod(MCPMappings.getMethod(EntitySlime.class, "setSlimeSize"), int.class,boolean.class);
+			chunkLoaded = World.class.getDeclaredMethod(new MCPSidedString("isChunkLoaded", "func_175680_a").toString(), int.class,int.class,boolean.class);
+			setFlag = Entity.class.getDeclaredMethod(new MCPSidedString("setFlag", "func_70052_a").toString(), int.class,boolean.class);
+			method_setSlimeSize = EntitySlime.class.getDeclaredMethod(new MCPSidedString("setSlimeSize", "func_70799_a").toString(), int.class,boolean.class);
 			
 			chunkLoaded.setAccessible(true);
 			setFlag.setAccessible(true);

@@ -1,6 +1,7 @@
 package com.evilnotch.lib.main.loader;
 
 import java.io.File;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +36,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
@@ -71,9 +74,9 @@ public class LoaderMain {
 	public static void loadInit(FMLInitializationEvent e)
 	{
 		currentLoadingStage = LoadingStage.INIT;
+		MCPMappings.clearMaps();
 		NetWorkHandler.init();
 		MainJava.proxy.initMod();
-		MCPMappings.clearMaps();
 	}
 	
 	public static void loadPostInit(FMLPostInitializationEvent e)
@@ -90,6 +93,16 @@ public class LoaderMain {
 	public static void loadComplete(FMLLoadCompleteEvent e)
 	{
 		currentLoadingStage = LoadingStage.COMPLETE;
+		launchClassLoaderCheck();
+	}
+
+	private static void launchClassLoaderCheck() 
+	{
+		Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
+		Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");
+		int sizeA = init.size();
+		int sizeB = transformedCache.size();
+		System.out.println("Did the clearing keep it's original form? resourceCache" + (init.size() == 0) + " size:" + init.size() + " transformedCache" + transformedCache.size());
 	}
 
 	private static void loaderMainPreInit(FMLPreInitializationEvent e) 
@@ -97,14 +110,15 @@ public class LoaderMain {
 		currentLoadingStage = LoadingStage.PREINIT;
 		isDeObfuscated = !FMLCorePlugin.isObf;
 		logger = e.getModLog();
+		File dir = e.getModConfigurationDirectory();
 		
-		MCPMappings.cacheMCPApplicable(e.getModConfigurationDirectory());
+		MCPMappings.cacheMCP(dir);
 		LoaderFields.cacheFields();
 		
 		MainJava.proxy.proxyStart();
 		MainJava.proxy.preinit(e);
 		
-		Config.loadConfig(e.getModConfigurationDirectory());
+		Config.loadConfig(dir);
 		GeneralRegistry.load();
 		loadEvents();
 		loadfoamFixFixer();

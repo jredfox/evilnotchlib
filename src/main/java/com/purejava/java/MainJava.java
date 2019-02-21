@@ -1,9 +1,11 @@
 package com.purejava.java;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
 import com.evilnotch.lib.minecraft.util.NBTUtil;
@@ -21,7 +23,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		
+//		System.out.println(getDesc(int.class,boolean.class,char.class,short.class,int.class,float.class,long.class,double.class));
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)

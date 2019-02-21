@@ -2,7 +2,9 @@ package com.evilnotch.lib.api.mcp;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderMain;
@@ -10,9 +12,17 @@ import com.evilnotch.lib.main.loader.LoadingStage;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.csve.CSV;
 import com.evilnotch.lib.util.csve.CSVE;
+import com.evilnotch.lib.util.line.Line;
+import com.evilnotch.lib.util.line.LineArray;
+import com.evilnotch.lib.util.line.config.ConfigLine;
 
 import net.minecraftforge.common.MinecraftForge;
 
+/**
+ * get srg name in deob from class and field without having to constantly look everything up yourselves.
+ * This is for deob only however ObfHelper to get deob and ob class names based on what forge has. This is for fields and methods
+ * @author jredfox
+ */
 public class MCPMappings {
 	
 	//MCPMAPPINGS API hashmaps cached here only on pre-init
@@ -28,63 +38,54 @@ public class MCPMappings {
 	public static boolean isCached = false;
 	
 	/**
-	 * null proof as long as name isn't null
+	 * the cached data you grabbed
 	 */
-	public static String getField(Class clazz, String name)
+	public static Set<MCPEntry> cached = new HashSet<MCPEntry>();
+	
+	/**
+	 * get the srg name without constant lookup of the file in deob only after you get srgname use MCPSidedString(deob,ob) instead
+	 */
+	public static String getSRGField(Class clazz, String name)
 	{
-		if(!LoaderMain.isLoadingStage(LoadingStage.PREINIT))
-			throw new RuntimeException("This method can only be called in pre-init");
-		if(LoaderMain.isDeObfuscated)
-			return name;
-		else
+		throwExceptions();
+		
+		MCPEntry entry = getEntry(clazz, name, fields);
+		if(entry != null)
 		{
-			String ob = getFieldOb(clazz,name);
-			if(ob == null)
-				return name;
-			return ob;
+			cached.add(new MCPEntry(clazz, entry.mcp) );
+			return entry.mcp.ob;
 		}
+		return null;
 	}
 	
 	/**
-	 * null proof as long as name isnt' null
+	 * get the srg name without constant lookup of the file in deob only after you get srgname use MCPSidedString(deob,ob) instead
 	 */
-	public static String getMethod(Class clazz, String name)
+	public static String getSRGMethod(Class clazz, String name, Class... params)
 	{
-		if(!LoaderMain.isLoadingStage(LoadingStage.PREINIT))
-			throw new RuntimeException("This method can only be called in pre-init");
-		if(LoaderMain.isDeObfuscated)
-			return name;
-		else
+		throwExceptions();
+		
+		MCPEntry entry = getEntry(clazz, name, methods);
+		if(entry != null)
 		{
-			String ob = getMethodOb(clazz,name);
-			if(ob == null)
-				return name;
-			return ob;
+			cached.add(entry);
+			return entry.mcp.ob;
 		}
-	}
-	
-	public static String getFieldOb(Class clazz, String strname)
-	{
-		if(!LoaderMain.isLoadingStage(LoadingStage.PREINIT))
-			throw new RuntimeException("This method can only be called in pre-init");
-		MCPEntry e = getEntry(clazz,strname, fields);
-		if(e != null)
-			return e.mcp.ob;
 		return null;
 	}
 	
-	public static String getMethodOb(Class clazz, String strname)
+	private static void throwExceptions() 
 	{
-		if(!LoaderMain.isLoadingStage(LoadingStage.PREINIT))
-			throw new RuntimeException("This method can only be called in pre-init");
-		MCPEntry e = getEntry(clazz,strname, methods);
-		if(e != null)
-			return e.mcp.ob;
-		return null;
+		if(!LoaderMain.isDeObfuscated)
+			throw new RuntimeException("This Method Is for deobfuscated use only");
+		else if(!LoaderMain.isLoadingStage(LoadingStage.PREINIT))
+			throw new RuntimeException("This is for pre init use only to get srg names! After you got the srg use MCPSidedString(deob,ob) instead of doing this");
 	}
-	
-	public static MCPEntry getEntryFromOb(String ob,ArrayList<MCPEntry> list)
+
+	public static MCPEntry getEntryFromOb(String ob, ArrayList<MCPEntry> list)
 	{
+		throwExceptions();
+		
 		for(MCPEntry e : list)
 		{
 			if(e.mcp.ob.equals(ob))
@@ -93,7 +94,7 @@ public class MCPMappings {
 		return null;
 	}
 	
-	public static MCPEntry getEntry(Class clazz,String field,List<MCPEntry> list)
+	private static MCPEntry getEntry(Class clazz, String field, List<MCPEntry> list)
 	{
 		for(MCPEntry e : list)
 		{
@@ -103,7 +104,7 @@ public class MCPMappings {
 				ArrayList<Class> clazzes = e.getClasses();
 				for(Class c : clazzes)
 				{
-					if(c.isAssignableFrom(clazz) )
+					if(JavaUtil.isClassExtending(c, clazz))
 						return e;
 				}
 			}
@@ -119,6 +120,8 @@ public class MCPMappings {
 	
 	public static void cacheMCP(File dir)
 	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
 		isCached = true;
 		dirmappings = new File(dir,MainJava.MODID + "/mcp/" + MinecraftForge.MC_VERSION);
 		if(!dirmappings.exists())
@@ -168,8 +171,21 @@ public class MCPMappings {
 	 */
 	public static void clearMaps() 
 	{
+		//make the api usable output a user freindly file
+		if(LoaderMain.isDeObfuscated && !cached.isEmpty())
+		{
+			File f = new File(System.getProperty("user.home") + "/Desktop/srgs.txt");
+			ConfigLine cfg = new ConfigLine(f);
+			for(MCPEntry entry : cached)
+			{
+				MCPSidedString str = entry.mcp;
+				cfg.addLine(new Line(entry.classes.get(0) + ", " + "new MCPSidedString(\"" + str.deob + "\", \"" + str.ob + "\")"));
+			}
+			cfg.saveConfig();
+		}
 		MCPMappings.methods.clear();
 		MCPMappings.fields.clear();
+		MCPMappings.cached.clear();
 	}
 
 }

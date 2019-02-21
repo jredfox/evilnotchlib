@@ -51,7 +51,7 @@ public class NetWorkHandler {
 		registerMessage(PacketPickEntityHandler.class, PacketPickEntity.class, Side.SERVER);
 	}
 	
-	protected static void registerMessage(Class handler, Class packet, Side side)
+	public static void registerMessage(Class handler, Class packet, Side side)
 	{
 		INSTANCE.registerMessage(handler, packet, networkid++, side);
 	}

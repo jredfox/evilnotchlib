@@ -54,8 +54,8 @@ public class CMDSeed extends CommandBase {
     		throw new WrongUsageException("sender isn't player",new Object[0]);
     	}
         World world = (World)(sender instanceof EntityPlayer ? ((EntityPlayer)sender).world : server.getWorld(0));
-        PlayerUtil.sendClipBoard(EnumChatFormatting.WHITE,EnumChatFormatting.WHITE, (EntityPlayer)sender, "Seed:","" + world.getSeed(),false);
-        PlayerUtil.sendClipBoard((EntityPlayerMP)sender,  "Seed:" + world.getSeed());
+        PlayerUtil.sendClipBoard((EntityPlayer)sender, EnumChatFormatting.WHITE, EnumChatFormatting.WHITE, "Seed:","" + world.getSeed(),false);
+        PlayerUtil.sendClipBoard((EntityPlayerMP)sender, "Seed:" + world.getSeed());
     }
     
     @Override
@@ -64,8 +64,8 @@ public class CMDSeed extends CommandBase {
     	if(!(sender instanceof EntityPlayerMP))
     		return false;
     	
-    	EntityPlayerMP player = (EntityPlayerMP)sender;
-    	return PlayerUtil.isPlayerOwner(player) || MinecraftUtil.canUseCommand(player, this.getRequiredPermissionLevel(), this.getName());
+//    	return PlayerUtil.isPlayerOwner(player) || MinecraftUtil.canUseCommand(player, this.getRequiredPermissionLevel(), this.getName());
+    	return super.checkPermission(server, sender);
     }
 
 }

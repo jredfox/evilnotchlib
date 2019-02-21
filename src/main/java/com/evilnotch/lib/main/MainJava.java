@@ -52,9 +52,6 @@ public class MainJava {
 	public void complete(FMLLoadCompleteEvent e)
 	{
 		LoaderMain.loadComplete(e);
-		Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
-		Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");
-		System.out.println("Did the clearing keep it's original form? resourceCache" + init.size() + " transformedCache" + transformedCache.size());
 	}
 	
 	/**

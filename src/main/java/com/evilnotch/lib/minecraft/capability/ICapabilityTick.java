@@ -6,7 +6,7 @@ package com.evilnotch.lib.minecraft.capability;
  *
  * @param <T>
  */
-public interface ICapabilityTick<T> extends ICapability{
+public interface ICapabilityTick<T> extends ICapability<T>{
 	
 	public void tick(T object, CapContainer c);
 
