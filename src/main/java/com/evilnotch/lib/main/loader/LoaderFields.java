@@ -38,15 +38,10 @@ public class LoaderFields {
 		if(cached)
 			return;
 		try 
-		{
-			MCPMappings.getSRGMethod(World.class, "isChunkLoaded", int.class, int.class, boolean.class, long.class);
-			MCPMappings.getSRGField(Block.class, "blockHardness");
-			MCPMappings.getSRGField(EntityPlayer.class, "bedLocation");
-			MCPMappings.getSRGField(EntityPlayer.class, "posX");
-			
-			chunkLoaded = World.class.getDeclaredMethod(new MCPSidedString("isChunkLoaded", "func_175680_a").toString(), int.class,int.class,boolean.class);
-			setFlag = Entity.class.getDeclaredMethod(new MCPSidedString("setFlag", "func_70052_a").toString(), int.class,boolean.class);
-			method_setSlimeSize = EntitySlime.class.getDeclaredMethod(new MCPSidedString("setSlimeSize", "func_70799_a").toString(), int.class,boolean.class);
+		{	
+			chunkLoaded = World.class.getDeclaredMethod(new MCPSidedString("isChunkLoaded", "func_175680_a").toString(), int.class, int.class, boolean.class);
+			setFlag = Entity.class.getDeclaredMethod(new MCPSidedString("setFlag", "func_70052_a").toString(), int.class, boolean.class);
+			method_setSlimeSize = EntitySlime.class.getDeclaredMethod(new MCPSidedString("setSlimeSize", "func_70799_a").toString(), int.class, boolean.class);
 			
 			chunkLoaded.setAccessible(true);
 			setFlag.setAccessible(true);

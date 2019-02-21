@@ -159,11 +159,11 @@ public class MCPMappings {
 		File srgFile = null;
 		if(snapshot)
 		{
-			srgFile = new File(System.getProperty("user.home") + "/.gradle/caches/minecraft/de/oceanlabs/mcp/mcp_snapshot/" + mcp_build.substring("_snapshot".length(), mcp_build.length()) + "/" + MinecraftForge.MC_VERSION + "/srgs/mcp-srg.srg");
+			srgFile = new File(System.getProperty("user.home") + "/.gradle/caches/minecraft/de/oceanlabs/mcp/mcp_snapshot/" + mcp_build.substring("snapshot_".length(), mcp_build.length()) + "/" + MinecraftForge.MC_VERSION + "/srgs/mcp-srg.srg");
 		}
 		else
 		{
-			throw new RuntimeException("Unknown MCP SRGS found for: " + mcp_build + " This is a critical error report this to Evil Notch Lib with your build.gradle and a location of your srg files");
+			srgFile = new File(System.getProperty("user.home") + "/.gradle/caches/minecraft/de/oceanlabs/mcp/mcp_stable/" + mcp_build.substring("stable_".length(), mcp_build.length()) + "/" + MinecraftForge.MC_VERSION + "/srgs/mcp-srg.srg");
 		}
 		
 		long time = System.currentTimeMillis();
@@ -175,7 +175,7 @@ public class MCPMappings {
 	{
 		if(!srgFile.exists())
 		{
-			System.out.println("Mac User Detected!");
+			System.out.println("Mac User Detected?");
 			srgFile = new File(srgFile.getAbsolutePath().substring(1, srgFile.getAbsolutePath().length()-1 ));
 		}
 		List<String> list = JavaUtil.getFileLines(srgFile, false);
