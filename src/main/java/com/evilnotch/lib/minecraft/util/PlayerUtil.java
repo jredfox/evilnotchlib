@@ -46,14 +46,31 @@ public class PlayerUtil {
 	 * used on player login so it doesn't parse twice will self empty login complete so don't expect data to be here long
 	 */
     public static HashMap<UUID,NBTTagCompound> nbts = new HashMap();
+    
+    public static void sendClipBoard(EntityPlayer p, String pc, String c, String urlc, String messege, String url, boolean copyURL)
+    {
+    	sendClipBoard(p, pc + p.getName() + " " + c + messege, urlc + url);
+    	if(copyURL)
+    		copyClipBoard(p, url);
+    }
 	
     /**
      * default url vanilla format
      */
-    public static void sendURL(EntityPlayer p, String messege, String url)
+    public static void sendClipBoard(EntityPlayer p, String messege, String url)
     {
-    	TextComponentString str = new TextComponentString(EnumChatFormatting.AQUA + messege + " " + EnumChatFormatting.BLUE + EnumChatFormatting.UNDERLINE + url);
-    	str.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+    	sendURL(p, messege, url, ClickEvent.Action.SUGGEST_COMMAND);
+    }
+    
+    public static void sendURL(EntityPlayer p, String messege, String url, ClickEvent.Action action)
+    {
+    	TextComponentString str = new TextComponentString(messege + " " + EnumChatFormatting.UNDERLINE + url);
+    	if(action != null)
+    	{
+    		if(action == ClickEvent.Action.OPEN_URL && !url.contains("http"))
+    			url = "http://" + url;
+    		str.getStyle().setClickEvent(new ClickEvent(action, url));
+    	}
     	p.sendMessage(str);
     }
 	
@@ -62,21 +79,7 @@ public class PlayerUtil {
 		player.sendMessage(new TextComponentString(c_player + player.getName() + " " + c_msg + messege) );
 	}
     
-    public static void sendClipBoard(EntityPlayer p, String pc, String c, String messege, String url)
-    {
-    	sendClipBoard(p, pc, c, messege, url, true);
-    }
-    
-    public static void sendClipBoard(EntityPlayer p, String pc, String c ,String messege,String url,boolean copyURL)
-    {
-    	TextComponentString str = new TextComponentString(pc + messege + " " + c + EnumChatFormatting.UNDERLINE + url);
-    	str.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, url));
-    	p.sendMessage(str);
-    	if(copyURL)
-    		sendClipBoard(p, url);
-    }
-    
-    public static void sendClipBoard(EntityPlayer p, String url)
+    public static void copyClipBoard(EntityPlayer p, String url)
     {
     	if(p instanceof EntityPlayerMP)
     	{
@@ -158,11 +161,6 @@ public class PlayerUtil {
 	public static DataFixer getDataFixer(SaveHandler handler) 
 	{
 		return (DataFixer) handler.dataFixer;
-	}
-	//Prints Colored Chat from player
-	public static void printChat(EntityPlayer player, String color, EnumChatFormatting colormsg, String messege)
-	{
-		player.sendMessage(new TextComponentString(color + player.getDisplayName() + " " + colormsg + messege));
 	}
 	
 	/**

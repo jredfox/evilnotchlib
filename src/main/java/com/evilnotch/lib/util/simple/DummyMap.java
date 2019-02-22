@@ -12,7 +12,7 @@ public class DummyMap<K,V> extends HashMap<K,V>{
 	}
 	
 	@Override
-	public void putAll(Map<? extends K,? extends V> map)
+	public void putAll(Map<? extends K, ? extends V> map)
 	{
 		
 	}

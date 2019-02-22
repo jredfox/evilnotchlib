@@ -54,8 +54,8 @@ public class CMDSeed extends CommandBase {
     		throw new WrongUsageException("sender isn't player",new Object[0]);
     	}
         World world = (World)(sender instanceof EntityPlayer ? ((EntityPlayer)sender).world : server.getWorld(0));
-        PlayerUtil.sendClipBoard((EntityPlayer)sender, EnumChatFormatting.WHITE, EnumChatFormatting.WHITE, "Seed:","" + world.getSeed(),false);
-        PlayerUtil.sendClipBoard((EntityPlayerMP)sender, "Seed:" + world.getSeed());
+        PlayerUtil.sendClipBoard((EntityPlayerMP)sender, "Seed:", "" + world.getSeed());
+        PlayerUtil.copyClipBoard((EntityPlayerMP)sender, "Seed:" + world.getSeed());
     }
     
     @Override
