@@ -47,9 +47,17 @@ public class PlayerUtil {
 	 */
     public static HashMap<UUID,NBTTagCompound> nbts = new HashMap();
     
-    public static void sendClipBoard(EntityPlayer p, String pc, String c, String urlc, String messege, String url, boolean copyURL)
+    /**
+     * send to clipboard with both url and message being the same color
+     */
+    public static void sendClipBoard(EntityPlayer p, String pc, String c, String message, String url, boolean copyURL)
     {
-    	sendClipBoard(p, pc + p.getName() + " " + c + messege, urlc + url);
+    	sendClipBoard(p, pc, c, c, message, url, copyURL);
+    }
+    
+    public static void sendClipBoard(EntityPlayer p, String pc, String c, String urlc, String message, String url, boolean copyURL)
+    {
+    	sendClipBoard(p, pc + p.getName() + " " + c + message, urlc + url);
     	if(copyURL)
     		copyClipBoard(p, url);
     }
@@ -57,14 +65,14 @@ public class PlayerUtil {
     /**
      * default url vanilla format
      */
-    public static void sendClipBoard(EntityPlayer p, String messege, String url)
+    public static void sendClipBoard(EntityPlayer p, String message, String url)
     {
-    	sendURL(p, messege, url, ClickEvent.Action.SUGGEST_COMMAND);
+    	sendURL(p, message, url, ClickEvent.Action.SUGGEST_COMMAND);
     }
     
-    public static void sendURL(EntityPlayer p, String messege, String url, ClickEvent.Action action)
+    public static void sendURL(EntityPlayer p, String message, String url, ClickEvent.Action action)
     {
-    	TextComponentString str = new TextComponentString(messege + " " + EnumChatFormatting.UNDERLINE + url);
+    	TextComponentString str = new TextComponentString(message + " " + EnumChatFormatting.UNDERLINE + url);
     	if(action != null)
     	{
     		if(action == ClickEvent.Action.OPEN_URL && !url.contains("http"))
@@ -74,9 +82,9 @@ public class PlayerUtil {
     	p.sendMessage(str);
     }
 	
-    public static void printChat(EntityPlayer player,String c_player, String c_msg, String messege)
+    public static void printChat(EntityPlayer player,String c_player, String c_msg, String message)
 	{
-		player.sendMessage(new TextComponentString(c_player + player.getName() + " " + c_msg + messege) );
+		player.sendMessage(new TextComponentString(c_player + player.getName() + " " + c_msg + message) );
 	}
     
     public static void copyClipBoard(EntityPlayer p, String url)

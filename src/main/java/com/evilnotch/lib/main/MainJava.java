@@ -28,7 +28,6 @@ public class MainJava {
 	public void preinit(FMLPreInitializationEvent e)
 	{	
 		LoaderMain.loadpreinit(e);
-//		GeneralRegistry.registerCommand(new CMDTest());
 	}
 	
 	@Mod.EventHandler

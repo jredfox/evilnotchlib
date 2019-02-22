@@ -228,7 +228,7 @@ public class MCPMappings {
 			for(MCPEntry entry : cached)
 			{
 				MCPSidedString str = entry.mcp;
-				cfg.addLine(new Line(entry.classes.get(0) + ", " + "new MCPSidedString(\"" + str.deob + "\", \"" + str.ob + "\"" + ")" + (entry.isMethod() ? ", " + entry.desc.deob + ", " + entry.desc.ob : "" ) ));
+				cfg.addLine(new Line(entry.classes.get(0) + ", " + "new MCPSidedString(\"" + str.deob + "\", \"" + str.ob + "\"" + ").toString()" + (entry.isMethod() ? ", " + entry.desc.deob + ", " + entry.desc.ob : "" ) ));
 			}
 			cfg.saveConfig();
 		}
