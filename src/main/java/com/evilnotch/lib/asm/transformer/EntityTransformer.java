@@ -9,7 +9,9 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -167,6 +169,21 @@ public class EntityTransformer implements IClassTransformer{
       	insert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "isPlayerOwner", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Z", false));
         insert.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode)start).label));
         node.instructions.insert(start, insert);
+        
+        //add if(permisionLevel == 0) return true;
+        start = node.instructions.getFirst();
+        
+        InsnList insert2 = new InsnList();
+      	insert2.add(new VarInsnNode(Opcodes.ILOAD, 1));
+      	LabelNode label = new LabelNode();
+      	insert2.add(new JumpInsnNode(Opcodes.IFNE, label) );
+      	LabelNode label2 = new LabelNode();
+      	insert2.add(label2);
+      	insert2.add(new InsnNode(Opcodes.ICONST_1));
+      	insert2.add(new InsnNode(Opcodes.IRETURN));
+      	insert2.add(label);
+      	
+        node.instructions.insertBefore(start, insert2);
 	}
 
 }

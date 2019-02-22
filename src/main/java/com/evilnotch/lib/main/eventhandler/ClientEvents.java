@@ -57,7 +57,7 @@ public class ClientEvents {
 		{
 			if(s.toLowerCase().contains("biome"))
 			{
-				f3.add(index+1, "Seed:" + Seeds.getSeed(mc.world));
+				f3.add(index+1, "Seed: " + Seeds.getSeed(mc.world));
 				break;
 			}
 			index++;

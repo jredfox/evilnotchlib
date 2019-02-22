@@ -4,7 +4,9 @@ import java.util.Map;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.command.CMDTest;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
+import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.google.common.collect.ListMultimap;
 
 import net.minecraft.launchwrapper.Launch;
@@ -34,6 +36,7 @@ public class MainJava {
 	public void preinit(FMLPreInitializationEvent e)
 	{	
 		LoaderMain.loadpreinit(e);
+		GeneralRegistry.registerCommand(new CMDTest());
 	}
 	
 	@Mod.EventHandler

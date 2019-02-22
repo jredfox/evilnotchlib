@@ -41,7 +41,7 @@ public class CapTransformer {
     	MethodNode constructor = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
     	InsnList toInsert0 = new InsnList();
     	toInsert0.add(new VarInsnNode(ALOAD,0));
-    	toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+    	toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
     	constructor.instructions.insert(ASMHelper.getLastPutField(constructor),toInsert0);
     	
     	//readFromNBT
@@ -132,7 +132,7 @@ public class CapTransformer {
    	    MethodNode constructor = ASMHelper.getConstructionNode(classNode,"()V");
    	    InsnList toInsert3 = new InsnList();
    		toInsert3.add(new VarInsnNode(ALOAD,0));
-   		toInsert3.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+   		toInsert3.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
    		//find insertion point in the constructor to make capabilities register themselves
    		constructor.instructions.insert(ASMHelper.getLastPutField(constructor), toInsert3);
    	    //tick injection is done by the world since not all tiles are tickable
@@ -156,7 +156,7 @@ public class CapTransformer {
 		InsnList toInsert0 = new InsnList();
 		//inject CapRegUtil.registerCapsToObject(this);
 		toInsert0.add(new VarInsnNode(ALOAD,0));
-		toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+		toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
 		capNode.instructions.insertBefore(ASMHelper.getFirstInstruction(capNode, Opcodes.ALOAD),toInsert0);
 		
 		InsnList toInsert1 = new InsnList();
@@ -309,7 +309,7 @@ public class CapTransformer {
 		toInsertDefault.add(labelnode);
 		toInsertDefault.add(lineNode);
 		toInsertDefault.add(new VarInsnNode(ALOAD,0));
-		toInsertDefault.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+		toInsertDefault.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
 		defaultConstruct.instructions.insert(ASMHelper.getLastPutField(defaultConstruct),toInsertDefault);
 		
 		//inject readFromNBT constructor
@@ -324,9 +324,9 @@ public class CapTransformer {
 					AbstractInsnNode spot = ldc.getPrevious().getPrevious();
 					InsnList toInsert = new InsnList();
 					
-					//inject CapRegHandler.registerCapsToObj(this)
+					//inject CapabilityRegistry.registerCapsToObj(this)
 					toInsert.add(new VarInsnNode(ALOAD,0));
-					toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+					toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
 					
 					//inject line this.capContainer.readFromNBT(this,nbt);
 					toInsert.add(new VarInsnNode(ALOAD,0));
@@ -357,10 +357,10 @@ public class CapTransformer {
 		MethodNode constructCopy = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/storage/WorldInfo;)V");
 		AbstractInsnNode injectionPoint = ASMHelper.getLastPutField(constructCopy);
 		
-		//inject CapRegHandler.registerCapsToObj(this);
+		//inject CapabilityRegistry.registerCapsToObj(this);
 		InsnList toCopy = new InsnList();
 		toCopy.add(new VarInsnNode(ALOAD,0));
-		toCopy.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+		toCopy.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
 		
 		//inject this.capContainer.readFromNBT(worldinfo,worldinfo.cloneNBT(null));
 		toCopy.add(new VarInsnNode(ALOAD,0));
@@ -372,11 +372,11 @@ public class CapTransformer {
 		toCopy.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/evilnotch/lib/minecraft/capability/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		constructCopy.instructions.insert(injectionPoint,toCopy);
 		
-		//inject CapRegHandler.registerCapsToObj(this) into the other constructor
+		//inject CapabilityRegistry.registerCapsToObj(this) into the other constructor
 		MethodNode construct = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/WorldSettings;Ljava/lang/String;)V");
 		InsnList toConstruct = new InsnList();
 		toConstruct.add(new VarInsnNode(ALOAD,0));
-		toConstruct.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+		toConstruct.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
 		AbstractInsnNode constructSpot = ASMHelper.getLastPutField(construct);
 		construct.instructions.insert(constructSpot, toConstruct);
 	}
@@ -394,10 +394,10 @@ public class CapTransformer {
 		
 		MethodNode constructor = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;II)V");
 		AbstractInsnNode spot = ASMHelper.getLastPutField(constructor);
-		//inject CapRegHandler.registerCapToObj(this);
+		//inject CapabilityRegistry.registerCapToObj(this);
 		InsnList toInsert = new InsnList();
 		toInsert.add(new VarInsnNode(ALOAD,0));
-		toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapRegHandler", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+		toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
 		constructor.instructions.insert(spot,toInsert);
 	}
 	

@@ -11,7 +11,7 @@ import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.util.ResourceLocation;
 
-public class CapRegHandler {
+public class CapabilityRegistry {
 	
 	public static Set<ICapabilityRegistry> regs = new HashSet();
 	

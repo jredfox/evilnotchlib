@@ -9,11 +9,13 @@ import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.util.simple.PairObj;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -163,7 +165,11 @@ public class MinecraftUtil {
     */
    public static boolean canUseCommand(EntityPlayerMP player, int permLevel, String commandName)
    {
-       if (player.mcServer.getPlayerList().canSendCommands(player.getGameProfile()))
+	   if(permLevel == 0)
+		   return true;
+	   if(commandName.equals("seed") && PlayerUtil.isPlayerOwner(player))
+		   return true;
+	   else if (player.mcServer.getPlayerList().canSendCommands(player.getGameProfile()))
        {
           UserListOpsEntry userlistopsentry = (UserListOpsEntry)player.mcServer.getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());
           if (userlistopsentry != null)
@@ -177,5 +183,5 @@ public class MinecraftUtil {
       }
       return false;
    }
-
+   
 }
