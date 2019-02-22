@@ -190,7 +190,7 @@ public class Transformer implements IClassTransformer
                 	GeneralTransformer.patchOpenToLan(classNode);
                 break;
                 case 16:
-                	GeneralTransformer.patchWeightedSpawner(classNode, name);
+                	GeneralTransformer.patchWeightedSpawner(classNode, inputBase, name);
                 break;
             }
             

@@ -95,9 +95,9 @@ public class GeneralTransformer {
 	 * adds a method call fixNBT() via constructor and adds the method
 	 * @throws IOException 
 	 */
-	public static void patchWeightedSpawner(ClassNode classNode, String className) throws IOException 
+	public static void patchWeightedSpawner(ClassNode classNode, String inputBase, String className) throws IOException 
 	{
-		MethodNode fixId = ASMHelper.addMethod(classNode, "com/evilnotch/lib/asm/gen/Methods.class", "fixId", "(Lnet/minecraft/nbt/NBTTagCompound;)V");
+		MethodNode fixId = ASMHelper.addMethod(classNode, inputBase + "Methods", "fixIdLib", "(Lnet/minecraft/nbt/NBTTagCompound;)V");
 		ASMHelper.patchMethod(fixId, className, "com/evilnotch/lib/asm/gen/Methods");
 		
 		MethodNode construct = ASMHelper.getConstructionNode(classNode, "(ILnet/minecraft/nbt/NBTTagCompound;)V");
@@ -106,7 +106,7 @@ public class GeneralTransformer {
 		InsnList list = new InsnList();
 		list.add(new VarInsnNode(ALOAD, 0));
 		list.add(new VarInsnNode(ALOAD, 2));
-		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/WeightedSpawnerEntity", "fixId", "(Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/WeightedSpawnerEntity", "fixIdLib", "(Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		construct.instructions.insert(point, list);
 	}
 

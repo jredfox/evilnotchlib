@@ -1,27 +1,21 @@
 package com.evilnotch.lib.api.mcp;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.main.loader.LoadingStage;
 import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.csve.CSV;
-import com.evilnotch.lib.util.csve.CSVE;
 import com.evilnotch.lib.util.line.Line;
-import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.config.ConfigLine;
 
 import net.minecraftforge.common.MinecraftForge;
-import scala.tools.nsc.backend.jvm.AsmUtils;
 
 /**
  * get srg name in deob from class and field without having to constantly look everything up yourselves.
@@ -42,7 +36,7 @@ public class MCPMappings {
 	/**
 	 * the cached data you grabbed
 	 */
-	public static Set<MCPEntry> cached = new HashSet<MCPEntry>();
+	public static Set<MCPEntry> cached = new LinkedHashSet<MCPEntry>();
 	public static boolean isCached = false;
 	
 	/**

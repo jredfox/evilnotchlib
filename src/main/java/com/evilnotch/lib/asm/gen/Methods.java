@@ -5,7 +5,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class Methods {
 
-	public void fixId(NBTTagCompound nbt) 
+	public void fixIdLib(NBTTagCompound nbt) 
     {
         if (!nbt.hasKey("id", 8))
         {
