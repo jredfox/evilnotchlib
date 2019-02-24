@@ -83,32 +83,4 @@ public class ClientEvents {
 		ClientProxy.clearClientData();
 	}
 	
-	@SubscribeEvent
-	public void enchantmentFix(ItemTooltipEvent e)
-	{
-		ItemStack stack = e.getItemStack();
-		NBTTagList ench = stack.getEnchantmentTagList();
-		if(ench.tagCount() == 0)
-		{
-			ench = NBTUtil.getNBTTagListSafley(stack.getTagCompound(), "StoredEnchantments", 10);
-		}
-		if(stack.isEmpty() || ench.tagCount() == 0)
-		{
-			return;
-		}
-		
-		List<String> list = e.getToolTip();
-		for(int i=0;i<list.size();i++)
-		{
-			String s = list.get(i);
-			int index = s.indexOf("enchantment.level.");
-			if(index == -1)
-			{
-				continue;
-			}
-			String fixed = s.substring(0, index) + s.substring(index + "enchantment.level.".length(), s.length());
-			list.set(i, fixed);
-		}
-	}
-	
 }

@@ -8,7 +8,7 @@ public class DummyMap<K,V> extends HashMap<K,V>{
 	@Override
 	public V put(K key, V value)
 	{
-		return value;
+		return null;
 	}
 	
 	@Override
@@ -20,7 +20,25 @@ public class DummyMap<K,V> extends HashMap<K,V>{
 	@Override
 	public V putIfAbsent(K k , V v)
 	{
-		return v;
+		return null;
+	}
+	
+	@Override
+	public V get(Object k)
+	{
+		return null;
+	}
+	
+	@Override
+	public boolean containsKey(Object obj)
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean containsValue(Object obj)
+	{
+		return false;
 	}
 
 }

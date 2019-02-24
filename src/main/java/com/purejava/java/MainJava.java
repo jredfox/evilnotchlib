@@ -1,29 +1,23 @@
 package com.purejava.java;
 
-import java.io.File;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
-import com.evilnotch.lib.minecraft.util.NBTUtil;
-import com.evilnotch.lib.util.simple.DummyMap;
 
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.config.Configuration;
+import net.sourceforge.sizeof.SizeOf;
 
 public class MainJava {
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-//		System.out.println(getDesc(int.class,boolean.class,char.class,short.class,int.class,float.class,long.class,double.class));
+		String str = "Silk Touch enchantment.level.100";
+		System.out.println(str.replace("enchantment.level.", ","));
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)

@@ -5,6 +5,7 @@ import com.evilnotch.lib.minecraft.command.CMDTest;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 
+import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

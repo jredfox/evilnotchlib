@@ -130,7 +130,6 @@ public class EntityUtil {
 	public static HashMap<ResourceLocation,String[]> nonliving = new HashMap();
 	public static HashMap<ResourceLocation,String[]> livingbase = new HashMap();
 	
-	public static Set<ResourceLocation> ents_worldneedy = new HashSet();//List of entities that need the world how greedy?
 	public static Set<ResourceLocation> ent_blacklist = new HashSet();//List of all failed Entities
 	public static Set<ResourceLocation> ent_blacklist_commandsender = new HashSet();//List of all failed Entities
 	public static Set<ResourceLocation> ent_blacklist_nbt = new HashSet();
@@ -703,7 +702,7 @@ public class EntityUtil {
 		nbt.removeTag("UUIDMost");
 		nbt.removeTag("UUIDLeast");
 		nbt.setString("id", EntityList.getEntityString(ent));
-		return EntityUtil.createEntityFromNBTQuietly(new ResourceLocation(str), nbt, w,true);
+		return EntityUtil.createEntityFromNBTQuietly(new ResourceLocation(str), nbt, w, true);
 	}
 	
 	public static boolean isEntityOnFire(Entity ent) 
@@ -802,7 +801,6 @@ public class EntityUtil {
 			
 			ent_blacklist.remove(loc);
 			NBTTagCompound tag = getEntityNBTSafley(e);
-			cacheWorldNeedy(loc);
 			cacheNBTMob(loc,e,tag);
 			getcommandSenderName(e);//forces it to error if it is going to
 			cacheForgeMob(loc);//is depreciated so I know to change it when backporting
@@ -855,8 +853,6 @@ public class EntityUtil {
 			System.out.println("blacklist:" + ent_blacklist);
 			System.out.println("blacklistNBT:" + ent_blacklist_nbt);
 			System.out.println("blacklist CMD:" + ent_blacklist_commandsender);
-			if(Config.debug_worldNeedy)
-				System.out.println("worldNeedyMobs:" + ents_worldneedy);
 		}
 		
 		cached = true;
@@ -954,14 +950,6 @@ public class EntityUtil {
 	{
 //		if(!loc.getResourceDomain().equals("minecraft"))
 //			forgemobs.add(loc);
-	}
-
-	public static void cacheWorldNeedy(ResourceLocation loc) 
-	{
-		if(Config.debug_worldNeedy && EntityUtil.createEntityByNameQuietly(loc, null, true) == null)
-		{
-			ents_worldneedy.add(loc);
-		}
 	}
 	
 	/**

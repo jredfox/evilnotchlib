@@ -102,7 +102,7 @@ public class LoaderMain {
 		Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");
 		int sizeA = init.size();
 		int sizeB = transformedCache.size();
-		System.out.println("Did the clearing keep it's original form? resourceCache" + (init.size() == 0) + " size:" + init.size() + " transformedCache" + transformedCache.size());
+		System.out.println("Did the clearing keep it's original form? resourceCache:" + (init.size() == 0) + " size:" + init.size() + " transformedCache:" + transformedCache.size());
 	}
 
 	private static void loaderMainPreInit(FMLPreInitializationEvent e) 

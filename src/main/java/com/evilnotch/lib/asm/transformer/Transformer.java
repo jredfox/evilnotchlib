@@ -43,9 +43,9 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.world.chunk.Chunk",
     	"net.minecraft.world.chunk.storage.AnvilChunkLoader",
     	"net.minecraft.client.Minecraft",
-    	"net.minecraft.enchantment.Enchantment",
     	"net.minecraft.server.integrated.IntegratedServer",
-    	"net.minecraft.util.WeightedSpawnerEntity"
+    	"net.minecraft.util.WeightedSpawnerEntity",
+    	"net.minecraft.enchantment.Enchantment"
     });
     
     @Override
@@ -179,18 +179,17 @@ public class Transformer implements IClassTransformer
                 	GeneralTransformer.transformMC(classNode);
                 break;
                 case 14:
-                	if(!ConfigCore.asm_enchantments)
+                	GeneralTransformer.patchOpenToLan(classNode);
+                break;
+                case 15:
+                	GeneralTransformer.patchWeightedSpawner(classNode, inputBase, name);
+                break;
+                case 16:
+                	if(!ConfigCore.asm_enchantmentNameFix)
                 	{
-                		print(name);
                 		return classToTransform;
                 	}
                 	ASMHelper.replaceMethod(classNode, inputBase + "Enchantment", "getTranslatedName", "(I)Ljava/lang/String;", "func_77316_c");
-                break;
-                case 15:
-                	GeneralTransformer.patchOpenToLan(classNode);
-                break;
-                case 16:
-                	GeneralTransformer.patchWeightedSpawner(classNode, inputBase, name);
                 break;
             }
             
