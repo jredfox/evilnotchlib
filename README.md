@@ -84,5 +84,4 @@ download the entire source code and install to a new workspace
 install classwriter mod and throw it in the libs folder
 run gradlew setupDecompWorkspace eclipse
 input the classwriter mod into your java build path in eclipse
-your done. In versions older then 1.12 you might need to manully install the classwriter-hacks depdancy
 ```
