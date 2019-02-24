@@ -26,16 +26,13 @@ public class BasicItemMeta extends BasicItem{
 		this.setMaxDamage(0);
 		this.maxMeta = maxMeta;
 	}
+	
 	@Override
-	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
+	public void populateLang(ResourceLocation id, LangEntry... langs)
+	{
 		if(!this.useLangRegistry())
 			return;
-		for(LangEntry entry : langlist)
-		{
-			entry.langId = "item." + unlocalname + "_" + entry.meta + ".name";
-			entry.loc = id;
-			LangRegistry.add(entry);
-		}
+		LangRegistry.registerMetaLang(this, id, langs);
 	}
 	
 	@Override

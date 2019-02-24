@@ -96,7 +96,7 @@ public class LoaderMain {
 		launchClassLoaderCheck();
 	}
 
-	private static void launchClassLoaderCheck() 
+	public static void launchClassLoaderCheck() 
 	{
 		Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
 		Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");

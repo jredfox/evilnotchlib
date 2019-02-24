@@ -12,6 +12,7 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.DummyMap;
 
@@ -78,7 +79,7 @@ public class Transformer implements IClassTransformer
 		}
 	}
 
-	public static byte[] transform(int index, byte[] classToTransform,boolean obfuscated)
+	public static byte[] transform(int index, byte[] classToTransform, boolean obfuscated)
     {
     	String name = clazzes.get(index);
     	System.out.println("Transforming: " + name + " index:" + index);
@@ -146,7 +147,9 @@ public class Transformer implements IClassTransformer
                 break;
                 case 6:
                 		if(obfuscated)
+                		{
                 			ASMHelper.replaceMethod(classNode, inputBase + "NetHandlerPlayServer", "processTryUseItemOnBlock", "(Lnet/minecraft/network/play/client/CPacketPlayerTryUseItemOnBlock;)V", "func_184337_a");
+                		}
                 		else
                 			return ASMHelper.replaceClass(inputBase + "NetHandlerPlayServer");
                 break;

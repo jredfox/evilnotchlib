@@ -5,7 +5,7 @@ import net.minecraft.util.ResourceLocation;
 public class LangEntry {
 	
 	public String langDisplayName = null;
-	public String langType = null;
+	public String region = null;
 	public String langId = null;
 	public String meta = null;
 	public ResourceLocation loc = null;
@@ -15,16 +15,16 @@ public class LangEntry {
 	/**
 	 * use this one if your manually calling it for advanced constructors in basic items/blocks
 	 */
-	public LangEntry(String display,String langType)
+	public LangEntry(String region, String display)
 	{
+		this.region = region;
 		this.langDisplayName = display;
-		this.langType = langType;
 	}
 	
-	public LangEntry(String display,String langType,String meta)
+	public LangEntry(String region, String display, String meta)
 	{
+		this.region = region;
 		this.langDisplayName = display;
-		this.langType = langType;
 		this.meta = meta;
 	}
 	
@@ -45,7 +45,7 @@ public class LangEntry {
 		if(!(obj instanceof LangEntry))
 			return false;
 		LangEntry lang = (LangEntry)obj;
-		return this.langId.equals(lang.langId) && this.langType.equals(lang.langType);
+		return this.langId.equals(lang.langId) && this.region.equals(lang.region);
 	}
 
 }

@@ -9,7 +9,6 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import com.evilnotch.lib.api.BlockApi;
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
@@ -77,8 +76,7 @@ public class BasicBlock extends Block implements IBasicBlock{
 		this.haslang = lang;
 		this.hasconfig = config;
 		
-		//autofill
-		populateLang(langlist,unlocalname,id);
+		this.populateLang(langlist);
 		
 		//set properties of the block
 		fillProperties(props);
@@ -92,6 +90,11 @@ public class BasicBlock extends Block implements IBasicBlock{
 			itemblock.setRegistryName(id);
 			this.itemblock = itemblock;
 		}
+	}
+	
+	public void populateLang(LangEntry... langlist) 
+	{
+		LangRegistry.registerLang(this, this.getRegistryName(), langlist);
 	}
 	
 	protected void fillProperties(BlockProperties props) 
@@ -140,18 +143,6 @@ public class BasicBlock extends Block implements IBasicBlock{
 		cfg.addLine(line);
 		line = (LineArray) cfg.getUpdatedLine(line);
 		return new BlockProperties(line);
-	}
-
-	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) 
-	{
-		if(!this.useLangRegistry())
-			return;
-		for(LangEntry entry : langlist)
-		{
-			entry.langId = "tile." + unlocalname + ".name";
-			entry.loc = id;
-			LangRegistry.add(entry);
-		}
 	}
 	
 	@Override

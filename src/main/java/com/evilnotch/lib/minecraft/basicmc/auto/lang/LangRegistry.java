@@ -19,11 +19,20 @@ import com.evilnotch.lib.util.line.ILineHead;
 import com.evilnotch.lib.util.line.LangLine;
 import com.evilnotch.lib.util.line.config.ConfigLang;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.Locale;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraft.potion.Potion;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.text.translation.LanguageMap;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class LangRegistry {
 	
@@ -91,7 +100,7 @@ public class LangRegistry {
 					System.out.println("skipping lang entry as mod is compiled:" + lang);
 				continue;
 			}
-			File file = new File(root,domain + "/lang/" + lang.langType + ".lang");
+			File file = new File(root,domain + "/lang/" + lang.region + ".lang");
 			ConfigLang cfg = map.get(file);
 			if(cfg == null)
 			{
@@ -145,5 +154,53 @@ public class LangRegistry {
 	{
 		langs.clear();
 	}
+	
+	public static void registerLang(Object b, ResourceLocation loc, LangEntry... langs) 
+	{
+		String pre = "";
+		if(b instanceof Block)
+			pre = "tile.";
+		else if(b instanceof Item)
+			pre = "item.";
+		else if(b instanceof Enchantment)
+			pre = "enchantment.";
+		else if(b instanceof Biome)
+			pre = "biome.";
+		else if(b instanceof Potion)
+			pre = "potion.";
+		else if(b instanceof CreativeTabs)
+			pre = "itemGroup.";
+		else if(b instanceof Entity)
+			pre = "entity.";
+		for(LangEntry lang : langs)
+		{
+			lang.langId = pre + loc.toString().replaceAll(":", ".") + ".name";
+			LangRegistry.add(lang);
+		}
+	}
+	
+	public static void registerMetaLang(Object obj, ResourceLocation loc, LangEntry... entries)
+	{
+		String pre = null;
+		if(obj instanceof Block)
+			pre = "tile.";
+		else if(obj instanceof Item)
+			pre = "item.";
+		for(LangEntry lang : langs)
+		{
+			lang.langId = pre + loc.toString().replaceAll(":", ".") + "_" + lang.meta + ".name";
+			LangRegistry.add(lang);
+		}
+	}
+
+	public static String getRegistryName(Object obj) 
+	{
+		if(obj instanceof IForgeRegistryEntry.Impl)
+			return ((IForgeRegistryEntry.Impl)obj).getRegistryName().toString();
+		else if(obj instanceof CreativeTabs)
+			return ((CreativeTabs)obj).tabLabel;
+		return null;
+	}
+	
 
 }

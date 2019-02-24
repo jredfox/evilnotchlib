@@ -25,21 +25,18 @@ public class BasicCreativeTab extends CreativeTabs{
 			this.setNoTitle();
 		if(LoaderMain.isClient)
 		{
-			populateLang(langlist,id);
+			populateLang(id, langlist);
 		}
 	}
 	@SideOnly(Side.CLIENT)
-    protected void populateLang(LangEntry[] langlist,ResourceLocation id) 
+    protected void populateLang(ResourceLocation id, LangEntry... langlist) 
 	{
-		for(LangEntry lang : langlist)
-		{
-			lang.langId = "itemGroup." + id.toString().replaceAll(":", ".");
-			lang.loc = id;
-			LangRegistry.add(lang);
-		}
+		LangRegistry.registerLang(this, id, langlist);
 	}
+	
 	@SideOnly(Side.CLIENT)
-    public ItemStack getTabIconItem(){
+    public ItemStack getTabIconItem()
+	{
         return display;
     }
 

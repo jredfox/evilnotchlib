@@ -1,11 +1,12 @@
 package com.evilnotch.lib.main;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.command.CMDTest;
+import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
+import com.evilnotch.lib.minecraft.basicmc.block.BasicBlock;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
-import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 
-import net.minecraft.enchantment.Enchantment;
+import net.minecraft.block.material.Material;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

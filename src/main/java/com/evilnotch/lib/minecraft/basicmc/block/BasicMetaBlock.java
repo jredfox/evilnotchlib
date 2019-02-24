@@ -82,16 +82,11 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	 * supports metadata and block states
 	 */
 	@Override
-	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) 
+	public void populateLang(LangEntry... langlist) 
 	{
 		if(!this.useLangRegistry())
 			return;
-		for(LangEntry entry : langlist)
-		{
-			entry.langId = "tile." + unlocalname + "_" + entry.meta + ".name";
-			entry.loc = id;
-			LangRegistry.add(entry);
-		}
+		LangRegistry.registerMetaLang(this, langlist);
 	}
 	
 	public void setStateConstructor(IProperty prop) 

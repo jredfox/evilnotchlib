@@ -43,20 +43,16 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor{
 		this.hasconfig = config;
 		
 		//autofill
-		this.populateLang(langlist, unlocalname,id);
+		this.populateLang(id, langlist);
 		
 		LoaderItems.items.add(this);
 	}
 	
-	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
+	public void populateLang(ResourceLocation id, LangEntry... langs) 
+	{
 		if(!this.useLangRegistry())
 			return;
-		for(LangEntry entry : langlist)
-		{
-			entry.langId = "item." + unlocalname + ".name";
-			entry.loc = id;
-			LangRegistry.add(entry);
-		}
+		LangRegistry.registerLang(this, id, langs);
 	}
 	
 	@Override

@@ -37,20 +37,16 @@ public class BasicItem extends Item implements IBasicItem{
 		this.haslang = lang;
 		
 		//autofill
-		populateLang(langlist,unlocalname,id);//not just client side I18l or something uses it on server side for translations
+		populateLang(id, langlist);//not just client side I18l or something uses it on server side for translations
 		
 		LoaderItems.items.add(this);
 	}
 	
-	public void populateLang(LangEntry[] langlist,String unlocalname,ResourceLocation id) {
+	public void populateLang(ResourceLocation id, LangEntry... langs)
+	{
 		if(!this.useLangRegistry())
 			return;
-		for(LangEntry entry : langlist)
-		{
-			entry.langId = "item." + unlocalname + ".name";
-			entry.loc = id;
-			LangRegistry.add(entry);
-		}
+		LangRegistry.registerLang(this, id, langs);
 	}
 
 	@Override
