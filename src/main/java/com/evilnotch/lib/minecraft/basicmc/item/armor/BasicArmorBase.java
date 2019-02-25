@@ -11,7 +11,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicArmorBase extends ItemArmor implements IBasicArmor{
+public class BasicArmorBase extends ItemArmor implements IBasicArmor<ItemArmor>{
 	
 	public boolean hasregister = false;
 	public boolean hasmodel = false;
@@ -50,9 +50,7 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor{
 	
 	public void populateLang(ResourceLocation id, LangEntry... langs) 
 	{
-		if(!this.useLangRegistry())
-			return;
-		LangRegistry.registerLang(this, id, langs);
+		LangRegistry.registerLang(this, langs);
 	}
 	
 	@Override
@@ -60,29 +58,29 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor{
 	{
 		return this.armorset.boots.getItem() == boots.getItem() && this.armorset.leggings.getItem() == pants.getItem() && this.armorset.chestplate.getItem() == chest.getItem() && this.armorset.helmet.getItem() == head.getItem();
 	}
+	
 	@Override
-	public boolean register() {
-		return this.hasregister;
-	}
-	@Override
-	public boolean registerModel() {
-		return this.hasmodel;
-	}
-	@Override
-	public boolean useLangRegistry() {
-		return this.haslang;
-	}
-	@Override
-	public boolean useConfigPropterties() {
-		return this.hasconfig;
-	}
-	@Override
-	public void setArmorSet(ArmorSet set){
+	public void setArmorSet(ArmorSet set)
+	{
 		this.armorset = set;
 	}
+	
 	@Override
-	public ArmorSet getArmorSet(){
+	public ArmorSet getArmorSet()
+	{
 		return this.armorset;
+	}
+	
+	@Override
+	public ItemArmor getObject() 
+	{
+		return this;
+	}
+	
+	@Override
+	public ResourceLocation getResourceLocation() 
+	{
+		return this.getRegistryName();
 	}
 
 }

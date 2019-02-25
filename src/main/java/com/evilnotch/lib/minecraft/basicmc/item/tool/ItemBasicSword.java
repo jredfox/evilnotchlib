@@ -3,16 +3,16 @@ package com.evilnotch.lib.minecraft.basicmc.item.tool;
 import java.util.ArrayList;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
+import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
-import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemBasicSword extends ItemSword implements IBasicItem{
+public class ItemBasicSword extends ItemSword implements IBasicItem<ItemSword>{
 	
 	public boolean hasregister = false;
 	public boolean hasmodel = false;
@@ -46,26 +46,15 @@ public class ItemBasicSword extends ItemSword implements IBasicItem{
 	
 	public void populateLang(ResourceLocation id, LangEntry... langs)
 	{
-		if(!this.useLangRegistry())
-			return;
-		LangRegistry.registerLang(this, id, langs);
-	}
-	
-	@Override
-	public boolean register() {
-		return this.hasregister;
+		LangRegistry.registerLang(this, langs);
 	}
 	@Override
-	public boolean registerModel() {
-		return this.hasmodel;
+	public ItemSword getObject() {
+		return this;
 	}
 	@Override
-	public boolean useLangRegistry() {
-		return this.haslang;
-	}
-	@Override
-	public boolean useConfigPropterties() {
-		return this.hasconfig;
+	public ResourceLocation getResourceLocation() {
+		return this.getRegistryName();
 	}
 
 }

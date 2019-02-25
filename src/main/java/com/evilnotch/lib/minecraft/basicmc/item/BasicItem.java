@@ -1,6 +1,7 @@
 package com.evilnotch.lib.minecraft.basicmc.item;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
+import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorMat;
@@ -12,7 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicItem extends Item implements IBasicItem{
+public class BasicItem extends Item implements IBasicItem<Item>{
 	
 	public boolean hasregister = false;
 	public boolean hasmodel = false;
@@ -37,40 +38,16 @@ public class BasicItem extends Item implements IBasicItem{
 		this.haslang = lang;
 		
 		//autofill
-		populateLang(id, langlist);//not just client side I18l or something uses it on server side for translations
+		populateLang(langlist);//not just client side I18l or something uses it on server side for translations
 		
 		LoaderItems.items.add(this);
 	}
 	
-	public void populateLang(ResourceLocation id, LangEntry... langs)
+	public void populateLang(LangEntry... langs)
 	{
-		if(!this.useLangRegistry())
-			return;
-		LangRegistry.registerLang(this, id, langs);
+		LangRegistry.registerLang(this, langs);
 	}
 
-	@Override
-	public boolean register() {
-		return this.hasregister;
-	}
-
-	@Override
-	public boolean registerModel() {
-		return this.hasmodel;
-	}
-
-	@Override
-	public boolean useLangRegistry() {
-		return this.haslang;
-	}
-
-	/**
-	 * nothing to config here
-	 */
-	@Override
-	public boolean useConfigPropterties() {
-		return false;
-	}
 	/**
 	 * configures tool material before sending it to the constructor
 	 * If config is turned off just returns default enum
@@ -117,6 +94,18 @@ public class BasicItem extends Item implements IBasicItem{
 			}
 		}
 		return mat.getEnum();
+	}
+	
+	@Override
+	public ResourceLocation getResourceLocation() 
+	{
+		return this.getRegistryName();
+	}
+	
+	@Override
+	public Item getObject() 
+	{
+		return this;
 	}
 
 }

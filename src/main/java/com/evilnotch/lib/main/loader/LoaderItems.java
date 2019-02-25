@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
+import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
@@ -47,11 +47,7 @@ public class LoaderItems {
 	{
 		for(IBasicItem i : LoaderItems.items)
 		{
-			if(i.register())
-			{
-			   Item item = (Item)i;
-			   ForgeRegistries.ITEMS.register(item);
-			}
+			ForgeRegistries.ITEMS.register((Item)i.getObject());
 		}
 	}
 

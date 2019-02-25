@@ -1075,6 +1075,18 @@ public class JavaUtil {
 		createFileSafley(file);
 		saveJSON(json,file);
 	}
+	/**
+	 * @return if the file saved or not
+	 */
+	public static boolean saveIfJSON(JSONObject json, File file) throws IOException 
+	{
+		if(!file.exists())
+		{
+			saveJSONSafley(json, file);
+			return true;
+		}
+		return false;
+	}
 
 	public static void createFileSafley(File file) throws IOException {
 		File parent = file.getParentFile();

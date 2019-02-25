@@ -31,7 +31,7 @@ public class BasicCreativeTab extends CreativeTabs{
 	@SideOnly(Side.CLIENT)
     protected void populateLang(ResourceLocation id, LangEntry... langlist) 
 	{
-		LangRegistry.registerLang(this, id, langlist);
+		LangRegistry.registerLang(this, langlist);
 	}
 	
 	@SideOnly(Side.CLIENT)

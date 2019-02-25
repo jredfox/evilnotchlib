@@ -84,8 +84,6 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 	@Override
 	public void populateLang(LangEntry... langlist) 
 	{
-		if(!this.useLangRegistry())
-			return;
 		LangRegistry.registerMetaLang(this, langlist);
 	}
 	
@@ -191,33 +189,6 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 			items.add(new ItemStack(this,1,i));
 		}
     }
-	@Override
-	public Set<Integer> getValuesOfProperty(IProperty p)
-	{
-		Set<Integer> set = new HashSet();
-		if(this.property instanceof PropertyInteger)
-		{
-			Collection<Integer> li = this.property.getAllowedValues();
-			for(Integer i : li)
-				set.add(i);
-		}
-		else if(this.property instanceof PropertyBool)
-		{
-			return (Set<Integer>) JavaUtil.asSet(0,1);
-		}
-		else if(this.property instanceof PropertyDirection)
-		{
-			for(EnumFacing f : EnumFacing.VALUES)
-				set.add(f.getIndex());
-		}
-		else if(this.property instanceof IPropertyName)
-		{
-			Set<IPropertyMeta> li = (Set<IPropertyMeta>) this.property.getAllowedValues();
-			for(IPropertyMeta m : li)
-				set.add(m.getMetaData());
-		}
-		return set;
-	}
 
 	@Override
 	public int damageDropped(IBlockState state){
@@ -252,53 +223,5 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 		}
 		return null;
 	}
-
-	@Override
-	public IProperty getStateProperty(){
-		return this.property;
-	}
-	@Override
-	public HashMap<Integer, ModelResourceLocation> getModelMap() 
-	{
-		HashMap<Integer, ModelResourceLocation> map = new HashMap();
-		Set<Integer> set = this.getValuesOfProperty(this.getStateProperty());
-		for(int i : set)
-		{
-			if(this.property instanceof PropertyInteger)
-			{
-				map.put(i, new ModelResourceLocation(this.getRegistryName() + "_" + i,this.property.getName() + "=" + i));
-			}
-			else if(this.property instanceof PropertyBool)
-			{
-				boolean b = i == 0 ? false : true;
-				map.put(i, new ModelResourceLocation(this.getRegistryName() + "_" + b,this.property.getName() + "=" + b));
-			}
-			else if(this.property instanceof PropertyDirection)
-			{
-				EnumFacing f = EnumFacing.getFront(i);
-				map.put(i, new ModelResourceLocation(this.getRegistryName() + "_" + f.getName(),this.property.getName() + "=" + f.getName()));
-			}
-			else if(this.property instanceof IPropertyName)
-			{
-				IPropertyName p = (IPropertyName) this.property;
-				IStringSerializable getter = (IStringSerializable) p.getValue(i);
-				map.put(i, new ModelResourceLocation(this.getRegistryName() + "_" + getter.getName(),this.property.getName() + "=" + getter.getName()));
-			}
-		}
-		return map;
-	}
-	@Override
-	public int getMaxMeta() 
-	{
-		Set<Integer> set = this.getValuesOfProperty(this.property);
-		int meta = 0;
-		for(int i : set)
-			if(i > meta)
-				meta = i;
-		return meta;
-	}
-	@Override
-	public boolean isMeta(){
-		return true;
-	}
+	
 }

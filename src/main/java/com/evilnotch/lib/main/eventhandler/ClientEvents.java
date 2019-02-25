@@ -1,5 +1,6 @@
 package com.evilnotch.lib.main.eventhandler;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
@@ -33,7 +34,14 @@ public class ClientEvents {
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void modeltest(ModelRegistryEvent event)
 	{
-		JsonGen.modelReg();
+		try 
+		{
+			JsonGen.genJSONS();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	@SubscribeEvent

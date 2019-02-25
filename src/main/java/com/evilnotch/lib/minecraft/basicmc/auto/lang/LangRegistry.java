@@ -155,7 +155,12 @@ public class LangRegistry {
 		langs.clear();
 	}
 	
-	public static void registerLang(Object b, ResourceLocation loc, LangEntry... langs) 
+	public static void registerLang(Object b, LangEntry... entries) 
+	{
+		registerLang(b, getRegistryName(b), entries);
+	}
+	
+	public static void registerLang(Object b, String loc, LangEntry... entries) 
 	{
 		String pre = "";
 		if(b instanceof Block)
@@ -172,21 +177,26 @@ public class LangRegistry {
 			pre = "itemGroup.";
 		else if(b instanceof Entity)
 			pre = "entity.";
-		for(LangEntry lang : langs)
+		for(LangEntry lang : entries)
 		{
 			lang.langId = pre + loc.toString().replaceAll(":", ".") + ".name";
 			LangRegistry.add(lang);
 		}
 	}
 	
-	public static void registerMetaLang(Object obj, ResourceLocation loc, LangEntry... entries)
+	public static void registerMetaLang(Object obj, LangEntry... entries)
+	{
+		registerMetaLang(obj, getRegistryName(obj), entries);
+	}
+	
+	public static void registerMetaLang(Object obj, String loc, LangEntry... entries)
 	{
 		String pre = null;
 		if(obj instanceof Block)
 			pre = "tile.";
 		else if(obj instanceof Item)
 			pre = "item.";
-		for(LangEntry lang : langs)
+		for(LangEntry lang : entries)
 		{
 			lang.langId = pre + loc.toString().replaceAll(":", ".") + "_" + lang.meta + ".name";
 			LangRegistry.add(lang);

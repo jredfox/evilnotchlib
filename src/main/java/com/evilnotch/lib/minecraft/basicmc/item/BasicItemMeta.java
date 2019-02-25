@@ -28,11 +28,9 @@ public class BasicItemMeta extends BasicItem{
 	}
 	
 	@Override
-	public void populateLang(ResourceLocation id, LangEntry... langs)
+	public void populateLang(LangEntry... langs)
 	{
-		if(!this.useLangRegistry())
-			return;
-		LangRegistry.registerMetaLang(this, id, langs);
+		LangRegistry.registerMetaLang(this, langs);
 	}
 	
 	@Override
@@ -55,9 +53,5 @@ public class BasicItemMeta extends BasicItem{
 			items.add(new ItemStack(this,1,i));
 		}
     }
-	@Override
-	public int getMaxMeta() {
-		return this.maxMeta;
-	}
 
 }

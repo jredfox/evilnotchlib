@@ -32,7 +32,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicBlock extends Block implements IBasicBlock{
+public class BasicBlock extends Block {
 	
 	public boolean hasregister = false;
 	public boolean hasmodel = false;
@@ -94,14 +94,14 @@ public class BasicBlock extends Block implements IBasicBlock{
 	
 	public void populateLang(LangEntry... langlist) 
 	{
-		LangRegistry.registerLang(this, this.getRegistryName(), langlist);
+		LangRegistry.registerLang(this, langlist);
 	}
 	
 	protected void fillProperties(BlockProperties props) 
 	{
 		if(props != null)
 		{
-			if(this.useConfigPropterties())
+			if(this.hasconfig)
 				props = BasicBlock.getConfiguredBlockProps(this,props);
 			this.blockprops = props;
 			
@@ -145,104 +145,4 @@ public class BasicBlock extends Block implements IBasicBlock{
 		return new BlockProperties(line);
 	}
 	
-	@Override
-	public boolean register() {
-		return this.hasregister;
-	}
-	@Override
-	public boolean registerModel() {
-		return this.hasmodel;
-	}
-	@Override
-	public boolean useLangRegistry() {
-		return this.haslang;
-	}
-	@Override
-	public boolean useConfigPropterties() {
-		return this.hasconfig;
-	}
-	@Override
-	public ItemBlock getItemBlock() {
-		return this.itemblock;
-	}
-	@Override
-	public boolean hasItemBlock() {
-		return this.getItemBlock() != null;
-	}
-
-	@Override
-	public List<String> getModelStates() {
-		return JavaUtil.asArray(new Object[]{"inventory","normal"});
-	}
-	
-	@Override
-	public List<String> getBlockStatesNames()
-	{
-		if(cacheStates != null)
-		{
-			return cacheStates;
-		}
-		List<String> list = new ArrayList();
-		IProperty prop = this.getStateProperty();
-		if(prop == null)
-			list.add("normal");
-		else
-		{
-			if(prop instanceof PropertyInteger)
-			{
-				PropertyInteger i = (PropertyInteger)prop;
-				Collection<Integer> ints = i.getAllowedValues();
-				for(Integer index : ints)
-					list.add(prop.getName() + "=" + index);
-			}
-			else if (prop instanceof PropertyBool)
-			{
-				PropertyBool p = (PropertyBool)prop;
-				list.add(p.getName() + "=" + true);
-				list.add(p.getName() + "=" + false);
-				PropertyDirection d;
-			}
-			else if (prop instanceof PropertyEnum)
-			{
-				//this also covers PropertyDirection
-				PropertyEnum p = (PropertyEnum)prop;
-				Collection <IStringSerializable> enums = p.getAllowedValues();
-				for(IStringSerializable e : enums)
-				{
-					list.add(p.getName() + "=" + e.getName());
-				}
-			}
-		}
-		cacheStates = list;
-		return list;
-	}
-	@Nullable
-	@Override
-	public IProperty getStateProperty() {
-		return null;
-	}
-
-	@Override
-	public Set<Integer> getValuesOfProperty(IProperty p) {
-		return JavaUtil.asSet(0);
-	}
-
-	@Override
-	public HashMap<Integer, ModelResourceLocation> getModelMap() 
-	{
-		HashMap<Integer, ModelResourceLocation> map = new HashMap();
-		map.put(0, new ModelResourceLocation(this.getRegistryName().toString(),"inventory"));
-		return map;
-	}
-	
-	@Override
-	public ModelPart getModelPart() {
-		return ModelPart.cube_all;
-	}
-
-	@Override
-	public BlockProperties getBlockProperties() {
-		return this.blockprops;
-	}
-
 }

@@ -1,6 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.client.block;
 
-import com.evilnotch.lib.minecraft.basicmc.block.IBasicBlock;
+import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -30,7 +30,7 @@ public class StateMapperSupreme extends StateMapperBase{
 		if(p instanceof PropertyInteger)
 		{
 			String i = state.getValue(p).toString();
-			model = new ModelResourceLocation(block.getRegistryName() ,p.getName() + "=" + i);
+			model = new ModelResourceLocation(block.getRegistryName() , p.getName() + "=" + i);
 		}
 		else if(p instanceof PropertyBool)
 		{
