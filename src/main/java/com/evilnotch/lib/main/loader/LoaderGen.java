@@ -1,6 +1,7 @@
 package com.evilnotch.lib.main.loader;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
@@ -16,7 +17,11 @@ public class LoaderGen {
 		if(LoaderMain.isClient)
 		{
 			LangRegistry.registerLang();
-			JsonGen.jsonGen();
+			try {
+				JsonGen.genJSONS();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

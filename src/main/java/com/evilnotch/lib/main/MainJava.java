@@ -1,10 +1,13 @@
 package com.evilnotch.lib.main;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
+import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.block.BasicBlock;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
@@ -30,6 +33,8 @@ public class MainJava {
 	public void preinit(FMLPreInitializationEvent e)
 	{	
 		LoaderMain.loadpreinit(e);
+		Block b = new BasicBlock(new ResourceLocation("evilnotchlib:b"), new LangEntry(LangEntry.en_us,"A:B"));
+		JsonGen.registerBlockJson(b);
 	}
 	
 	@Mod.EventHandler

@@ -28,7 +28,9 @@ public class LoaderBlocks {
 		for(Block b : LoaderBlocks.blocks)
 		{
 			ForgeRegistries.BLOCKS.register(b);
-			ForgeRegistries.ITEMS.register(new ItemBlock(b));
+			ItemBlock i = new ItemBlock(b);
+			i.setRegistryName(b.getRegistryName());
+			ForgeRegistries.ITEMS.register(i);
 	    }
 	}
 

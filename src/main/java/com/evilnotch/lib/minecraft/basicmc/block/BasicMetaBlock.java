@@ -7,12 +7,14 @@ import java.util.Set;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlockMeta;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.block.item.IMetaName;
 import com.evilnotch.lib.minecraft.basicmc.block.item.ItemBlockMeta;
 import com.evilnotch.lib.minecraft.basicmc.block.property.IPropertyMeta;
 import com.evilnotch.lib.minecraft.basicmc.block.property.IPropertyName;
+import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.block.Block;
@@ -34,7 +36,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicMetaBlock extends BasicBlock implements IMetaName{
+public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockMeta<Block>{
 	
 	public IProperty property = null;
 	
@@ -180,6 +182,7 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
     {
 		return new ItemStack(Item.getItemFromBlock(this), 1, this.getMetaFromState(state) );
     }
+	
 	@Override
     public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
     {
@@ -189,6 +192,33 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 			items.add(new ItemStack(this,1,i));
 		}
     }
+	
+	public Set<Integer> getValuesOfProperty(IProperty p)
+	{
+		Set<Integer> set = new HashSet();
+		if(this.property instanceof PropertyInteger)
+		{
+			Collection<Integer> li = this.property.getAllowedValues();
+			for(Integer i : li)
+				set.add(i);
+		}
+		else if(this.property instanceof PropertyBool)
+		{
+			return (Set<Integer>) JavaUtil.asSet(0,1);
+		}
+		else if(this.property instanceof PropertyDirection)
+		{
+			for(EnumFacing f : EnumFacing.VALUES)
+				set.add(f.getIndex());
+		}
+		else if(this.property instanceof IPropertyName)
+		{
+			Set<IPropertyMeta> li = (Set<IPropertyMeta>) this.property.getAllowedValues();
+			for(IPropertyMeta m : li)
+				set.add(m.getMetaData());
+		}
+		return set;
+	}
 
 	@Override
 	public int damageDropped(IBlockState state){
@@ -222,6 +252,26 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName{
 			return ((IStringSerializable)p.getValue(meta)).getName();
 		}
 		return null;
+	}
+
+	@Override
+	public ModelPart getModelPart() {
+		return ModelPart.cube_all;
+	}
+
+	@Override
+	public Block getObject() {
+		return this;
+	}
+
+	@Override
+	public ResourceLocation getResourceLocation() {
+		return this.getRegistryName();
+	}
+
+	@Override
+	public IProperty getProperty() {
+		return this.property;
 	}
 	
 }

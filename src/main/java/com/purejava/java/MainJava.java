@@ -16,8 +16,8 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		String str = "Silk Touch enchantment.level.100";
-		System.out.println(str.replace("enchantment.level.", ","));
+		String str = "enchantment.level.100";
+		System.out.println(str.replace(".", ":"));
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)

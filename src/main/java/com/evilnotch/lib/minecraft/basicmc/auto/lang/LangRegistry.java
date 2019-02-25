@@ -180,6 +180,7 @@ public class LangRegistry {
 		for(LangEntry lang : entries)
 		{
 			lang.langId = pre + loc.toString().replaceAll(":", ".") + ".name";
+			lang.loc = new ResourceLocation(loc.replaceAll(".", ":"));
 			LangRegistry.add(lang);
 		}
 	}

@@ -34,14 +34,7 @@ public class ClientEvents {
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void modeltest(ModelRegistryEvent event)
 	{
-		try 
-		{
-			JsonGen.genJSONS();
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
+		JsonGen.registerModels();
 	}
 	
 	@SubscribeEvent

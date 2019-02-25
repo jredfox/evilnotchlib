@@ -16,58 +16,77 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ModelPart {
 	
 	public String parent = null;
-	public JSONObject json = null;
-	public Set<PairString> keySet = new HashSet();
+	public String particle = null;
+	public String up = null;
+	public String down = null;
+	public String north = null;
+	public String south = null;
+	public String east = null;
+	public String west = null;
 	
+	/***
+	 * if the particle has a different value entirely
+	 */
 	public boolean customParticle = false;
+	
+	/**
+	 * if the sides are not all the same texture
+	 */
 	public boolean customSide = false;
 	
+	/**
+	 * if the particle isn't null
+	 */
+	public boolean hasParticle = false;
+	
 	public static final ModelPart cube_all = new ModelPart();
-	public static final ModelPart cube_bottom_top = new ModelPart("{\"parent\": \"block/cube_bottom_top\",\"textures\": {\"particle\": \"#side\",\"down\": \"#bottom\",\"up\": \"#top\",\"north\": \"#side\",\"east\": \"#side\",\"south\": \"#side\",\"west\": \"#side\"}}");
-	public static final ModelPart cube_column = new ModelPart("{\"parent\": \"block/cube_column\",\"textures\": {\"particle\": \"#side\",\"down\": \"#end\",\"up\": \"#end\",\"north\": \"#side\",\"east\": \"#side\",\"south\": \"#side\",\"west\": \"#side\"}}");
-	public static final ModelPart cube_directional = new ModelPart("{\"parent\": \"block/cube_directional\",\"textures\": {\"particle\": \"#null\",\"down\": \"#down\",\"up\": \"#up\",\"north\": \"#north\",\"east\": \"#east\",\"south\": \"#south\",\"west\": \"#west\"}}");
-	public static final ModelPart cube_mirrored = new ModelPart("{\"parent\": \"block/cube_mirrored\",\"textures\": {\"particle\": \"#null\",\"down\": \"#down\",\"up\": \"#up\",\"north\": \"#north\",\"east\": \"#east\",\"south\": \"#south\",\"west\": \"#west\"}}");
-	public static final ModelPart cube_mirrored_all = new ModelPart("{\"parent\": \"block/cube_mirrored_all\",\"textures\": {\"particle\": \"#all\",\"down\": \"#all\",\"up\": \"#all\",\"north\": \"#all\",\"east\": \"#all\",\"south\": \"#all\",\"west\": \"#all\"}}");
-	public static final ModelPart cube_top = new ModelPart("{\"parent\": \"block/cube_top\",\"textures\": {\"particle\": \"#side\",\"down\": \"#side\",\"up\": \"#top\",\"north\": \"#side\",\"east\": \"#side\",\"south\": \"#side\",\"west\": \"#side\"}}");
+	public static final ModelPart cube_bottom_top = new ModelPart("block/cube_bottom_top","side","top","bottom","side","side","side", "side");
+	public static final ModelPart cube_column = new ModelPart("block/cube_column", "side", "end", "end", "side", "side", "side", "side");
+	public static final ModelPart cube_directional = new ModelPart("block/cube_directional", "null", "down", "up", "north", "south", "east", "west");
+	public static final ModelPart cube_mirrored = new ModelPart("block/cube_mirrored", "null", "down", "up", "north", "south", "east", "west");
+	public static final ModelPart cube_mirrored_all = new ModelPart("block/cube_mirrored_all","all","all","all","all","all","all","all");
+	public static final ModelPart cube_top = new ModelPart("block/cube_top","side","top","side","side","side","side","side");
 	
 	public ModelPart()
 	{
-		this("{\"parent\": \"block/cube_all\",\"textures\": {\"particle\": \"#all\",\"down\": \"#all\",\"up\": \"#all\",\"north\": \"#all\",\"east\": \"#all\",\"south\": \"#all\",\"west\": \"#all\"}}");
+		this("block/cube_all", "all", "all", "all", "all", "all", "all", "all");
 	}
-	public ModelPart(String s)
+	
+	public ModelPart(String parent, String particle, String up, String down, String north, String south, String east, String west)
 	{
-		this(JavaUtil.getJsonFromString(s));
-	}
-	public ModelPart(JSONObject jsonfile)
-	{
-		this.parent = (String) jsonfile.get("parent");
-		this.json = jsonfile;
-		JSONObject textures = (JSONObject) this.json.get("textures");
-		for(Object obj : textures.keySet())
-		{
-			String key = (String)obj;
-			String value = (String) textures.get(key);
-			if(value.contains("#"))
-				value = value.substring(value.indexOf('#')+1, value.length());
-			if(key.equals("particle") && value.equals("null"))
-			{
-//				System.out.println("particle not implemented!" + textures.toJSONString());
-				this.customParticle = true;
-			}
-			keySet.add(new PairString(key,value));
-		}
+		this.parent = parent;
+		this.particle = particle;
+		this.down = down;
+		this.up = up;
+		this.north = north;
+		this.south = south;
+		this.east = east;
+		this.west = west;
+		this.hasParticle = !particle.equals("null");
+		this.customParticle = getHasCustomParticle();
 		this.customSide = getHasCustomSide();
 	}
 	
-	protected boolean getHasCustomSide() 
+	/**
+	 * use this constructor for model parts that are not implementing the particle texture
+	 */
+	public ModelPart(ModelPart base, String particle)
 	{
-		String north = getValue("north");
-		String south = getValue("south");
-		String east = getValue("east");
-		String west = getValue("west");
-		String up = getValue("up");
-		String down = getValue("down");
-		
+		this.parent = base.parent;
+		this.particle = base.particle;
+		this.down = base.down;
+		this.up = base.up;
+		this.north = base.north;
+		this.south = base.south;
+		this.east = base.east;
+		this.west = base.west;
+		this.hasParticle = !particle.equals("null");
+		this.customParticle = getHasCustomParticle();
+		this.customSide = getHasCustomSide();
+	}
+
+	protected boolean getHasCustomSide() 
+	{	
 		ArrayList<String> list = JavaUtil.asArray(new Object[]{down,up,north,south,east,west});
 		for(String s : list)
 		{
@@ -79,15 +98,10 @@ public class ModelPart {
 		}
 		return false;
 	}
-	
-	public String getValue(String key) 
+
+	protected boolean getHasCustomParticle() 
 	{
-		for(PairString s : this.keySet)
-		{
-			if(s.obj1.equals(key))
-				return s.obj2;
-		}
-		return null;
+		return !this.particle.equals(this.up) && !this.particle.equals(this.down) && !this.particle.equals(this.north) && !this.particle.equals(this.south) && !this.particle.equals(this.east) && !this.particle.equals(this.west);
 	}
 
 }

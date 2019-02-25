@@ -5,12 +5,13 @@ import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class BasicArmor extends BasicArmorBase implements IPotionArmor{
+public class BasicArmor extends BasicArmorBase implements IPotionArmor<ItemArmor>{
 	/**
 	 * a list of option effects to be applied to the player on tick
 	 */
