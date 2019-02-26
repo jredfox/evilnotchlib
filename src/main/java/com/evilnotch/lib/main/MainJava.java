@@ -5,6 +5,7 @@ import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.block.BasicBlock;
+import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 
 import net.minecraft.block.Block;
@@ -33,8 +34,8 @@ public class MainJava {
 	public void preinit(FMLPreInitializationEvent e)
 	{	
 		LoaderMain.loadpreinit(e);
-		Block b = new BasicBlock(new ResourceLocation("evilnotchlib:b"), new LangEntry(LangEntry.en_us,"A:B"));
-		JsonGen.registerBlockJson(b);
+		Block b = new BasicBlock(new ResourceLocation("evilnotchlib:b"), new LangEntry(LangEntry.en_us, "A:B"));
+		JsonGen.registerBlockJson(b, ModelPart.cube_directional);
 	}
 	
 	@Mod.EventHandler

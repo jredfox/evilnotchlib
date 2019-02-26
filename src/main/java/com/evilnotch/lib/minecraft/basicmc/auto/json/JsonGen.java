@@ -24,6 +24,7 @@ import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItemMeta;
 import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
 import com.evilnotch.lib.minecraft.basicmc.client.block.StateMapperSupreme;
+import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairString;
 
@@ -48,27 +49,37 @@ public class JsonGen {
 	
 	public static void registerBlockJson(Block b)
 	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
 		registerBlockJson(b, ModelPart.cube_all);
 	}
 	
 	public static void registerBlockJson(Block b, ModelPart part)
 	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
 		blocks.add(new BasicBlockJSON(b, part));
 	}
 	
 	public static void registerItemJson(Item i)
 	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
 		items.add(new BasicItemJSON(i));
 	}
 	
 	public static void registerBlockMetaJson(Block b, ModelPart part, IProperty p)
 	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
 		blocks_meta.add(new BasicBlockJSONMeta(b, part, p));
 	}
 	
-	public static void registerItemMetaJson(Item i)
+	public static void registerItemMetaJson(Item i, int maxMeta)
 	{
-		
+		if(!LoaderMain.isDeObfuscated)
+			return;
+		items_meta.add(new BasicItemJSONMeta(i, maxMeta));
 	}
 	
 	public static void genJSONS() throws IOException
@@ -80,40 +91,50 @@ public class JsonGen {
 		
 		for(BasicItemJSON i : items)
 		{
+			if(MinecraftUtil.isModCompiled(i.getResourceLocation().getResourceDomain()))
+				continue;
 			JSONObject json = getJSONItem(getParentModel(i.getObject()), i, 0);
 			ResourceLocation loc = i.getResourceLocation();
 			File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
-			JavaUtil.saveIfJSON(json, file);
+			JavaUtil.saveJSON(json, file);
 		}
 		for(BasicItemJSONMeta item : items_meta)
 		{
+			if(MinecraftUtil.isModCompiled(item.getResourceLocation().getResourceDomain()))
+				continue;
 			for(int index=0;index<=item.maxMeta;index++)
 			{
 				JSONObject json = getJSONItem(getParentModel(item.getObject()), item, index);
 				ResourceLocation loc = item.getResourceLocation();
 				File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + index + ".json");
-				JavaUtil.saveIfJSON(json, file);
+				JavaUtil.saveJSON(json, file);
 			}
 		}
 		
 		for(BasicBlockJSON i : blocks)
 		{
+			if(MinecraftUtil.isModCompiled(i.getResourceLocation().getResourceDomain()))
+				continue;
+			
 			for(IBlockState state : i.getObject().blockState.getValidStates())
 			{
 				JSONObject json = getJSONBlock(i, null);
 				ResourceLocation loc = i.getResourceLocation();
 				File file = new File(LoaderGen.root, loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
-				JavaUtil.saveIfJSON(json, file);
+				JavaUtil.saveJSON(json, file);
 			}
 		}
 		for(BasicBlockJSONMeta i : blocks_meta)
 		{
+			if(MinecraftUtil.isModCompiled(i.getResourceLocation().getResourceDomain()))
+				continue;
+			
 			for(IBlockState state : i.getObject().blockState.getValidStates())
 			{
 				JSONObject json = getJSONBlock(i, state);
 				ResourceLocation loc = i.getResourceLocation();
 				File file = new File(LoaderGen.root, loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + "_" + BlockApi.getBlockStateNameJSON(state, i.getProperty()) + ".json");
-				JavaUtil.saveIfJSON(json, file);
+				JavaUtil.saveJSON(json, file);
 			}
 		}
 	}
@@ -153,7 +174,8 @@ public class JsonGen {
 
 		for(PairString s : block.getModelPart().getParts())
 		{
-			textures.put(s.getValue(), loc.getResourceDomain() + ":blocks/" + block.getTextureName() + (state != null ? "_" + BlockApi.getBlockStateNameJSON(state, ((IBasicBlockMeta)block).getProperty() ) : "") );
+			String side = s.getValue();
+			textures.put(side, loc.getResourceDomain() + ":blocks/" + block.getTextureName() + (state != null ? "_" + BlockApi.getBlockStateNameJSON(state, ((IBasicBlockMeta)block).getProperty() ) : "") + (side.equals("all") ? "" : "_" + side) );
 		}
 		json.put("textures", textures);
 		return json;
