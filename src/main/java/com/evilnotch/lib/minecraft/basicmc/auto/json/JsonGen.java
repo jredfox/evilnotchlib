@@ -49,8 +49,6 @@ public class JsonGen {
 	
 	public static void registerBlockJson(Block b)
 	{
-		if(!LoaderMain.isDeObfuscated)
-			return;
 		registerBlockJson(b, ModelPart.cube_all);
 	}
 	
@@ -66,6 +64,11 @@ public class JsonGen {
 		if(!LoaderMain.isDeObfuscated)
 			return;
 		items.add(new BasicItemJSON(i));
+	}
+	
+	public static void registerBlockMetaJson(Block b, IProperty p)
+	{
+		registerBlockMetaJson(b, ModelPart.cube_all, p);
 	}
 	
 	public static void registerBlockMetaJson(Block b, ModelPart part, IProperty p)

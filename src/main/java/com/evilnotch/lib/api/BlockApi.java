@@ -148,7 +148,7 @@ public class BlockApi {
 	
 	public static String getBlockStateNameJSON(IBlockState state, IProperty p)
 	{
-		return getBlockStateName(state,p).replaceFirst("=", "_");
+		return JavaUtil.splitFirst(getBlockStateName(state,p), '=')[1];
 	}
 	
 	public static String getBlockStateName(IBlockState state, IProperty p)

@@ -162,6 +162,8 @@ public class LangRegistry {
 	
 	public static void registerLang(Object b, String loc, LangEntry... entries) 
 	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
 		String pre = "";
 		if(b instanceof Block)
 			pre = "tile.";
@@ -192,6 +194,8 @@ public class LangRegistry {
 	
 	public static void registerMetaLang(Object obj, String loc, LangEntry... entries)
 	{
+		if(!LoaderMain.isDeObfuscated)
+			return;
 		String pre = null;
 		if(obj instanceof Block)
 			pre = "tile.";
@@ -200,6 +204,7 @@ public class LangRegistry {
 		for(LangEntry lang : entries)
 		{
 			lang.langId = pre + loc.toString().replaceAll(":", ".") + "_" + lang.meta + ".name";
+			lang.loc = new ResourceLocation(loc.replaceAll("\\.", ":"));
 			LangRegistry.add(lang);
 		}
 	}
