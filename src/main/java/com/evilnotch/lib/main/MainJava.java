@@ -75,6 +75,10 @@ public class MainJava {
 		JsonGen.registerBlockMetaJson(b4, ModelPart.cube_all, b4.getProperty());
 		JsonGen.registerBlockMetaJson(b5, ModelPart.cube_all, b5.getProperty());
 		JsonGen.registerBlockMetaJson(b6, ModelPart.cube_bottom_top, b6.getProperty());
+		
+		JsonGen.registerItemJson(item);
+		JsonGen.registerItemJson(axe);
+		JsonGen.registerItemMetaJson(i2, 4);
 	}
 	
 	@Mod.EventHandler

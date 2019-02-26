@@ -99,7 +99,7 @@ public class JsonGen {
 			JSONObject json = getJSONItem(getParentModel(i.getObject()), i, 0);
 			ResourceLocation loc = i.getResourceLocation();
 			File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
-			JavaUtil.saveJSON(json, file);
+			JavaUtil.saveJSONSafley(json, file);
 		}
 		for(BasicItemJSONMeta item : items_meta)
 		{
@@ -110,7 +110,7 @@ public class JsonGen {
 				JSONObject json = getJSONItem(getParentModel(item.getObject()), item, index);
 				ResourceLocation loc = item.getResourceLocation();
 				File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + index + ".json");
-				JavaUtil.saveJSON(json, file);
+				JavaUtil.saveJSONSafley(json, file);
 			}
 		}
 		
@@ -119,13 +119,14 @@ public class JsonGen {
 			if(MinecraftUtil.isModCompiled(i.getResourceLocation().getResourceDomain()))
 				continue;
 			
-			for(IBlockState state : i.getObject().blockState.getValidStates())
-			{
-				JSONObject json = getJSONBlock(i, null);
-				ResourceLocation loc = i.getResourceLocation();
-				File file = new File(LoaderGen.root, loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
-				JavaUtil.saveJSON(json, file);
-			}
+			JSONObject json = getJSONBlock(i, null);
+			ResourceLocation loc = i.getResourceLocation();
+			File file = new File(LoaderGen.root, loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + ".json");
+			JavaUtil.saveJSONSafley(json, file);
+				
+			File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + ".json");
+			JSONObject item = getJSONItemBlock(i, null);
+			JavaUtil.saveJSONSafley(item, itemFile);
 		}
 		for(BasicBlockJSONMeta i : blocks_meta)
 		{
@@ -134,14 +135,27 @@ public class JsonGen {
 			
 			for(IBlockState state : i.getObject().blockState.getValidStates())
 			{
+				//models/block
 				JSONObject json = getJSONBlock(i, state);
 				ResourceLocation loc = i.getResourceLocation();
 				File file = new File(LoaderGen.root, loc.getResourceDomain() + "/models/block/" + loc.getResourcePath() + "_" + BlockApi.getBlockStateNameJSON(state, i.getProperty()) + ".json");
-				JavaUtil.saveJSON(json, file);
+				JavaUtil.saveJSONSafley(json, file);
+				
+				//model/item
+				File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + "_" + BlockApi.getBlockStateNameJSON(state, i.getProperty()) + ".json");
+				JSONObject item = getJSONItemBlock(i, state);
+				JavaUtil.saveJSONSafley(item, itemFile);
 			}
 		}
 	}
 	
+	public static JSONObject getJSONItemBlock(BasicBlockJSON i, IBlockState state) 
+	{
+		JSONObject json = new JSONObject();
+		json.put("parent", i.getResourceLocation().getResourceDomain() + ":block/" + i.getResourceLocation().getResourcePath() + (state != null ? "_" + BlockApi.getBlockStateNameJSON(state, ((BasicBlockJSONMeta) i).getProperty()) : "") );
+		return json;
+	}
+
 	public static String getParentModel(Item item) 
 	{
 		if(item instanceof ItemTool)
@@ -196,7 +210,7 @@ public class JsonGen {
 		{
 			Block b = gen.getObject();
 			Item item = gen.getItem();
-			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(BlockApi.getBlockString(b), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation("itemblock/" + BlockApi.getBlockString(b), "inventory"));
 			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(BlockApi.getBlockString(b), "normal"));
 		}
 	}
