@@ -1,23 +1,22 @@
 package com.evilnotch.lib.minecraft.basicmc.auto.lang;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.loader.LoaderGen;
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.basicmc.block.BasicBlock;
-import com.evilnotch.lib.minecraft.basicmc.client.creativetab.BasicCreativeTab;
-import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
-import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.line.ILine;
 import com.evilnotch.lib.util.line.ILineHead;
 import com.evilnotch.lib.util.line.LangLine;
 import com.evilnotch.lib.util.line.config.ConfigLang;
+import com.google.common.io.Files;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -41,7 +40,7 @@ public class LangRegistry {
 	public static Map<String, String> langlistClient = null;
 	public static  Map<String,String> langlist = null;
 
-	public static void registerLang() 
+	public static void generateLang() 
 	{	
 		if(!LoaderMain.isDeObfuscated)
 		{
@@ -75,6 +74,26 @@ public class LangRegistry {
 			injectClientLang(cfg);
 		}
 		clear();
+		try 
+		{
+			syncLang(cfgs.keySet());
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private static void syncLang(Set<File> files) throws IOException
+	{
+		for(File f : files)
+		{
+			File file = LoaderGen.getSyncFile(f);
+			File parent = file.getParentFile();
+			if(!parent.exists())
+				parent.mkdirs();
+			Files.copy(f, file);
+		}
 	}
 
 	public static void joinLang(List<LangEntry> itemlangs) 
@@ -160,63 +179,70 @@ public class LangRegistry {
 		registerLang(b, getRegistryName(b), entries);
 	}
 	
-	public static void registerLang(Object b, String loc, LangEntry... entries) 
+	public static void registerLang(Object obj, ResourceLocation loc, LangEntry... entries) 
 	{
 		if(!LoaderMain.isDeObfuscated)
 			return;
-		String pre = "";
-		if(b instanceof Block)
-			pre = "tile.";
-		else if(b instanceof Item)
-			pre = "item.";
-		else if(b instanceof Enchantment)
-			pre = "enchantment.";
-		else if(b instanceof Biome)
-			pre = "biome.";
-		else if(b instanceof Potion)
-			pre = "potion.";
-		else if(b instanceof CreativeTabs)
-			pre = "itemGroup.";
-		else if(b instanceof Entity)
-			pre = "entity.";
+		String pre = getUnlocalPrefix(obj);
 		for(LangEntry lang : entries)
 		{
-			lang.langId = pre + loc.toString().replaceAll(":", ".") + ".name";
-			lang.loc = new ResourceLocation(loc.replaceAll("\\.", ":"));
+			lang.langId = pre + loc.toString().replaceAll(":", ".") + getUnlocalSuffix(obj);
+			lang.loc = loc;
 			LangRegistry.add(lang);
 		}
 	}
-	
+
 	public static void registerMetaLang(Object obj, LangEntry... entries)
 	{
 		registerMetaLang(obj, getRegistryName(obj), entries);
 	}
 	
-	public static void registerMetaLang(Object obj, String loc, LangEntry... entries)
+	public static void registerMetaLang(Object obj, ResourceLocation loc, LangEntry... entries)
 	{
 		if(!LoaderMain.isDeObfuscated)
 			return;
-		String pre = null;
-		if(obj instanceof Block)
-			pre = "tile.";
-		else if(obj instanceof Item)
-			pre = "item.";
+		String pre = getUnlocalPrefix(obj);
 		for(LangEntry lang : entries)
 		{
-			lang.langId = pre + loc.toString().replaceAll(":", ".") + "_" + lang.meta + ".name";
-			lang.loc = new ResourceLocation(loc.replaceAll("\\.", ":"));
+			lang.langId = pre + loc.toString().replaceAll(":", ".") + "_" + lang.meta + getUnlocalSuffix(obj);
+			lang.loc = loc;
 			LangRegistry.add(lang);
 		}
 	}
 
-	public static String getRegistryName(Object obj) 
+	public static String getUnlocalPrefix(Object obj) 
 	{
-		if(obj instanceof IForgeRegistryEntry.Impl)
-			return ((IForgeRegistryEntry.Impl)obj).getRegistryName().toString();
+		String pre = "";
+		if(obj instanceof Block)
+			pre = "tile.";
+		else if(obj instanceof Item)
+			pre = "item.";
+		else if(obj instanceof Enchantment)
+			pre = "enchantment.";
+		else if(obj instanceof Biome)
+			pre = "biome.";
+		else if(obj instanceof Potion)
+			pre = "potion.";
 		else if(obj instanceof CreativeTabs)
-			return ((CreativeTabs)obj).tabLabel;
-		return null;
+			pre = "itemGroup.";
+		else if(obj instanceof Entity)
+			pre = "entity.";
+		return pre;
 	}
 	
+	public static String getUnlocalSuffix(Object obj) 
+	{
+		if(obj instanceof CreativeTabs)
+			return "";
+		return ".name";
+	}
 
+	public static ResourceLocation getRegistryName(Object obj) 
+	{
+		if(obj instanceof IForgeRegistryEntry.Impl)
+			return ((IForgeRegistryEntry.Impl)obj).getRegistryName();
+		else if(obj instanceof CreativeTabs)
+			return new ResourceLocation(((CreativeTabs)obj).tabLabel.replaceFirst("itemGroup.", "").replaceAll("\\.", ":"));
+		return null;
+	}
 }

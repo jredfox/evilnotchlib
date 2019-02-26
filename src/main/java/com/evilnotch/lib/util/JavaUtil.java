@@ -292,7 +292,7 @@ public class JavaUtil {
 		}
 	}
 	
-	public static void getAllFilesFromDir(File directory, ArrayList<File> files,String extension) {
+	public static void getAllFilesFromDir(File directory, List<File> files,String extension) {
 
 	    // get all the files from a directory
 	    File[] fList = directory.listFiles();
@@ -304,7 +304,7 @@ public class JavaUtil {
 	        }
 	    }
 	}
-	public static void getAllFilesFromDir(File directory, ArrayList<File> files) {
+	public static void getAllFilesFromDir(File directory, List<File> files) {
 
 	    // get all the files from a directory
 	    File[] fList = directory.listFiles();

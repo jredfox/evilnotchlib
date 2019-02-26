@@ -92,7 +92,13 @@ public class MinecraftUtil {
    {
 	   if(!compiledTracker.containsKey(modid))
 	   {
-		   File source = Loader.instance().getIndexedModList().get(modid).getSource();
+		   ModContainer container =  Loader.instance().getIndexedModList().get(modid);
+		   if(container == null)
+		   {
+			   System.out.println("Can't Identify If a mod is compiled when ModConatiner is null:" + modid);
+			   return false;
+		   }
+		   File source = container.getSource();
 		   boolean isJar = source == null ? false : source.isFile() && isModExtension(source.getName());
 		   compiledTracker.put(modid, isJar);
 		   return isJar;

@@ -1,6 +1,5 @@
 package com.purejava.java;
 
-import java.util.HashMap;
 import java.util.Set;
 
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
@@ -9,15 +8,15 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import net.sourceforge.sizeof.SizeOf;
+import net.minecraft.util.ResourceLocation;
 
 public class MainJava {
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		String str = "enchantment.level.100";
-		System.out.println(str.replace(".", ":"));
+		String str = "itemGroup.evilnotchlib:level_100";
+		System.out.println(new ResourceLocation(str.replaceFirst("itemGroup.", "")));
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)

@@ -176,7 +176,8 @@ public class JsonGen {
 	
 	private static void saveIfJSON(JSONObject json, File file) throws IOException 
 	{
-		if(JavaUtil.saveIfJSON(json, file))
+		File sync = LoaderGen.getSyncFile(file);
+		if(JavaUtil.saveIfJSON(json, file) || JavaUtil.saveIfJSON(json, sync))
 			isDirty = true;
 	}
 

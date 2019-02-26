@@ -14,22 +14,23 @@ public class BasicCreativeTab extends CreativeTabs{
 	
 	public ItemStack display = null;
 	
-	public BasicCreativeTab(ResourceLocation label,ItemStack display,LangEntry... langlist) {
+	public BasicCreativeTab(ResourceLocation label, ItemStack display, LangEntry... langlist) 
+	{
 		this(label,display,"items.png",true,langlist);
 	}
-	public BasicCreativeTab(ResourceLocation id,ItemStack display,String backgroundIcon,boolean drawTitle,LangEntry... langlist){
+	
+	public BasicCreativeTab(ResourceLocation id, ItemStack display, String backgroundIcon, boolean drawTitle, LangEntry... langlist)
+	{
 		super(id.toString().replaceAll(":", "."));
 		this.display = display;
 		this.setBackgroundImageName(backgroundIcon);
 		if(!drawTitle)
 			this.setNoTitle();
-		if(LoaderMain.isClient)
-		{
-			populateLang(id, langlist);
-		}
+		populateLang(langlist);
 	}
+	
 	@SideOnly(Side.CLIENT)
-    protected void populateLang(ResourceLocation id, LangEntry... langlist) 
+    protected void populateLang(LangEntry... langlist) 
 	{
 		LangRegistry.registerLang(this, langlist);
 	}
