@@ -38,7 +38,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockMeta<Block>{
+public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockMeta{
 	
 	public IProperty property = null;
 	
@@ -269,20 +269,18 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockM
 	public ModelPart getModelPart() {
 		return ModelPart.cube_all;
 	}
-
-	@Override
-	public Block getObject() {
-		return this;
-	}
-
-	@Override
-	public ResourceLocation getResourceLocation() {
-		return this.getRegistryName();
-	}
-
+	
 	@Override
 	public IProperty getProperty() {
 		return this.property;
+	}
+	
+	@Override
+	public ItemBlock getItemBlock()
+	{
+		ItemBlock b = new ItemBlockMeta(this);
+		b.setRegistryName(this.getRegistryName());
+		return b;
 	}
 	
 }

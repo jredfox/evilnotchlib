@@ -17,8 +17,20 @@ import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlock;
 import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
+import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
+import com.evilnotch.lib.minecraft.basicmc.auto.test.EnumCheese;
+import com.evilnotch.lib.minecraft.basicmc.auto.test.MultiSidedGrass;
+import com.evilnotch.lib.minecraft.basicmc.block.BasicBlock;
+import com.evilnotch.lib.minecraft.basicmc.block.BasicMetaBlock;
+import com.evilnotch.lib.minecraft.basicmc.block.BlockProperties;
+import com.evilnotch.lib.minecraft.basicmc.block.property.PropertyMetaEnum;
+import com.evilnotch.lib.minecraft.basicmc.client.creativetab.BasicCreativeTab;
+import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
+import com.evilnotch.lib.minecraft.basicmc.item.BasicItemMeta;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
+import com.evilnotch.lib.minecraft.basicmc.item.tool.ItemBasicPickaxe;
+import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolMat;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
 import com.evilnotch.lib.minecraft.event.PickEvent.Entity;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
@@ -30,9 +42,15 @@ import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.world.FakeWorld;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -122,7 +140,37 @@ public class LoaderMain {
 		GeneralRegistry.load();
 		loadEvents();
 		loadfoamFixFixer();
+		loadItems();
 	}
+	/**
+	 * load Debug Items
+	 */
+	private static void loadItems() 
+	{
+		if(Config.debug)
+		{
+			BlockProperties props = new BlockProperties(new ResourceLocation(MainJava.MODID + ":" + "spider"),"pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
+			BasicCreativeTab tab = new BasicCreativeTab(new ResourceLocation(MainJava.MODID + ":spidertesting"),new ItemStack(Items.CAKE),new LangEntry("en_us","Custom Shiny Tab"),new LangEntry("ru_ru","Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°") );
+			BasicItem item = new BasicItem(new ResourceLocation(MainJava.MODID + ":" + "stick"),tab,new LangEntry("en_us","Modded Stick"));
+			ToolMat test = new ToolMat(new ResourceLocation(MainJava.MODID + ":" + "test"), 2, 100, 10, 3, 30);
+			ItemBasicPickaxe axe = new ItemBasicPickaxe(test,new ResourceLocation(MainJava.MODID + ":" + "pickaxe"),tab, new LangEntry("en_us","RadioActive Pick"));
+			BasicBlock b = new BasicBlock(Material.ROCK, new ResourceLocation(MainJava.MODID + ":" + "spider"),tab,props,new LangEntry("en_us","Spider Master"),new LangEntry("ru_ru","Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº"));
+		
+			BasicMetaBlock b2 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MainJava.MODID + ":" + "cheese"), tab, null, PropertyMetaEnum.createProperty("cheese", EnumCheese.class),new LangEntry("en_us","American Cheese","american"),new LangEntry("en_us","Swiss Cheese","swiss"));
+			BasicMetaBlock b3 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MainJava.MODID + ":" + "meat"), tab, null, PropertyInteger.create("meat",0,15),new LangEntry("en_us","Steak Block","0"),new LangEntry("en_us","Pork Block","1"));
+			BasicMetaBlock b4 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MainJava.MODID + ":" + "wolf"), tab, null, PropertyBool.create("wolf"),new LangEntry("en_us","Angry Wolf Block","false"),new LangEntry("en_us","Wolf Block","true"));
+			BasicMetaBlock b5 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MainJava.MODID + ":" + "facing"), tab, null, PropertyDirection.create("direction"),
+				new LangEntry("en_us","UP","up"),new LangEntry("en_us","Down","down"),new LangEntry("en_us","North","north"),
+				new LangEntry("en_us","South","south"),new LangEntry("en_us","East","east"),new LangEntry("en_us","West","west"));
+		
+			MultiSidedGrass b6 = new MultiSidedGrass(Material.GRASS,new ResourceLocation(MainJava.MODID + ":" + "grass"),tab,null,PropertyInteger.create("grass_test", 0, 2),new LangEntry("en_us","Cool Grass","0"),new LangEntry("en_us","Purple Grass","1"),new LangEntry("en_us","Orange Grass","2"));
+		
+			BasicItemMeta i2 = new BasicItemMeta(new ResourceLocation(MainJava.MODID + ":" + "ingot"), 4,tab,
+				new LangEntry("en_us","Purple Ingot","0"),new LangEntry("en_us","Yellow Ingot","1"),new LangEntry("en_us","Tropical Ingot","2"),new LangEntry("en_us","Blue Ingot","3"),
+				new LangEntry("en_us","Cloud Ingot","4"));
+		}
+	}
+
 	/**
 	 * stop foamfix fixer from being broken use mine instead
 	 */

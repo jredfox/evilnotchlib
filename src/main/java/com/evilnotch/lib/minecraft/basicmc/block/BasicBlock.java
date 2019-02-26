@@ -5,6 +5,7 @@ import java.util.List;
 import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlock;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
@@ -22,7 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BasicBlock extends Block {
+public class BasicBlock extends Block implements IBasicBlock{
 	
 	public ItemBlock itemblock = null;
 	public BlockProperties blockprops = null;
@@ -136,6 +137,26 @@ public class BasicBlock extends Block {
 		cfg.addLine(line);
 		line = (LineArray) cfg.getUpdatedLine(line);
 		return new BlockProperties(line);
+	}
+
+	@Override
+	public Block getObject() 
+	{
+		return this;
+	}
+
+	@Override
+	public ResourceLocation getResourceLocation() 
+	{
+		return this.getRegistryName();
+	}
+
+	@Override
+	public ItemBlock getItemBlock()
+	{
+		ItemBlock b = new ItemBlock(this);
+		b.setRegistryName(this.getRegistryName());
+		return b;
 	}
 	
 }

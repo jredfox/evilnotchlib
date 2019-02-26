@@ -48,4 +48,10 @@ public class BasicBlockJSON implements IBasicBlock{
 	{
 		return this.model;
 	}
+
+	@Override
+	public ItemBlock getItemBlock() 
+	{
+		return null;
+	}
 }

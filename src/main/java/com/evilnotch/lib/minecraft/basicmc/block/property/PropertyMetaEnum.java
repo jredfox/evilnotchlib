@@ -19,18 +19,8 @@ public class PropertyMetaEnum<T extends Enum<T> & IStringSerializable & IPropert
 	}
 
 	@Override
-	public Set<Integer> getMetaDataValues()
+	public Enum getValue(int meta) 
 	{
-		Collection<T> list = this.getAllowedValues();
-		Set<Integer> set = new HashSet();
-		for(IPropertyMeta t : list)
-		{
-			set.add(t.getMetaData());
-		}
-		return set;
-	}
-	@Override
-	public Enum getValue(int meta) {
 		Collection<T> c = this.getAllowedValues();
 		for(T t : c)
 		{
@@ -38,6 +28,11 @@ public class PropertyMetaEnum<T extends Enum<T> & IStringSerializable & IPropert
 				return t;
 		}
 		return null;
+	}
+	
+	public int getMeta(Enum<? extends IPropertyMeta> e)
+	{
+		return ((IPropertyMeta)e).getMetaData();
 	}
 	
     /**
