@@ -43,11 +43,6 @@ public class BasicBlockJSON implements IBasicBlock{
 		return this.block;
 	}
 
-	public Item getItem() 
-	{
-		return this.item;
-	}
-
 	@Override
 	public ModelPart getModelPart() 
 	{

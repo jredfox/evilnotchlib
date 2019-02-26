@@ -152,9 +152,7 @@ public class BlockApi {
 	}
 	
 	public static String getBlockStateName(IBlockState state, IProperty p)
-	{
-		Block block = state.getBlock();
-		
+	{	
 		if(p instanceof PropertyInteger)
 		{
 			String i = state.getValue(p).toString();

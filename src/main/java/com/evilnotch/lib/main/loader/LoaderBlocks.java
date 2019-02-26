@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlock;
+import com.evilnotch.lib.minecraft.basicmc.block.BasicMetaBlock;
+import com.evilnotch.lib.minecraft.basicmc.block.item.ItemBlockMeta;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.line.config.ConfigNonMeta;
 
@@ -28,9 +29,18 @@ public class LoaderBlocks {
 		for(Block b : LoaderBlocks.blocks)
 		{
 			ForgeRegistries.BLOCKS.register(b);
-			ItemBlock i = new ItemBlock(b);
-			i.setRegistryName(b.getRegistryName());
-			ForgeRegistries.ITEMS.register(i);
+			if(b instanceof BasicMetaBlock)
+			{
+				ItemBlock i = new ItemBlockMeta(b);
+				i.setRegistryName(b.getRegistryName());
+				ForgeRegistries.ITEMS.register(i);
+			}
+			else
+			{
+				ItemBlock i = new ItemBlock(b);
+				i.setRegistryName(b.getRegistryName());
+				ForgeRegistries.ITEMS.register(i);
+			}
 	    }
 	}
 

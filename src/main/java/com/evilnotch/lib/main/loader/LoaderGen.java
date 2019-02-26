@@ -17,9 +17,12 @@ public class LoaderGen {
 		if(LoaderMain.isClient)
 		{
 			LangRegistry.registerLang();
-			try {
+			try
+			{
 				JsonGen.genJSONS();
-			} catch (IOException e) {
+			} 
+			catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 		}

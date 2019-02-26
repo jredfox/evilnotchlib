@@ -55,11 +55,13 @@ import com.evilnotch.lib.util.primitive.LongObj;
 import com.evilnotch.lib.util.primitive.ShortObj;
 import com.evilnotch.lib.util.simple.ICopy;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 
 public class JavaUtil {
 	public static final String SPECIALCHARS = "~!@#$%^&*()_+`'-=/,.<>?\"{}[]:;|" + "\\";
 	public static final String uniqueSplitter = "\u00A9" + "#" + "\u20AC";
+	public static final List emptyList = new ArrayList(0);
 	public static String numberIds = "bslfdi";
 	
 	/**
