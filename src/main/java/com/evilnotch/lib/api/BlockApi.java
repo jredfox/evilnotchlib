@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlockMeta;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.util.BlockUtil;
 import com.evilnotch.lib.minecraft.util.ItemUtil;
@@ -13,9 +14,16 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
 
@@ -136,6 +144,38 @@ public class BlockApi {
 	{
 		String[] tools = (String[]) ReflectionUtil.getObject(b, Block.class, "harvestTool");
 		return tools[meta];
+	}
+	
+	public static String getBlockStateNameJSON(IBlockState state, IProperty p)
+	{
+		return getBlockStateName(state,p).replaceFirst("=", "_");
+	}
+	
+	public static String getBlockStateName(IBlockState state, IProperty p)
+	{
+		Block block = state.getBlock();
+		
+		if(p instanceof PropertyInteger)
+		{
+			String i = state.getValue(p).toString();
+			return  p.getName() + "=" + i;
+		}
+		else if(p instanceof PropertyBool)
+		{
+			String bool = state.getValue(p).toString();
+			return p.getName() + "=" + bool;
+		}
+		else if(p instanceof PropertyDirection)
+		{
+			String dir = state.getValue(p).toString();
+			return p.getName() + "=" + dir;
+		}
+		else if(p instanceof PropertyEnum)
+		{
+			IStringSerializable name = (IStringSerializable) state.getValue(p);
+			return p.getName() + "=" + name.getName();
+		}
+		return null;
 	}
 	
 }

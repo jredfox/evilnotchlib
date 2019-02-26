@@ -123,7 +123,7 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockM
 		{
 			return super.createBlockState();
 		}
-		return new BlockStateContainer(this,new IProperty[]{this.property});
+		return new BlockStateContainer(this, new IProperty[]{this.property});
 	}
 	
 	@Override

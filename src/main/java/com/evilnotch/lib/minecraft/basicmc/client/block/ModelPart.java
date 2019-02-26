@@ -87,7 +87,7 @@ public class ModelPart {
 
 	protected boolean getHasCustomSide() 
 	{	
-		ArrayList<String> list = JavaUtil.asArray(new Object[]{down,up,north,south,east,west});
+		ArrayList<String> list = JavaUtil.asArray(new Object[]{this.down,this.up,this.north,this.south,this.east,this.west});
 		for(String s : list)
 		{
 			for(String s2 : list)
@@ -102,6 +102,11 @@ public class ModelPart {
 	protected boolean getHasCustomParticle() 
 	{
 		return !this.particle.equals(this.up) && !this.particle.equals(this.down) && !this.particle.equals(this.north) && !this.particle.equals(this.south) && !this.particle.equals(this.east) && !this.particle.equals(this.west);
+	}
+
+	public PairString[] getParts() 
+	{
+		return new PairString[]{new PairString("particle",this.particle),new PairString("up",this.up),new PairString("down",this.down),new PairString("north",this.north),new PairString("south",this.south),new PairString("east",this.east),new PairString("west",this.west)};
 	}
 
 }
