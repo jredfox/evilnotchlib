@@ -7,7 +7,9 @@ import java.util.Set;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlockMeta;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.block.item.IMetaName;
@@ -69,6 +71,7 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockM
 	{
 		super(blockMaterialIn, blockMapColorIn, id, tab, model, register, lang, config, itemblock, false, props,langlist);
 		this.property = prop;
+		this.populateJSON();
 		
 		if(itemblock == null)
 			this.itemblock = new ItemBlockMeta(this);
@@ -87,6 +90,14 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockM
 	public void populateLang(LangEntry... langlist) 
 	{
 		LangRegistry.registerMetaLang(this, langlist);
+	}
+	
+	@Override
+	public void populateJSON()
+	{
+		if(!LoaderMain.isClient || this.property == null)
+			return;
+		JsonGen.registerBlockMetaJson(this, this.getModelPart(), this.property);
 	}
 	
 	public void setStateConstructor(IProperty prop) 

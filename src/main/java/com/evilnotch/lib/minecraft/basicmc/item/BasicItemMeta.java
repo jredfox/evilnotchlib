@@ -1,27 +1,27 @@
 package com.evilnotch.lib.minecraft.basicmc.item;
 
+import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItemMeta;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicItemMeta extends BasicItem{
+public class BasicItemMeta extends BasicItem implements IBasicItemMeta<Item>{
 	
 	public int maxMeta;
 	
 	public BasicItemMeta(ResourceLocation id,int maxMeta,LangEntry...langlist){
 		this(id,maxMeta,null,langlist);
 	}
-	public BasicItemMeta(ResourceLocation id,int maxMeta,CreativeTabs tab,LangEntry...langlist){
-		this(id,maxMeta,tab,true,true,true,langlist);
-	}
 	
-	public BasicItemMeta(ResourceLocation id,int maxMeta,CreativeTabs tab,boolean model,boolean register,boolean lang,LangEntry... langlist)
+	public BasicItemMeta(ResourceLocation id,int maxMeta,CreativeTabs tab,LangEntry... langlist)
 	{
-		super(id,tab,model,register,lang,langlist);
+		super(id,tab,langlist);
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 		this.maxMeta = maxMeta;
@@ -31,6 +31,12 @@ public class BasicItemMeta extends BasicItem{
 	public void populateLang(LangEntry... langs)
 	{
 		LangRegistry.registerMetaLang(this, langs);
+	}
+	
+	@Override
+	public void populateJSON()
+	{
+		JsonGen.registerItemMetaJson(this, this.getMaxMeta());
 	}
 	
 	@Override
@@ -53,5 +59,11 @@ public class BasicItemMeta extends BasicItem{
 			items.add(new ItemStack(this,1,i));
 		}
     }
+
+	@Override
+	public int getMaxMeta() 
+	{
+		return this.maxMeta;
+	}
 
 }

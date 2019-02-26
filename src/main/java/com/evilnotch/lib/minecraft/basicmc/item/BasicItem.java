@@ -1,9 +1,12 @@
 package com.evilnotch.lib.minecraft.basicmc.item;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
+import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorMat;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolMat;
 import com.evilnotch.lib.util.line.LineArray;
@@ -15,31 +18,19 @@ import net.minecraft.util.ResourceLocation;
 
 public class BasicItem extends Item implements IBasicItem<Item>{
 	
-	public boolean hasregister = false;
-	public boolean hasmodel = false;
-	public boolean haslang = false;
-	
 	public BasicItem(ResourceLocation id,LangEntry...langlist){
 		this(id,null,langlist);
 	}
-	public BasicItem(ResourceLocation id,CreativeTabs tab,LangEntry...langlist){
-		this(id,tab,true,true,true,langlist);
-	}
 	
-	public BasicItem(ResourceLocation id,CreativeTabs tab,boolean model,boolean register,boolean lang,LangEntry... langlist)
+	public BasicItem(ResourceLocation id,CreativeTabs tab,LangEntry... langlist)
 	{
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);
 		this.setCreativeTab(tab);
 		
-		this.hasregister = register;
-		this.hasmodel = model;
-		this.haslang = lang;
-		
 		//autofill
 		populateLang(langlist);//not just client side I18l or something uses it on server side for translations
-		
 		LoaderItems.items.add(this);
 	}
 	
@@ -47,7 +38,14 @@ public class BasicItem extends Item implements IBasicItem<Item>{
 	{
 		LangRegistry.registerLang(this, langs);
 	}
-
+	
+	public void populateJSON()
+	{
+		if(!LoaderMain.isClient)
+			return;
+		JsonGen.registerItemJson(this);
+	}
+	
 	/**
 	 * configures tool material before sending it to the constructor
 	 * If config is turned off just returns default enum

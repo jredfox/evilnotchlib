@@ -146,7 +146,7 @@ public class BlockApi {
 		return tools[meta];
 	}
 	
-	public static String getBlockStateNameJSON(IBlockState state, IProperty p)
+	public static String getPropertyValue(IBlockState state, IProperty p)
 	{
 		return JavaUtil.splitFirst(getBlockStateName(state,p), '=')[1];
 	}

@@ -68,17 +68,6 @@ public class MainJava {
 		BasicItemMeta i2 = new BasicItemMeta(new ResourceLocation(MODID + ":" + "ingot"), 4,tab,
 				new LangEntry("en_us","Purple Ingot","0"),new LangEntry("en_us","Yellow Ingot","1"),new LangEntry("en_us","Tropical Ingot","2"),new LangEntry("en_us","Blue Ingot","3"),
 				new LangEntry("en_us","Cloud Ingot","4"));
-		
-		JsonGen.registerBlockJson(b);
-		JsonGen.registerBlockMetaJson(b2, ModelPart.cube_all, b2.getProperty());
-		JsonGen.registerBlockMetaJson(b3, ModelPart.cube_all, b3.getProperty());
-		JsonGen.registerBlockMetaJson(b4, ModelPart.cube_all, b4.getProperty());
-		JsonGen.registerBlockMetaJson(b5, ModelPart.cube_all, b5.getProperty());
-		JsonGen.registerBlockMetaJson(b6, ModelPart.cube_bottom_top, b6.getProperty());
-		
-		JsonGen.registerItemJson(item);
-		JsonGen.registerItemJson(axe);
-		JsonGen.registerItemMetaJson(i2, 4);
 	}
 	
 	@Mod.EventHandler

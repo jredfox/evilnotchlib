@@ -1,48 +1,34 @@
 package com.evilnotch.lib.minecraft.basicmc.block;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nullable;
 
 import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
+import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
-import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BasicBlock extends Block {
 	
-	public boolean hasregister = false;
-	public boolean hasmodel = false;
-	public boolean haslang = false;
-	public boolean hasconfig = false;
 	public ItemBlock itemblock = null;
 	public BlockProperties blockprops = null;
-	public List<String> cacheStates;
+	public boolean hasconfig = true;
 	
-	public BasicBlock(ResourceLocation id,LangEntry... lang) {
+	public BasicBlock(ResourceLocation id, LangEntry... lang) {
 		this(Material.ROCK,id,lang);
 	}
 	
@@ -71,12 +57,8 @@ public class BasicBlock extends Block {
 		this.setUnlocalizedName(unlocalname);
 		this.setCreativeTab(tab);
 		
-		this.hasregister = register;
-		this.hasmodel = model;
-		this.haslang = lang;
-		this.hasconfig = config;
-		
 		this.populateLang(langlist);
+		this.populateJSON();
 		
 		//set properties of the block
 		fillProperties(props);
@@ -95,6 +77,17 @@ public class BasicBlock extends Block {
 	public void populateLang(LangEntry... langlist) 
 	{
 		LangRegistry.registerLang(this, langlist);
+	}
+	
+	public void populateJSON()
+	{
+		JsonGen.registerBlockJson(this, this.getModelPart());
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public ModelPart getModelPart()
+	{
+		return ModelPart.cube_all;
 	}
 	
 	protected void fillProperties(BlockProperties props) 
