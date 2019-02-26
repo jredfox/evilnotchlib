@@ -132,7 +132,7 @@ public class JsonGen {
 			saveIfJSON(json, file);
 				
 			//models/item/itemblock
-			File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + ".json");
+			File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
 			JSONObject item = getJSONItemBlock(i, null);
 			saveIfJSON(item, itemFile);
 			
@@ -158,7 +158,7 @@ public class JsonGen {
 				saveIfJSON(json, file);
 				
 				//model/item/itemblock
-				File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + "_" + BlockApi.getPropertyValue(state, p) + ".json");
+				File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + "_" + BlockApi.getPropertyValue(state, p) + ".json");
 				JSONObject item = getJSONItemBlock(i, state);
 				saveIfJSON(item, itemFile);
 				
@@ -278,6 +278,7 @@ public class JsonGen {
 			Item item = gen.getObject();
 			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(gen.loc, "inventory"));
 		}
+		
 		for(BasicItemJSONMeta gen : items_meta)
 		{
 			Item item = gen.getObject();
@@ -289,9 +290,10 @@ public class JsonGen {
 		{
 			Block b = gen.getObject();
 			Item item = ItemBlock.getItemFromBlock(b);
-			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath(), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(gen.loc.getResourceDomain() + ":" + gen.loc.getResourcePath(), "inventory"));
 			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(gen.loc, "normal"));
 		}
+		
 		for(BasicBlockJSONMeta gen : blocks_meta)
 		{
 			Block b = gen.getObject();
@@ -300,9 +302,8 @@ public class JsonGen {
 			for(IBlockState state : b.getBlockState().getValidStates())
 			{
 				int meta = b.getMetaFromState(state);
-				ModelLoader.registerItemVariants(item, new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath() + "_" + BlockApi.getPropertyValue(state, gen.property), "inventory"));
-				ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath() + "_" + BlockApi.getPropertyValue(state, gen.property), "inventory"));
-				ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(gen.loc + "_" + BlockApi.getPropertyValue(state, gen.property), BlockApi.getBlockStateName(state, gen.property)));
+				ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(gen.loc.getResourceDomain() + ":" + gen.loc.getResourcePath() + "_" + BlockApi.getPropertyValue(state, gen.property), "inventory"));
+//				ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(gen.loc + "_" + BlockApi.getPropertyValue(state, gen.property), BlockApi.getBlockStateName(state, gen.property)));
 			}
 		}
 	}

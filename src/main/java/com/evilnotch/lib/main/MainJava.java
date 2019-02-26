@@ -56,10 +56,10 @@ public class MainJava {
 		ItemBasicPickaxe axe = new ItemBasicPickaxe(test,new ResourceLocation(MODID + ":" + "pickaxe"),tab, new LangEntry("en_us","RadioActive Pick"));
 		BasicBlock b = new BasicBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "spider"),tab,props,new LangEntry("en_us","Spider Master"),new LangEntry("ru_ru","Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº"));
 		
-		BasicMetaBlock b2 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "cheese"), tab, null,PropertyMetaEnum.createProperty("cheese", EnumCheese.class),new LangEntry("en_us","American Cheese","american"),new LangEntry("en_us","Swiss Cheese","swiss"));
-		BasicMetaBlock b3 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "meat"), tab, null,PropertyInteger.create("meat",0,15),new LangEntry("en_us","Steak Block","0"),new LangEntry("en_us","Pork Block","1"));
-		BasicMetaBlock b4 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "wolf"), tab, null,PropertyBool.create("wolf"),new LangEntry("en_us","Angry Wolf Block","false"),new LangEntry("en_us","Wolf Block","true"));
-		BasicMetaBlock b5 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "facing"), tab, null,PropertyDirection.create("direction"),
+		BasicMetaBlock b2 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "cheese"), tab, null, PropertyMetaEnum.createProperty("cheese", EnumCheese.class),new LangEntry("en_us","American Cheese","american"),new LangEntry("en_us","Swiss Cheese","swiss"));
+		BasicMetaBlock b3 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "meat"), tab, null, PropertyInteger.create("meat",0,15),new LangEntry("en_us","Steak Block","0"),new LangEntry("en_us","Pork Block","1"));
+		BasicMetaBlock b4 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "wolf"), tab, null, PropertyBool.create("wolf"),new LangEntry("en_us","Angry Wolf Block","false"),new LangEntry("en_us","Wolf Block","true"));
+		BasicMetaBlock b5 = new BasicMetaBlock(Material.ROCK, new ResourceLocation(MODID + ":" + "facing"), tab, null, PropertyDirection.create("direction"),
 				new LangEntry("en_us","UP","up"),new LangEntry("en_us","Down","down"),new LangEntry("en_us","North","north"),
 				new LangEntry("en_us","South","south"),new LangEntry("en_us","East","east"),new LangEntry("en_us","West","west"));
 		

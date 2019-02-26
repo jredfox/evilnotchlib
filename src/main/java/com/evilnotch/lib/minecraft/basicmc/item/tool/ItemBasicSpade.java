@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
@@ -40,6 +41,7 @@ public class ItemBasicSpade extends ItemSpade implements IBasicItem<ItemSpade>{
 		
 		//autofill
 		this.populateLang(id, langlist);
+		this.populateJSON();
 		
 		LoaderItems.items.add(this);
 	}
@@ -48,6 +50,12 @@ public class ItemBasicSpade extends ItemSpade implements IBasicItem<ItemSpade>{
 	{
 		LangRegistry.registerLang(this, langs);
 	}
+	
+	public void populateJSON()
+	{
+		JsonGen.registerItemJson(this);
+	}
+	
 	@Override
 	public ItemSpade getObject() {
 		return this;

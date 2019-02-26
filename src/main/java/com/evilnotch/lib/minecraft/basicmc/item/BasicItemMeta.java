@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 public class BasicItemMeta extends BasicItem implements IBasicItemMeta<Item>{
 	
 	public int maxMeta;
+	private boolean constructedMeta = false;
 	
 	public BasicItemMeta(ResourceLocation id,int maxMeta,LangEntry...langlist){
 		this(id,maxMeta,null,langlist);
@@ -22,21 +23,25 @@ public class BasicItemMeta extends BasicItem implements IBasicItemMeta<Item>{
 	public BasicItemMeta(ResourceLocation id,int maxMeta,CreativeTabs tab,LangEntry... langlist)
 	{
 		super(id,tab,langlist);
+		this.constructedMeta = true;
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
 		this.maxMeta = maxMeta;
+		this.populateJSON();
 	}
 	
+	@Override
+	public void populateJSON() 
+	{
+		if(!constructedMeta)
+			return;
+		JsonGen.registerItemMetaJson(this, this.getMaxMeta());
+	}
+
 	@Override
 	public void populateLang(LangEntry... langs)
 	{
 		LangRegistry.registerMetaLang(this, langs);
-	}
-	
-	@Override
-	public void populateJSON()
-	{
-		JsonGen.registerItemMetaJson(this, this.getMaxMeta());
 	}
 	
 	@Override

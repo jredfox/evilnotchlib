@@ -30,7 +30,8 @@ public class BasicItem extends Item implements IBasicItem<Item>{
 		this.setCreativeTab(tab);
 		
 		//autofill
-		populateLang(langlist);//not just client side I18l or something uses it on server side for translations
+		this.populateLang(langlist);//not just client side I18l or something uses it on server side for translations
+		this.populateJSON();
 		LoaderItems.items.add(this);
 	}
 	
@@ -41,8 +42,6 @@ public class BasicItem extends Item implements IBasicItem<Item>{
 	
 	public void populateJSON()
 	{
-		if(!LoaderMain.isClient)
-			return;
 		JsonGen.registerItemJson(this);
 	}
 	
