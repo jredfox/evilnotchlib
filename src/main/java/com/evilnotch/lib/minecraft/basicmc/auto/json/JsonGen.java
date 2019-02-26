@@ -101,7 +101,7 @@ public class JsonGen {
 		{
 			if(MinecraftUtil.isModCompiled(i.getResourceLocation().getResourceDomain()))
 				continue;
-			JSONObject json = getJSONItem(getParentModel(i.getObject()), i, 0);
+			JSONObject json = getJSONItem(getParentModel(i.getObject()), i, -1);
 			ResourceLocation loc = i.getResourceLocation();
 			File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
 			saveIfJSON(json, file);
@@ -236,7 +236,7 @@ public class JsonGen {
 		
 		JSONObject textures = new JSONObject();
 		ResourceLocation loc = item.getResourceLocation();
-		textures.put("layer0", loc.getResourceDomain() + ":items/" + item.getTextureName() + (meta > 0 ? "_" + meta : "") );
+		textures.put("layer0", loc.getResourceDomain() + ":items/" + item.getTextureName() + (meta > -1 ? "_" + meta : "") );
 		json.put("textures", textures);
 		return json;
 	}
