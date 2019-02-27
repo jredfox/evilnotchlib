@@ -81,7 +81,6 @@ Go into eclipse java build path and add the jar
 Contributing:
 ```
 download the entire source code and install to a new workspace
-install classwriter mod and throw it in the libs folder
 run gradlew setupDecompWorkspace eclipse
 input the classwriter mod into your java build path in eclipse
 ```
