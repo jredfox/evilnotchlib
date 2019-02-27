@@ -3,6 +3,7 @@ package com.evilnotch.lib.minecraft.basicmc.item.armor;
 import java.util.HashMap;
 import java.util.List;
 
+import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
@@ -11,11 +12,14 @@ import com.evilnotch.lib.util.simple.IEnumContainer;
 
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.util.EnumHelper;
 
 public class ArmorMat implements IEnumContainer{
+	
+	public static final ArmorMaterial blankArmorMat = EnumHelper.addArmorMaterial(new ResourceLocation(MainJava.MODID,"blanktool").toString(), "", 0, new int[]{0,0,0,0}, 0, null, 0.0f);
 	
 	 /**
 	  * A hashmap between enum string name and armor material ENUM NAMES MUST BE UNIQUE

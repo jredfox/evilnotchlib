@@ -78,7 +78,8 @@ public class BasicMetaBlock extends BasicBlock implements IBasicBlockMeta{
 	@Override
 	public void populateLang(LangEntry... langlist) 
 	{
-		LangRegistry.registerMetaLang(this, langlist);
+		if(this.canRegisterJSON())
+			LangRegistry.registerMetaLang(this, langlist);
 	}
 	
 	@Override

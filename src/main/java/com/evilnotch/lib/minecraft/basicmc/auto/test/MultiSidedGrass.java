@@ -14,34 +14,36 @@ import net.minecraft.util.ResourceLocation;
 
 public class MultiSidedGrass extends BasicMetaBlock{
 	
-	public MultiSidedGrass(ResourceLocation id,IProperty pi,LangEntry... lang) {
-		this(Material.ROCK,id,pi,lang);
+	public MultiSidedGrass(ResourceLocation id, IProperty ip, LangEntry... lang) 
+	{
+		this(id, ip, Material.ROCK, lang);
 	}
 	
 	/**
 	 * lang name is whatever is "displayname","lang" 
 	 * where lang is langauage type like "en_us" everyting else has been done for you
 	 */
-	public MultiSidedGrass(Material blockMaterialIn,ResourceLocation id,IProperty pi,LangEntry... lang) {
-		this(blockMaterialIn,id,null,pi,lang);
-	}
-	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,IProperty pi,LangEntry... lang) {
-		this(mat,id,tab,null,pi,lang);
-	}
-	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,props,pi,lang);
+	public MultiSidedGrass(ResourceLocation id, IProperty ip, Material mat, LangEntry... lang) 
+	{
+		this(id, ip, mat, null, lang);
 	}
 	
-	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,ItemBlock ib,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,props,pi,lang);
+	public MultiSidedGrass(ResourceLocation id, IProperty ip, Material mat, CreativeTabs tab,LangEntry... lang) 
+	{
+		this(id, ip, mat, tab, null, lang);
+	}
+	
+	public MultiSidedGrass(ResourceLocation id, IProperty ip, Material mat, CreativeTabs tab,BlockProperties props,LangEntry... lang) 
+	{
+		this(id, ip, mat, mat.getMaterialMapColor(), tab, props, lang);
 	}
 	
 	/**
 	 * uses the itemblock if not null regardless whether which boolean you call
 	 */
-	public MultiSidedGrass(Material mat, MapColor mc, ResourceLocation id, CreativeTabs tab,BlockProperties props,IProperty prop, LangEntry... langlist) 
+	public MultiSidedGrass(ResourceLocation id, IProperty prop, Material mat, MapColor color, CreativeTabs tab, BlockProperties props, LangEntry... langlist) 
 	{
-		super(id,prop,mat,mc,tab,props,langlist);
+		super(id, prop, mat, color, tab, props, langlist);
 	}
 	
 	@Override

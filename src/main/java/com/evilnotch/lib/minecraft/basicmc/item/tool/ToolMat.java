@@ -2,6 +2,7 @@ package com.evilnotch.lib.minecraft.basicmc.item.tool;
 
 import java.util.HashMap;
 
+import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.simple.IEnumContainer;
 
@@ -11,6 +12,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
 
 public class ToolMat implements IEnumContainer{
+	
+	public static final ToolMaterial blankToolMat = EnumHelper.addToolMaterial(new ResourceLocation(MainJava.MODID,"blanktool").toString(),0,0,0,0,0);
 	
 	 /**
 	  * A hashmap between enum string name and tool material ENUM NAMES MUST BE UNIQUE

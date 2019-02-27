@@ -6,6 +6,7 @@ import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.basicmc.auto.BlockWrapper;
+import com.evilnotch.lib.minecraft.basicmc.auto.IAutoBlock;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.IBasicBlockJSON;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
@@ -25,7 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BasicBlock extends Block {
+public class BasicBlock extends Block implements IAutoBlock{
 	
 	public ItemBlock itemblock = null;
 	public BlockProperties blockprops = null;
@@ -78,17 +79,20 @@ public class BasicBlock extends Block {
 	
 	public void register() 
 	{
-		LoaderBlocks.blocks.add(new BlockWrapper(this, this.getItemBlock()));
+		if(this.canRegister())
+			LoaderBlocks.blocks.add(new BlockWrapper(this, this.getItemBlock()));
 	}
 
 	public void populateLang(LangEntry... langlist) 
 	{
-		LangRegistry.registerLang(this, langlist);
+		if(this.canRegisterLang())
+			LangRegistry.registerLang(this, langlist);
 	}
 	
 	public void populateJSON()
 	{
-		JsonGen.registerBlockJson(this, this.getModelPart());
+		if(this.canRegisterJSON())
+			JsonGen.registerBlockJson(this, this.getModelPart());
 	}
 	
 	protected void fillProperties(BlockProperties props) 
@@ -153,6 +157,24 @@ public class BasicBlock extends Block {
 	public ModelPart getModelPart()
 	{
 		return ModelPart.cube_all;
+	}
+
+	@Override
+	public boolean canRegister() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canRegisterLang() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canRegisterJSON() 
+	{
+		return true;
 	}
 	
 }
