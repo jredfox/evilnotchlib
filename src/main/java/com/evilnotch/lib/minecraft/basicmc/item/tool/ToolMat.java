@@ -13,8 +13,6 @@ import net.minecraftforge.common.util.EnumHelper;
 
 public class ToolMat implements IEnumContainer{
 	
-	public static final ToolMaterial blankToolMat = EnumHelper.addToolMaterial(new ResourceLocation(MainJava.MODID,"blanktool").toString(),0,0,0,0,0);
-	
 	 /**
 	  * A hashmap between enum string name and tool material ENUM NAMES MUST BE UNIQUE
 	  * Recommended to use modid but, replace all ":" with "_"

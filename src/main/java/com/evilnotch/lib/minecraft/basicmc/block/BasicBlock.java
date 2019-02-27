@@ -1,18 +1,13 @@
 package com.evilnotch.lib.minecraft.basicmc.block;
 
-import java.util.List;
-
-import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
-import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.basicmc.auto.BlockWrapper;
 import com.evilnotch.lib.minecraft.basicmc.auto.IAutoBlock;
-import com.evilnotch.lib.minecraft.basicmc.auto.json.IBasicBlockJSON;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
-import com.evilnotch.lib.minecraft.basicmc.block.item.ItemBlockMeta;
 import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
+import com.evilnotch.lib.minecraft.util.BlockUtil;
 import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 
@@ -23,8 +18,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BasicBlock extends Block implements IAutoBlock{
 	
@@ -70,11 +63,10 @@ public class BasicBlock extends Block implements IAutoBlock{
 		
 		this.populateLang(langlist);
 		this.populateJSON();
+		this.register();
 		
 		//set properties of the block
 		fillProperties(props);
-		
-		this.register();
 	}
 	
 	public void register() 
@@ -110,7 +102,7 @@ public class BasicBlock extends Block implements IAutoBlock{
 			
 			if(props.mat != null)
 			{
-				BlockApi.setMaterial(this, props.mat, true);
+				BlockUtil.setMaterial(this, props.mat, true);
 			}
 			
 			if(props.sound != null)

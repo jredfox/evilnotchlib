@@ -78,7 +78,7 @@ public class BasicMetaBlock extends BasicBlock implements IBasicBlockMeta{
 	@Override
 	public void populateLang(LangEntry... langlist) 
 	{
-		if(this.canRegisterJSON())
+		if(this.canRegisterLang())
 			LangRegistry.registerMetaLang(this, langlist);
 	}
 	
@@ -87,7 +87,8 @@ public class BasicMetaBlock extends BasicBlock implements IBasicBlockMeta{
 	{
 		if(this.property == null)
 			return;
-		JsonGen.registerBlockMetaJson(this, this.getModelPart(), this.property);
+		if(this.canRegisterJSON())
+			JsonGen.registerBlockMetaJson(this, this.getModelPart(), this.property);
 	}
 	
 	public void setStateConstructor(IProperty prop) 

@@ -31,6 +31,12 @@ public class ItemBasicHoe extends ItemHoe implements IAutoItem{
 		this.register();
 	}
 	
+	public void register()
+	{
+		if(this.canRegister())
+			LoaderItems.items.add(this);
+	}
+	
 	public void populateLang(LangEntry... langs)
 	{
 		if(this.canRegisterLang())
@@ -41,12 +47,6 @@ public class ItemBasicHoe extends ItemHoe implements IAutoItem{
 	{
 		if(this.canRegisterJSON())
 			JsonGen.registerItemJson(this);
-	}
-	
-	public void register()
-	{
-		if(this.canRegister())
-			LoaderItems.items.add(this);
 	}
 
 	@Override

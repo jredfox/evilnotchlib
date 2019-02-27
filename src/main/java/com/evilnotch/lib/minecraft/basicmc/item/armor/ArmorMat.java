@@ -19,8 +19,6 @@ import net.minecraftforge.common.util.EnumHelper;
 
 public class ArmorMat implements IEnumContainer{
 	
-	public static final ArmorMaterial blankArmorMat = EnumHelper.addArmorMaterial(new ResourceLocation(MainJava.MODID,"blanktool").toString(), "", 0, new int[]{0,0,0,0}, 0, null, 0.0f);
-	
 	 /**
 	  * A hashmap between enum string name and armor material ENUM NAMES MUST BE UNIQUE
 	  * Recomended to use modid but, replace all ":" with "_"

@@ -16,6 +16,7 @@ import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.basicmc.recipe.ShapelessRecipe;
 import com.evilnotch.lib.minecraft.command.client.ClientUUID;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
+import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairObj;
 
 import net.minecraft.block.SoundType;
@@ -258,6 +259,34 @@ public class GeneralRegistry {
 	public static void registerClientCommand(ICommand cmd) 
 	{
 		ClientCommandHandler.instance.registerCommand(cmd);
+	}
+	
+	/**
+	 * Only supports whatever is registered via my mod
+	 * Get block material from material registry
+	 */
+	public static Material getMatFromReg(ResourceLocation s)
+	{
+		return GeneralRegistry.blockmats.get(s);
+	}
+	
+	public static SoundType getSoundType(ResourceLocation s)
+	{
+		return GeneralRegistry.soundTypes.get(s);
+	}
+	
+	public static ResourceLocation getMaterialLoc(Material mat)
+	{
+		if(mat == null)
+			return null;
+		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.blockmats, mat);
+	}
+	
+	public static ResourceLocation getSoundTypeLoc(SoundType sound) 
+	{
+		if(sound == null)
+			return null;
+		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.soundTypes, sound);
 	}
 
 }

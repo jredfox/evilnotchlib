@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.basicmc.block.item;
 
-import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.minecraft.basicmc.block.IBasicBlockMeta;
 
 import net.minecraft.block.Block;

@@ -1,11 +1,13 @@
 package com.evilnotch.lib.minecraft.basicmc.block;
 
-import com.evilnotch.lib.api.BlockApi;
+import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
+import com.evilnotch.lib.minecraft.util.BlockUtil;
 import com.evilnotch.lib.util.line.LineArray;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
+import scala.reflect.api.Trees.BlockApi;
 
 public class BlockProperties {
 	public ResourceLocation matId = null;
@@ -59,7 +61,7 @@ public class BlockProperties {
 	public BlockProperties(ResourceLocation idMat,String tool,float hard,float resist,int lvl,SoundType sound,int flameE,int flame,float slip,int light)
 	{
 		this.matId = idMat;
-		this.mat = BlockApi.getMatFromReg(idMat);
+		this.mat = GeneralRegistry.getMatFromReg(idMat);
 		this.harvestTool = tool;
 		this.blockHardness = hard;
 		this.blastResistance = resist;
@@ -75,7 +77,7 @@ public class BlockProperties {
 		if(line.hasStringMeta())
 		{
 			this.matId = new ResourceLocation(line.meta);
-			this.mat = BlockApi.getMatFromReg(this.matId);
+			this.mat = GeneralRegistry.getMatFromReg(this.matId);
 		}
 		int size = line.heads.size();
 		if(size >= 5)
@@ -84,7 +86,7 @@ public class BlockProperties {
 			this.blockHardness = line.getFloat(1);
 			this.blastResistance = line.getFloat(2);
 			this.harvestLvl = line.getInt(3);
-			this.sound = BlockApi.getSoundType(new ResourceLocation(line.getString(4)));
+			this.sound = GeneralRegistry.getSoundType(new ResourceLocation(line.getString(4)));
 		}
 		if(size >= 7)
 		{
@@ -110,7 +112,7 @@ public class BlockProperties {
 	@Override
 	public String toString()
 	{
-		String init = "\"" + this.harvestTool + "\"" + "," + this.blockHardness + "f," + this.blastResistance + "f," + this.harvestLvl + "," + "\"" + BlockApi.getSoundTypeLoc(this.sound) + "\"";
+		String init = "\"" + this.harvestTool + "\"" + "," + this.blockHardness + "f," + this.blastResistance + "f," + this.harvestLvl + "," + "\"" + GeneralRegistry.getSoundTypeLoc(this.sound) + "\"";
 		String bonus = "";
 		boolean useAll = this.advanced || this.slipperiness != 0.6F || this.lightValue != 0;
 		boolean useFlame = this.flamability != -1 || this.flameEncoragement != -1;
