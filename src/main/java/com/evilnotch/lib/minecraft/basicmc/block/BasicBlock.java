@@ -137,6 +137,9 @@ public class BasicBlock extends Block implements IAutoBlock{
 	
 	public ItemBlock getItemBlock()
 	{
+		if(!this.hasItemBlock())
+			return null;
+		
 		if(this.itemblock == null)
 		{
 			ItemBlock b = new ItemBlock(this);
@@ -165,6 +168,12 @@ public class BasicBlock extends Block implements IAutoBlock{
 
 	@Override
 	public boolean canRegisterJSON() 
+	{
+		return true;
+	}
+
+	@Override
+	public boolean hasItemBlock()
 	{
 		return true;
 	}

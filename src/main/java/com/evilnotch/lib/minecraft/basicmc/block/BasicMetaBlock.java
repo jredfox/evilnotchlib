@@ -268,6 +268,9 @@ public class BasicMetaBlock extends BasicBlock implements IBasicBlockMeta{
 	@Override
 	public ItemBlock getItemBlock()
 	{
+		if(!this.hasItemBlock())
+			return null;
+		
 		if(this.itemblock == null)
 		{
 			ItemBlock b = new ItemBlockMeta(this);
