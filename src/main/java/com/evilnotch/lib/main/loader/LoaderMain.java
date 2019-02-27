@@ -82,10 +82,11 @@ public class LoaderMain {
 	public static void loadpreinit(FMLPreInitializationEvent e)
 	{
 		loaderMainPreInit(e);
+		LoaderGen.loadpreinit();
 		LoaderItems.loadpreinit();
 		LoaderBlocks.loadpreinit();
 		LoaderCommands.load();
-		loadItems();
+		loadDebugItems();
 	}
 
 	public static void loadInit(FMLInitializationEvent e)
@@ -144,7 +145,7 @@ public class LoaderMain {
 	/**
 	 * load Debug Blocks/Items
 	 */
-	private static void loadItems() 
+	private static void loadDebugItems() 
 	{
 		if(Config.debug)
 		{

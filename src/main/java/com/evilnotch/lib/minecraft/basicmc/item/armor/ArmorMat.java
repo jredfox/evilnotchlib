@@ -20,88 +20,52 @@ import net.minecraftforge.common.util.EnumHelper;
 public class ArmorMat implements IEnumContainer{
 	
 	 /**
-	  * A hashmap between enum string name and armor material ENUM NAMES MUST BE UNIQUE
-	  * Recomended to use modid but, replace all ":" with "_"
+	  * A registry for custom armor material
 	  */
-	 public static HashMap<String,ArmorMaterial> armorenums = new HashMap();
-	 /**
-	  * Cache for retrieving pre-configured ArmorMat
-	  * Don't add them yourselves it's auto added by calling tool constructors
-	  */
-	 public static HashMap<String,ArmorMat> armormats = new HashMap();
+	 public static HashMap<ResourceLocation,ArmorMaterial> armorenums = new HashMap();
 	
-	 public String enumName;
+	 public ResourceLocation id;
+	 public String enumName;//name of this in memory when it gets converted into an enum
 	 public String textureName;
 	 
-     /**
-      * how many hit points before armor breaks
-      */
      public int durability;
-     /**
-      * Holds the damage reduction (each 1 points is half a shield on gui) of each piece of armor (helmet, plate,
-      * legs and boots)
-      */
-     public int[] damageReductionAmountArray;
-     /** Return the enchantability factor of the material */
+     public int[] damageReduction;
      public int enchantability;
      public SoundEvent soundEvent;
      public float toughness;
-     //Added by forge for custom Armor materials.
-     public ItemStack repairMaterial = ItemStack.EMPTY;
 	
-	/**
-	 * Point of this class is to create a material and then enumify it later
-	*/
-	public ArmorMat(ResourceLocation enumName, ResourceLocation textureName, int durability, int[] damageReductionAmountArrayIn, int enchantabilityIn, SoundEvent soundEventIn, float toughnessIn)
-    {
-		 this.enumName = enumName.toString().replaceAll(":", "_");
+	 /**
+	  * Point of this class is to create a material and then enumify it later
+	 */
+	 public ArmorMat(ResourceLocation id, ResourceLocation textureName, int durability, int[] damageReduction, int enclvl, SoundEvent soundEventIn, float tough)
+     {
+         this.id = id;
+		 this.enumName = id.toString().replaceAll(":", "_");
          this.textureName = textureName.toString();
+         
          this.durability = durability;
-         this.damageReductionAmountArray = damageReductionAmountArrayIn;
-         this.enchantability = enchantabilityIn;
+         this.damageReduction = damageReduction;
+         this.enchantability = enclvl;
          this.soundEvent = soundEventIn;
-         this.toughness = toughnessIn;
-    }
+         this.toughness = tough;
+         if(!armorenums.containsKey(id))
+        	 armorenums.put(this.id, this.getEnum());
+     }
 	
-	public ArmorMat(ResourceLocation enumName,ResourceLocation nameIn, int maxDamageFactorIn, int[] damageReductionAmountArrayIn, int enchantabilityIn, ResourceLocation soundEventIN, float toughnessIn)
-    {
-         this(enumName,nameIn,maxDamageFactorIn,damageReductionAmountArrayIn, enchantabilityIn, MinecraftUtil.getSoundEvent(soundEventIN), toughnessIn);
-    }
-	
-	public ArmorMat(LineArray line)
-	{
-		this.enumName = line.getId();
-		this.textureName = (String) line.heads.get(0);
-		this.durability = line.getInt(1);
-		 
-		int[] damageReduce = new int[4];
-		List<Object> arr = line.getHeadList(2);
-		damageReduce[0] = line.getInt(arr, 0);
-		damageReduce[1] = line.getInt(arr, 1);
-		damageReduce[2] = line.getInt(arr, 2);
-		damageReduce[3] = line.getInt(arr, 3);
-		this.damageReductionAmountArray = damageReduce;
-		
-		this.enchantability = line.getInt(3);
-		this.soundEvent = MinecraftUtil.getSoundEvent(new ResourceLocation((String) line.heads.get(4)));
-		this.toughness = line.getFloat(5);
-	}
+	 public ArmorMat(ResourceLocation id, ResourceLocation texture, int durability, int[] damageReduction, int enchlvl, ResourceLocation soundEventIN, float tough)
+     {
+         this(id, texture, durability, damageReduction, enchlvl, MinecraftUtil.getSoundEvent(soundEventIN), tough);
+     }
 	 
-	@Override
-	public ArmorMaterial getEnum()
-	{
-		if(!armorenums.containsKey(this.enumName))
-		{
-			ArmorMaterial mat = EnumHelper.addArmorMaterial(this.enumName, this.textureName,this.durability,this.damageReductionAmountArray,this.enchantability,this.soundEvent,this.toughness);
-			armorenums.put(this.enumName, mat);
-			return mat;
-		}
-		return armorenums.get(this.enumName);
+	 @Override
+	 public ArmorMaterial getEnum()
+	 {
+		return armorenums.get(this.id);
 	 }
 	 
 	 @Override
 	 public String toString(){
-		 return "\"" + this.enumName + "\" = [\"" + this.textureName + "\", " + this.durability + ", [" + JavaUtil.getIntsAsString(this.damageReductionAmountArray) + "], " + this.enchantability + ", \"" + this.soundEvent.getRegistryName() + "\", " + this.toughness + "f]";
+		 return "\"" + this.enumName + "\" = [\"" + this.textureName + "\", " + this.durability + ", [" + JavaUtil.getIntsAsString(this.damageReduction) + "], " + this.enchantability + ", \"" + this.soundEvent.getRegistryName() + "\", " + this.toughness + "f]";
 	 }
 
 }

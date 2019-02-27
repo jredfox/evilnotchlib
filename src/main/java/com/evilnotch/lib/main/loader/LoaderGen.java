@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.IOException;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
+import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorMat;
+import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolMat;
 
 public class LoaderGen {
 	
@@ -48,6 +49,35 @@ public class LoaderGen {
 	public static File getSyncFile(File root)
 	{
 		return new File(LoaderGen.root_sync, root.getAbsolutePath().substring(LoaderGen.root.getAbsolutePath().length(), root.getAbsolutePath().length()) );
+	}
+	
+	/**
+	 * loads armor and tool mats into objects
+	 */
+	public static void loadpreinit() 
+	{
+		loadArmorMats();
+		loadToolMats();
+	}
+	
+	private static void loadToolMats() 
+	{
+		File tool = new File(Config.cfg.getParent(),"configs/toolmats.cfg");
+	}
+
+	private static void loadArmorMats() 
+	{
+		File armor = new File(Config.cfg.getParent(),"configs/armormats.cfg");
+	}
+
+	public static void addMat(ArmorMat mat)
+	{
+		
+	}
+	
+	public static void addMat(ToolMat mat)
+	{
+		
 	}
 
 }

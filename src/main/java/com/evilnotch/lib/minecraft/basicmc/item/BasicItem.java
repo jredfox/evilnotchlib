@@ -70,54 +70,5 @@ public class BasicItem extends Item implements IAutoItem{
 	{
 		return true;
 	}
-	
-	/**
-	 * configures tool material before sending it to the constructor
-	 * If config is turned off just returns default enum
-	 */
-	public static ToolMaterial getMat(ToolMat mat, boolean config)
-	{
-		if(config)
-		{
-			ToolMat cached = ToolMat.toolmats.get(mat.enumName);//grab preconfigured toolmat if available
-			if(cached != null)
-				return cached.getEnum();
-			if(LoaderItems.cfgTools != null)
-			{
-				LineArray line = new LineArray(mat.toString());
-//				System.out.println("Before:" + line);
-				LoaderItems.cfgTools.addLine(line);
-				line = (LineArray) LoaderItems.cfgTools.getUpdatedLine(line);//critical line this lets the config override the default line
-				mat = new ToolMat(line);
-				ToolMat.toolmats.put(mat.enumName, mat);
-//				System.out.println("After: " + line);
-			}
-		}
-		return mat.getEnum();
-	}
-	/**
-	 * configures armor material before sending it to the constructor
-	 * If config is turned off just returns default enum
-	 */
-	public static ArmorMaterial getMat(ArmorMat mat,boolean config) 
-	{
-		if(config)
-		{
-			ArmorMat cached = ArmorMat.armormats.get(mat.enumName);
-			if(cached != null)
-				return cached.getEnum();
-			if(LoaderItems.cfgArmors != null)
-			{
-				LineArray line = new LineArray(mat.toString());
-				LoaderItems.cfgArmors.addLine(line);
-				line = (LineArray) LoaderItems.cfgArmors.getUpdatedLine(line);//critical line this lets the config override the default line
-//				System.out.println("Before:" + mat);
-				mat = new ArmorMat(line);
-//				System.out.println("After: " + mat);
-				ArmorMat.armormats.put(mat.enumName, mat);
-			}
-		}
-		return mat.getEnum();
-	}
 
 }

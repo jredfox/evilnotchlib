@@ -24,6 +24,14 @@ public class JSONProxy {
 			JsonGen.registerItemMetaJson(item, maxMeta);
 		}
 	}
+	
+	public static void registerBlockJson(Block block) 
+	{
+		if(LoaderMain.isClient)
+		{
+			JsonGen.registerBlockJson(block, ModelPart.cube_all);
+		}
+	}
 
 	public static void registerBlockJson(Block block, ModelPart modelPart) 
 	{
@@ -33,19 +41,11 @@ public class JSONProxy {
 		}
 	}
 	
-	public static void registerBlockJson(Block block) 
-	{
-		if(LoaderMain.isClient)
-		{
-			JsonGen.registerBlockJson(block);
-		}
-	}
-	
 	public static void registerBlockMetaJson(Block b, IProperty p)
 	{
 		if(LoaderMain.isClient)
 		{
-			JsonGen.registerBlockMetaJson(b, p);
+			JsonGen.registerBlockMetaJson(b, ModelPart.cube_all, p);
 		}
 	}
 

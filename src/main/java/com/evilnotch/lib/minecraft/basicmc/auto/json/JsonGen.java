@@ -40,29 +40,19 @@ public class JsonGen {
 	public static List<BasicItemJSON> items = new ArrayList<BasicItemJSON>();
 	public static List<BasicItemJSONMeta> items_meta = new ArrayList<BasicItemJSONMeta>();
 	
-	protected static void registerBlockJson(Block b)
-	{
-		registerBlockJson(b, ModelPart.cube_all);
-	}
-	
 	protected static void registerBlockJson(Block b, ModelPart part)
 	{
 		blocks.add(new BasicBlockJSON(b, part));
 	}
 	
-	protected static void registerItemJson(Item i)
-	{
-		items.add(new BasicItemJSON(i));
-	}
-	
-	protected static void registerBlockMetaJson(Block b, IProperty p)
-	{
-		registerBlockMetaJson(b, ModelPart.cube_all, p);
-	}
-	
 	protected static void registerBlockMetaJson(Block b, ModelPart part, IProperty p)
 	{
 		blocks_meta.add(new BasicBlockJSONMeta(b, part, p));
+	}
+	
+	protected static void registerItemJson(Item i)
+	{
+		items.add(new BasicItemJSON(i));
 	}
 	
 	protected static void registerItemMetaJson(Item i, int maxMeta)

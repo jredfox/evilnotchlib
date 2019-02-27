@@ -13,63 +13,42 @@ import net.minecraftforge.common.util.EnumHelper;
 
 public class ToolMat implements IEnumContainer{
 	
-	 /**
-	  * A hashmap between enum string name and tool material ENUM NAMES MUST BE UNIQUE
-	  * Recommended to use modid but, replace all ":" with "_"
-	  */
-	public static HashMap<String,ToolMaterial> toolenums = new HashMap();
-	 /**
-	  * Cache for retrieving pre-configured ToolMat
-	  */
-	public static HashMap<String,ToolMat> toolmats = new HashMap();
+	/**
+	 * a registry for all tool material used by this lib
+	 */
+	public static HashMap<ResourceLocation,ToolMaterial> toolenums = new HashMap();
 	
-	 /** The level of material this tool can harvest (3 = DIAMOND, 2 = IRON, 1 = STONE, 0 = WOOD/GOLD) */
     public int harvestLevel;
-    /** The number of uses this material allows. (wood = 59, stone = 131, iron = 250, diamond = 1561, gold = 32) */
     public int maxUses;
-    /** The strength of this tool material against blocks which it is effective against. */
     public float efficiency;
-    /** Damage versus entities. */
     public float attackDamage;
-    /** Defines the natural enchantability factor of the material. */
     public int enchantability;
-    //Added by forge for custom Tool materials.
-    public ItemStack repairMaterial = ItemStack.EMPTY;
+    
+    public ResourceLocation id;
     public String enumName;
 
-    public ToolMat(ResourceLocation enumName,int harvestLevel, int maxUses, float efficiency, float damageVsEntity, int enchantability)
+    public ToolMat(ResourceLocation id,int harvestLevel, int maxUses, float efficiency, float damageVsEntity, int enchantability)
     {
-        this.enumName =  enumName.toString().replaceAll(":", "_");
+        this.id = id;
+        this.enumName =  id.toString().replaceAll(":", "_");
         this.harvestLevel = harvestLevel;
         this.maxUses = maxUses;
         this.efficiency = efficiency;
         this.attackDamage = damageVsEntity;
         this.enchantability = enchantability;
+        if(!toolenums.containsKey(id))
+        	toolenums.put(this.id, this.getEnum());
     }
-    
-    public ToolMat(LineArray line) {
-		this.enumName = line.getId();
-		this.harvestLevel = line.getInt(0);
-		this.maxUses =  line.getInt(1);
-		this.efficiency = line.getFloat(2);
-		this.attackDamage = line.getFloat(3);
-		this.enchantability = line.getInt(4);
-	}
 
 	@Override
     public ToolMaterial getEnum()
 	{
-		if(!toolenums.containsKey(this.enumName))
-		{
-			ToolMaterial mat = EnumHelper.addToolMaterial(this.enumName, this.harvestLevel, this.maxUses, this.efficiency, this.attackDamage, this.enchantability);
-			toolenums.put(this.enumName, mat);
-			return mat;
-		}
-		return toolenums.get(this.enumName);
+		return toolenums.get(this.id);
     }
 	
     @Override
-    public String toString(){
+    public String toString()
+    {
     	return "\"" + this.enumName + "\" = [" + this.harvestLevel + ", " + this.maxUses + ", " + this.efficiency + "f, " + this.attackDamage + "f, " + this.enchantability + "]";
     }
 

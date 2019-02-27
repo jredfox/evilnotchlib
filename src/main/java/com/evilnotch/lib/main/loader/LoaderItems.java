@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorMat;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
+import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolMat;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.util.line.config.ConfigBase;
@@ -141,6 +143,9 @@ public class LoaderItems {
 	{
 		LoaderItems.armorsets.clear();
 		LoaderItems.toolsets.clear();
+		ArmorMat.armormats.clear();
+		ToolMat.toolmats.clear();
+		
 		cfgTools = null;
 		cfgArmors = null;
 	}
