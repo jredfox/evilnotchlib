@@ -1,9 +1,9 @@
-package com.evilnotch.lib.minecraft.basicmc.auto;
+package com.evilnotch.lib.minecraft.basicmc.auto.json;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public interface IBasicItem<T> {
+public interface IBasicItemJSON<T> {
 	
 	public T getObject();
 	public ResourceLocation getResourceLocation();

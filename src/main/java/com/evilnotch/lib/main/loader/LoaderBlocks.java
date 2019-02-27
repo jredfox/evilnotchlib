@@ -2,11 +2,10 @@ package com.evilnotch.lib.main.loader;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlock;
-import com.evilnotch.lib.minecraft.basicmc.block.BasicMetaBlock;
-import com.evilnotch.lib.minecraft.basicmc.block.item.ItemBlockMeta;
+import com.evilnotch.lib.minecraft.basicmc.auto.BlockWrapper;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.line.config.ConfigNonMeta;
 
@@ -16,7 +15,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class LoaderBlocks {
 	
-	public static ArrayList<IBasicBlock> blocks = new ArrayList();
+	public static List<BlockWrapper> blocks = new ArrayList();
 	public static ConfigBase cfgBlockProps = null;
 	 
 	public static void loadpreinit()
@@ -27,12 +26,15 @@ public class LoaderBlocks {
 
 	public static void registerBlocks() 
 	{
-		for(IBasicBlock basic : LoaderBlocks.blocks)
+		for(BlockWrapper basic : LoaderBlocks.blocks)
 		{
-			Block b = (Block) basic.getObject();
-			ItemBlock itemblock = basic.getItemBlock();
+			Block b = (Block) basic.b;
+			ItemBlock itemblock = basic.itemblock;
+			ForgeRegistries.BLOCKS.register(b);
 			if(itemblock != null)
+			{
 				ForgeRegistries.ITEMS.register(itemblock);
+			}
 	    }
 	}
 

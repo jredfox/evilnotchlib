@@ -2,10 +2,10 @@ package com.evilnotch.lib.main.loader;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
+import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
@@ -16,16 +16,14 @@ import com.evilnotch.lib.util.line.config.ConfigNonMeta;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class LoaderItems {
 	
-	public static ArrayList<IBasicItem> items = new ArrayList();
-	public static ArrayList<ArmorSet> armorsets = new ArrayList();
-	public static ArrayList<ToolSet> toolsets = new ArrayList();
+	public static List<IBasicItem> items = new ArrayList();
+	public static List<ArmorSet> armorsets = new ArrayList();
+	public static List<ToolSet> toolsets = new ArrayList();
 	
 	public static ConfigBase cfgTools = null;
 	public static ConfigBase cfgArmors = null;

@@ -1,11 +1,11 @@
-package com.evilnotch.lib.minecraft.basicmc.auto;
+package com.evilnotch.lib.minecraft.basicmc.auto.json;
 
 import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 
-public class BasicBlockJSONMeta extends BasicBlockJSON implements IBasicBlockMeta {
+public class BasicBlockJSONMeta extends BasicBlockJSON implements IBasicBlockMetaJSON {
 
 	public IProperty property;
 

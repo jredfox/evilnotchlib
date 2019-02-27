@@ -76,11 +76,5 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor<ItemArmor>{
 	{
 		return this;
 	}
-	
-	@Override
-	public ResourceLocation getResourceLocation() 
-	{
-		return this.getRegistryName();
-	}
 
 }

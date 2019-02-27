@@ -15,8 +15,6 @@ import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickEventClient;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlock;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.test.EnumCheese;
 import com.evilnotch.lib.minecraft.basicmc.auto.test.MultiSidedGrass;

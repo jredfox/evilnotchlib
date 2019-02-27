@@ -1,9 +1,9 @@
-package com.evilnotch.lib.minecraft.basicmc.auto;
+package com.evilnotch.lib.minecraft.basicmc.auto.json;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicItemJSON implements IBasicItem<Item>{
+public class BasicItemJSON implements IBasicItemJSON<Item>{
 	
 	public Item item;
 	public ResourceLocation loc;

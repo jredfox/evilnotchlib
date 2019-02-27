@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.evilnotch.lib.main.loader.LoaderFields;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlockMeta;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.util.BlockUtil;
 import com.evilnotch.lib.minecraft.util.ItemUtil;

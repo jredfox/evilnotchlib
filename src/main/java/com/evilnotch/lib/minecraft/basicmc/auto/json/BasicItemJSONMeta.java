@@ -1,12 +1,9 @@
 package com.evilnotch.lib.minecraft.basicmc.auto.json;
 
-import com.evilnotch.lib.minecraft.basicmc.auto.BasicItemJSON;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItemMeta;
-
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicItemJSONMeta extends BasicItemJSON implements IBasicItemMeta<Item>{
+public class BasicItemJSONMeta extends BasicItemJSON implements IBasicItemMetaJSON<Item>{
 	
 	public int maxMeta;
 	

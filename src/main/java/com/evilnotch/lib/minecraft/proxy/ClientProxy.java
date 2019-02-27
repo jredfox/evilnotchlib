@@ -15,8 +15,6 @@ import com.evilnotch.lib.main.eventhandler.ClientEvents;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlock;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;

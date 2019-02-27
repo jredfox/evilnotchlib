@@ -1,4 +1,4 @@
-package com.evilnotch.lib.minecraft.basicmc.auto;
+package com.evilnotch.lib.minecraft.basicmc.auto.json;
 
 import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
 
@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicBlockJSON implements IBasicBlock{
+public class BasicBlockJSON implements IBasicBlockJSON{
 	
 	public ResourceLocation loc;
 	public Block block;
@@ -47,11 +47,5 @@ public class BasicBlockJSON implements IBasicBlock{
 	public ModelPart getModelPart() 
 	{
 		return this.model;
-	}
-
-	@Override
-	public ItemBlock getItemBlock() 
-	{
-		return null;
 	}
 }

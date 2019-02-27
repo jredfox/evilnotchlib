@@ -5,10 +5,12 @@ import java.util.List;
 import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlock;
+import com.evilnotch.lib.minecraft.basicmc.auto.BlockWrapper;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.IBasicBlockJSON;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
+import com.evilnotch.lib.minecraft.basicmc.block.item.ItemBlockMeta;
 import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
 import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.config.ConfigBase;
@@ -23,7 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BasicBlock extends Block implements IBasicBlock{
+public class BasicBlock extends Block {
 	
 	public ItemBlock itemblock = null;
 	public BlockProperties blockprops = null;
@@ -44,19 +46,20 @@ public class BasicBlock extends Block implements IBasicBlock{
 		this(mat,id,tab,null,lang);
 	}
 	public BasicBlock(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,null,true,props,lang);
+		this(mat,mat.getMaterialMapColor(),id,tab,props,lang);
 	}
 	
 	/**
 	 * MUST BE CALLED DURING PREINIT OR LATER
 	 */
-	public BasicBlock(Material blockMaterialIn, MapColor blockMapColorIn,ResourceLocation id,CreativeTabs tab,boolean model,boolean register,boolean lang,boolean config,ItemBlock itemblock,boolean useItemBlock,BlockProperties props,LangEntry... langlist) 
+	public BasicBlock(Material blockMaterialIn, MapColor blockMapColorIn,ResourceLocation id,CreativeTabs tab,BlockProperties props,LangEntry... langlist) 
 	{
 		super(blockMaterialIn, blockMapColorIn);
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);
 		this.setCreativeTab(tab);
+		this.itemblock = this.getItemBlock();
 		
 		this.populateLang(langlist);
 		this.populateJSON();
@@ -64,17 +67,14 @@ public class BasicBlock extends Block implements IBasicBlock{
 		//set properties of the block
 		fillProperties(props);
 		
-		LoaderBlocks.blocks.add(this);
-		
-		if(useItemBlock)
-		{
-			if(itemblock == null)
-				itemblock = new ItemBlock(this);
-			itemblock.setRegistryName(id);
-			this.itemblock = itemblock;
-		}
+		this.register();
 	}
 	
+	public void register() 
+	{
+		LoaderBlocks.blocks.add(new BlockWrapper(this, this.getItemBlock()));
+	}
+
 	public void populateLang(LangEntry... langlist) 
 	{
 		LangRegistry.registerLang(this, langlist);
@@ -83,12 +83,6 @@ public class BasicBlock extends Block implements IBasicBlock{
 	public void populateJSON()
 	{
 		JsonGen.registerBlockJson(this, this.getModelPart());
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public ModelPart getModelPart()
-	{
-		return ModelPart.cube_all;
 	}
 	
 	protected void fillProperties(BlockProperties props) 
@@ -138,25 +132,22 @@ public class BasicBlock extends Block implements IBasicBlock{
 		line = (LineArray) cfg.getUpdatedLine(line);
 		return new BlockProperties(line);
 	}
-
-	@Override
-	public Block getObject() 
-	{
-		return this;
-	}
-
-	@Override
-	public ResourceLocation getResourceLocation() 
-	{
-		return this.getRegistryName();
-	}
-
-	@Override
+	
 	public ItemBlock getItemBlock()
 	{
-		ItemBlock b = new ItemBlock(this);
-		b.setRegistryName(this.getRegistryName());
-		return b;
+		if(this.itemblock == null)
+		{
+			ItemBlock b = new ItemBlock(this);
+			b.setRegistryName(this.getRegistryName());
+			this.itemblock = b;
+		}
+		return this.itemblock;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public ModelPart getModelPart()
+	{
+		return ModelPart.cube_all;
 	}
 	
 }

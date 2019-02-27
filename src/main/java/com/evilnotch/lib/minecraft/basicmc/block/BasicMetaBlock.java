@@ -1,14 +1,12 @@
 package com.evilnotch.lib.minecraft.basicmc.block;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlockMeta;
+import com.evilnotch.lib.minecraft.basicmc.auto.BlockWrapper;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
@@ -28,7 +26,6 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -38,7 +35,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockMeta{
+public class BasicMetaBlock extends BasicBlock implements IMetaName, IBasicBlockMeta{
 	
 	public IProperty property = null;
 	
@@ -57,32 +54,22 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockM
 		this(mat,id,tab,null,pi,lang);
 	}
 	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,null,props,pi,lang);
-	}
-	
-	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,ItemBlock ib,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,ib,props,pi,lang);
+		this(mat,mat.getMaterialMapColor(),id,tab,props,pi,lang);
 	}
 	
 	/**
 	 * uses the itemblock if not null regardless whether which boolean you call
 	 */
-	public BasicMetaBlock(Material blockMaterialIn, MapColor blockMapColorIn, ResourceLocation id, CreativeTabs tab,boolean model, boolean register, boolean lang, boolean config, ItemBlock itemblock,BlockProperties props,IProperty prop, LangEntry... langlist) 
+	public BasicMetaBlock(Material blockMaterialIn, MapColor blockMapColorIn, ResourceLocation id, CreativeTabs tab,BlockProperties props,IProperty prop, LangEntry... langlist) 
 	{
-		super(blockMaterialIn, blockMapColorIn, id, tab, model, register, lang, config, itemblock, false, props,langlist);
+		super(blockMaterialIn, blockMapColorIn, id, tab, props,langlist);
 		this.property = prop;
 		this.populateJSON();
-		
-		if(itemblock == null)
-			this.itemblock = new ItemBlockMeta(this);
-		else
-			this.itemblock = itemblock;
-		
-		this.itemblock.setRegistryName(id);
 		
 		//since vanilla is ignorant as hell by not populating new properties we need to reset the entire block state container and yes it's f****** final
 		setStateConstructor(this.property);
 	}
+	
 	/**
 	 * supports metadata and block states
 	 */
@@ -266,21 +253,26 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName,IBasicBlockM
 	}
 
 	@Override
-	public ModelPart getModelPart() {
+	public ModelPart getModelPart() 
+	{
 		return ModelPart.cube_all;
 	}
 	
-	@Override
-	public IProperty getProperty() {
+	public IProperty getProperty() 
+	{
 		return this.property;
 	}
 	
 	@Override
 	public ItemBlock getItemBlock()
 	{
-		ItemBlock b = new ItemBlockMeta(this);
-		b.setRegistryName(this.getRegistryName());
-		return b;
+		if(this.itemblock == null)
+		{
+			ItemBlock b = new ItemBlockMeta(this);
+			b.setRegistryName(this.getRegistryName());
+			this.itemblock = b;
+		}
+		return this.itemblock;
 	}
 	
 }

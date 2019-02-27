@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.basicmc.item;
 
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItemMeta;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
@@ -11,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicItemMeta extends BasicItem implements IBasicItemMeta<Item>{
+public class BasicItemMeta extends BasicItem implements IBasicItemMeta{
 	
 	public int maxMeta;
 	private boolean constructedMeta = false;

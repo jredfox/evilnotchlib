@@ -29,23 +29,24 @@ public class MultiSidedGrass extends BasicMetaBlock{
 		this(mat,id,tab,null,pi,lang);
 	}
 	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,null,props,pi,lang);
+		this(mat,mat.getMaterialMapColor(),id,tab,props,pi,lang);
 	}
 	
 	public MultiSidedGrass(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,ItemBlock ib,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,true,true,true,true,ib,props,pi,lang);
+		this(mat,mat.getMaterialMapColor(),id,tab,props,pi,lang);
 	}
 	
 	/**
 	 * uses the itemblock if not null regardless whether which boolean you call
 	 */
-	public MultiSidedGrass(Material mat, MapColor mc, ResourceLocation id, CreativeTabs tab,boolean model, boolean register, boolean lang, boolean config, ItemBlock itemblock,BlockProperties props,IProperty prop, LangEntry... langlist) 
+	public MultiSidedGrass(Material mat, MapColor mc, ResourceLocation id, CreativeTabs tab,BlockProperties props,IProperty prop, LangEntry... langlist) 
 	{
-		super(mat,mc,id,tab,model,register,lang,config,itemblock,props,prop,langlist);
+		super(mat,mc,id,tab,props,prop,langlist);
 	}
 	
 	@Override
-	public ModelPart getModelPart(){
+	public ModelPart getModelPart()
+	{
 		return ModelPart.cube_bottom_top;
 	}
 

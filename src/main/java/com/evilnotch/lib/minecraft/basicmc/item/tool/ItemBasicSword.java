@@ -1,13 +1,11 @@
 package com.evilnotch.lib.minecraft.basicmc.item.tool;
 
-import java.util.ArrayList;
-
 import com.evilnotch.lib.main.loader.LoaderItems;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
+import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemSword;
@@ -59,10 +57,6 @@ public class ItemBasicSword extends ItemSword implements IBasicItem<ItemSword>{
 	@Override
 	public ItemSword getObject() {
 		return this;
-	}
-	@Override
-	public ResourceLocation getResourceLocation() {
-		return this.getRegistryName();
 	}
 
 }

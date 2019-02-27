@@ -3,31 +3,18 @@ package com.evilnotch.lib.minecraft.basicmc.auto.json;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.json.simple.JSONObject;
 
 import com.evilnotch.lib.api.BlockApi;
-import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.main.loader.LoaderGen;
-import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.basicmc.auto.BasicBlockJSON;
-import com.evilnotch.lib.minecraft.basicmc.auto.BasicBlockJSONMeta;
-import com.evilnotch.lib.minecraft.basicmc.auto.BasicItemJSON;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlock;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicBlockMeta;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItem;
-import com.evilnotch.lib.minecraft.basicmc.auto.IBasicItemMeta;
 import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
 import com.evilnotch.lib.minecraft.basicmc.client.block.StateMapperSupreme;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairString;
-import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -241,7 +228,7 @@ public class JsonGen {
 		return "item/generated";
 	}
 
-	public static JSONObject getJSONItem(String parent, IBasicItem<? extends Item> item, int meta, boolean isMeta)
+	public static JSONObject getJSONItem(String parent, IBasicItemJSON<? extends Item> item, int meta, boolean isMeta)
 	{
 		JSONObject json = new JSONObject();
 		json.put("parent", parent);
@@ -253,7 +240,7 @@ public class JsonGen {
 		return json;
 	}
 	
-	public static JSONObject getJSONBlock(IBasicBlock block, IBlockState state)
+	public static JSONObject getJSONBlock(IBasicBlockJSON block, IBlockState state)
 	{
 		JSONObject json = new JSONObject();
 		json.put("parent", block.getModelPart().parent);
@@ -265,7 +252,7 @@ public class JsonGen {
 		for(PairString s : block.getModelPart().getParts())
 		{
 			String side = s.getValue();
-			textures.put(side, loc.getResourceDomain() + ":blocks/" + block.getTextureName() + (state != null ? "_" + BlockApi.getPropertyValue(state, ((IBasicBlockMeta)block).getProperty() ) : "") + (side.equals("all") ? "" : "_" + side) );
+			textures.put(side, loc.getResourceDomain() + ":blocks/" + block.getTextureName() + (state != null ? "_" + BlockApi.getPropertyValue(state, ((IBasicBlockMetaJSON)block).getProperty() ) : "") + (side.equals("all") ? "" : "_" + side) );
 		}
 		json.put("textures", textures);
 		return json;
