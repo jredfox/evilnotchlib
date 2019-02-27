@@ -1,6 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.auto.json;
 
-import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
+import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

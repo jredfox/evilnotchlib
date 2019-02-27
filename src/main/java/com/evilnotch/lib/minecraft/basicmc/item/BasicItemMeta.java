@@ -15,13 +15,14 @@ public class BasicItemMeta extends BasicItem implements IBasicItemMeta{
 	public int maxMeta;
 	private boolean constructedMeta = false;
 	
-	public BasicItemMeta(ResourceLocation id,int maxMeta,LangEntry...langlist){
-		this(id,maxMeta,null,langlist);
+	public BasicItemMeta(ResourceLocation id, int maxMeta, LangEntry...langlist)
+	{
+		this(id, maxMeta, null, langlist);
 	}
 	
-	public BasicItemMeta(ResourceLocation id,int maxMeta,CreativeTabs tab,LangEntry... langlist)
+	public BasicItemMeta(ResourceLocation id, int maxMeta, CreativeTabs tab, LangEntry... langlist)
 	{
-		super(id,tab,langlist);
+		super(id, tab, langlist);
 		this.constructedMeta = true;
 		this.setHasSubtypes(true);
 		this.setMaxDamage(0);
@@ -44,12 +45,14 @@ public class BasicItemMeta extends BasicItem implements IBasicItemMeta{
 	}
 	
 	@Override
-	public String getUnlocalizedName(ItemStack stack){
+	public String getUnlocalizedName(ItemStack stack)
+	{
 		return super.getUnlocalizedName() + "_" + stack.getItemDamage();
 	}
 	
 	@Override
-	public int getMetadata(int meta){
+	public int getMetadata(int meta)
+	{
 		return meta;
 	}
 	

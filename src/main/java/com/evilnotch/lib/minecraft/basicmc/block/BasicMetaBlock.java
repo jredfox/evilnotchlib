@@ -14,7 +14,7 @@ import com.evilnotch.lib.minecraft.basicmc.block.item.IMetaName;
 import com.evilnotch.lib.minecraft.basicmc.block.item.ItemBlockMeta;
 import com.evilnotch.lib.minecraft.basicmc.block.property.IPropertyMeta;
 import com.evilnotch.lib.minecraft.basicmc.block.property.IPropertyName;
-import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
+import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.block.Block;
@@ -39,30 +39,36 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName, IBasicBlock
 	
 	public IProperty property = null;
 	
-	public BasicMetaBlock(ResourceLocation id,IProperty pi,LangEntry... lang) {
-		this(Material.ROCK,id,pi,lang);
+	public BasicMetaBlock(ResourceLocation id, IProperty ip, LangEntry... lang) 
+	{
+		this(id, ip, Material.ROCK, lang);
 	}
 	
 	/**
 	 * lang name is whatever is "displayname","lang" 
 	 * where lang is langauage type like "en_us" everyting else has been done for you
 	 */
-	public BasicMetaBlock(Material blockMaterialIn,ResourceLocation id,IProperty pi,LangEntry... lang) {
-		this(blockMaterialIn,id,null,pi,lang);
+	public BasicMetaBlock(ResourceLocation id, IProperty ip, Material mat, LangEntry... lang) 
+	{
+		this(id, ip, mat, null, lang);
 	}
-	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,IProperty pi,LangEntry... lang) {
-		this(mat,id,tab,null,pi,lang);
+	
+	public BasicMetaBlock(ResourceLocation id, IProperty ip, Material mat, CreativeTabs tab,LangEntry... lang) 
+	{
+		this(id, ip, mat, tab, null, lang);
 	}
-	public BasicMetaBlock(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,IProperty pi,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,props,pi,lang);
+	
+	public BasicMetaBlock(ResourceLocation id, IProperty ip, Material mat, CreativeTabs tab,BlockProperties props,LangEntry... lang) 
+	{
+		this(id, ip, mat, mat.getMaterialMapColor(), tab, props, lang);
 	}
 	
 	/**
 	 * uses the itemblock if not null regardless whether which boolean you call
 	 */
-	public BasicMetaBlock(Material blockMaterialIn, MapColor blockMapColorIn, ResourceLocation id, CreativeTabs tab,BlockProperties props,IProperty prop, LangEntry... langlist) 
+	public BasicMetaBlock(ResourceLocation id, IProperty prop, Material blockMaterialIn, MapColor blockMapColorIn, CreativeTabs tab, BlockProperties props, LangEntry... langlist) 
 	{
-		super(blockMaterialIn, blockMapColorIn, id, tab, props,langlist);
+		super(id, blockMaterialIn, blockMapColorIn, tab, props,langlist);
 		this.property = prop;
 		this.populateJSON();
 		
@@ -187,7 +193,7 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName, IBasicBlock
 		Set<Integer> metas = getValuesOfProperty(this.property);
 		for(int i : metas)
 		{
-			items.add(new ItemStack(this,1,i));
+			items.add(new ItemStack(this, 1, i));
 		}
     }
 	
@@ -219,16 +225,20 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName, IBasicBlock
 	}
 
 	@Override
-	public int damageDropped(IBlockState state){
+	public int damageDropped(IBlockState state)
+	{
 		return this.getMetaFromState(state);
 	}
+	
 	/**
 	 * gets appended in the name
 	 */
 	@Override
-	public String getSpecialName(ItemStack stack) {
+	public String getSpecialName(ItemStack stack) 
+	{
 		return "_" + this.getPropertyName(stack.getItemDamage());
 	}
+	
 	/**
 	 * metadata of itemstack to proper unlocalized suffix name
 	 */

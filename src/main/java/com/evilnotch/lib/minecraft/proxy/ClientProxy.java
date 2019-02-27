@@ -17,8 +17,8 @@ import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
-import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
-import com.evilnotch.lib.minecraft.basicmc.client.block.StateMapperSupreme;
+import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
+import com.evilnotch.lib.minecraft.basicmc.client.model.StateMapperSupreme;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.command.client.ClientUUID;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
@@ -80,7 +80,9 @@ public class ClientProxy extends ServerProxy{
 	{
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
 		if(Config.debug)
+		{
 			GeneralRegistry.registerClientCommand(new ClientUUID());
+		}
 	}
 	
 	public static void clearClientData()

@@ -47,7 +47,7 @@ public class LoaderGen {
 	 */
 	public static File getSyncFile(File root)
 	{
-		return new File(LoaderGen.root_sync,root.getAbsolutePath().substring(LoaderGen.root.getAbsolutePath().length(), root.getAbsolutePath().length()) );
+		return new File(LoaderGen.root_sync, root.getAbsolutePath().substring(LoaderGen.root.getAbsolutePath().length(), root.getAbsolutePath().length()) );
 	}
 
 }

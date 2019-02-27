@@ -15,11 +15,12 @@ import net.minecraft.util.ResourceLocation;
 
 public class BasicItem extends Item implements IBasicItem<Item>{
 	
-	public BasicItem(ResourceLocation id,LangEntry...langlist){
-		this(id,null,langlist);
+	public BasicItem(ResourceLocation id, LangEntry...langlist)
+	{
+		this(id, null, langlist);
 	}
 	
-	public BasicItem(ResourceLocation id,CreativeTabs tab,LangEntry... langlist)
+	public BasicItem(ResourceLocation id, CreativeTabs tab, LangEntry... langlist)
 	{
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
@@ -46,7 +47,8 @@ public class BasicItem extends Item implements IBasicItem<Item>{
 	 * configures tool material before sending it to the constructor
 	 * If config is turned off just returns default enum
 	 */
-	public static ToolMaterial getMat(ToolMat mat,boolean config) {
+	public static ToolMaterial getMat(ToolMat mat, boolean config)
+	{
 		if(config)
 		{
 			ToolMat cached = ToolMat.toolmats.get(mat.enumName);//grab preconfigured toolmat if available

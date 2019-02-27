@@ -10,8 +10,8 @@ import org.json.simple.JSONObject;
 import com.evilnotch.lib.api.BlockApi;
 import com.evilnotch.lib.main.loader.LoaderGen;
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
-import com.evilnotch.lib.minecraft.basicmc.client.block.StateMapperSupreme;
+import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
+import com.evilnotch.lib.minecraft.basicmc.client.model.StateMapperSupreme;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairString;
@@ -119,7 +119,7 @@ public class JsonGen {
 			saveIfJSON(json, file);
 				
 			//models/item/itemblock
-			File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/itemblock/" + loc.getResourcePath() + ".json");
+			File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + ".json");
 			JSONObject item = getJSONItemBlock(i, null);
 			saveIfJSON(item, itemFile);
 			
@@ -145,7 +145,7 @@ public class JsonGen {
 				saveIfJSON(json, file);
 				
 				//model/item/itemblock
-				File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/itemblock/" + loc.getResourcePath() + "_" + BlockApi.getPropertyValue(state, p) + ".json");
+				File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + "_" + BlockApi.getPropertyValue(state, p) + ".json");
 				JSONObject item = getJSONItemBlock(i, state);
 				saveIfJSON(item, itemFile);
 				
@@ -183,7 +183,7 @@ public class JsonGen {
 	/**
 	 * returns the entire blockstate json
 	 */
-	public static JSONObject getJSONBlockState(BasicBlockJSON i, List<IBlockState> states) 
+	public static JSONObject getJSONBlockState(IBasicBlockJSON i, List<IBlockState> states) 
 	{
 		JSONObject json = new JSONObject();
 		JSONObject variants = new JSONObject();
@@ -209,7 +209,7 @@ public class JsonGen {
 		return json;
 	}
 
-	public static JSONObject getJSONItemBlock(BasicBlockJSON i, IBlockState state) 
+	public static JSONObject getJSONItemBlock(IBasicBlockJSON i, IBlockState state) 
 	{
 		JSONObject json = new JSONObject();
 		json.put("parent", i.getResourceLocation().getResourceDomain() + ":block/" + i.getResourceLocation().getResourcePath() + (state != null ? "_" + BlockApi.getPropertyValue(state, ((BasicBlockJSONMeta) i).getProperty()) : "") );
@@ -278,7 +278,6 @@ public class JsonGen {
 			Block b = gen.getObject();
 			Item item = ItemBlock.getItemFromBlock(b);
 			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath(), "inventory"));
-			System.out.println("reg nonmeta:" + new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath(), "inventory"));
 			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(gen.loc, "normal"));
 		}
 		
@@ -290,7 +289,6 @@ public class JsonGen {
 			for(IBlockState state : b.getBlockState().getValidStates())
 			{
 				int meta = b.getMetaFromState(state);
-				System.out.println("reg:" + new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath() + "_" + BlockApi.getPropertyValue(state, gen.property), "inventory"));
 				ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath() + "_" + BlockApi.getPropertyValue(state, gen.property), "inventory"));
 //				ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(gen.loc + "_" + BlockApi.getPropertyValue(state, gen.property), BlockApi.getBlockStateName(state, gen.property)));
 			}

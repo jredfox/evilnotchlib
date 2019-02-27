@@ -1,4 +1,4 @@
-package com.evilnotch.lib.minecraft.basicmc.client.block;
+package com.evilnotch.lib.minecraft.basicmc.client.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;

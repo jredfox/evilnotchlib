@@ -1,4 +1,4 @@
-package com.evilnotch.lib.minecraft.basicmc.client.block;
+package com.evilnotch.lib.minecraft.basicmc.client.model;
 
 import com.evilnotch.lib.minecraft.basicmc.block.IBasicBlockMeta;
 

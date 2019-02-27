@@ -133,15 +133,16 @@ public class LoaderMain {
 		LoaderFields.cacheFields();
 		
 		MainJava.proxy.proxyStart();
+		Config.loadConfig(dir);
 		MainJava.proxy.preinit(e);
 		
-		Config.loadConfig(dir);
 		GeneralRegistry.load();
 		loadEvents();
 		loadfoamFixFixer();
 	}
+	
 	/**
-	 * load Debug Items
+	 * load Debug Blocks/Items
 	 */
 	private static void loadItems() 
 	{
@@ -214,8 +215,8 @@ public class LoaderMain {
 		//directories instantiate
 		MinecraftServer server = e.getServer();
 		VanillaBugFixes.worlDir = server.worlds[0].getSaveHandler().getWorldDirectory();
-		VanillaBugFixes.playerDataDir = new File(VanillaBugFixes.worlDir,"playerdata");
-		VanillaBugFixes.playerDataNames = new File(VanillaBugFixes.worlDir,"playerdata/names");
+		VanillaBugFixes.playerDataDir = new File(VanillaBugFixes.worlDir, "playerdata");
+		VanillaBugFixes.playerDataNames = new File(VanillaBugFixes.worlDir, "playerdata/names");
 	}
 	
 	@SubscribeEvent

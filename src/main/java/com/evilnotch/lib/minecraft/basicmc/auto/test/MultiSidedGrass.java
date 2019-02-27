@@ -3,7 +3,7 @@ package com.evilnotch.lib.minecraft.basicmc.auto.test;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.block.BasicMetaBlock;
 import com.evilnotch.lib.minecraft.basicmc.block.BlockProperties;
-import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
+import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;

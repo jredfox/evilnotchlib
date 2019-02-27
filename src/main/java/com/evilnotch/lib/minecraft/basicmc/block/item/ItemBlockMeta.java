@@ -6,7 +6,8 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBlockMeta extends ItemBlock{
 
-	public ItemBlockMeta(Block block) {
+	public ItemBlockMeta(Block block) 
+	{
 		super(block);
 		if(!(block instanceof IMetaName))
 			throw new IllegalArgumentException("Block must implement the IMetaName interface:" + block.getRegistryName().toString());
@@ -15,11 +16,14 @@ public class ItemBlockMeta extends ItemBlock{
 	}
 	
 	@Override
-	public String getUnlocalizedName(ItemStack stack){
+	public String getUnlocalizedName(ItemStack stack)
+	{
 		return super.getUnlocalizedName() + ((IMetaName)this.block).getSpecialName(stack);
 	}
+	
 	@Override
-	public int getMetadata(int meta){
+	public int getMetadata(int meta)
+	{
 		return meta;
 	}
 

@@ -16,12 +16,12 @@ public class BasicCreativeTab extends CreativeTabs{
 	
 	public BasicCreativeTab(ResourceLocation label, ItemStack display, LangEntry... langlist) 
 	{
-		this(label,display,"items.png",true,langlist);
+		this(label, display, "items.png", true, langlist);
 	}
 	
-	public BasicCreativeTab(ResourceLocation id, ItemStack display, String backgroundIcon, boolean drawTitle, LangEntry... langlist)
+	public BasicCreativeTab(ResourceLocation label, ItemStack display, String backgroundIcon, boolean drawTitle, LangEntry... langlist)
 	{
-		super(id.toString().replaceAll(":", "."));
+		super(label.toString().replaceAll(":", "."));
 		this.display = display;
 		this.setBackgroundImageName(backgroundIcon);
 		if(!drawTitle)

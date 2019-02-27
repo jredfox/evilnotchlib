@@ -13,6 +13,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.client.IClientCommand;
 
 public class ClientUUID extends CommandBase implements IClientCommand{
+	
+	@Override
+	public int getRequiredPermissionLevel() {
+		return 0;
+	}
 
 	@Override
 	public String getName() 

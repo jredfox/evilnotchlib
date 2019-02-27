@@ -11,7 +11,7 @@ import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.block.item.ItemBlockMeta;
-import com.evilnotch.lib.minecraft.basicmc.client.block.ModelPart;
+import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
 import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 
@@ -31,28 +31,34 @@ public class BasicBlock extends Block {
 	public BlockProperties blockprops = null;
 	public boolean hasconfig = true;
 	
-	public BasicBlock(ResourceLocation id, LangEntry... lang) {
-		this(Material.ROCK,id,lang);
+	public BasicBlock(ResourceLocation id, LangEntry... lang) 
+	{
+		this(id, Material.ROCK, lang);
 	}
 	
 	/**
 	 * lang name is whatever is "displayname","lang" 
 	 * where lang is langauage type like "en_us" everyting else has been done for you
 	 */
-	public BasicBlock(Material blockMaterialIn,ResourceLocation id,LangEntry... lang) {
-		this(blockMaterialIn,id,null,lang);
+	public BasicBlock(ResourceLocation id, Material mat, LangEntry... lang) 
+	{
+		this(id, mat, null, lang);
 	}
-	public BasicBlock(Material mat,ResourceLocation id,CreativeTabs tab,LangEntry... lang) {
-		this(mat,id,tab,null,lang);
+	
+	public BasicBlock(ResourceLocation id, Material mat, CreativeTabs tab, LangEntry... lang) 
+	{
+		this(id, mat, tab, null, lang);
 	}
-	public BasicBlock(Material mat,ResourceLocation id,CreativeTabs tab,BlockProperties props,LangEntry... lang) {
-		this(mat,mat.getMaterialMapColor(),id,tab,props,lang);
+	
+	public BasicBlock(ResourceLocation id, Material mat, CreativeTabs tab, BlockProperties props, LangEntry... lang) 
+	{
+		this(id, mat, mat.getMaterialMapColor(), tab, props, lang);
 	}
 	
 	/**
 	 * MUST BE CALLED DURING PREINIT OR LATER
 	 */
-	public BasicBlock(Material blockMaterialIn, MapColor blockMapColorIn,ResourceLocation id,CreativeTabs tab,BlockProperties props,LangEntry... langlist) 
+	public BasicBlock(ResourceLocation id, Material blockMaterialIn, MapColor blockMapColorIn, CreativeTabs tab, BlockProperties props, LangEntry... langlist) 
 	{
 		super(blockMaterialIn, blockMapColorIn);
 		this.setRegistryName(id);
