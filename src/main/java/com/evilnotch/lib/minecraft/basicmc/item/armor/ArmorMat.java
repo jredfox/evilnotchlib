@@ -30,7 +30,9 @@ public class ArmorMat implements IEnumContainer{
 	  */
 	 public static HashMap<String,ArmorMat> armormats = new HashMap();
 	
+	 public String enumName;
 	 public String textureName;
+	 
      /**
       * how many hit points before armor breaks
       */
@@ -46,12 +48,11 @@ public class ArmorMat implements IEnumContainer{
      public float toughness;
      //Added by forge for custom Armor materials.
      public ItemStack repairMaterial = ItemStack.EMPTY;
-	 public String enumName;
 	
 	/**
 	 * Point of this class is to create a material and then enumify it later
 	*/
-	public ArmorMat(ResourceLocation enumName,ResourceLocation textureName, int durability, int[] damageReductionAmountArrayIn, int enchantabilityIn, SoundEvent soundEventIn, float toughnessIn)
+	public ArmorMat(ResourceLocation enumName, ResourceLocation textureName, int durability, int[] damageReductionAmountArrayIn, int enchantabilityIn, SoundEvent soundEventIn, float toughnessIn)
     {
 		 this.enumName = enumName.toString().replaceAll(":", "_");
          this.textureName = textureName.toString();
@@ -61,10 +62,12 @@ public class ArmorMat implements IEnumContainer{
          this.soundEvent = soundEventIn;
          this.toughness = toughnessIn;
     }
+	
 	public ArmorMat(ResourceLocation enumName,ResourceLocation nameIn, int maxDamageFactorIn, int[] damageReductionAmountArrayIn, int enchantabilityIn, ResourceLocation soundEventIN, float toughnessIn)
     {
          this(enumName,nameIn,maxDamageFactorIn,damageReductionAmountArrayIn, enchantabilityIn, MinecraftUtil.getSoundEvent(soundEventIN), toughnessIn);
     }
+	
 	public ArmorMat(LineArray line)
 	{
 		this.enumName = line.getId();
@@ -98,7 +101,7 @@ public class ArmorMat implements IEnumContainer{
 	 
 	 @Override
 	 public String toString(){
-		 return "\"" + this.enumName + "\" = [\"" + this.textureName + "\"," + this.durability + ",[" + JavaUtil.getIntsAsString(this.damageReductionAmountArray) + "]," + this.enchantability + ",\"" + this.soundEvent.getRegistryName() + "\"," + this.toughness + "f]";
+		 return "\"" + this.enumName + "\" = [\"" + this.textureName + "\", " + this.durability + ", [" + JavaUtil.getIntsAsString(this.damageReductionAmountArray) + "], " + this.enchantability + ", \"" + this.soundEvent.getRegistryName() + "\", " + this.toughness + "f]";
 	 }
 
 }

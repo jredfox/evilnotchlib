@@ -70,7 +70,7 @@ public class ToolMat implements IEnumContainer{
 	
     @Override
     public String toString(){
-    	return "\"" + this.enumName + "\" = [" + this.harvestLevel + "," + this.maxUses + "," + this.efficiency + "f," + this.attackDamage + "f," + this.enchantability + "]";
+    	return "\"" + this.enumName + "\" = [" + this.harvestLevel + ", " + this.maxUses + ", " + this.efficiency + "f, " + this.attackDamage + "f, " + this.enchantability + "]";
     }
 
 }

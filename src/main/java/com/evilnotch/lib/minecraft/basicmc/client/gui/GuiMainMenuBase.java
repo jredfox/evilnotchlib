@@ -63,61 +63,69 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiMainMenuBase extends GuiScreen
 {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final Random RANDOM = new Random();
+	public static final Logger LOGGER = LogManager.getLogger();
+	public static final Random RANDOM = new Random();
     /**
      * A random number between 0.0 and 1.0, used to determine if the title screen says <a
      * href="https://minecraft.gamepedia.com/Menu_screen#Minceraft">Minceraft</a> instead of Minecraft. Set during
      * construction; if the value is less than .0001, then Minceraft is displayed.
      */
-    private final float minceraftRoll;
+	public final float minceraftRoll;
     /** The splash message. */
-    private String splashText;
-    private GuiButton buttonResetDemo;
+	public String splashText;
+	public GuiButton buttonResetDemo;
     /** Timer used to rotate the panorama, increases every tick. */
-    private float panoramaTimer;
+	public float panoramaTimer;
     /** Texture allocated for the current viewport of the main menu's panorama background. */
-    private DynamicTexture viewportTexture;
+	public DynamicTexture viewportTexture;
     /** The Object object utilized as a thread lock when performing non thread-safe operations */
-    private final Object threadLock = new Object();
-    public static final String MORE_INFO_TEXT = "Please click " + TextFormatting.UNDERLINE + "here" + TextFormatting.RESET + " for more information.";
+	public final Object threadLock = new Object();
+	public static final String MORE_INFO_TEXT = "Please click " + TextFormatting.UNDERLINE + "here" + TextFormatting.RESET + " for more information.";
     /** Width of openGLWarning2 */
-    private int openGLWarning2Width;
+	public int openGLWarning2Width;
     /** Width of openGLWarning1 */
-    private int openGLWarning1Width;
+	public int openGLWarning1Width;
     /** Left x coordinate of the OpenGL warning */
-    private int openGLWarningX1;
+	public int openGLWarningX1;
     /** Top y coordinate of the OpenGL warning */
-    private int openGLWarningY1;
+	public int openGLWarningY1;
     /** Right x coordinate of the OpenGL warning */
-    private int openGLWarningX2;
+	public int openGLWarningX2;
     /** Bottom y coordinate of the OpenGL warning */
-    private int openGLWarningY2;
+	public int openGLWarningY2;
     /** OpenGL graphics card warning. */
-    private String openGLWarning1;
+	public String openGLWarning1;
     /** OpenGL graphics card warning. */
-    private String openGLWarning2;
+	public String openGLWarning2;
     /** Link to the Mojang Support about minimum requirements */
-    private String openGLWarningLink;
-    private static final ResourceLocation SPLASH_TEXTS = new ResourceLocation("texts/splashes.txt");
-    private static final ResourceLocation MINECRAFT_TITLE_TEXTURES = new ResourceLocation("textures/gui/title/minecraft.png");
-    private static final ResourceLocation field_194400_H = new ResourceLocation("textures/gui/title/edition.png");
+    public String openGLWarningLink;
+    public static final ResourceLocation SPLASH_TEXTS = new ResourceLocation("texts/splashes.txt");
+    public static final ResourceLocation MINECRAFT_TITLE_TEXTURES = new ResourceLocation("textures/gui/title/minecraft.png");
+    public static final ResourceLocation field_194400_H = new ResourceLocation("textures/gui/title/edition.png");
     /** An array of all the paths to the panorama pictures. */
-    private static final ResourceLocation[] TITLE_PANORAMA_PATHS = new ResourceLocation[] {new ResourceLocation("textures/gui/title/background/panorama_0.png"), new ResourceLocation("textures/gui/title/background/panorama_1.png"), new ResourceLocation("textures/gui/title/background/panorama_2.png"), new ResourceLocation("textures/gui/title/background/panorama_3.png"), new ResourceLocation("textures/gui/title/background/panorama_4.png"), new ResourceLocation("textures/gui/title/background/panorama_5.png")};
-    private ResourceLocation backgroundTexture;
+    public static final ResourceLocation[] TITLE_PANORAMA_PATHS = new ResourceLocation[] {new ResourceLocation("textures/gui/title/background/panorama_0.png"), new ResourceLocation("textures/gui/title/background/panorama_1.png"), new ResourceLocation("textures/gui/title/background/panorama_2.png"), new ResourceLocation("textures/gui/title/background/panorama_3.png"), new ResourceLocation("textures/gui/title/background/panorama_4.png"), new ResourceLocation("textures/gui/title/background/panorama_5.png")};
+    public ResourceLocation backgroundTexture;
     /** Minecraft Realms button. */
-    private GuiButton realmsButton;
+    public GuiButton realmsButton;
     /** Has the check for a realms notification screen been performed? */
-    private boolean hasCheckedForRealmsNotification;
+    public boolean hasCheckedForRealmsNotification;
     /**
      * A screen generated by realms for notifications; drawn in adition to the main menu (buttons and such from both are
      * drawn at the same time). May be null.
      */
-    private GuiScreen realmsNotification;
-    private int widthCopyright;
-    private int widthCopyrightRest;
-    private GuiButton modButton;
-    private net.minecraftforge.client.gui.NotificationModUpdateScreen modUpdateNotification;
+    public GuiScreen realmsNotification;
+    public int widthCopyright;
+    public int widthCopyrightRest;
+    public GuiButton modButton;
+    public net.minecraftforge.client.gui.NotificationModUpdateScreen modUpdateNotification;
+    
+    public boolean allowMusic = false;
+    
+    public GuiMainMenuBase(boolean allowMusic)
+    {
+    	this();
+    	this.allowMusic = allowMusic;
+    }
 
     public GuiMainMenuBase()
     {
@@ -178,7 +186,7 @@ public class GuiMainMenuBase extends GuiScreen
     /**
      * Is there currently a realms notification screen, and are realms notifications enabled?
      */
-    private boolean areRealmsNotificationsEnabled()
+    public boolean areRealmsNotificationsEnabled()
     {
         return Minecraft.getMinecraft().gameSettings.getOptionOrdinalValue(GameSettings.Options.REALMS_NOTIFICATIONS) && this.realmsNotification != null;
     }
@@ -290,7 +298,7 @@ public class GuiMainMenuBase extends GuiScreen
     /**
      * Adds Singleplayer and Multiplayer buttons on Main Menu for players who have bought the game.
      */
-    private void addSingleplayerMultiplayerButtons(int p_73969_1_, int p_73969_2_)
+    public void addSingleplayerMultiplayerButtons(int p_73969_1_, int p_73969_2_)
     {
         this.buttonList.add(new GuiButton(1, this.width / 2 - 100, p_73969_1_, I18n.format("menu.singleplayer")));
         this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 1, I18n.format("menu.multiplayer")));
@@ -301,7 +309,7 @@ public class GuiMainMenuBase extends GuiScreen
     /**
      * Adds Demo buttons on Main Menu for players who are playing Demo.
      */
-    private void addDemoButtons(int p_73972_1_, int p_73972_2_)
+    public void addDemoButtons(int p_73972_1_, int p_73972_2_)
     {
         this.buttonList.add(new GuiButton(11, this.width / 2 - 100, p_73972_1_, I18n.format("menu.playdemo")));
         this.buttonResetDemo = this.addButton(new GuiButton(12, this.width / 2 - 100, p_73972_1_ + p_73972_2_ * 1, I18n.format("menu.resetdemo")));
@@ -371,7 +379,7 @@ public class GuiMainMenuBase extends GuiScreen
         }
     }
 
-    private void switchToRealms()
+    public void switchToRealms()
     {
         RealmsBridge realmsbridge = new RealmsBridge();
         realmsbridge.switchToRealms(this);
@@ -413,7 +421,7 @@ public class GuiMainMenuBase extends GuiScreen
     /**
      * Draws the main menu panorama
      */
-    private void drawPanorama(int mouseX, int mouseY, float partialTicks)
+    public void drawPanorama(int mouseX, int mouseY, float partialTicks)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -503,7 +511,7 @@ public class GuiMainMenuBase extends GuiScreen
     /**
      * Rotate and blurs the skybox view in the main menu
      */
-    private void rotateAndBlurSkybox()
+    public void rotateAndBlurSkybox()
     {
         this.mc.getTextureManager().bindTexture(this.backgroundTexture);
         GlStateManager.glTexParameteri(3553, 10241, 9729);
@@ -538,7 +546,7 @@ public class GuiMainMenuBase extends GuiScreen
     /**
      * Renders the skybox in the main menu
      */
-    private void renderSkybox(int mouseX, int mouseY, float partialTicks)
+    public void renderSkybox(int mouseX, int mouseY, float partialTicks)
     {
         this.mc.getFramebuffer().unbindFramebuffer();
         GlStateManager.viewport(0, 0, 256, 256);

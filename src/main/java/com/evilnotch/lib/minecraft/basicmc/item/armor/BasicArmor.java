@@ -18,6 +18,16 @@ public class BasicArmor extends BasicArmorBase implements IPotionArmor{
 	 */
 	public PotionEffect[] effects = null;
 	
+	public BasicArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, LangEntry... langlist) 
+	{
+		this(id, mat, renderIndexIn, slot, (CreativeTabs)null, langlist);
+	}
+	
+	public BasicArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, CreativeTabs tab, LangEntry... langlist) 
+	{
+		this(id, mat, renderIndexIn, slot, (PotionEffect[])null, tab, langlist);
+	}
+	
 	public BasicArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, LangEntry... langlist) 
 	{
 		this(id, mat, renderIndexIn, slot, effects, (CreativeTabs)null, langlist);

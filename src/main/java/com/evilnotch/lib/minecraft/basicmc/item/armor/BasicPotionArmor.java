@@ -12,34 +12,34 @@ import net.minecraft.util.ResourceLocation;
  * A Armor Class for Potions Made to sync with other Armor Potion Effects if they are the same type
  * @author jredfox
  */
-public class PotionArmor extends BasicArmor{
+public class BasicPotionArmor extends BasicArmor{
 	
 	/**
 	 * a list of option effects to be applied to the player on tick
 	 */
 	public PotionEffect[] effects = null;
 	
-	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, LangEntry... langlist) 
+	public BasicPotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, LangEntry... langlist) 
 	{
 		this(id, mat, renderIndexIn, slot, effects, (CreativeTabs)null, langlist);
 	}
 	
-	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, CreativeTabs tab, LangEntry... langlist)
+	public BasicPotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, CreativeTabs tab, LangEntry... langlist)
 	{
 		this(id, mat, renderIndexIn, slot, effects, tab, true, langlist);
 	}
 	
-	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect effect, LangEntry... langlist) 
+	public BasicPotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect effect, LangEntry... langlist) 
 	{
 		this(id, mat, renderIndexIn, slot, new PotionEffect[]{effect}, (CreativeTabs)null, langlist);
 	}
 	
-	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect effect, CreativeTabs tab, LangEntry... langlist)
+	public BasicPotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect effect, CreativeTabs tab, LangEntry... langlist)
 	{
 		this(id, mat, renderIndexIn, slot, new PotionEffect[]{effect}, tab, true, langlist);
 	}
 	
-	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, CreativeTabs tab, boolean config, LangEntry... langlist) 
+	public BasicPotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
 		super(id, mat, renderIndexIn, slot, effects, tab, config, langlist);
 	}

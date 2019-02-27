@@ -10,15 +10,18 @@ public class GuiBasicButton extends GuiButton{
 	
 	public ResourceLocation texture;
 	
-	public GuiBasicButton(int buttonId, int x, int y, String txt){
-		this(buttonId,x,y,80,40,txt);
+	public GuiBasicButton(int buttonId, int x, int y, String txt)
+	{
+		this(buttonId, x, y, 80, 40, txt);
 	}
 	
-	public GuiBasicButton(int buttonId, int x, int y, int widthIn, int heightIn, String txt) {
-		this(buttonId,x,y,widthIn,heightIn,txt,null);
+	public GuiBasicButton(int buttonId, int x, int y, int widthIn, int heightIn, String txt) 
+	{
+		this(buttonId, x, y, widthIn, heightIn, txt, null);
 	}
 
-	public GuiBasicButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText,ResourceLocation texture) {
+	public GuiBasicButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText, ResourceLocation texture) 
+	{
 		super(buttonId, x, y, widthIn, heightIn, buttonText);
 		if(texture != null)
 			this.texture = texture;
@@ -64,14 +67,15 @@ public class GuiBasicButton extends GuiButton{
             this.drawCenteredString(fontrenderer, this.displayString, this.x + this.width / 2, this.y + (this.height - 8) / 2, j);
         }
     }
-	public void actionPerformed(){
-		
-	}
+	
 
-	public ResourceLocation getButtonTexture() {
+	public ResourceLocation getButtonTexture() 
+	{
 		return this.texture;
 	}
-	public void setButtonTexture(ResourceLocation loc){
+	
+	public void setButtonTexture(ResourceLocation loc)
+	{
 		this.texture = loc;
 	}
 }

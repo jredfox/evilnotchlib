@@ -17,6 +17,11 @@ public class ItemBasicSpade extends ItemSpade implements IAutoItem{
 	{
 		this(id, mat, null, true, langlist);
 	}
+	
+	public ItemBasicSpade(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
+	{
+		this(id, mat, tab, true, langlist);
+	}
 
 	public ItemBasicSpade(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{

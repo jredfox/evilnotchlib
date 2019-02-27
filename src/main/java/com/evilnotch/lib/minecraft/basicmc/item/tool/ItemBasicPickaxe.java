@@ -17,6 +17,11 @@ public class ItemBasicPickaxe extends ItemPickaxe implements IAutoItem{
 	{
 		this(id, mat, null, true, langList);
 	}
+	
+	public ItemBasicPickaxe(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
+	{
+		this(id, mat, tab, true, langlist);
+	}
 
 	public ItemBasicPickaxe(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{

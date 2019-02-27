@@ -37,8 +37,10 @@ public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) 
 	{
 		super.onArmorTick(world, player, stack);
+		
 		if(this.slot == null)
 			return;
+		
 		if(this.armorset.boots.getItem() == this)
 		{
 			this.tickBoots(world,player,stack);

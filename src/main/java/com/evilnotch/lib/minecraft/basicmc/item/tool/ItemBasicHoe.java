@@ -16,6 +16,11 @@ public class ItemBasicHoe extends ItemHoe implements IAutoItem{
 	public ItemBasicHoe(ResourceLocation id, ToolMat mat,LangEntry... langlist){
 		this(id, mat, null, true, langlist);
 	}
+	
+	public ItemBasicHoe(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
+	{
+		this(id, mat, tab, true, langlist);
+	}
 
 	public ItemBasicHoe(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{

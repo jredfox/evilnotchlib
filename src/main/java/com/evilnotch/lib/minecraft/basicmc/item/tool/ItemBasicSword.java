@@ -17,6 +17,11 @@ public class ItemBasicSword extends ItemSword implements IAutoItem{
 	{
 		this(id, mat, null, true, langlist);
 	}
+	
+	public ItemBasicSword(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
+	{
+		this(id, mat, tab, true, langlist);
+	}
 
 	public ItemBasicSword(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{

@@ -17,6 +17,11 @@ public class ItemBasicAxe extends ItemAxe implements IAutoItem{
 	{
 		this(id, mat, null,true,langlist);
 	}
+	
+	public ItemBasicAxe(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
+	{
+		this(id, mat, tab, true, langlist);
+	}
 
 	public ItemBasicAxe(ResourceLocation id, ToolMat mat, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
