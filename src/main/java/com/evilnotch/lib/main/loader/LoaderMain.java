@@ -85,6 +85,7 @@ public class LoaderMain {
 		LoaderItems.loadpreinit();
 		LoaderBlocks.loadpreinit();
 		LoaderCommands.load();
+		loadItems();
 	}
 
 	public static void loadInit(FMLInitializationEvent e)
@@ -138,7 +139,6 @@ public class LoaderMain {
 		GeneralRegistry.load();
 		loadEvents();
 		loadfoamFixFixer();
-		loadItems();
 	}
 	/**
 	 * load Debug Items
