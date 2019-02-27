@@ -13,7 +13,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicArmorBase extends ItemArmor implements IBasicArmor<ItemArmor>, IAutoItem{
+public class BasicArmorBase extends ItemArmor implements IBasicArmor, IAutoItem{
 	
 	public ArmorSet armorset = null;
 
@@ -30,9 +30,9 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor<ItemArmor>,
 		this(id, mat, renderIndexIn, slot, tab, true, langlist);
 	}
 	
-	public BasicArmorBase(ResourceLocation id, ArmorMat materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn, CreativeTabs tab, boolean config, LangEntry... langlist) 
+	public BasicArmorBase(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
-		super(BasicItem.getMat(materialIn,config), renderIndexIn, equipmentSlotIn);
+		super(BasicItem.getMat(mat, config), renderIndexIn, slot);
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);

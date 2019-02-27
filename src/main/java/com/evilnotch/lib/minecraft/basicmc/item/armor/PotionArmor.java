@@ -13,43 +13,35 @@ import net.minecraft.util.ResourceLocation;
  * @author jredfox
  */
 public class PotionArmor extends BasicArmor{
-
-	/**
-	 * the booleans are used for later calls in case people want to call create objects before preinit
-	 */
-	public PotionArmor(ArmorMat materialIn,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn,LangEntry... langlist) {
-		this(materialIn,id, renderIndexIn, equipmentSlotIn,(CreativeTabs)null,langlist);
-	}
-	public PotionArmor(ArmorMat mat,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot slot,CreativeTabs tab,LangEntry... langlist){
-		this(mat,id, renderIndexIn, slot,tab,new PotionEffect[0],true,true,true,true,langlist);
-	}
-	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect[] potion, LangEntry...langList) 
-	{
-		this(mat,id,renderIndexIn,slot,potion,(CreativeTabs)null,langList);
-	}
-	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect[] potion,CreativeTabs tab, LangEntry...langList) 
-	{
-		this(mat,id,renderIndexIn,slot,tab,potion,true,true,true,true,langList);
-	}
 	
 	/**
-	 * legacy support and also if you only wanted one potion effect applied
+	 * a list of option effects to be applied to the player on tick
 	 */
-	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect potion, LangEntry...langList) 
+	public PotionEffect[] effects = null;
+	
+	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, LangEntry... langlist) 
 	{
-		this(mat,id,renderIndexIn,slot,new PotionEffect[]{potion},(CreativeTabs)null,langList);
+		this(id, mat, renderIndexIn, slot, effects, (CreativeTabs)null, langlist);
 	}
-	/**
-	 * legacy support and also if you only wanted one potion effect applied
-	 */
-	public PotionArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect potion,CreativeTabs tab, LangEntry...langList) 
+	
+	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, CreativeTabs tab, LangEntry... langlist)
 	{
-		this(mat,id,renderIndexIn,slot,tab,new PotionEffect[]{potion},true,true,true,true,langList);
+		this(id, mat, renderIndexIn, slot, effects, tab, true, langlist);
 	}
-
-	public PotionArmor(ArmorMat materialIn,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn,CreativeTabs tab,
-			PotionEffect[] potions,boolean model,boolean register,boolean lang, boolean config,LangEntry... langlist) {
-		super(materialIn,id, renderIndexIn, equipmentSlotIn,tab,potions,model,register,lang, config,langlist);
+	
+	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect effect, LangEntry... langlist) 
+	{
+		this(id, mat, renderIndexIn, slot, new PotionEffect[]{effect}, (CreativeTabs)null, langlist);
+	}
+	
+	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect effect, CreativeTabs tab, LangEntry... langlist)
+	{
+		this(id, mat, renderIndexIn, slot, new PotionEffect[]{effect}, tab, true, langlist);
+	}
+	
+	public PotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, CreativeTabs tab, boolean config, LangEntry... langlist) 
+	{
+		super(id, mat, renderIndexIn, slot, effects, tab, config, langlist);
 	}
 
 	/**
@@ -63,15 +55,16 @@ public class PotionArmor extends BasicArmor{
 			return false;
 		
 		IPotionArmor b = (IPotionArmor) boots.getItem();
-		IPotionArmor p = (IPotionArmor)pants.getItem();
+		IPotionArmor p = (IPotionArmor) pants.getItem();
 		IPotionArmor c = (IPotionArmor) chest.getItem();
 		IPotionArmor h = (IPotionArmor) head.getItem();
 		
 		if(!b.hasPotionEffects() || !p.hasPotionEffects() || !c.hasPotionEffects() || !h.hasPotionEffects())
 			return super.hasFullArmorSet(boots, pants, chest, head);
 		
-		return hasPotionEffects(b,p,c,h);
+		return hasPotionEffects(b, p, c, h);
 	}
+	
 	/**
 	 * compares if all potions from this is in objects boots,pants,chest,helmet
 	 */

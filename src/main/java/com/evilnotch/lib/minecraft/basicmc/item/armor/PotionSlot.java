@@ -10,7 +10,7 @@ public class PotionSlot
 	public PotionEffect[] ph = null;
 	public PotionEffect[] pf = null;
 	
-	public PotionSlot(PotionEffect[] potion_boots,PotionEffect[] potion_leggings,PotionEffect[] potion_chestplate,PotionEffect[] potion_helmet,PotionEffect[] potion_full)
+	public PotionSlot(PotionEffect[] potion_boots, PotionEffect[] potion_leggings, PotionEffect[] potion_chestplate, PotionEffect[] potion_helmet, PotionEffect[] potion_full)
 	{
 		this.pb = potion_boots;
 		this.pl = potion_leggings;

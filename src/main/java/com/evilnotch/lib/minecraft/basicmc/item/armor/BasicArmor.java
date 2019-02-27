@@ -1,6 +1,7 @@
 package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,60 +12,57 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class BasicArmor extends BasicArmorBase implements IPotionArmor<ItemArmor>{
+public class BasicArmor extends BasicArmorBase implements IPotionArmor{
 	/**
 	 * a list of option effects to be applied to the player on tick
 	 */
 	public PotionEffect[] effects = null;
 	
-	/**
-	 * the booleans are used for later calls in case people want to call create objects before preinit
-	 */
-	public BasicArmor(ArmorMat materialIn,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn,LangEntry... langlist) {
-		this(materialIn,id, renderIndexIn, equipmentSlotIn,(CreativeTabs)null,langlist);
-	}
-	public BasicArmor(ArmorMat mat,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot slot,CreativeTabs tab,LangEntry... langlist){
-		this(mat,id, renderIndexIn, slot,tab,null,true,true,true,true,langlist);
-	}
-	public BasicArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect[] potion, LangEntry...langList) 
+	public BasicArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, LangEntry... langlist) 
 	{
-		this(mat,id,renderIndexIn,slot,potion,(CreativeTabs)null,langList);
+		this(id, mat, renderIndexIn, slot, effects, (CreativeTabs)null, langlist);
 	}
-	public BasicArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect[] potion,CreativeTabs tab, LangEntry...langList) 
+	
+	public BasicArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, CreativeTabs tab, LangEntry... langlist)
 	{
-		this(mat,id,renderIndexIn,slot,tab,potion,true,true,true,true,langList);
+		this(id, mat, renderIndexIn, slot, effects, tab, true, langlist);
 	}
-	/**
-	 * legacy support and also if you only wanted one potion effect applied
-	 */
-	public BasicArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect potion, LangEntry...langList) 
+	
+	public BasicArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect effect, LangEntry... langlist) 
 	{
-		this(mat,id,renderIndexIn,slot,new PotionEffect[]{potion},(CreativeTabs)null,langList);
+		this(id, mat, renderIndexIn, slot, new PotionEffect[]{effect}, (CreativeTabs)null, langlist);
 	}
-	public BasicArmor(ArmorMat mat, ResourceLocation id, int renderIndexIn,EntityEquipmentSlot slot, PotionEffect potion,CreativeTabs tab, LangEntry...langList) 
+	
+	public BasicArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect effect, CreativeTabs tab, LangEntry... langlist)
 	{
-		this(mat,id,renderIndexIn,slot,tab,new PotionEffect[]{potion},true,true,true,true,langList);
+		this(id, mat, renderIndexIn, slot, new PotionEffect[]{effect}, tab, true, langlist);
 	}
-
-	public BasicArmor(ArmorMat mat,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot slot,CreativeTabs tab,
-			PotionEffect[] potions,boolean model,boolean register,boolean lang, boolean config,LangEntry... langlist) {
-		super(mat,id,renderIndexIn,slot,tab,model,register,lang,config,langlist);
+	
+	public BasicArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, CreativeTabs tab, boolean config, LangEntry... langlist) 
+	{
+		super(id, mat, renderIndexIn, slot, tab, config, langlist);
 		
-		if(potions != null && potions[0] != null)
-			this.effects = potions;//don't set the potion list if it's null array or contains null
+		if(effects != null)
+			this.effects = effects;//don't set the potion list if it's null array or contains null
 	}
 
 	
 	@Override
-	public PotionEffect[] getPotionEffects() {
+	public PotionEffect[] getPotionEffects() 
+	{
 		return this.effects;
 	}
 	
 	@Override
-	public boolean containsPotionEffect(PotionEffect potion) {
+	public boolean containsPotionEffect(PotionEffect potion) 
+	{
+		if(!this.hasPotionEffects())
+			return potion == null;
+		
 		for(PotionEffect p : this.getPotionEffects())
 			if(p.getPotion() == potion.getPotion())
 				return true;
+		
 		return false;
 	}
 	
@@ -72,15 +70,14 @@ public class BasicArmor extends BasicArmorBase implements IPotionArmor<ItemArmor
 	public void onArmorTick(final World world, final EntityPlayer player, final ItemStack itemStack) 
 	{
 		super.onArmorTick(world, player, itemStack);
-		if(this.effects == null || this.armorset == null)
+		
+		if(this.effects == null)
 			return;
-		ItemStack head = player.inventory.armorInventory.get(3);
-		//return from ticking if helmet isn't on since I only need one thing happening per tick
-		if(head.getItem() != this)
-			return;
+		
 		ItemStack boots = player.inventory.armorInventory.get(0);
 		ItemStack pants = player.inventory.armorInventory.get(1);
 		ItemStack chest = player.inventory.armorInventory.get(2);
+		ItemStack head = player.inventory.armorInventory.get(3);
 
 		if(!this.hasFullArmorSet(boots, pants, chest, head))
 			return;

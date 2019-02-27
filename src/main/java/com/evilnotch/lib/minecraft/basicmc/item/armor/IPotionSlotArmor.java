@@ -6,7 +6,8 @@ public interface IPotionSlotArmor {
 	
 	public PotionEffect[] getPotionEffects(ArmorSlotType slot);
 	
-	default public boolean hasPotionEffects(ArmorSlotType slot){
+	default public boolean hasPotionEffects(ArmorSlotType slot)
+	{
 		return getPotionEffects(slot) != null;
 	}
 	
@@ -14,7 +15,7 @@ public interface IPotionSlotArmor {
 	 * unlike vanilla you have the ability for full meaning all armor is on
 	 * @author jredfox
 	 */
-	public enum ArmorSlotType{
+	public enum ArmorSlotType {
 		BOOTS(),
 		LEGS(),
 		CHEST(),

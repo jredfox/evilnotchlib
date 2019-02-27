@@ -17,24 +17,27 @@ public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 	 */
 	public PotionSlot slot;
 	
-	public BasicSlotArmor(ArmorMat mat,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot slot,
-			PotionSlot potion_slot,LangEntry... langlist) {
-		this(mat,id, renderIndexIn, slot,potion_slot,(CreativeTabs)null,langlist);
-	}
-	public BasicSlotArmor(ArmorMat mat,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot slot,PotionSlot potion_slot,CreativeTabs tab,LangEntry... langlist){
-		this(mat,id, renderIndexIn, slot,potion_slot,tab,true,true,true,true,langlist);
-	}
-	public BasicSlotArmor(ArmorMat mat,ResourceLocation id, int ri, EntityEquipmentSlot slot,PotionSlot potion_slot,CreativeTabs tab,boolean model,boolean register,boolean lang, boolean config,LangEntry... langlist) 
+	public BasicSlotArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionSlot effects, LangEntry... langlist) 
 	{
-		super(mat,id,ri,slot,tab,model,register,lang,config,langlist);
-		this.slot = potion_slot;
+		this(id, mat, renderIndexIn, slot, effects, (CreativeTabs)null, langlist);
+	}
+	
+	public BasicSlotArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionSlot effects, CreativeTabs tab, LangEntry... langlist)
+	{
+		this(id, mat, renderIndexIn, slot, effects, tab, true, langlist);
+	}
+	
+	public BasicSlotArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionSlot effects, CreativeTabs tab, boolean config, LangEntry... langlist) 
+	{
+		super(id, mat, renderIndexIn, slot, tab, config, langlist);
+		this.slot = effects;
 	}
 	
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack) 
 	{
 		super.onArmorTick(world, player, stack);
-		if(this.armorset == null || this.slot == null)
+		if(this.slot == null)
 			return;
 		if(this.armorset.boots.getItem() == this)
 		{
@@ -67,6 +70,7 @@ public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 			this.tickFull(world,player,stack);
 		}
 	}
+	
 	/**
 	 * called when boots are on
 	 */
@@ -79,6 +83,7 @@ public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 					player.addPotionEffect(p);
 		}
 	}
+	
 	/**
 	 * called when leggings are on
 	 */
@@ -91,6 +96,7 @@ public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 					player.addPotionEffect(p);
 		}
 	}
+	
 	/**
 	 * called when chest is on
 	 */
@@ -103,6 +109,7 @@ public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 					player.addPotionEffect(p);
 		}
 	}
+	
 	/**
 	 * called when helmet is on
 	 */
@@ -115,6 +122,7 @@ public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 					player.addPotionEffect(p);
 		}
 	}
+	
 	/**
 	 * called when everything is on will fire all other methods first though
 	 */
@@ -127,6 +135,7 @@ public class BasicSlotArmor extends BasicArmorBase implements IPotionSlotArmor{
 					player.addPotionEffect(p);
 		}
 	}
+	
 	@Override
 	public PotionEffect[] getPotionEffects(ArmorSlotType slot) 
 	{
