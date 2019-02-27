@@ -12,7 +12,6 @@ import com.evilnotch.lib.util.simple.PairString;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class ModelPart {
 	
 	public String parent = null;

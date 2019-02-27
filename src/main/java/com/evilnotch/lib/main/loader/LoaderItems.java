@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
@@ -21,7 +20,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class LoaderItems {
 	
-	public static List<IBasicItem> items = new ArrayList();
+	public static List<Item> items = new ArrayList();
 	public static List<ArmorSet> armorsets = new ArrayList();
 	public static List<ToolSet> toolsets = new ArrayList();
 	
@@ -43,10 +42,11 @@ public class LoaderItems {
 
 	public static void registerItems() 
 	{
-		for(IBasicItem i : LoaderItems.items)
+		for(Item i : LoaderItems.items)
 		{
-			ForgeRegistries.ITEMS.register((Item)i.getObject());
+			ForgeRegistries.ITEMS.register(i);
 		}
+		items.clear();
 	}
 
 	public static void registerRecipes(Register<IRecipe> event) 
@@ -134,12 +134,11 @@ public class LoaderItems {
 			LoaderItems.cfgArmors.saveConfig(true, false, true);
 			LoaderItems.cfgTools.saveConfig(true, false, true);
 		}
-		clearItems();
+		clearArrays();
 	}
 
-	private static void clearItems() 
+	private static void clearArrays() 
 	{
-		LoaderItems.items.clear();
 		LoaderItems.armorsets.clear();
 		LoaderItems.toolsets.clear();
 		cfgTools = null;

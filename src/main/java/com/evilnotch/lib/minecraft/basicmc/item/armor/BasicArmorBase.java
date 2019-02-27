@@ -70,11 +70,5 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor<ItemArmor>{
 	{
 		return this.armorset;
 	}
-	
-	@Override
-	public ItemArmor getObject() 
-	{
-		return this;
-	}
 
 }

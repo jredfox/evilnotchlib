@@ -4,7 +4,7 @@ import com.evilnotch.lib.minecraft.basicmc.block.property.IPropertyMeta;
 
 import net.minecraft.util.IStringSerializable;
 
-public enum EnumCheese implements IStringSerializable,IPropertyMeta{
+public enum EnumCheese implements IStringSerializable, IPropertyMeta{
 	
 	swiss("swiss", 0),
 	amrican("american", 1);

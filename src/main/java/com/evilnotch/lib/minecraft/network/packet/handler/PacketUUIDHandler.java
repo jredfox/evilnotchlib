@@ -1,7 +1,9 @@
 package com.evilnotch.lib.minecraft.network.packet.handler;
 
+import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.client.Minecraft;
@@ -14,7 +16,7 @@ public class PacketUUIDHandler extends MessegeBase<PacketUUID>{
 	{
 		Minecraft.getMinecraft().addScheduledTask(() -> 
 		{
-			EntityPlayer player = Minecraft.getMinecraft().player;
+			EntityPlayer player = ClientProxy.getPlayer();
 			if(player.getEntityId() != message.id)
 			{
 				PlayerUtil.setPlayerUUID((EntityPlayer) player.world.getEntityByID(message.id), message.uuid);

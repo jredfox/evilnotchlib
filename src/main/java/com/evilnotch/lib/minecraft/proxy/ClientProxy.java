@@ -92,4 +92,9 @@ public class ClientProxy extends ServerProxy{
 		System.out.println("disconnecting..........................");
 	}
 
+	public static EntityPlayer getPlayer() 
+	{
+		return Minecraft.getMinecraft().player;
+	}
+
 }

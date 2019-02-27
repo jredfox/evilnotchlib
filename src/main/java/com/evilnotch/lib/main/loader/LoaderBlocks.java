@@ -36,6 +36,7 @@ public class LoaderBlocks {
 				ForgeRegistries.ITEMS.register(itemblock);
 			}
 	    }
+		blocks.clear();
 	}
 
 	public static void loadpostinit() 
@@ -44,12 +45,11 @@ public class LoaderBlocks {
 		{
 			LoaderBlocks.cfgBlockProps.saveConfig(true, false, true);
 		}
-		clearBlocks();
+		clearConfig();
 	}
 
-	private static void clearBlocks() 
+	private static void clearConfig() 
 	{
-		LoaderBlocks.blocks.clear();
 		cfgBlockProps = null;
 	}
 

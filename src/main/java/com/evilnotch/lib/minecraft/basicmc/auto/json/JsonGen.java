@@ -78,10 +78,7 @@ public class JsonGen {
 	public static void genJSONS() throws IOException
 	{
 		if(!LoaderMain.isDeObfuscated)
-		{
-			clear();
 			return;
-		}
 		
 		LoaderGen.checkRootFile();
 		
@@ -293,6 +290,8 @@ public class JsonGen {
 //				ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(gen.loc + "_" + BlockApi.getPropertyValue(state, gen.property), BlockApi.getBlockStateName(state, gen.property)));
 			}
 		}
+		if(!LoaderMain.isDeObfuscated)
+			clear();
 	}
 	
 }

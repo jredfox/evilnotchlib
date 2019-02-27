@@ -13,7 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicItem extends Item implements IBasicItem<Item>{
+public class BasicItem extends Item {
 	
 	public BasicItem(ResourceLocation id, LangEntry...langlist)
 	{
@@ -90,12 +90,6 @@ public class BasicItem extends Item implements IBasicItem<Item>{
 			}
 		}
 		return mat.getEnum();
-	}
-	
-	@Override
-	public Item getObject() 
-	{
-		return this;
 	}
 
 }

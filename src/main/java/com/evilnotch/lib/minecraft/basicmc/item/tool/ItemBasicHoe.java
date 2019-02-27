@@ -1,19 +1,16 @@
 package com.evilnotch.lib.minecraft.basicmc.item.tool;
 
-import java.util.ArrayList;
-
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
-import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemBasicHoe extends ItemHoe implements IBasicItem<ItemHoe>{
+public class ItemBasicHoe extends ItemHoe {
 	
 	public boolean hasregister = false;
 	public boolean hasmodel = false;
@@ -53,11 +50,5 @@ public class ItemBasicHoe extends ItemHoe implements IBasicItem<ItemHoe>{
 	public void populateJSON()
 	{
 		JsonGen.registerItemJson(this);
-	}
-	
-	@Override
-	public ItemHoe getObject() 
-	{
-		return this;
 	}
 }

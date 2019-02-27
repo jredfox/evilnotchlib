@@ -150,7 +150,6 @@ public class BasicBlock extends Block {
 		return this.itemblock;
 	}
 	
-	@SideOnly(Side.CLIENT)
 	public ModelPart getModelPart()
 	{
 		return ModelPart.cube_all;

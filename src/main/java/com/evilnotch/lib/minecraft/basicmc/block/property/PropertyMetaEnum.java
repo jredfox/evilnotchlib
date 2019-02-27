@@ -12,9 +12,10 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.util.IStringSerializable;
 
-public class PropertyMetaEnum<T extends Enum<T> & IStringSerializable & IPropertyMeta> extends PropertyEnum implements IPropertyName{
+public class PropertyMetaEnum<T extends Enum<T> & IPropertyMeta> extends PropertyEnum implements IPropertyName{
 
-	public PropertyMetaEnum(String name, Class<T> valueClass, Collection<T> allowedValues) {
+	public PropertyMetaEnum(String name, Class<T> valueClass, Collection<T> allowedValues) 
+	{
 		super(name, valueClass, allowedValues);
 	}
 
@@ -30,15 +31,15 @@ public class PropertyMetaEnum<T extends Enum<T> & IStringSerializable & IPropert
 		return null;
 	}
 	
-	public int getMeta(Enum<? extends IPropertyMeta> e)
+	public int getMeta(IPropertyMeta e)
 	{
-		return ((IPropertyMeta)e).getMetaData();
+		return e.getMetaData();
 	}
 	
     /**
      * Create a new PropertyEnum with all Enum constants of the given class.
      */
-    public static <T extends Enum<T> & IStringSerializable & IPropertyMeta> PropertyEnum<T> createProperty(String name, Class<T> clazz)
+    public static <T extends Enum<T> & IPropertyMeta> PropertyEnum<T> createProperty(String name, Class<T> clazz)
     {
         return createProperty(name, clazz, Predicates.alwaysTrue());
     }
@@ -46,7 +47,7 @@ public class PropertyMetaEnum<T extends Enum<T> & IStringSerializable & IPropert
     /**
      * Create a new PropertyEnum with all Enum constants of the given class that match the given Predicate.
      */
-    public static <T extends Enum<T> & IStringSerializable & IPropertyMeta> PropertyEnum<T> createProperty(String name, Class<T> clazz, Predicate<T> filter)
+    public static <T extends Enum<T> & IPropertyMeta> PropertyEnum<T> createProperty(String name, Class<T> clazz, Predicate<T> filter)
     {
         return createProperty(name, clazz, Collections2.filter(Lists.newArrayList(clazz.getEnumConstants()), filter));
     }
@@ -54,7 +55,7 @@ public class PropertyMetaEnum<T extends Enum<T> & IStringSerializable & IPropert
     /**
      * Create a new PropertyEnum with the specified values
      */
-    public static <T extends Enum<T> & IStringSerializable & IPropertyMeta> PropertyEnum<T> createProperty(String name, Class<T> clazz, T... values)
+    public static <T extends Enum<T> & IPropertyMeta> PropertyEnum<T> createProperty(String name, Class<T> clazz, T... values)
     {
         return createProperty(name, clazz, Lists.newArrayList(values));
     }
@@ -63,7 +64,7 @@ public class PropertyMetaEnum<T extends Enum<T> & IStringSerializable & IPropert
     /**
      * Create a new PropertyEnum with the specified values
      */
-    public static <T extends Enum<T> & IStringSerializable & IPropertyMeta> PropertyEnum<T> createProperty(String name, Class<T> clazz, Collection<T> values)
+    public static <T extends Enum<T> & IPropertyMeta> PropertyEnum<T> createProperty(String name, Class<T> clazz, Collection<T> values)
     {
     	return new PropertyMetaEnum(name,clazz,values);
     }

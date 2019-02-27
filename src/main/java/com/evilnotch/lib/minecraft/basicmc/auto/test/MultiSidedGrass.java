@@ -41,7 +41,7 @@ public class MultiSidedGrass extends BasicMetaBlock{
 	 */
 	public MultiSidedGrass(Material mat, MapColor mc, ResourceLocation id, CreativeTabs tab,BlockProperties props,IProperty prop, LangEntry... langlist) 
 	{
-		super(mat,mc,id,tab,props,prop,langlist);
+		super(id,prop,mat,mc,tab,props,langlist);
 	}
 	
 	@Override

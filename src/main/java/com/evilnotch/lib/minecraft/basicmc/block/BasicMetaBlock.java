@@ -4,20 +4,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.basicmc.auto.BlockWrapper;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
-import com.evilnotch.lib.minecraft.basicmc.block.item.IMetaName;
 import com.evilnotch.lib.minecraft.basicmc.block.item.ItemBlockMeta;
 import com.evilnotch.lib.minecraft.basicmc.block.property.IPropertyMeta;
 import com.evilnotch.lib.minecraft.basicmc.block.property.IPropertyName;
 import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
 import com.evilnotch.lib.util.JavaUtil;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -35,7 +31,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicMetaBlock extends BasicBlock implements IMetaName, IBasicBlockMeta{
+public class BasicMetaBlock extends BasicBlock implements IBasicBlockMeta{
 	
 	public IProperty property = null;
 	
@@ -88,7 +84,7 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName, IBasicBlock
 	@Override
 	public void populateJSON()
 	{
-		if(!LoaderMain.isClient || this.property == null)
+		if(this.property == null)
 			return;
 		JsonGen.registerBlockMetaJson(this, this.getModelPart(), this.property);
 	}
@@ -231,17 +227,9 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName, IBasicBlock
 	}
 	
 	/**
-	 * gets appended in the name
-	 */
-	@Override
-	public String getSpecialName(ItemStack stack) 
-	{
-		return "_" + this.getPropertyName(stack.getItemDamage());
-	}
-	
-	/**
 	 * metadata of itemstack to proper unlocalized suffix name
 	 */
+	@Override
 	public String getPropertyName(int meta) 
 	{
 		if(this.property instanceof PropertyInteger)
@@ -268,6 +256,7 @@ public class BasicMetaBlock extends BasicBlock implements IMetaName, IBasicBlock
 		return ModelPart.cube_all;
 	}
 	
+	@Override
 	public IProperty getProperty() 
 	{
 		return this.property;

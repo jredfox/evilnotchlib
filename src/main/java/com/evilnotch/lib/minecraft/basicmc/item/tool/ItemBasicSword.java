@@ -5,13 +5,12 @@ import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
-import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemBasicSword extends ItemSword implements IBasicItem<ItemSword>{
+public class ItemBasicSword extends ItemSword {
 	
 	public boolean hasregister = false;
 	public boolean hasmodel = false;
@@ -52,11 +51,6 @@ public class ItemBasicSword extends ItemSword implements IBasicItem<ItemSword>{
 	public void populateJSON()
 	{
 		JsonGen.registerItemJson(this);
-	}
-	
-	@Override
-	public ItemSword getObject() {
-		return this;
 	}
 
 }

@@ -2,7 +2,9 @@ package com.evilnotch.lib.minecraft.basicmc.block.property;
 
 import java.util.Set;
 
-public interface IPropertyName {
+import net.minecraft.util.IStringSerializable;
+
+public interface IPropertyName extends IStringSerializable{
 	
 	public Enum getValue(int meta);
 }

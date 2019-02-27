@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.minecraft.basicmc.block.IBasicBlockMeta;
+import com.evilnotch.lib.minecraft.basicmc.block.property.IPropertyName;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.util.BlockUtil;
 import com.evilnotch.lib.minecraft.util.ItemUtil;
@@ -22,6 +24,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
@@ -147,7 +150,7 @@ public class BlockApi {
 	
 	public static String getPropertyValue(IBlockState state, IProperty p)
 	{
-		return JavaUtil.splitFirst(getBlockStateName(state,p), '=')[1];
+		return JavaUtil.splitFirst(getBlockStateName(state, p), '=')[1];
 	}
 	
 	public static String getBlockStateName(IBlockState state, IProperty p)

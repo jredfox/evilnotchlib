@@ -1,11 +1,9 @@
 package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
-import com.evilnotch.lib.minecraft.basicmc.item.IBasicItem;
-
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
-public interface IBasicArmor<T extends ItemArmor> extends IBasicItem<T>{
+public interface IBasicArmor<T extends ItemArmor> {
 	
 	public ArmorSet getArmorSet();
 	public void setArmorSet(ArmorSet set);

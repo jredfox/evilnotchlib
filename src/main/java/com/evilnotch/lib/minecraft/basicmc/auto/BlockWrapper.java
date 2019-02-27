@@ -8,7 +8,6 @@ import net.minecraft.util.ResourceLocation;
 public class BlockWrapper {
 	
 	public ResourceLocation loc;
-	public IProperty property;
 	public Block b;
 	public ItemBlock itemblock;
 	
