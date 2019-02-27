@@ -16,5 +16,4 @@ public interface IBasicGui {
 	public GuiButton getSelectedButton();
 	public boolean getKeyHandled();
 	public boolean getmouseHandled();
-	public float getZLevel();
 }

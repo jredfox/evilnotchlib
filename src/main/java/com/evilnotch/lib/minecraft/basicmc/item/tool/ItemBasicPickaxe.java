@@ -27,9 +27,9 @@ public class ItemBasicPickaxe extends ItemPickaxe implements IAutoItem{
 		this.setCreativeTab(tab);
 		
 		//autofill
+		this.register();
 		this.populateLang(langlist);
 		this.populateJSON();
-		this.register();
 	}
 	
 	public void register()

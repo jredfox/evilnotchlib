@@ -1,6 +1,8 @@
 package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
+import com.evilnotch.lib.minecraft.basicmc.auto.IAutoItem;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
@@ -11,25 +13,24 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class BasicArmorBase extends ItemArmor implements IBasicArmor<ItemArmor>{
+public class BasicArmorBase extends ItemArmor implements IBasicArmor<ItemArmor>, IAutoItem{
 	
-	public boolean hasregister = false;
-	public boolean hasmodel = false;
-	public boolean haslang = false;
-	public boolean hasconfig = false;
 	public ArmorSet armorset = null;
 
 	/**
 	 * the booleans are used for later calls in case people want to call create objects before preinit
 	 */
-	public BasicArmorBase(ArmorMat mat,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot slot,LangEntry... langlist) {
-		this(mat,id, renderIndexIn, slot,(CreativeTabs)null,langlist);
-	}
-	public BasicArmorBase(ArmorMat mat,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot slot,CreativeTabs tab,LangEntry... langlist){
-		this(mat,id, renderIndexIn, slot,tab,true,true,true,true,langlist);
+	public BasicArmorBase(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot,LangEntry... langlist) 
+	{
+		this(id, mat, renderIndexIn, slot, (CreativeTabs)null, langlist);
 	}
 	
-	public BasicArmorBase(ArmorMat materialIn,ResourceLocation id, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn,CreativeTabs tab,boolean model,boolean register,boolean lang, boolean config,LangEntry... langlist) 
+	public BasicArmorBase(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot,CreativeTabs tab,LangEntry... langlist)
+	{
+		this(id, mat, renderIndexIn, slot, tab, true, langlist);
+	}
+	
+	public BasicArmorBase(ResourceLocation id, ArmorMat materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
 		super(BasicItem.getMat(materialIn,config), renderIndexIn, equipmentSlotIn);
 		this.setRegistryName(id);
@@ -37,20 +38,10 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor<ItemArmor>{
 		this.setUnlocalizedName(unlocalname);
 		this.setCreativeTab(tab);
 		
-		this.hasregister = register;
-		this.hasmodel = model;
-		this.haslang = lang;
-		this.hasconfig = config;
-		
 		//autofill
-		this.populateLang(id, langlist);
-		
-		LoaderItems.items.add(this);
-	}
-	
-	public void populateLang(ResourceLocation id, LangEntry... langs) 
-	{
-		LangRegistry.registerLang(this, langs);
+		this.register();
+		this.populateLang(langlist);
+		this.populateJSON();
 	}
 	
 	@Override
@@ -69,6 +60,42 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor<ItemArmor>{
 	public ArmorSet getArmorSet()
 	{
 		return this.armorset;
+	}
+	
+	public void register()
+	{
+		if(this.canRegister())
+			LoaderItems.items.add(this);
+	}
+	
+	public void populateLang(LangEntry... langs)
+	{
+		if(this.canRegisterLang())
+			LangRegistry.registerLang(this, langs);
+	}
+	
+	public void populateJSON()
+	{
+		if(this.canRegisterJSON())
+			JsonGen.registerItemJson(this);
+	}
+	
+	@Override
+	public boolean canRegister() 
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean canRegisterLang()
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean canRegisterJSON() 
+	{
+		return true;
 	}
 
 }

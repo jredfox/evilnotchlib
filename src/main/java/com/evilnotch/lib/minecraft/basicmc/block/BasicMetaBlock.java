@@ -87,6 +87,7 @@ public class BasicMetaBlock extends BasicBlock implements IBasicBlockMeta{
 	{
 		if(this.property == null)
 			return;
+		
 		if(this.canRegisterJSON())
 			JsonGen.registerBlockMetaJson(this, this.getModelPart(), this.property);
 	}

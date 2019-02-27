@@ -17,7 +17,7 @@ public class ToolSet {
 	public ItemStack stick;
 	public boolean allMetaBlock = true;
 	public boolean allMetaStick = true;
-	public static final ItemStack air = new ItemStack(Blocks.AIR);
+	public static final ItemStack air = ItemStack.EMPTY;
 	
 	public ToolSet(Item pick,Item axe,Item sword,Item shovel,Item hoe)
 	{

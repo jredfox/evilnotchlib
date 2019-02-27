@@ -15,7 +15,7 @@ public class ArmorSet {
 	public ItemStack block;
 	public boolean allMetaBlock = true;
 	public boolean hasRecipe = true;
-	public static final ItemStack air = new ItemStack(Blocks.AIR);
+	public static final ItemStack air = ItemStack.EMPTY;
 	
 	/**
 	 * use this constructor if you don't want recipes automated

@@ -34,7 +34,9 @@ public class BasicItemMeta extends BasicItem implements IBasicItemMeta{
 	{
 		if(!constructedMeta)
 			return;
-		JsonGen.registerItemMetaJson(this, this.getMaxMeta());
+		
+		if(this.canRegisterJSON())
+			JsonGen.registerItemMetaJson(this, this.getMaxMeta());
 	}
 
 	@Override
