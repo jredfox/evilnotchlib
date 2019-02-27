@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
@@ -89,7 +90,7 @@ public class BasicMetaBlock extends BasicBlock implements IBasicBlockMeta{
 			return;
 		
 		if(this.canRegisterJSON())
-			JsonGen.registerBlockMetaJson(this, this.getModelPart(), this.property);
+			JSONProxy.registerBlockMetaJson(this, this.getModelPart(), this.property);
 	}
 	
 	public void setStateConstructor(IProperty prop) 

@@ -28,8 +28,10 @@ import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import scala.reflect.api.Trees.BlockApi;
-
+@SideOnly(Side.CLIENT)
 public class JsonGen {
 	
 	public static List<BasicBlockJSON> blocks = new ArrayList<BasicBlockJSON>();
@@ -38,40 +40,34 @@ public class JsonGen {
 	public static List<BasicItemJSON> items = new ArrayList<BasicItemJSON>();
 	public static List<BasicItemJSONMeta> items_meta = new ArrayList<BasicItemJSONMeta>();
 	
-	public static void registerBlockJson(Block b)
+	protected static void registerBlockJson(Block b)
 	{
-		if(LoaderMain.isClient)
-			registerBlockJson(b, ModelPart.cube_all);
+		registerBlockJson(b, ModelPart.cube_all);
 	}
 	
-	public static void registerBlockJson(Block b, ModelPart part)
+	protected static void registerBlockJson(Block b, ModelPart part)
 	{
-		if(LoaderMain.isClient)
-			blocks.add(new BasicBlockJSON(b, part));
+		blocks.add(new BasicBlockJSON(b, part));
 	}
 	
-	public static void registerItemJson(Item i)
+	protected static void registerItemJson(Item i)
 	{
-		if(LoaderMain.isClient)
-			items.add(new BasicItemJSON(i));
+		items.add(new BasicItemJSON(i));
 	}
 	
-	public static void registerBlockMetaJson(Block b, IProperty p)
+	protected static void registerBlockMetaJson(Block b, IProperty p)
 	{
-		if(LoaderMain.isClient)
-			registerBlockMetaJson(b, ModelPart.cube_all, p);
+		registerBlockMetaJson(b, ModelPart.cube_all, p);
 	}
 	
-	public static void registerBlockMetaJson(Block b, ModelPart part, IProperty p)
+	protected static void registerBlockMetaJson(Block b, ModelPart part, IProperty p)
 	{
-		if(LoaderMain.isClient)
-			blocks_meta.add(new BasicBlockJSONMeta(b, part, p));
+		blocks_meta.add(new BasicBlockJSONMeta(b, part, p));
 	}
 	
-	public static void registerItemMetaJson(Item i, int maxMeta)
+	protected static void registerItemMetaJson(Item i, int maxMeta)
 	{
-		if(LoaderMain.isClient)
-			items_meta.add(new BasicItemJSONMeta(i, maxMeta));
+		items_meta.add(new BasicItemJSONMeta(i, maxMeta));
 	}
 	
 	private static boolean isDirty = false;

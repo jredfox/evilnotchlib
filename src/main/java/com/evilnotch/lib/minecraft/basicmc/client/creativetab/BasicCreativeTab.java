@@ -1,6 +1,7 @@
 package com.evilnotch.lib.minecraft.basicmc.client.creativetab;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.basicmc.auto.IAutoItem;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 
@@ -10,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BasicCreativeTab extends CreativeTabs{
+public class BasicCreativeTab extends CreativeTabs implements IAutoItem{
 	
 	public ItemStack display = null;
 	
@@ -29,16 +30,36 @@ public class BasicCreativeTab extends CreativeTabs{
 		populateLang(langlist);
 	}
 	
-	@SideOnly(Side.CLIENT)
     protected void populateLang(LangEntry... langlist) 
 	{
-		LangRegistry.registerLang(this, langlist);
+		if(this.canRegisterLang())
+			LangRegistry.registerLang(this, langlist);
 	}
 	
-	@SideOnly(Side.CLIENT)
     public ItemStack getTabIconItem()
 	{
         return display;
     }
+	
+	/**
+	 * the creative tabs are auto registered without this objects control
+	 */
+	@Override
+	public boolean canRegister() {
+		return true;
+	}
+
+	@Override
+	public boolean canRegisterLang() {
+		return true;
+	}
+	
+	/**
+	 * object doesn't support this feature
+	 */
+	@Override
+	public boolean canRegisterJSON() {
+		return false;
+	}
 
 }

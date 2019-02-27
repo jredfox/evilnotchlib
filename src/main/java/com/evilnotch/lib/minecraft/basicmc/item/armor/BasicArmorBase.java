@@ -2,7 +2,7 @@ package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.minecraft.basicmc.auto.IAutoItem;
-import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
@@ -77,7 +77,7 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor, IAutoItem{
 	public void populateJSON()
 	{
 		if(this.canRegisterJSON())
-			JsonGen.registerItemJson(this);
+			JSONProxy.registerItemJson(this);
 	}
 	
 	@Override

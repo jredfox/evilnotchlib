@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.item;
 
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
@@ -36,7 +37,7 @@ public class BasicItemMeta extends BasicItem implements IBasicItemMeta{
 			return;
 		
 		if(this.canRegisterJSON())
-			JsonGen.registerItemMetaJson(this, this.getMaxMeta());
+			JSONProxy.registerItemMetaJson(this, this.getMaxMeta());
 	}
 
 	@Override

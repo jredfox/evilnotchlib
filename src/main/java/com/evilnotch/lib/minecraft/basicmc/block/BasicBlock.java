@@ -3,6 +3,7 @@ package com.evilnotch.lib.minecraft.basicmc.block;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.minecraft.basicmc.auto.BlockWrapper;
 import com.evilnotch.lib.minecraft.basicmc.auto.IAutoBlock;
+import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
@@ -84,7 +85,7 @@ public class BasicBlock extends Block implements IAutoBlock{
 	public void populateJSON()
 	{
 		if(this.canRegisterJSON())
-			JsonGen.registerBlockJson(this, this.getModelPart());
+			JSONProxy.registerBlockJson(this, this.getModelPart());
 	}
 	
 	protected void fillProperties(BlockProperties props) 
