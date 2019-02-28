@@ -51,7 +51,6 @@ public class BasicArmor extends BasicArmorBase implements IPotionArmor{
 	public BasicArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
 		super(id, mat, renderIndexIn, slot, tab, config, langlist);
-		
 		if(effects != null)
 			this.effects = effects;//don't set the potion list if it's null array or contains null
 	}

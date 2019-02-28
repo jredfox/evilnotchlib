@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.EnumHelper;
 public class ToolMat implements IEnumContainer{
 	
 	/**
-	 * a registry for all tool material used by this lib
+	 * a preconfigured versions of this armor enums gets cleared in post init
 	 */
 	public static HashMap<ResourceLocation,ToolMaterial> toolenums = new HashMap();
 	
@@ -36,14 +36,12 @@ public class ToolMat implements IEnumContainer{
         this.efficiency = efficiency;
         this.attackDamage = damageVsEntity;
         this.enchantability = enchantability;
-        if(!toolenums.containsKey(id))
-        	toolenums.put(this.id, this.getEnum());
     }
 
 	@Override
     public ToolMaterial getEnum()
 	{
-		return toolenums.get(this.id);
+		return EnumHelper.addToolMaterial(this.enumName, this.harvestLevel, this.maxUses, this.efficiency, this.attackDamage, this.enchantability);
     }
 	
     @Override
@@ -51,5 +49,12 @@ public class ToolMat implements IEnumContainer{
     {
     	return "\"" + this.enumName + "\" = [" + this.harvestLevel + ", " + this.maxUses + ", " + this.efficiency + "f, " + this.attackDamage + "f, " + this.enchantability + "]";
     }
+
+	public static ToolMaterial getMat(ToolMat mat, boolean config)
+	{
+		if(!config)
+			return mat.getEnum();
+		return toolenums.get(mat.id);
+	}
 
 }

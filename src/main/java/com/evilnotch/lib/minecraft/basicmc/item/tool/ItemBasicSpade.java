@@ -25,7 +25,7 @@ public class ItemBasicSpade extends ItemSpade implements IAutoItem{
 
 	public ItemBasicSpade(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
-		super(BasicItem.getMat(material,config));
+		super(ToolMat.getMat(material,config));
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);

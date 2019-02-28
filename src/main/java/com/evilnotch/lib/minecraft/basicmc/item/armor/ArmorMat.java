@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderFields;
+import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolMat;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.line.LineArray;
@@ -20,7 +21,7 @@ import net.minecraftforge.common.util.EnumHelper;
 public class ArmorMat implements IEnumContainer{
 	
 	 /**
-	  * A registry for custom armor material
+	  * a preconfigured versions of this armor enums gets cleared in post init
 	  */
 	 public static HashMap<ResourceLocation,ArmorMaterial> armorenums = new HashMap();
 	
@@ -48,8 +49,6 @@ public class ArmorMat implements IEnumContainer{
          this.enchantability = enclvl;
          this.soundEvent = soundEventIn;
          this.toughness = tough;
-         if(!armorenums.containsKey(id))
-        	 armorenums.put(this.id, this.getEnum());
      }
 	
 	 public ArmorMat(ResourceLocation id, ResourceLocation texture, int durability, int[] damageReduction, int enchlvl, ResourceLocation soundEventIN, float tough)
@@ -60,11 +59,19 @@ public class ArmorMat implements IEnumContainer{
 	 @Override
 	 public ArmorMaterial getEnum()
 	 {
-		return armorenums.get(this.id);
+		return EnumHelper.addArmorMaterial(this.enumName, this.textureName,this.durability,this.damageReduction,this.enchantability,this.soundEvent,this.toughness);
+	 }
+	 
+	 public static ArmorMaterial getMat(ArmorMat mat, boolean config)
+	 {
+		if(!config)
+			return mat.getEnum();
+		return armorenums.get(mat.id);
 	 }
 	 
 	 @Override
-	 public String toString(){
+	 public String toString()
+	 {
 		 return "\"" + this.enumName + "\" = [\"" + this.textureName + "\", " + this.durability + ", [" + JavaUtil.getIntsAsString(this.damageReduction) + "], " + this.enchantability + ", \"" + this.soundEvent.getRegistryName() + "\", " + this.toughness + "f]";
 	 }
 

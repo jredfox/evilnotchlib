@@ -14,11 +14,6 @@ import net.minecraft.util.ResourceLocation;
  */
 public class BasicPotionArmor extends BasicArmor{
 	
-	/**
-	 * a list of option effects to be applied to the player on tick
-	 */
-	public PotionEffect[] effects = null;
-	
 	public BasicPotionArmor(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, PotionEffect[] effects, LangEntry... langlist) 
 	{
 		this(id, mat, renderIndexIn, slot, effects, (CreativeTabs)null, langlist);

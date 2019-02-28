@@ -25,7 +25,7 @@ public class ItemBasicAxe extends ItemAxe implements IAutoItem{
 
 	public ItemBasicAxe(ResourceLocation id, ToolMat mat, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
-		super(BasicItem.getMat(mat,config), mat.attackDamage, mat.efficiency);
+		super(ToolMat.getMat(mat,config), mat.attackDamage, mat.efficiency);
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);

@@ -25,7 +25,7 @@ public class ItemBasicPickaxe extends ItemPickaxe implements IAutoItem{
 
 	public ItemBasicPickaxe(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
-		super(BasicItem.getMat(material, config));
+		super(ToolMat.getMat(material, config));
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);

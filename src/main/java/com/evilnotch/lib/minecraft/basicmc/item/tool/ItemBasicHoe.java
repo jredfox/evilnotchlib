@@ -5,7 +5,6 @@ import com.evilnotch.lib.minecraft.basicmc.auto.IAutoItem;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
-import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemHoe;
@@ -24,7 +23,7 @@ public class ItemBasicHoe extends ItemHoe implements IAutoItem{
 
 	public ItemBasicHoe(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
-		super(BasicItem.getMat(material,config));
+		super(ToolMat.getMat(material,config));
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);

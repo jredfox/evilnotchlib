@@ -32,7 +32,7 @@ public class BasicArmorBase extends ItemArmor implements IBasicArmor, IAutoItem{
 	
 	public BasicArmorBase(ResourceLocation id, ArmorMat mat, int renderIndexIn, EntityEquipmentSlot slot, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
-		super(BasicItem.getMat(mat, config), renderIndexIn, slot);
+		super(ArmorMat.getMat(mat, config), renderIndexIn, slot);
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);

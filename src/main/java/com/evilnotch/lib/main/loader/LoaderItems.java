@@ -143,8 +143,8 @@ public class LoaderItems {
 	{
 		LoaderItems.armorsets.clear();
 		LoaderItems.toolsets.clear();
-		ArmorMat.armormats.clear();
-		ToolMat.toolmats.clear();
+		ArmorMat.armorenums.clear();
+		ToolMat.toolenums.clear();
 		
 		cfgTools = null;
 		cfgArmors = null;
