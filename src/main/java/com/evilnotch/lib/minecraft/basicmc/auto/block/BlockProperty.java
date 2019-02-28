@@ -196,4 +196,13 @@ public class BlockProperty {
 		return props;
 	}
 	
+	@Override
+	public String toString()
+	{
+		JSONObject json = new JSONObject();
+		savePropertyToJSON(json, this);
+		json.put("propId", this.propId.toString());
+		return JavaUtil.toPrettyFormat(json.toJSONString());
+	}
+	
 }

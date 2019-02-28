@@ -20,7 +20,7 @@ public class LoaderBlocks {
 	 
 	public static void loadpreinit()
 	{
-		
+		BlockProperty.parseProperties();
 	}
 
 	public static void registerBlocks() 
