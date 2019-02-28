@@ -1,4 +1,4 @@
-package com.evilnotch.lib.minecraft.basicmc.block;
+package com.evilnotch.lib.minecraft.basicmc.auto.block;
 
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.util.BlockUtil;

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperties;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;

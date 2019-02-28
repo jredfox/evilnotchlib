@@ -15,21 +15,21 @@ import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickEventClient;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperties;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorSet;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolSet;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.test.EnumCheese;
 import com.evilnotch.lib.minecraft.basicmc.auto.test.MultiSidedGrass;
 import com.evilnotch.lib.minecraft.basicmc.block.BasicBlock;
 import com.evilnotch.lib.minecraft.basicmc.block.BasicMetaBlock;
-import com.evilnotch.lib.minecraft.basicmc.block.BlockProperties;
 import com.evilnotch.lib.minecraft.basicmc.block.property.PropertyMetaEnum;
 import com.evilnotch.lib.minecraft.basicmc.client.creativetab.BasicCreativeTab;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItemMeta;
-import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ItemBasicPickaxe;
-import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolMat;
-import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
 import com.evilnotch.lib.minecraft.event.PickEvent.Entity;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
@@ -82,7 +82,6 @@ public class LoaderMain {
 	public static void loadpreinit(FMLPreInitializationEvent e)
 	{
 		loaderMainPreInit(e);
-		LoaderGen.loadpreinit();
 		LoaderItems.loadpreinit();
 		LoaderBlocks.loadpreinit();
 		LoaderCommands.load();

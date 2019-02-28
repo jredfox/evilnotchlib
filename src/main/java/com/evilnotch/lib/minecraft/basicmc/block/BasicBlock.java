@@ -3,6 +3,7 @@ package com.evilnotch.lib.minecraft.basicmc.block;
 import com.evilnotch.lib.main.loader.LoaderBlocks;
 import com.evilnotch.lib.minecraft.basicmc.auto.BlockWrapper;
 import com.evilnotch.lib.minecraft.basicmc.auto.IAutoBlock;
+import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperties;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;

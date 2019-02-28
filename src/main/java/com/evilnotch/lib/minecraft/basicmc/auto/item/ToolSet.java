@@ -1,4 +1,4 @@
-package com.evilnotch.lib.minecraft.basicmc.item.tool;
+package com.evilnotch.lib.minecraft.basicmc.auto.item;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
 

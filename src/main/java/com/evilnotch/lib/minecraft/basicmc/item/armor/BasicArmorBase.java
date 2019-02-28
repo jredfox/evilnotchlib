@@ -2,6 +2,8 @@ package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.minecraft.basicmc.auto.IAutoItem;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorMat;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;

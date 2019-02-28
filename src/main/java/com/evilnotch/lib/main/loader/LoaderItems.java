@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorMat;
-import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorSet;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorMat;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorSet;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
-import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolMat;
-import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolSet;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.line.config.ConfigNonMeta;
@@ -28,7 +28,8 @@ public class LoaderItems {
 	
 	public static void loadpreinit()
 	{
-		
+		ArmorMat.parseArmorMats();
+		ToolMat.parseToolMats();
 	}
 
 	public static void registerItems() 
@@ -106,20 +107,22 @@ public class LoaderItems {
 	    	boolean ms = set.allMetaStick;
 	    	
 	    	if(pickaxe != null)
-	    		GeneralRegistry.addShapedRecipe(pickaxe, new Object[]{"bbb"," s "," s ",'b',mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
+	    		GeneralRegistry.addShapedRecipe(pickaxe, new Object[]{"bbb"," s "," s ",'b', mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
 	    	if(axe != null)
 	    		GeneralRegistry.addShapedRecipe(axe, new Object[]{"bb ","bs "," s ",'b',mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
 	    	if(sword != null)
-	    		GeneralRegistry.addShapedRecipe(sword, new Object[]{"b","b","s",'b',mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
+	    		GeneralRegistry.addShapedRecipe(sword, new Object[]{"b","b","s",'b', mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
 	    	if(spade != null)
-	    		GeneralRegistry.addShapedRecipe(spade, new Object[]{"b","s","s",'b',mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
+	    		GeneralRegistry.addShapedRecipe(spade, new Object[]{"b","s","s",'b', mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
 	    	if(hoe != null)
-	    		GeneralRegistry.addShapedRecipe(hoe, new Object[]{"bb "," s "," s ",'b',mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
+	    		GeneralRegistry.addShapedRecipe(hoe, new Object[]{"bb "," s "," s ",'b', mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
 	    }
 	}
 
 	public static void loadpostinit() 
 	{
+		ToolMat.saveToolMats();
+		ArmorMat.saveToolMats();
 		clearArrays();
 	}
 
@@ -127,8 +130,8 @@ public class LoaderItems {
 	{
 		LoaderItems.armorsets.clear();
 		LoaderItems.toolsets.clear();
-//		ArmorMat.armorenums.clear();
-//		ToolMat.toolenums.clear();
+		ArmorMat.armorenums.clear();
+		ToolMat.toolenums.clear();
 	}
 
 }

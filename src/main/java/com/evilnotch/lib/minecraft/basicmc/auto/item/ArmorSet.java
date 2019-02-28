@@ -1,4 +1,4 @@
-package com.evilnotch.lib.minecraft.basicmc.item.armor;
+package com.evilnotch.lib.minecraft.basicmc.auto.item;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderItems;

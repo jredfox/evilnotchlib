@@ -1,9 +1,12 @@
-package com.evilnotch.lib.minecraft.basicmc.item.armor;
+package com.evilnotch.lib.minecraft.basicmc.auto.item;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.loader.LoaderGen;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
@@ -20,6 +23,10 @@ public class ArmorMat implements IEnumContainer{
 	  * a preconfigured versions of this armor enums gets cleared in post init
 	  */
 	 public static HashMap<ResourceLocation,ArmorMat> armorenums = new HashMap();
+	 /**
+	  * the json config in memory
+	  */
+	 public static JSONObject armorJson = new JSONObject();
 	
 	 public ResourceLocation id;
 	 public String enumName;//name of this in memory when it gets converted into an enum
@@ -64,10 +71,69 @@ public class ArmorMat implements IEnumContainer{
 			return mat.getEnum();
 		if(!armorenums.containsKey(mat.id))
 		{
-			LoaderGen.addMat(mat);
+			ArmorMat.armorenums.put(mat.id, mat);
+			return mat.getEnum();
 		}
 		return armorenums.get(mat.id).getEnum();
 	 }
+	 
+	 public static void parseArmorMats() 
+	 {
+		File armor = new File(Config.cfg.getParent(),"auto/properties/armormats.json");
+		if(!armor.exists())
+			return;
+		JSONObject json = JavaUtil.getJson(armor);
+		for(Object obj : json.entrySet())
+		{
+			Map.Entry<String, JSONObject> pair = (Map.Entry<String, JSONObject>)obj;
+			ResourceLocation loc = new ResourceLocation(pair.getKey());
+			ArmorMat.armorenums.put(loc, parseArmorMat(loc, pair.getValue()) );
+		}
+	}
+	 
+	public static ArmorMat parseArmorMat(ResourceLocation loc, JSONObject json)
+	{
+		 String textureName = (String) json.get("textureName");
+		 int durability = (int) ((long) json.get("durability") );
+		 int[] damageReduction = (int[]) JavaUtil.getStaticArrayInts(json.get("damageReduction").toString() );
+		 int enchantability = (int) (long)json.get("enchantability");
+		 SoundEvent event = SoundEvent.REGISTRY.getObject(new ResourceLocation("" + json.get("soundEvent")));
+		 float tough = (float) (double)json.get("toughness");
+		 
+		 return new ArmorMat(loc, new ResourceLocation(textureName), durability, damageReduction, enchantability, event, tough);
+	}
+	
+	public static void saveToolMats()
+	{
+		if(ToolMat.toolenums.isEmpty())
+			return;
+		File armor = new File(Config.cfg.getParent(),"auto/properties/armormats.json");
+		for(Map.Entry<ResourceLocation,ArmorMat> pair : ArmorMat.armorenums.entrySet())
+		{
+			armorJson.put(pair.getKey(), saveArmorJSON(pair.getValue()));
+		}
+		try 
+		{
+			JavaUtil.saveJSONSafley(armorJson, armor);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		armorJson.clear();
+	}
+	
+	public static JSONObject saveArmorJSON(ArmorMat mat) 
+	{
+		JSONObject json = new JSONObject();
+		json.put("textureName", mat.textureName);
+		json.put("durability", mat.durability);
+		json.put("damageReduction", JavaUtil.staticToArray(mat.damageReduction));
+		json.put("enchantability", mat.enchantability);
+		json.put("soundEvent", SoundEvent.REGISTRY.getNameForObject(mat.soundEvent));
+		json.put("toughness", mat.toughness);
+		return json;
+	}
 	 
 	 @Override
 	 public String toString()

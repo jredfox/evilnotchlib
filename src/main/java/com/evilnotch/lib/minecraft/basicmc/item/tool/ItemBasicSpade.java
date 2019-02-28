@@ -2,6 +2,7 @@ package com.evilnotch.lib.minecraft.basicmc.item.tool;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.minecraft.basicmc.auto.IAutoItem;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;

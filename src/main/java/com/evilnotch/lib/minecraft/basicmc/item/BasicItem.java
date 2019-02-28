@@ -2,12 +2,12 @@ package com.evilnotch.lib.minecraft.basicmc.item;
 
 import com.evilnotch.lib.main.loader.LoaderItems;
 import com.evilnotch.lib.minecraft.basicmc.auto.IAutoItem;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorMat;
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
-import com.evilnotch.lib.minecraft.basicmc.item.armor.ArmorMat;
-import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolMat;
 import com.evilnotch.lib.util.line.LineArray;
 
 import net.minecraft.creativetab.CreativeTabs;

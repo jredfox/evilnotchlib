@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
+import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 
 import net.minecraft.creativetab.CreativeTabs;
