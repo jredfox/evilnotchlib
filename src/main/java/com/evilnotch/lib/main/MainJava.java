@@ -1,30 +1,8 @@
 package com.evilnotch.lib.main;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperties;
-import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
-import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
-import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
-import com.evilnotch.lib.minecraft.basicmc.auto.test.EnumCheese;
-import com.evilnotch.lib.minecraft.basicmc.auto.test.MultiSidedGrass;
-import com.evilnotch.lib.minecraft.basicmc.block.BasicBlock;
-import com.evilnotch.lib.minecraft.basicmc.block.BasicMetaBlock;
-import com.evilnotch.lib.minecraft.basicmc.block.property.PropertyMetaEnum;
-import com.evilnotch.lib.minecraft.basicmc.client.creativetab.BasicCreativeTab;
-import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
-import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
-import com.evilnotch.lib.minecraft.basicmc.item.BasicItemMeta;
-import com.evilnotch.lib.minecraft.basicmc.item.tool.ItemBasicPickaxe;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

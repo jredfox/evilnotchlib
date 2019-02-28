@@ -9,22 +9,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.basicmc.recipe.ShapelessRecipe;
-import com.evilnotch.lib.minecraft.command.client.ClientUUID;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairObj;
 
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.server.MinecraftServer;
@@ -32,8 +25,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameRules.Value;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -41,8 +32,7 @@ public class GeneralRegistry {
 	
 	//adding
 	public static List<ICommand> cmds = new ArrayList();
-	public static HashMap<ResourceLocation,Material> blockmats = new HashMap();
-	public static HashMap<ResourceLocation,SoundType> soundTypes = new HashMap();
+	public static Map<ResourceLocation,Material> blockmats = new HashMap();
 	public static List<PairObj<String,Object>> gameRules = new ArrayList();
 	
 	//removing
@@ -53,7 +43,6 @@ public class GeneralRegistry {
 	public static void load()
 	{
 		System.out.println("loading mats");
-		//register block materials
 		blockmats.put(new ResourceLocation("AIR"), Material.AIR);
 		blockmats.put(new ResourceLocation("ANVIL"), Material.ANVIL);
 		blockmats.put(new ResourceLocation("BARRIER"), Material.BARRIER);
@@ -90,26 +79,6 @@ public class GeneralRegistry {
 		blockmats.put(new ResourceLocation("WATER"), Material.WATER);
 		blockmats.put(new ResourceLocation("WEB"), Material.WEB);
 		blockmats.put(new ResourceLocation("WOOD"), Material.WOOD);
-		 
-		System.out.println("loading sound types");
-		//register soundtypes
-		soundTypes.put(new ResourceLocation("ANVIL"), SoundType.ANVIL);
-		soundTypes.put(new ResourceLocation("CLOTH"), SoundType.CLOTH);
-		soundTypes.put(new ResourceLocation("GLASS"), SoundType.GLASS);
-		soundTypes.put(new ResourceLocation("GROUND"), SoundType.GROUND);
-		soundTypes.put(new ResourceLocation("LADDER"), SoundType.LADDER);
-		soundTypes.put(new ResourceLocation("METAL"), SoundType.METAL);
-		soundTypes.put(new ResourceLocation("PLANT"), SoundType.PLANT);
-		soundTypes.put(new ResourceLocation("SAND"), SoundType.SAND);
-		soundTypes.put(new ResourceLocation("SLIME"), SoundType.SLIME);
-		soundTypes.put(new ResourceLocation("SNOW"), SoundType.SNOW);
-		soundTypes.put(new ResourceLocation("STONE"), SoundType.STONE);
-		soundTypes.put(new ResourceLocation("WOOD"), SoundType.WOOD);
-	}
-	
-	public static void registerSoundType(ResourceLocation loc, SoundType type)
-	{
-		soundTypes.put(loc, type);
 	}
 	
 	public static void registerMaterial(ResourceLocation loc, Material mat)
@@ -270,23 +239,11 @@ public class GeneralRegistry {
 		return GeneralRegistry.blockmats.get(s);
 	}
 	
-	public static SoundType getSoundType(ResourceLocation s)
-	{
-		return GeneralRegistry.soundTypes.get(s);
-	}
-	
 	public static ResourceLocation getMaterialLoc(Material mat)
 	{
 		if(mat == null)
 			return null;
 		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.blockmats, mat);
-	}
-	
-	public static ResourceLocation getSoundTypeLoc(SoundType sound) 
-	{
-		if(sound == null)
-			return null;
-		return (ResourceLocation)JavaUtil.getMemoryLocKey(GeneralRegistry.soundTypes, sound);
 	}
 
 }

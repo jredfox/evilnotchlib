@@ -8,17 +8,14 @@ import org.apache.logging.log4j.Logger;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.asm.FMLCorePlugin;
-import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickEventClient;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
-import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperties;
-import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorSet;
+import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperty;
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
-import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolSet;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.test.EnumCheese;
 import com.evilnotch.lib.minecraft.basicmc.auto.test.MultiSidedGrass;
@@ -28,15 +25,11 @@ import com.evilnotch.lib.minecraft.basicmc.block.property.PropertyMetaEnum;
 import com.evilnotch.lib.minecraft.basicmc.client.creativetab.BasicCreativeTab;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItemMeta;
-import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.ItemBasicPickaxe;
-import com.evilnotch.lib.minecraft.event.PickEvent.Entity;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
-import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.world.FakeWorld;
 
 import net.minecraft.block.Block;
@@ -45,9 +38,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.command.ICommand;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,7 +46,6 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -67,8 +56,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class LoaderMain {
 	
@@ -148,7 +135,7 @@ public class LoaderMain {
 	{
 		if(Config.debug)
 		{
-			BlockProperties props = new BlockProperties(new ResourceLocation(MainJava.MODID + ":" + "spider"),"pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
+			BlockProperty props = new BlockProperty(new ResourceLocation(MainJava.MODID + ":" + "spider_material"), new ResourceLocation("ROCK"), "pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
 			BasicCreativeTab tab = new BasicCreativeTab(new ResourceLocation(MainJava.MODID + ":spidertesting"),new ItemStack(Items.CAKE),new LangEntry("en_us","Custom Shiny Tab"),new LangEntry("ru_ru","Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°") );
 			BasicItem item = new BasicItem(new ResourceLocation(MainJava.MODID + ":" + "stick"),tab,new LangEntry("en_us","Modded Stick"));
 			ToolMat test = new ToolMat(new ResourceLocation(MainJava.MODID + ":" + "radioactive"), 2, 100, 10, 3, 30);

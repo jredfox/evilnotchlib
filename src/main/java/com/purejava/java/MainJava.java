@@ -2,21 +2,26 @@ package com.purejava.java;
 
 import java.util.Set;
 
+import org.json.simple.JSONObject;
+
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 
 public class MainJava {
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		String str = "itemGroup.evilnotchlib:level_100";
-		System.out.println(new ResourceLocation(str.replaceFirst("itemGroup.", "")));
+		JSONObject json = new JSONObject();
+		json.put("a", "minecraft:b");
+		json.put("b", "b");
+		
+		System.out.println(JavaUtil.toPrettyFormat(json.toJSONString()));
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)

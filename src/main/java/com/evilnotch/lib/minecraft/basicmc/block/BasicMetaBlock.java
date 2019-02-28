@@ -4,10 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperties;
+import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperty;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
-import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.block.item.ItemBlockMeta;
@@ -42,10 +40,6 @@ public class BasicMetaBlock extends BasicBlock implements IBasicBlockMeta{
 		this(id, ip, Material.ROCK, lang);
 	}
 	
-	/**
-	 * lang name is whatever is "displayname","lang" 
-	 * where lang is langauage type like "en_us" everyting else has been done for you
-	 */
 	public BasicMetaBlock(ResourceLocation id, IProperty ip, Material mat, LangEntry... lang) 
 	{
 		this(id, ip, mat, null, lang);
@@ -56,17 +50,17 @@ public class BasicMetaBlock extends BasicBlock implements IBasicBlockMeta{
 		this(id, ip, mat, tab, null, lang);
 	}
 	
-	public BasicMetaBlock(ResourceLocation id, IProperty ip, Material mat, CreativeTabs tab,BlockProperties props,LangEntry... lang) 
+	public BasicMetaBlock(ResourceLocation id, IProperty ip, Material mat, CreativeTabs tab, BlockProperty props,LangEntry... lang) 
 	{
-		this(id, ip, mat, mat.getMaterialMapColor(), tab, props, lang);
+		this(id, ip, mat, mat.getMaterialMapColor(), tab, props, true, lang);
 	}
 	
 	/**
 	 * uses the itemblock if not null regardless whether which boolean you call
 	 */
-	public BasicMetaBlock(ResourceLocation id, IProperty prop, Material blockMaterialIn, MapColor blockMapColorIn, CreativeTabs tab, BlockProperties props, LangEntry... langlist) 
+	public BasicMetaBlock(ResourceLocation id, IProperty prop, Material blockMaterialIn, MapColor blockMapColorIn, CreativeTabs tab, BlockProperty props, boolean config, LangEntry... langlist) 
 	{
-		super(id, blockMaterialIn, blockMapColorIn, tab, props,langlist);
+		super(id, blockMaterialIn, blockMapColorIn, tab, props, config,langlist);
 		this.property = prop;
 		this.populateJSON();
 		

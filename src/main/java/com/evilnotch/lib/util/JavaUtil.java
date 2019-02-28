@@ -863,7 +863,7 @@ public class JavaUtil {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static void removeKeyMemoryLoc(HashMap map, Object key) {
+	public static void removeKeyMemoryLoc(Map map, Object key) {
 		Iterator it = map.keySet().iterator();
 		while(it.hasNext())
 		{
@@ -873,7 +873,7 @@ public class JavaUtil {
 		}
 	}
 	@SuppressWarnings("rawtypes")
-	public static Object getMemoryLocKey(HashMap map, Object value) {
+	public static Object getMemoryLocKey(Map map, Object value) {
 		Iterator it = map.entrySet().iterator();
 		while(it.hasNext())
 		{

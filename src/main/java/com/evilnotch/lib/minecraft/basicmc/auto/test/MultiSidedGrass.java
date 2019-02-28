@@ -1,6 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.auto.test;
 
-import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperties;
+import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperty;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.block.BasicMetaBlock;
 import com.evilnotch.lib.minecraft.basicmc.client.model.ModelPart;
@@ -9,7 +9,6 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 
 public class MultiSidedGrass extends BasicMetaBlock{
@@ -33,17 +32,17 @@ public class MultiSidedGrass extends BasicMetaBlock{
 		this(id, ip, mat, tab, null, lang);
 	}
 	
-	public MultiSidedGrass(ResourceLocation id, IProperty ip, Material mat, CreativeTabs tab,BlockProperties props,LangEntry... lang) 
+	public MultiSidedGrass(ResourceLocation id, IProperty ip, Material mat, CreativeTabs tab, BlockProperty props,LangEntry... lang) 
 	{
-		this(id, ip, mat, mat.getMaterialMapColor(), tab, props, lang);
+		this(id, ip, mat, mat.getMaterialMapColor(), tab, props, true, lang);
 	}
 	
 	/**
 	 * uses the itemblock if not null regardless whether which boolean you call
 	 */
-	public MultiSidedGrass(ResourceLocation id, IProperty prop, Material mat, MapColor color, CreativeTabs tab, BlockProperties props, LangEntry... langlist) 
+	public MultiSidedGrass(ResourceLocation id, IProperty prop, Material mat, MapColor color, CreativeTabs tab, BlockProperty props, boolean b, LangEntry... langlist) 
 	{
-		super(id, prop, mat, color, tab, props, langlist);
+		super(id, prop, mat, color, tab, props, b, langlist);
 	}
 	
 	@Override

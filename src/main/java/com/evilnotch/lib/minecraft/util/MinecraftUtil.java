@@ -5,24 +5,23 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
-import com.evilnotch.lib.util.simple.PairObj;
-import com.mojang.authlib.GameProfile;
 
+import net.minecraft.block.SoundType;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameRules.ValueType;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLContainer;
 import net.minecraftforge.fml.common.InjectedModContainer;
@@ -188,6 +187,36 @@ public class MinecraftUtil {
           }
       }
       return false;
+   }
+   
+   public static JSONObject getSoundTypeJSON(SoundType sound) 
+   {
+	   JSONObject json = new JSONObject();
+	   json.put("pitch", sound.pitch);
+	   json.put("volume", sound.volume);
+	   json.put("breakSound", sound.getBreakSound().getRegistryName().toString());
+	   json.put("fallSound", sound.getFallSound().getRegistryName().toString());
+	   json.put("hitSound", sound.getHitSound().getRegistryName().toString());
+	   json.put("placeSound", sound.getPlaceSound().getRegistryName().toString());
+	   json.put("stepSound", sound.getStepSound().getRegistryName().toString());
+	   return json;
+   }
+   
+   /**
+    * parse a sound type from the disk
+    */
+   public static SoundType getSoundType(JSONObject json) 
+   {
+	   float pitch = (float)(double)json.get("pitch");
+	   float volume = (float)(double)json.get("volume");
+	   SoundEvent breakSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("breakSound")));
+	   SoundEvent stepSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("stepSound")));
+	   
+	   SoundEvent fallSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("fallSound")));
+	   SoundEvent hitSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("hitSound")));
+	   SoundEvent placeSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("placeSound")));
+
+	   return new SoundType(volume, pitch, breakSound, stepSound, placeSound, hitSound, fallSound);
    }
    
 }
