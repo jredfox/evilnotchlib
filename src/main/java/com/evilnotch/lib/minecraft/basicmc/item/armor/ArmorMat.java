@@ -1,19 +1,15 @@
 package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
 import java.util.HashMap;
-import java.util.List;
 
-import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.main.loader.LoaderFields;
-import com.evilnotch.lib.minecraft.basicmc.item.tool.ToolMat;
+import org.json.simple.JSONObject;
+
+import com.evilnotch.lib.main.loader.LoaderGen;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.simple.IEnumContainer;
 
 import net.minecraft.item.ItemArmor.ArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.util.EnumHelper;
@@ -23,7 +19,7 @@ public class ArmorMat implements IEnumContainer{
 	 /**
 	  * a preconfigured versions of this armor enums gets cleared in post init
 	  */
-	 public static HashMap<ResourceLocation,ArmorMaterial> armorenums = new HashMap();
+	 public static HashMap<ResourceLocation,ArmorMat> armorenums = new HashMap();
 	
 	 public ResourceLocation id;
 	 public String enumName;//name of this in memory when it gets converted into an enum
@@ -66,7 +62,11 @@ public class ArmorMat implements IEnumContainer{
 	 {
 		if(!config)
 			return mat.getEnum();
-		return armorenums.get(mat.id);
+		if(!armorenums.containsKey(mat.id))
+		{
+			LoaderGen.addMat(mat);
+		}
+		return armorenums.get(mat.id).getEnum();
 	 }
 	 
 	 @Override

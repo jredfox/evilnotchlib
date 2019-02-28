@@ -103,7 +103,7 @@ public class LoaderMain {
 		fake_world = new FakeWorld();
 		LoaderItems.loadpostinit();
 		LoaderBlocks.loadpostinit();
-		LoaderGen.load();
+		LoaderGen.gen();
 		
 	    MainJava.proxy.postinit();//generate lang,generate shadow sizes
 	}
@@ -152,7 +152,7 @@ public class LoaderMain {
 			BlockProperties props = new BlockProperties(new ResourceLocation(MainJava.MODID + ":" + "spider"),"pickaxe",11f,10f,1,SoundType.SNOW,20,100,10.6f,2);
 			BasicCreativeTab tab = new BasicCreativeTab(new ResourceLocation(MainJava.MODID + ":spidertesting"),new ItemStack(Items.CAKE),new LangEntry("en_us","Custom Shiny Tab"),new LangEntry("ru_ru","Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°") );
 			BasicItem item = new BasicItem(new ResourceLocation(MainJava.MODID + ":" + "stick"),tab,new LangEntry("en_us","Modded Stick"));
-			ToolMat test = new ToolMat(new ResourceLocation(MainJava.MODID + ":" + "test"), 2, 100, 10, 3, 30);
+			ToolMat test = new ToolMat(new ResourceLocation(MainJava.MODID + ":" + "radioactive"), 2, 100, 10, 3, 30);
 			ItemBasicPickaxe axe = new ItemBasicPickaxe(new ResourceLocation(MainJava.MODID + ":" + "pickaxe"),test,tab, new LangEntry("en_us","RadioActive Pick"));
 			BasicBlock b = new BasicBlock(new ResourceLocation(MainJava.MODID + ":" + "spider"),Material.ROCK,tab,props,new LangEntry("en_us","Spider Master"),new LangEntry("ru_ru","Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº"));
 		

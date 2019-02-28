@@ -94,6 +94,8 @@ public class BasicBlock extends Block implements IAutoBlock{
 		{
 			if(this.hasconfig)
 				props = BasicBlock.getConfiguredBlockProps(this,props);
+			if(props == null)
+				return;
 			this.blockprops = props;
 			
 			this.blockHardness = props.blockHardness;
@@ -127,13 +129,14 @@ public class BasicBlock extends Block implements IAutoBlock{
 		}
 	}
 
-	public static BlockProperties getConfiguredBlockProps(Block b,BlockProperties props) 
+	public static BlockProperties getConfiguredBlockProps(Block b, BlockProperties props) 
 	{
-		LineArray line = new LineArray("\"" + b.getRegistryName() + "\" " + props.toString());
+		/*LineArray line = new LineArray("\"" + b.getRegistryName() + "\" " + props.toString());
 		ConfigBase cfg = LoaderBlocks.cfgBlockProps;
 		cfg.addLine(line);
 		line = (LineArray) cfg.getUpdatedLine(line);
-		return new BlockProperties(line);
+		return new BlockProperties(line);*/
+		return null;
 	}
 	
 	public ItemBlock getItemBlock()

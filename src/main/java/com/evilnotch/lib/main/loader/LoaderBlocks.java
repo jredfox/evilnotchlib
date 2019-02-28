@@ -16,12 +16,10 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 public class LoaderBlocks {
 	
 	public static List<BlockWrapper> blocks = new ArrayList();
-	public static ConfigBase cfgBlockProps = null;
 	 
 	public static void loadpreinit()
 	{
-		cfgBlockProps = new ConfigNonMeta(new File(Config.cfg.getParent(),"config/blockprops.cfg"));
-		cfgBlockProps.loadConfig();
+		
 	}
 
 	public static void registerBlocks() 
@@ -41,16 +39,7 @@ public class LoaderBlocks {
 
 	public static void loadpostinit() 
 	{
-		if(!LoaderMain.isDeObfuscated)
-		{
-			LoaderBlocks.cfgBlockProps.saveConfig(true, false, true);
-		}
-		clearConfig();
-	}
-
-	private static void clearConfig() 
-	{
-		cfgBlockProps = null;
+		
 	}
 
 }

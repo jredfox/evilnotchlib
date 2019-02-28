@@ -10,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -23,9 +22,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,13 +37,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.evilnotch.lib.util.line.config.ConfigBase;
 import com.evilnotch.lib.util.primitive.ByteObj;
 import com.evilnotch.lib.util.primitive.DoubleObj;
 import com.evilnotch.lib.util.primitive.FloatObj;
@@ -54,8 +49,11 @@ import com.evilnotch.lib.util.primitive.IntObj;
 import com.evilnotch.lib.util.primitive.LongObj;
 import com.evilnotch.lib.util.primitive.ShortObj;
 import com.evilnotch.lib.util.simple.ICopy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 
 public class JavaUtil {
@@ -1098,8 +1096,21 @@ public class JavaUtil {
 			file.createNewFile();
 	}
 
-	public static void saveJSON(JSONObject json, File file) {
-		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{json.toJSONString()} ), file, true);
+	public static void saveJSON(JSONObject json, File file) 
+	{
+		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{toPrettyFormat(json.toJSONString())} ), file, true);
+	}
+	
+    /**
+	 * Convert a JSON string to freindly printed version
+	*/
+	public static String toPrettyFormat(String jsonString) 
+	{
+		JsonParser parser = new JsonParser();
+		JsonObject json = parser.parse(jsonString).getAsJsonObject();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String prettyJson = gson.toJson(json);
+	    return prettyJson.replaceAll("\n", "\r\n");
 	}
 
 	public static Object getFirst(Collection li) {
@@ -1359,6 +1370,34 @@ public class JavaUtil {
 	public static boolean returnFalse() 
 	{
 		return false;
+	}
+	public static final JSONParser jsonParser = new JSONParser();
+	public static JSONObject getJson(File armor) 
+	{
+		try 
+		{
+			return (JSONObject) jsonParser.parse(new FileReader(armor));
+		} 
+		catch (IOException | ParseException e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static int[] getStaticArrayInts(String str) 
+	{
+		str = str.substring(1, str.length()-1);
+		String[] parts = str.split(",");
+		int[] arr = new int[parts.length];
+		int index = 0;
+		for(String s : parts)
+		{
+			s = s.trim();
+			arr[index] = Integer.parseInt(s);
+			index++;
+		}
+		return arr;
 	}
 
 	

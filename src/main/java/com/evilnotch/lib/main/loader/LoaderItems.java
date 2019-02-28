@@ -26,20 +26,9 @@ public class LoaderItems {
 	public static List<ArmorSet> armorsets = new ArrayList();
 	public static List<ToolSet> toolsets = new ArrayList();
 	
-	public static ConfigBase cfgTools = null;
-	public static ConfigBase cfgArmors = null;
-	
 	public static void loadpreinit()
 	{
-		loadConfig();
-	}
-
-	private static void loadConfig() 
-	{
-		cfgTools = new ConfigNonMeta(new File(Config.cfg.getParent(),"config/tools.cfg"));
-		cfgArmors = new ConfigNonMeta(new File(Config.cfg.getParent(),"config/armor.cfg"));
-		cfgTools.loadConfig();
-		cfgArmors.loadConfig();
+		
 	}
 
 	public static void registerItems() 
@@ -131,11 +120,6 @@ public class LoaderItems {
 
 	public static void loadpostinit() 
 	{
-		if(!LoaderMain.isDeObfuscated)
-		{
-			LoaderItems.cfgArmors.saveConfig(true, false, true);
-			LoaderItems.cfgTools.saveConfig(true, false, true);
-		}
 		clearArrays();
 	}
 
@@ -143,11 +127,8 @@ public class LoaderItems {
 	{
 		LoaderItems.armorsets.clear();
 		LoaderItems.toolsets.clear();
-		ArmorMat.armorenums.clear();
-		ToolMat.toolenums.clear();
-		
-		cfgTools = null;
-		cfgArmors = null;
+//		ArmorMat.armorenums.clear();
+//		ToolMat.toolenums.clear();
 	}
 
 }
