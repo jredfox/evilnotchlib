@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -17,16 +18,18 @@ import org.json.simple.parser.ParseException;
 import com.evilnotch.lib.util.simple.ICopy;
 
 /**
- * A JSON object. Key value pairs are unordered. JSONObject supports java.util.Map interface.
+ * A JSON object. Key value pairs are ordered. JSONObject supports java.util.Map interface.
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
+ * @author jredfox -fixes<dragonofthelakeabcd@gmail.com>
  */
-public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStreamAware,ICopy{
+public class JSONObject extends JSONMap implements JSONAware, JSONStreamAware, ICopy{
 	
 	private static final long serialVersionUID = -503443796854799292L;
 	
 	
-	public JSONObject() {
+	public JSONObject() 
+	{
 		super();
 	}
 
@@ -36,12 +39,12 @@ public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStr
 	 * 
 	 * @param map
 	 */
-	public JSONObject(Map map) {
+	public JSONObject(Map map) 
+	{
 		super(map);
 	}
 
-
-    /**
+	/**
      * Encode a map into JSON text and write it to out.
      * If this map is also a JSONAware or JSONStreamAware, JSONAware or JSONStreamAware specific behaviours will be ignored at this top level.
      * 
@@ -74,7 +77,8 @@ public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStr
 		}
 		out.write('}');
 	}
-
+	
+	@Override
 	public void writeJSONString(Writer out) throws IOException{
 		writeJSONString(this, out);
 	}
@@ -110,6 +114,7 @@ public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStr
 		return sb.toString();
 	}
 	
+	@Override
 	public String toJSONString(){
 		return toJSONString(this);
 	}
@@ -127,6 +132,7 @@ public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStr
 		return sb.toString();
 	}
 	
+	@Override
 	public String toString(){
 		return toJSONString();
 	}
@@ -163,4 +169,5 @@ public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStr
 		}
 		return null;
 	}
+
 }

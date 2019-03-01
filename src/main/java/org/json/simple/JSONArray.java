@@ -21,7 +21,7 @@ import com.evilnotch.lib.util.simple.ICopy;
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
  */
-public class JSONArray extends ArrayList implements List, JSONAware, JSONStreamAware,ICopy {
+public class JSONArray extends ArrayList implements JSONAware, JSONStreamAware,ICopy {
 	private static final long serialVersionUID = 3957988303675231981L;
 
     /**
@@ -60,6 +60,7 @@ public class JSONArray extends ArrayList implements List, JSONAware, JSONStreamA
 		out.write(']');
 	}
 	
+	@Override
 	public void writeJSONString(Writer out) throws IOException{
 		writeJSONString(this, out);
 	}
@@ -98,11 +99,13 @@ public class JSONArray extends ArrayList implements List, JSONAware, JSONStreamA
         sb.append(']');
 		return sb.toString();
 	}
-
+	
+	@Override
 	public String toJSONString(){
 		return toJSONString(this);
 	}
 	
+	@Override
 	public String toString() {
 		return toJSONString();
 	}

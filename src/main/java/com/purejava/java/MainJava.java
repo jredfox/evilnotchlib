@@ -5,7 +5,7 @@ import java.util.Set;
 import org.json.simple.JSONObject;
 
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
-import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.line.LineArray;
 
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
@@ -20,8 +20,11 @@ public class MainJava {
 		JSONObject json = new JSONObject();
 		json.put("a", "minecraft:b");
 		json.put("b", "b");
+		json.put("c", 2);
+		json.put("d", 40.0F);
+		json.put("json", new LineArray(""));
 		
-		System.out.println(JavaUtil.toPrettyFormat(json.toJSONString()));
+		System.out.println(json.get("json").getClass());
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)

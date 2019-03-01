@@ -190,6 +190,7 @@ public class BlockProperty {
 		ResourceLocation loc = props.propId;
 		if(propReg.containsKey(loc))
 		{
+			System.out.println(props);
 			return propReg.get(loc);
 		}
 		
@@ -203,7 +204,7 @@ public class BlockProperty {
 		JSONObject json = new JSONObject();
 		savePropertyToJSON(json, this);
 		json.put("propId", this.propId.toString());
-		return JavaUtil.toPrettyFormat(json.toJSONString());
+		return "" + json;
 	}
 	
 }
