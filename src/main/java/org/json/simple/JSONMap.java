@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.evilnotch.lib.util.JavaUtil;
+
 /**
  * this is a json map that allows only primitive and other json values into the map
  * @author jredfox
@@ -31,7 +33,6 @@ public class JSONMap extends LinkedHashMap{
 	{
 		if(!canPut(value))
 			value = value.toString();
-		
 		return super.put(key, value);
 	}
 
@@ -71,7 +72,41 @@ public class JSONMap extends LinkedHashMap{
 	 */
 	public static boolean canPut(Object value) 
 	{
-		return value instanceof String || value instanceof Number || value instanceof JSONObject || value instanceof JSONArray || value instanceof JSONValue;
+		return value instanceof String || value instanceof Number || value instanceof JSONObject || value instanceof JSONArray;
+	}
+	
+	public Float getFloat(Object key)
+	{
+		return JavaUtil.getFloat((Number)this.get(key));
+	}
+	
+	public Double getDouble(Object key)
+	{
+		return JavaUtil.getDouble((Number)this.get(key));
+	}
+	
+	public Long getLong(Object key)
+	{
+		return JavaUtil.getLong((Number)this.get(key));
 	}
 
+	public Integer getInteger(Object key)
+	{
+		return JavaUtil.getInt((Number)this.get(key));
+	}
+	
+	public Short getShort(Object key)
+	{
+		return JavaUtil.getShort((Number)this.get(key));
+	}
+	
+	public Byte getByte(Object key)
+	{
+		return JavaUtil.getByte((Number)this.get(key));
+	}
+	
+	public String getString(Object key)
+	{
+		return (String) this.get(key);
+	}
 }

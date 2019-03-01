@@ -2,10 +2,12 @@ package com.purejava.java;
 
 import java.util.Set;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
-import com.evilnotch.lib.util.line.LineArray;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
@@ -17,14 +19,8 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		JSONObject json = new JSONObject();
-		json.put("a", "minecraft:b");
-		json.put("b", "b");
-		json.put("c", 2);
-		json.put("d", 40.0F);
-		json.put("json", new LineArray(""));
-		
-		System.out.println(json.get("json").getClass());
+		Number n = null;
+		System.out.println(n instanceof Number);
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)
