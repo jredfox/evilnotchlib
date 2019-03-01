@@ -19,8 +19,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		Number n = null;
-		System.out.println(n instanceof Number);
+		
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)

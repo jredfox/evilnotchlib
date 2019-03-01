@@ -6,6 +6,8 @@ import java.util.Set;
 
 import com.evilnotch.lib.util.JavaUtil;
 
+import net.minecraftforge.common.util.EnumHelper;
+
 /**
  * this is a json map that allows only primitive and other json values into the map
  * @author jredfox
@@ -72,7 +74,7 @@ public class JSONMap extends LinkedHashMap{
 	 */
 	public static boolean canPut(Object value) 
 	{
-		return value instanceof String || value instanceof Number || value instanceof JSONObject || value instanceof JSONArray;
+		return value == null || value instanceof String || value instanceof Number || value instanceof Boolean || value instanceof JSONObject || value instanceof JSONArray;
 	}
 	
 	public Float getFloat(Object key)
