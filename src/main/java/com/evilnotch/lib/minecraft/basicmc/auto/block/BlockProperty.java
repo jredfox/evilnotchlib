@@ -145,6 +145,7 @@ public class BlockProperty {
 		File f = new File(Config.cfg.getParent(),"auto/properties/blockproperties.json");
 		if(!f.exists())
 			return;
+		
 		JSONObject json = JavaUtil.getJson(f);
 		for(Object obj : json.entrySet())
 		{

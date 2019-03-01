@@ -7,14 +7,10 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.main.loader.LoaderGen;
 import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.line.LineArray;
 import com.evilnotch.lib.util.simple.IEnumContainer;
 
 import net.minecraft.item.Item.ToolMaterial;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
 
@@ -24,7 +20,6 @@ public class ToolMat implements IEnumContainer{
 	 * a preconfigured versions of this armor enums gets cleared in post init
 	 */
 	public static HashMap<ResourceLocation,ToolMat> toolenums = new HashMap();
-	public static JSONObject toolJson = new JSONObject();
 	
     public ResourceLocation id;
     public String enumName;
@@ -89,6 +84,8 @@ public class ToolMat implements IEnumContainer{
 	{
 		if(ToolMat.toolenums.isEmpty())
 			return;
+		
+		JSONObject toolJson = new JSONObject();
 		File tool = new File(Config.cfg.getParent(),"auto/properties/toolmats.json");
 		for(Map.Entry<ResourceLocation,ToolMat> pair : ToolMat.toolenums.entrySet())
 		{

@@ -5,6 +5,11 @@ import java.util.Map;
 
 public class DummyMap<K,V> extends HashMap<K,V>{
 	
+	public DummyMap()
+	{
+		super(0);
+	}
+	
 	@Override
 	public V put(K key, V value)
 	{

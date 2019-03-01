@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.json.simple.parser.JSONParser;
@@ -20,7 +21,7 @@ import com.evilnotch.lib.util.simple.ICopy;
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
  */
-public class JSONObject extends HashMap implements Map, JSONAware, JSONStreamAware,ICopy{
+public class JSONObject extends LinkedHashMap implements Map, JSONAware, JSONStreamAware,ICopy{
 	
 	private static final long serialVersionUID = -503443796854799292L;
 	

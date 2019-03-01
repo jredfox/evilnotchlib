@@ -23,10 +23,6 @@ public class ArmorMat implements IEnumContainer{
 	  * a preconfigured versions of this armor enums gets cleared in post init
 	  */
 	 public static HashMap<ResourceLocation,ArmorMat> armorenums = new HashMap();
-	 /**
-	  * the json config in memory
-	  */
-	 public static JSONObject armorJson = new JSONObject();
 	
 	 public ResourceLocation id;
 	 public String enumName;//name of this in memory when it gets converted into an enum
@@ -107,6 +103,7 @@ public class ArmorMat implements IEnumContainer{
 	{
 		if(ToolMat.toolenums.isEmpty())
 			return;
+		JSONObject armorJson = new JSONObject();
 		File armor = new File(Config.cfg.getParent(),"auto/properties/armormats.json");
 		for(Map.Entry<ResourceLocation,ArmorMat> pair : ArmorMat.armorenums.entrySet())
 		{
@@ -120,7 +117,6 @@ public class ArmorMat implements IEnumContainer{
 		{
 			e.printStackTrace();
 		}
-		armorJson.clear();
 	}
 	
 	public static JSONObject saveArmorJSON(ArmorMat mat) 

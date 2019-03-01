@@ -192,8 +192,8 @@ public class MinecraftUtil {
    public static JSONObject getSoundTypeJSON(SoundType sound) 
    {
 	   JSONObject json = new JSONObject();
-	   json.put("pitch", sound.pitch);
 	   json.put("volume", sound.volume);
+	   json.put("pitch", sound.pitch);
 	   json.put("breakSound", sound.getBreakSound().getRegistryName().toString());
 	   json.put("fallSound", sound.getFallSound().getRegistryName().toString());
 	   json.put("hitSound", sound.getHitSound().getRegistryName().toString());
@@ -207,11 +207,10 @@ public class MinecraftUtil {
     */
    public static SoundType getSoundType(JSONObject json) 
    {
-	   float pitch = (float)(double)json.get("pitch");
 	   float volume = (float)(double)json.get("volume");
+	   float pitch = (float)(double)json.get("pitch");
 	   SoundEvent breakSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("breakSound")));
 	   SoundEvent stepSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("stepSound")));
-	   
 	   SoundEvent fallSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("fallSound")));
 	   SoundEvent hitSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("hitSound")));
 	   SoundEvent placeSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("placeSound")));
