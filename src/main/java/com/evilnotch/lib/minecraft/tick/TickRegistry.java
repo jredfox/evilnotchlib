@@ -55,6 +55,33 @@ public class TickRegistry {
 		}
 	}
 	
+	/**
+	 * remove a tick handler that may be broken from another mod or for an override
+	 */
+	public static void remove(Class<? extends ITick> clazz, Side side)
+	{
+		if(side == Side.CLIENT)
+		{
+			remove(clazz, clientTick);
+		}
+		else
+		{
+			remove(clazz, serverTick);
+		}
+	}
+	
+	private static void remove(Class<? extends ITick> clazz, List<ITick> list) 
+	{
+		for(ITick tick : list)
+		{
+			if(tick.getClass().equals(clazz))
+			{
+				list.remove(tick);
+				return;
+			}
+		}
+	}
+
 	public static void garbageCollectServer()
 	{
 		for(ITick t : serverTick)
