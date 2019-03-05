@@ -30,6 +30,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import scala.reflect.api.Trees.BlockApi;
 @SideOnly(Side.CLIENT)
 public class JsonGen {
@@ -42,22 +43,32 @@ public class JsonGen {
 	
 	protected static void registerBlockJson(Block b, ModelPart part)
 	{
+		validateDomain(b);
 		blocks.add(new BasicBlockJSON(b, part));
 	}
-	
+
 	protected static void registerBlockMetaJson(Block b, ModelPart part, IProperty p)
 	{
+		validateDomain(b);
 		blocks_meta.add(new BasicBlockJSONMeta(b, part, p));
 	}
 	
 	protected static void registerItemJson(Item i)
 	{
+		validateDomain(i);
 		items.add(new BasicItemJSON(i));
 	}
 	
 	protected static void registerItemMetaJson(Item i, int maxMeta)
 	{
+		validateDomain(i);
 		items_meta.add(new BasicItemJSONMeta(i, maxMeta));
+	}
+	
+	private static void validateDomain(IForgeRegistryEntry.Impl b) 
+	{
+		if(b.getRegistryName().getResourceDomain().equals("minecraft"))
+			throw new IllegalArgumentException("Json Gen domain cannot be minecraft!" + b.getRegistryName());
 	}
 	
 	private static boolean isDirty = false;

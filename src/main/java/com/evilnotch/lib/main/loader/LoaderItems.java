@@ -81,16 +81,16 @@ public class LoaderItems {
 	    	ItemStack block = set.block;
 	    	boolean meta = set.allMetaBlock;
 	    	//helmet
-	    	if(h != null)
+	    	if(!h.isEmpty())
 	    		GeneralRegistry.addShapedRecipe(h, new Object[]{"bbb","b b",'b',meta ? block.getItem() : block } );
 	    	//chestplate
-	    	if(c != null)
+	    	if(!c.isEmpty())
 	    		GeneralRegistry.addShapedRecipe(c, new Object[]{"b b","bbb","bbb",'b',meta ? block.getItem() : block} );
 	    	//leggings
-	    	if(l != null)
+	    	if(!l.isEmpty())
 	    		GeneralRegistry.addShapedRecipe(l, new Object[]{"bbb","b b","b b",'b',meta ? block.getItem() : block} );
 	    	//boots
-	    	if(b != null)
+	    	if(!b.isEmpty())
 	    		GeneralRegistry.addShapedRecipe(b, new Object[]{"b b","b b",'b',meta ? block.getItem() : block} );
 	    }
 	    //generator for tools
@@ -106,15 +106,15 @@ public class LoaderItems {
 	    	boolean mb = set.allMetaBlock;
 	    	boolean ms = set.allMetaStick;
 	    	
-	    	if(pickaxe != null)
+	    	if(!pickaxe.isEmpty())
 	    		GeneralRegistry.addShapedRecipe(pickaxe, new Object[]{"bbb"," s "," s ",'b', mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
-	    	if(axe != null)
+	    	if(!axe.isEmpty())
 	    		GeneralRegistry.addShapedRecipe(axe, new Object[]{"bb ","bs "," s ",'b',mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
-	    	if(sword != null)
+	    	if(!sword.isEmpty())
 	    		GeneralRegistry.addShapedRecipe(sword, new Object[]{"b","b","s",'b', mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
-	    	if(spade != null)
+	    	if(!spade.isEmpty())
 	    		GeneralRegistry.addShapedRecipe(spade, new Object[]{"b","s","s",'b', mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
-	    	if(hoe != null)
+	    	if(!hoe.isEmpty())
 	    		GeneralRegistry.addShapedRecipe(hoe, new Object[]{"bb "," s "," s ",'b', mb ? block.getItem() : block,'s',ms ? stick.getItem() : stick} );
 	    }
 	}

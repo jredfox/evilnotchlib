@@ -9,24 +9,24 @@ import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemPickaxe;
+import net.minecraft.item.ItemAxe;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemBasicPickaxe extends ItemPickaxe implements IAutoItem{
+public class BasicAxe extends ItemAxe implements IAutoItem{
 	
-	public ItemBasicPickaxe(ResourceLocation id, ToolMat mat,LangEntry...langList)
+	public BasicAxe(ToolMat mat, ResourceLocation id, LangEntry...langlist)
 	{
-		this(id, mat, null, true, langList);
+		this(id, mat, null,true,langlist);
 	}
 	
-	public ItemBasicPickaxe(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
+	public BasicAxe(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
 	{
 		this(id, mat, tab, true, langlist);
 	}
 
-	public ItemBasicPickaxe(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
+	public BasicAxe(ResourceLocation id, ToolMat mat, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
-		super(ToolMat.getMat(material, config));
+		super(ToolMat.getMat(mat,config), mat.attackDamage, mat.efficiency);
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);
@@ -57,20 +57,17 @@ public class ItemBasicPickaxe extends ItemPickaxe implements IAutoItem{
 	}
 
 	@Override
-	public boolean canRegister() 
-	{
+	public boolean canRegister() {
 		return true;
 	}
 
 	@Override
-	public boolean canRegisterLang()
-	{
+	public boolean canRegisterLang() {
 		return true;
 	}
 
 	@Override
-	public boolean canRegisterJSON() 
-	{
+	public boolean canRegisterJSON() {
 		return true;
 	}
 }

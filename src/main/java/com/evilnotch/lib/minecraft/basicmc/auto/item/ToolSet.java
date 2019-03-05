@@ -43,11 +43,11 @@ public class ToolSet {
 	
 	public ToolSet(ItemStack pick,ItemStack axe,ItemStack sword,ItemStack shovel,ItemStack hoe,ItemStack block,ItemStack stick,boolean allMetaBlock,boolean allMetaStick)
 	{
-		this.pickaxe = pick;
-		this.axe = axe;
-		this.sword = sword;
-		this.shovel = shovel;
-		this.hoe = hoe;
+		this.pickaxe = pick == null ? air : pick;
+		this.axe = axe == null ? air : axe;
+		this.sword = sword == null ? air : sword;
+		this.shovel = shovel == null ? air : shovel;
+		this.hoe = hoe == null ? air : hoe;
 		if(!block.isEmpty() && !stick.isEmpty())
 		{
 			this.block = block;

@@ -24,6 +24,11 @@ public class JSONMap extends LinkedHashMap{
 		super(getConstructorMap(map));
 	}
 	
+	public JSONMap(int capacity)
+	{
+		super(capacity);
+	}
+	
 	public static Map getConstructorMap(Map map)
 	{
 		fixMap(map);
@@ -110,5 +115,15 @@ public class JSONMap extends LinkedHashMap{
 	public String getString(Object key)
 	{
 		return (String) this.get(key);
+	}
+	
+	public JSONObject getJSONObject(Object key)
+	{
+		return (JSONObject)this.get(key);
+	}
+	
+	public JSONArray getJSONArray(Object key)
+	{
+		return (JSONArray)this.get(key);
 	}
 }

@@ -30,9 +30,9 @@ public class BasicItem extends Item implements IAutoItem{
 		this.setCreativeTab(tab);
 		
 		//autofill
-		this.register();
 		this.populateLang(langlist);//not just client side I18l or something uses it on server side for translations
 		this.populateJSON();
+		this.register();
 	}
 	
 	public void register()

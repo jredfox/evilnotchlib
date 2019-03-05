@@ -166,6 +166,8 @@ public class LangRegistry {
 	{
 		if(!LoaderMain.isDeObfuscated)
 			return;
+		if(entry.loc.getResourceDomain().equals("minecraft"))
+			throw new IllegalArgumentException("Lang domain cannot be minecraft! " + entry);
 		langs.add(entry);
 	}
 	

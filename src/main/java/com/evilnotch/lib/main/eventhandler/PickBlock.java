@@ -62,7 +62,7 @@ public class PickBlock {
             	return false;
             }
             
-            if (copyTe)
+            if (copyTe && tile != null)
             {
             	TileEntityUtil.storeTEInStack(stack, tile);
             }

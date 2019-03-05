@@ -9,22 +9,22 @@ import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemSpade;
+import net.minecraft.item.ItemSword;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemBasicSpade extends ItemSpade implements IAutoItem{
+public class BasicSword extends ItemSword implements IAutoItem{
 	
-	public ItemBasicSpade(ToolMat mat,ResourceLocation id,LangEntry... langlist)
+	public BasicSword(ToolMat mat,ResourceLocation id,LangEntry... langlist)
 	{
 		this(id, mat, null, true, langlist);
 	}
 	
-	public ItemBasicSpade(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
+	public BasicSword(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
 	{
 		this(id, mat, tab, true, langlist);
 	}
 
-	public ItemBasicSpade(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
+	public BasicSword(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
 		super(ToolMat.getMat(material,config));
 		this.setRegistryName(id);
@@ -73,5 +73,5 @@ public class ItemBasicSpade extends ItemSpade implements IAutoItem{
 	{
 		return true;
 	}
-	
+
 }

@@ -52,11 +52,11 @@ public class ArmorSet {
 	
 	public ArmorSet(ItemStack h, ItemStack c, ItemStack l,ItemStack b,ItemStack block,boolean allMeta,boolean register)
 	{
-		this.helmet = h;
-		this.chestplate = c;
-		this.leggings = l;
-		this.boots = b;
-		this.block = block;
+		this.helmet = h == null ? air : h;
+		this.chestplate = c == null ? air : c;
+		this.leggings = l == null ? air : l;
+		this.boots = b == null ? air : b;
+		this.block = block == null ? air : block;
 		this.allMetaBlock = allMeta;
 		if(register)
 			LoaderItems.armorsets.add(this);

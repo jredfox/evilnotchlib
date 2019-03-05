@@ -46,7 +46,7 @@ public class JSONObject extends JSONMap implements JSONAware, JSONStreamAware, I
 
 	/**
      * Encode a map into JSON text and write it to out.
-     * If this map is also a JSONAware or JSONStreamAware, JSONAware or JSONStreamAware specific behaviours will be ignored at this top level.
+     * If this map is also a JSONAware or JSONStreamAware, JSONAware or JSONStreamAware specific behaviors will be ignored at this top level.
      * 
      * @see org.json.simple.JSONValue#writeJSONString(Object, Writer)
      * 

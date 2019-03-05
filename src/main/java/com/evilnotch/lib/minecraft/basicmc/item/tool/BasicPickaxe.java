@@ -9,24 +9,24 @@ import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemBasicSword extends ItemSword implements IAutoItem{
+public class BasicPickaxe extends ItemPickaxe implements IAutoItem{
 	
-	public ItemBasicSword(ToolMat mat,ResourceLocation id,LangEntry... langlist)
+	public BasicPickaxe(ResourceLocation id, ToolMat mat,LangEntry...langList)
 	{
-		this(id, mat, null, true, langlist);
+		this(id, mat, null, true, langList);
 	}
 	
-	public ItemBasicSword(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
+	public BasicPickaxe(ResourceLocation id, ToolMat mat, CreativeTabs tab, LangEntry... langlist) 
 	{
 		this(id, mat, tab, true, langlist);
 	}
 
-	public ItemBasicSword(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
+	public BasicPickaxe(ResourceLocation id, ToolMat material, CreativeTabs tab, boolean config, LangEntry... langlist) 
 	{
-		super(ToolMat.getMat(material,config));
+		super(ToolMat.getMat(material, config));
 		this.setRegistryName(id);
 		String unlocalname = id.toString().replaceAll(":", ".");
 		this.setUnlocalizedName(unlocalname);
@@ -73,5 +73,4 @@ public class ItemBasicSword extends ItemSword implements IAutoItem{
 	{
 		return true;
 	}
-
 }

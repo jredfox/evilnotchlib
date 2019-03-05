@@ -1,5 +1,8 @@
 package com.purejava.java;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Set;
 
 import org.json.simple.JSONArray;
@@ -19,7 +22,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		
+		System.out.println("Done");
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)

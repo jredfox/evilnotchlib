@@ -60,10 +60,10 @@ public class BasicBlock extends Block implements IAutoBlock{
 		this.setCreativeTab(tab);
 		this.itemblock = this.getItemBlock();
 		
+		this.hasConfig = hasConfig;
 		this.populateLang(langlist);
 		this.populateJSON();
 		this.register();
-		this.hasConfig = hasConfig;
 		
 		//set properties of the block
 		fillProperties(props);

@@ -25,7 +25,7 @@ import com.evilnotch.lib.minecraft.basicmc.block.property.PropertyMetaEnum;
 import com.evilnotch.lib.minecraft.basicmc.client.creativetab.BasicCreativeTab;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItemMeta;
-import com.evilnotch.lib.minecraft.basicmc.item.tool.ItemBasicPickaxe;
+import com.evilnotch.lib.minecraft.basicmc.item.tool.BasicPickaxe;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
@@ -139,7 +139,7 @@ public class LoaderMain {
 			BasicCreativeTab tab = new BasicCreativeTab(new ResourceLocation(MainJava.MODID + ":spidertesting"),new ItemStack(Items.CAKE),new LangEntry("en_us","Custom Shiny Tab"),new LangEntry("ru_ru","Ã�Å¸Ã�Â¾Ã�Â»Ã‘Å’Ã�Â·Ã�Â¾Ã�Â²Ã�Â°Ã‘â€šÃ�ÂµÃ�Â»Ã‘Å’Ã‘ï¿½Ã�ÂºÃ�Â°Ã‘ï¿½ Ã�Â±Ã�Â»Ã�ÂµÃ‘ï¿½Ã‘â€šÃ‘ï¿½Ã‘â€°Ã�Â°Ã‘ï¿½ Ã�Â²Ã�ÂºÃ�Â»Ã�Â°Ã�Â´Ã�ÂºÃ�Â°") );
 			BasicItem item = new BasicItem(new ResourceLocation(MainJava.MODID + ":" + "stick"),tab,new LangEntry("en_us","Modded Stick"));
 			ToolMat test = new ToolMat(new ResourceLocation(MainJava.MODID + ":" + "radioactive"), 2, 100, 10, 3, 30);
-			ItemBasicPickaxe axe = new ItemBasicPickaxe(new ResourceLocation(MainJava.MODID + ":" + "pickaxe"),test,tab, new LangEntry("en_us","RadioActive Pick"));
+			BasicPickaxe axe = new BasicPickaxe(new ResourceLocation(MainJava.MODID + ":" + "pickaxe"),test,tab, new LangEntry("en_us","RadioActive Pick"));
 			BasicBlock b = new BasicBlock(new ResourceLocation(MainJava.MODID + ":" + "spider"),Material.ROCK,tab,props,new LangEntry("en_us","Spider Master"),new LangEntry("ru_ru","Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº"));
 		
 			BasicMetaBlock b2 = new BasicMetaBlock(new ResourceLocation(MainJava.MODID + ":" + "cheese"),PropertyMetaEnum.createProperty("cheese", EnumCheese.class), Material.ROCK, tab,new LangEntry("en_us","American Cheese","american"),new LangEntry("en_us","Swiss Cheese","swiss"));
