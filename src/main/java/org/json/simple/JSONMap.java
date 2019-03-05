@@ -1,6 +1,10 @@
 package org.json.simple;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,28 +36,21 @@ public class JSONMap extends LinkedHashMap{
 	
 	public static Map getConstructorMap(Map map)
 	{
-		fixMap(map);
+		JSONUtil.fixMap(map);
 		return map;
 	}
 
 	@Override
 	public Object put(Object key, Object value)
 	{
-		if(!canPut(value))
-			value = value.toString();
-		
-		if(value instanceof Map)
-			fixMap((Map)value);
-		
+		value = JSONUtil.getValidJsonValue(value);
 		return super.put(key, value);
 	}
 
 	@Override
 	public Object putIfAbsent(Object key, Object value)
 	{
-		if(!canPut(value))
-			value = getValidJsonValue(value);
-		
+		value = JSONUtil.getValidJsonValue(value);
 		return super.putIfAbsent(key, value);
 	}
 	
@@ -62,60 +59,8 @@ public class JSONMap extends LinkedHashMap{
 	{
 		if(map.isEmpty())
 			return;
-		fixMap(map);
+		JSONUtil.fixMap(map);
 		super.putAll(map);
-	}
-	
-	/**
-	 * Recursively converts the map to usable json objects before inputting into the super map
-	 */
-	public static void fixMap(Map map) 
-	{
-		Set<Map.Entry> set = map.entrySet();
-		for(Map.Entry pair : set)
-		{
-			Object value = pair.getValue();
-			if(value instanceof Map)
-			{
-				fixMap(map);
-			}
-			
-			if(!canPut(value))
-				map.put(pair.getKey(), getValidJsonValue(value));
-		}
-	}
-	
-	public static Object getValidJsonValue(Object value) 
-	{
-		if(value instanceof Number[] || value instanceof Boolean[] || value instanceof String[])
-		{
-			StringBuilder builder = new StringBuilder();
-			builder.append('[');
-			for(Object obj : (Object[])value)
-			{
-				builder.append((builder.length() > 0 ? ","  : "") + obj);
-			}
-			builder.append(']');
-			JSONParser parser = new JSONParser();
-			try 
-			{
-				return parser.parseJSONArray(builder.toString());
-			} 
-			catch (ParseException e) 
-			{
-				e.printStackTrace();
-				return null;
-			}
-		}
-		return value.toString();
-	}
-
-	/**
-	 * can the object without modifications be inputted into the json object/json array
-	 */
-	public static boolean canPut(Object value) 
-	{
-		return value == null || value instanceof String || value instanceof Number || value instanceof Boolean || value instanceof JSONObject || value instanceof JSONArray;
 	}
 	
 	public Float getFloat(Object key)

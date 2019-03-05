@@ -1,11 +1,13 @@
 package com.purejava.java;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
+import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
@@ -17,22 +19,9 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		String str = "\\";
-		JSONArray arr = new JSONArray();
-		arr.add(22L);
-		arr.add(22);
-		arr.add((short)22);
-		arr.add((byte)22);
-		arr.add(22.0F);
-		arr.add(22.0D);
-		arr.add(true);
-		arr.add("String obj");
-		arr.add(new JSONObject());
-		arr.add(new Integer[]{0,1,2,3,4});
-		for(Object obj : arr)
-			System.out.print("," + obj.getClass().getSimpleName());
-		System.out.println();
-		System.out.println("Done:" + arr);
+		JSONObject json = new JSONObject();
+		json.put("intArray", new Boolean[]{true,false});
+		System.out.println(json.get("intArray").getClass());
 	}
 	
 	public static boolean compare(NBTTagCompound nbt, NBTTagCompound other,NBTPathApi.CompareType type)

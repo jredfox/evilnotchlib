@@ -127,7 +127,5 @@ public class JSONArray extends JSONArrayList implements JSONAware, JSONStreamAwa
 		}
 		return null;
 	}
-
-	
 		
 }

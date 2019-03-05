@@ -18,7 +18,7 @@ public class JSONArrayList extends ArrayList{
 	
 	public JSONArrayList(Collection col)
 	{
-		super(fixMap(col));
+		super(JSONUtil.fixMap(col));
 	}
 	
 	public JSONArrayList(int capacity)
@@ -29,77 +29,29 @@ public class JSONArrayList extends ArrayList{
 	@Override
 	public boolean add(Object obj)
 	{
-		if(!canPut(obj))
-			obj = obj.toString();
+		obj = JSONUtil.getValidJsonValue(obj);
 		return super.add(obj);
 	}
 	
 	@Override
 	public void add(int index, Object obj)
 	{
-		if(!canPut(obj))
-			obj = obj.toString();
+		obj = JSONUtil.getValidJsonValue(obj);
 		super.add(index, obj);
 	}
 	
 	@Override
 	public boolean addAll(Collection map)
 	{
-		map = fixMap(map);
+		map = JSONUtil.fixMap(map);
 		return super.addAll(map);
 	}
 	
 	@Override
 	public boolean addAll(int index, Collection map)
 	{
-		map = fixMap(map);
+		map = JSONUtil.fixMap(map);
 		return super.addAll(index, map);
-	}
-	
-	/**
-	 * converts the generic collection into a usable json interface map
-	 */
-	public static Collection fixMap(Collection map) 
-	{
-		if(map.isEmpty())
-			return map;
-		else if(map instanceof Map)
-		{
-			JSONMap.fixMap((Map)map);
-			return map;
-		}
-		else if(map instanceof List)
-		{
-			List list = (List)map;
-			int index = 0;
-			for(Object obj : list)
-			{
-				if(!canPut(obj))
-					list.set(index, obj);
-				index++;
-			}
-			return list;
-		}
-		else
-		{
-			//a generic method to always fix it no matter what interface is used by it
-			List list = new ArrayList(map.size());
-			for(Object obj : map)
-			{
-				if(!canPut(obj))
-					obj = obj.toString();
-				list.add(obj);
-			}
-		}
-		return map;
-	}
-	
-	/**
-	 * can the object without modifications be inputted into the json object/json array
-	 */
-	public static boolean canPut(Object value) 
-	{
-		return JSONObject.canPut(value);
 	}
 	
 	public Float getFloat(int key)
