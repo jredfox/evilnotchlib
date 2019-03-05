@@ -21,7 +21,7 @@ import com.evilnotch.lib.util.simple.ICopy;
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
  */
-public class JSONArray extends ArrayList implements JSONAware, JSONStreamAware,ICopy {
+public class JSONArray extends JSONArrayList implements JSONAware, JSONStreamAware,ICopy {
 	private static final long serialVersionUID = 3957988303675231981L;
 
     /**

@@ -56,6 +56,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class LoaderMain {
 	
@@ -183,8 +184,8 @@ public class LoaderMain {
 		MinecraftForge.EVENT_BUS.register(new VanillaBugFixes());
 		MinecraftForge.EVENT_BUS.register(new LibEvents());
 		MinecraftForge.EVENT_BUS.register(new LoaderMain());
-		TickRegistry.registerServer(new TickServerEvent());
-		TickRegistry.registerClient(new TickEventClient());
+		TickRegistry.register(new TickServerEvent(), Side.SERVER);
+		TickRegistry.register(new TickEventClient(), Side.CLIENT);
 	}
 	
 	/**

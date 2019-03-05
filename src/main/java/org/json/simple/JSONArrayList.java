@@ -83,7 +83,7 @@ public class JSONArrayList extends ArrayList{
 		else
 		{
 			//a generic method to always fix it no matter what interface is used by it
-			List list = new ArrayList();
+			List list = new ArrayList(map.size());
 			for(Object obj : map)
 			{
 				if(!canPut(obj))

@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class TickRegistry {
 	
@@ -42,14 +43,16 @@ public class TickRegistry {
 		}
 	}
 	
-	public static void registerServer(ITick server)
+	public static void register(ITick tick, Side side)
 	{
-		serverTick.add(server);
-	}
-	
-	public static void registerClient(ITick c)
-	{
-		clientTick.add(c);
+		if(side == Side.CLIENT) 
+		{
+			clientTick.add(tick);
+		}
+		else
+		{
+			serverTick.add(tick);
+		}
 	}
 	
 	public static void garbageCollectServer()
