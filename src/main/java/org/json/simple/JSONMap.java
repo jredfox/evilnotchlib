@@ -4,9 +4,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.evilnotch.lib.util.JavaUtil;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import net.minecraftforge.common.util.EnumHelper;
+import com.evilnotch.lib.util.JavaUtil;
 
 /**
  * this is a json map that allows only primitive and other json values into the map
@@ -40,6 +41,10 @@ public class JSONMap extends LinkedHashMap{
 	{
 		if(!canPut(value))
 			value = value.toString();
+		
+		if(value instanceof Map)
+			fixMap((Map)value);
+		
 		return super.put(key, value);
 	}
 
@@ -47,7 +52,7 @@ public class JSONMap extends LinkedHashMap{
 	public Object putIfAbsent(Object key, Object value)
 	{
 		if(!canPut(value))
-			value = value.toString();
+			value = getValidJsonValue(value);
 		
 		return super.putIfAbsent(key, value);
 	}
@@ -62,18 +67,49 @@ public class JSONMap extends LinkedHashMap{
 	}
 	
 	/**
-	 * converts the map to usable json objects before inputting into the super map
+	 * Recursively converts the map to usable json objects before inputting into the super map
 	 */
 	public static void fixMap(Map map) 
 	{
 		Set<Map.Entry> set = map.entrySet();
 		for(Map.Entry pair : set)
 		{
-			if(!canPut(pair.getValue()))
-				map.put(pair.getKey(), pair.getValue().toString());
+			Object value = pair.getValue();
+			if(value instanceof Map)
+			{
+				fixMap(map);
+			}
+			
+			if(!canPut(value))
+				map.put(pair.getKey(), getValidJsonValue(value));
 		}
 	}
 	
+	public static Object getValidJsonValue(Object value) 
+	{
+		if(value instanceof Number[] || value instanceof Boolean[] || value instanceof String[])
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.append('[');
+			for(Object obj : (Object[])value)
+			{
+				builder.append((builder.length() > 0 ? ","  : "") + obj);
+			}
+			builder.append(']');
+			JSONParser parser = new JSONParser();
+			try 
+			{
+				return parser.parseJSONArray(builder.toString());
+			} 
+			catch (ParseException e) 
+			{
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return value.toString();
+	}
+
 	/**
 	 * can the object without modifications be inputted into the json object/json array
 	 */
