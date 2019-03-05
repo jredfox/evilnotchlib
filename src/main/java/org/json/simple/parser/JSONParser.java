@@ -71,6 +71,22 @@ public class JSONParser {
 		return lexer.getPosition();
 	}
 	
+	public JSONObject parseJSONObject(String s) throws ParseException{
+		return (JSONObject) parse(s);
+	}
+	
+	public JSONObject parseJSONObject(Reader in) throws IOException, ParseException{
+		return (JSONObject) this.parse(in);
+	}
+	
+	public JSONArray parseJSONArray(String s) throws ParseException{
+		return (JSONArray) parse(s);
+	}
+	
+	public JSONArray parseJSONArray(Reader in) throws IOException, ParseException{
+		return (JSONArray) this.parse(in);
+	}
+	
 	public Object parse(String s) throws ParseException{
 		return parse(s, (ContainerFactory)null);
 	}
