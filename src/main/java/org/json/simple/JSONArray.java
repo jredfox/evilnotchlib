@@ -7,6 +7,7 @@ package org.json.simple;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +24,16 @@ import com.evilnotch.lib.util.simple.ICopy;
  */
 public class JSONArray extends JSONArrayList implements JSONAware, JSONStreamAware,ICopy {
 	private static final long serialVersionUID = 3957988303675231981L;
+	
+	public JSONArray()
+	{
+		super();
+	}
+	
+	public JSONArray(int capacity)
+	{
+		super(capacity);
+	}
 
     /**
      * Encode a list into JSON text and write it to out. 
@@ -101,12 +112,14 @@ public class JSONArray extends JSONArrayList implements JSONAware, JSONStreamAwa
 	}
 	
 	@Override
-	public String toJSONString(){
+	public String toJSONString()
+	{
 		return toJSONString(this);
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		return toJSONString();
 	}
 

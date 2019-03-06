@@ -16,11 +16,6 @@ public class JSONArrayList extends ArrayList{
 		super();
 	}
 	
-	public JSONArrayList(Collection col)
-	{
-		super(JSONUtil.fixMap(col));
-	}
-	
 	public JSONArrayList(int capacity)
 	{
 		super(capacity);
@@ -43,14 +38,14 @@ public class JSONArrayList extends ArrayList{
 	@Override
 	public boolean addAll(Collection map)
 	{
-		map = JSONUtil.fixMap(map);
+		map = (Collection) JSONUtil.getValidJsonValue(map);
 		return super.addAll(map);
 	}
 	
 	@Override
 	public boolean addAll(int index, Collection map)
 	{
-		map = JSONUtil.fixMap(map);
+		map = (Collection) JSONUtil.getValidJsonValue(map);
 		return super.addAll(index, map);
 	}
 	

@@ -24,20 +24,9 @@ public class JSONMap extends LinkedHashMap{
 		super();
 	}
 	
-	public JSONMap(Map map) 
-	{
-		super(getConstructorMap(map));
-	}
-	
 	public JSONMap(int capacity)
 	{
 		super(capacity);
-	}
-	
-	public static Map getConstructorMap(Map map)
-	{
-		JSONUtil.fixMap(map);
-		return map;
 	}
 
 	@Override
@@ -52,15 +41,6 @@ public class JSONMap extends LinkedHashMap{
 	{
 		value = JSONUtil.getValidJsonValue(value);
 		return super.putIfAbsent(key, value);
-	}
-	
-	@Override
-	public void putAll(Map map)
-	{
-		if(map.isEmpty())
-			return;
-		JSONUtil.fixMap(map);
-		super.putAll(map);
 	}
 	
 	public Float getFloat(Object key)
