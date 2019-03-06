@@ -110,92 +110,47 @@ public class JSONMap extends LinkedHashMap{
 	 */
 	public Object putStaticArray(String key, Object[] value)
 	{
-		JSONArray json = new JSONArray();
-		for(Object obj : value)
-		{
-			json.add(JSONUtil.getValidJsonValue(obj));
-		}
-		return this.put(key, json);
+		return this.put(key, JSONUtil.getJSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, long[] value)
 	{
-		JSONArray json = new JSONArray();
-		for(long obj : value)
-		{
-			json.add(obj);
-		}
-		return this.put(key, json);
+		return this.put(key, JSONUtil.getJSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, int[] value)
 	{
-		JSONArray json = new JSONArray();
-		for(int obj : value)
-		{
-			json.add(obj);
-		}
-		return this.put(key, json);
+		return this.put(key, JSONUtil.getJSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, short[] value)
 	{
-		JSONArray json = new JSONArray();
-		for(short obj : value)
-		{
-			json.add(obj);
-		}
-		return this.put(key, json);
+		return this.put(key, JSONUtil.getJSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, byte[] value)
 	{
-		JSONArray json = new JSONArray();
-		for(byte obj : value)
-		{
-			json.add(obj);
-		}
-		return this.put(key, json);
+		return this.put(key, JSONUtil.getJSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, double[] value)
 	{
-		JSONArray json = new JSONArray();
-		for(double obj : value)
-		{
-			json.add(obj);
-		}
-		return this.put(key, json);
+		return this.put(key, JSONUtil.getJSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, float[] value)
 	{
-		JSONArray json = new JSONArray();
-		for(float obj : value)
-		{
-			json.add(obj);
-		}
-		return this.put(key, json);
+		return this.put(key, JSONUtil.getJSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, boolean[] value)
 	{
-		JSONArray json = new JSONArray();
-		for(boolean obj : value)
-		{
-			json.add(obj);
-		}
-		return this.put(key, json);
+		return this.put(key, JSONUtil.getJSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, char[] value)
 	{
-		JSONArray json = new JSONArray();
-		for(char obj : value)
-		{
-			json.add("" + obj);
-		}
-		return this.put(key, json);
+		return this.put(key, JSONUtil.getJSONArray(value));
 	}
 	
 	/**
@@ -204,99 +159,54 @@ public class JSONMap extends LinkedHashMap{
 	public String[] getStringArray(String key)
 	{
 		JSONArray arr = this.getJSONArray(key);
-		String[] value = new String[arr.size()];
-		for(int index=0;index<arr.size();index++)
-		{
-			value[index] = arr.getString(index);
-		}
-		return value;
+		return JSONUtil.getStringArray(arr);
 	}
 	
 	public long[] getLongArray(String key)
 	{
 		JSONArray arr = this.getJSONArray(key);
-		long[] value = new long[arr.size()];
-		for(int index=0;index<arr.size();index++)
-		{
-			value[index] = arr.getLong(index);
-		}
-		return value;
+		return JSONUtil.getLongArray(arr);
 	}
 	
 	public int[] getIntArray(String key)
 	{
 		JSONArray arr = this.getJSONArray(key);
-		int[] value = new int[arr.size()];
-		for(int index=0;index<arr.size();index++)
-		{
-			value[index] = arr.getInt(index);
-		}
-		return value;
+		return JSONUtil.getIntArray(arr);
 	}
 	
 	public short[] getShortArray(String key)
 	{
 		JSONArray arr = this.getJSONArray(key);
-		short[] value = new short[arr.size()];
-		for(int index=0;index<arr.size();index++)
-		{
-			value[index] = arr.getShort(index);
-		}
-		return value;
+		return JSONUtil.getShortArray(arr);
 	}
 	
 	public byte[] getByteArray(String key)
 	{
 		JSONArray arr = this.getJSONArray(key);
-		byte[] value = new byte[arr.size()];
-		for(int index=0;index<arr.size();index++)
-		{
-			value[index] = arr.getByte(index);
-		}
-		return value;
+		return JSONUtil.getByteArray(arr);
 	}
 	
 	public double[] getDoubleArray(String key)
 	{
 		JSONArray arr = this.getJSONArray(key);
-		double[] value = new double[arr.size()];
-		for(int index=0;index<arr.size();index++)
-		{
-			value[index] = arr.getDouble(index);
-		}
-		return value;
+		return JSONUtil.getDoubleArray(arr);
 	}
 	
 	public float[] getFloatArray(String key)
 	{
 		JSONArray arr = this.getJSONArray(key);
-		float[] value = new float[arr.size()];
-		for(int index=0;index<arr.size();index++)
-		{
-			value[index] = arr.getFloat(index);
-		}
-		return value;
+		return JSONUtil.getFloatArray(arr);
 	}
 	
 	public boolean[] getBooleanArray(String key)
 	{
 		JSONArray arr = this.getJSONArray(key);
-		boolean[] value = new boolean[arr.size()];
-		for(int index=0;index<arr.size();index++)
-		{
-			value[index] = arr.getBoolean(index);
-		}
-		return value;
+		return JSONUtil.getBooleanArray(arr);
 	}
 	
 	public char[] getCharArray(String key)
 	{
 		JSONArray arr = this.getJSONArray(key);
-		char[] value = new char[arr.size()];
-		for(int index=0;index<arr.size();index++)
-		{
-			value[index] = arr.getChar(index);
-		}
-		return value;
+		return JSONUtil.getCharArray(arr);
 	}
 }
