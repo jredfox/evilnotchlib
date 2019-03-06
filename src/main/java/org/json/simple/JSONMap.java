@@ -197,4 +197,106 @@ public class JSONMap extends LinkedHashMap{
 		}
 		return this.put(key, json);
 	}
+	
+	/**
+	 * fetches the json array and converts back to static array. This is unoptimized only call it when needed
+	 */
+	public String[] getStringArray(String key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		String[] value = new String[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getString(index);
+		}
+		return value;
+	}
+	
+	public long[] getLongArray(String key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		long[] value = new long[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getLong(index);
+		}
+		return value;
+	}
+	
+	public int[] getIntArray(String key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		int[] value = new int[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getInt(index);
+		}
+		return value;
+	}
+	
+	public short[] getShortArray(String key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		short[] value = new short[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getShort(index);
+		}
+		return value;
+	}
+	
+	public byte[] getByteArray(String key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		byte[] value = new byte[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getByte(index);
+		}
+		return value;
+	}
+	
+	public double[] getDoubleArray(String key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		double[] value = new double[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getDouble(index);
+		}
+		return value;
+	}
+	
+	public float[] getFloatArray(String key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		float[] value = new float[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getFloat(index);
+		}
+		return value;
+	}
+	
+	public boolean[] getBooleanArray(String key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		boolean[] value = new boolean[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getBoolean(index);
+		}
+		return value;
+	}
+	
+	public char[] getCharArray(String key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		char[] value = new char[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getChar(index);
+		}
+		return value;
+	}
 }

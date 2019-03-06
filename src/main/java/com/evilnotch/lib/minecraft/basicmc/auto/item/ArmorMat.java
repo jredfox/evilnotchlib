@@ -91,7 +91,7 @@ public class ArmorMat implements IEnumContainer{
 	{
 		 String textureName = json.getString("textureName");
 		 int durability = json.getInt("durability");
-		 int[] damageReduction = JavaUtil.getStaticArrayInts(json.getJSONArray("damageReduction").toString() );
+		 int[] damageReduction = json.getIntArray("damageReduction");
 		 int enchantability = json.getInt("enchantability");
 		 SoundEvent event = SoundEvent.REGISTRY.getObject(new ResourceLocation(json.getString("soundEvent")));
 		 float tough = json.getFloat("toughness");
