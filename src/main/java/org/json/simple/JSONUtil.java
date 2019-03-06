@@ -9,6 +9,8 @@ import java.util.Set;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.evilnotch.lib.util.JavaUtil;
+
 public class JSONUtil {
 
 	/**
@@ -16,8 +18,8 @@ public class JSONUtil {
 	 */
 	public static Object getValidJsonValue(Object value) 
 	{
-		if(value instanceof Object[] || value instanceof long[] || value instanceof int[] || value instanceof short[] || value instanceof byte[] || value instanceof double[] || value instanceof float[] || value instanceof boolean[] || value instanceof char[])
-			throw new IllegalArgumentException("Use JSONArray Class For Array Objects");
+		if(JavaUtil.isStaticArray(value))
+			throw new IllegalArgumentException("Use JSONArray Objects for non primitive values");
 		else if(value instanceof Map && !(value instanceof JSONObject) || value instanceof Collection && !(value instanceof JSONArray))
 			throw new IllegalArgumentException("Inserted Maps must be JSONObject and Inserted Collections Must be JSONArray");
 		

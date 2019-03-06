@@ -1400,4 +1400,9 @@ public class JavaUtil {
 		return arr;
 	}
 	
+	public static boolean isStaticArray(Object value) 
+	{
+		return value != null && value.getClass().isArray();
+	}
+	
 }

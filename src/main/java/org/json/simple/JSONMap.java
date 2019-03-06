@@ -104,4 +104,97 @@ public class JSONMap extends LinkedHashMap{
 	{
 		return (JSONArray)this.get(key);
 	}
+	
+	/**
+	 * @param non primitive object arrays are converted into valid json arrays no recursion this converts data into one JSONArray
+	 */
+	public Object putStaticArray(String key, Object[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(Object obj : value)
+		{
+			json.add(JSONUtil.getValidJsonValue(obj));
+		}
+		return this.put(key, json);
+	}
+	
+	public Object putStaticArray(String key, long[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(long obj : value)
+		{
+			json.add(obj);
+		}
+		return this.put(key, json);
+	}
+	
+	public Object putStaticArray(String key, int[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(int obj : value)
+		{
+			json.add(obj);
+		}
+		return this.put(key, json);
+	}
+	
+	public Object putStaticArray(String key, short[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(short obj : value)
+		{
+			json.add(obj);
+		}
+		return this.put(key, json);
+	}
+	
+	public Object putStaticArray(String key, byte[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(byte obj : value)
+		{
+			json.add(obj);
+		}
+		return this.put(key, json);
+	}
+	
+	public Object putStaticArray(String key, double[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(double obj : value)
+		{
+			json.add(obj);
+		}
+		return this.put(key, json);
+	}
+	
+	public Object putStaticArray(String key, float[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(float obj : value)
+		{
+			json.add(obj);
+		}
+		return this.put(key, json);
+	}
+	
+	public Object putStaticArray(String key, boolean[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(boolean obj : value)
+		{
+			json.add(obj);
+		}
+		return this.put(key, json);
+	}
+	
+	public Object putStaticArray(String key, char[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(char obj : value)
+		{
+			json.add("" + obj);
+		}
+		return this.put(key, json);
+	}
 }

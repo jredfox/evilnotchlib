@@ -21,12 +21,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args)
 	{
-		JSONObject json = new JSONObject();
-		List<Object> objs = new JSONArray();
-		objs.add(new Integer(0));
-		objs.add(new Integer(1));
-		json.put("intArray", objs);
-		System.out.println(json.get("intArray").getClass());
+		System.out.println(ArrayList.class.isArray());
 	}
 
 }
