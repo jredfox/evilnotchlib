@@ -54,7 +54,7 @@ public class JSONArrayList extends ArrayList{
 		return JavaUtil.getLong((Number)this.get(key));
 	}
 
-	public Integer getInteger(int key)
+	public Integer getInt(int key)
 	{
 		return JavaUtil.getInt((Number)this.get(key));
 	}

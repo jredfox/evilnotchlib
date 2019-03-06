@@ -115,11 +115,11 @@ public class ToolMat implements IEnumContainer{
 	
 	private static ToolMat parseToolMat(ResourceLocation loc, JSONObject json)
 	{
-		int harvestLevel = (int) (long)json.get("harvestLevel");
-		int maxUses = (int) (long)json.get("maxUses");
-		float efficiency = (float) (double)json.get("efficiency");
-		float attackDamage = (float) (double)json.get("attackDamage");
-		int enchantability = (int) (long)json.get("enchantability");
+		int harvestLevel = json.getInteger("harvestLevel");
+		int maxUses = json.getInteger("maxUses");
+		float efficiency = json.getFloat("efficiency");
+		float attackDamage = json.getFloat("attackDamage");
+		int enchantability = json.getInteger("enchantability");
 		return new ToolMat(loc, harvestLevel, maxUses, efficiency, attackDamage, enchantability);
 	}
 

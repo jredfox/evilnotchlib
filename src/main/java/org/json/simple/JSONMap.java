@@ -55,7 +55,7 @@ public class JSONMap extends LinkedHashMap{
 		return JavaUtil.getLong((Number)this.get(key));
 	}
 
-	public Integer getInteger(Object key)
+	public Integer getInt(Object key)
 	{
 		return JavaUtil.getInt((Number)this.get(key));
 	}

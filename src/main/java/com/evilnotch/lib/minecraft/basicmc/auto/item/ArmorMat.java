@@ -89,12 +89,12 @@ public class ArmorMat implements IEnumContainer{
 	 
 	public static ArmorMat parseArmorMat(ResourceLocation loc, JSONObject json)
 	{
-		 String textureName = (String) json.get("textureName");
-		 int durability = (int) ((long) json.get("durability") );
-		 int[] damageReduction = (int[]) JavaUtil.getStaticArrayInts(json.get("damageReduction").toString() );
-		 int enchantability = (int) (long)json.get("enchantability");
-		 SoundEvent event = SoundEvent.REGISTRY.getObject(new ResourceLocation("" + json.get("soundEvent")));
-		 float tough = (float) (double)json.get("toughness");
+		 String textureName = json.getString("textureName");
+		 int durability = json.getInt("durability");
+		 int[] damageReduction = JavaUtil.getStaticArrayInts(json.getJSONArray("damageReduction").toString() );
+		 int enchantability = json.getInt("enchantability");
+		 SoundEvent event = SoundEvent.REGISTRY.getObject(new ResourceLocation(json.get("soundEvent").toString()));
+		 float tough = json.getFloat("toughness");
 		 
 		 return new ArmorMat(loc, new ResourceLocation(textureName), durability, damageReduction, enchantability, event, tough);
 	}
@@ -124,7 +124,7 @@ public class ArmorMat implements IEnumContainer{
 		JSONObject json = new JSONObject();
 		json.put("textureName", mat.textureName);
 		json.put("durability", mat.durability);
-		json.put("damageReduction", JavaUtil.staticToArray(mat.damageReduction));
+		json.put("damageReduction", mat.damageReduction);
 		json.put("enchantability", mat.enchantability);
 		json.put("soundEvent", SoundEvent.REGISTRY.getNameForObject(mat.soundEvent));
 		json.put("toughness", mat.toughness);
