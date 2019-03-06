@@ -194,11 +194,11 @@ public class MinecraftUtil {
 	   JSONObject json = new JSONObject();
 	   json.put("volume", sound.volume);
 	   json.put("pitch", sound.pitch);
-	   json.put("breakSound", sound.getBreakSound().getRegistryName().toString());
-	   json.put("fallSound", sound.getFallSound().getRegistryName().toString());
-	   json.put("hitSound", sound.getHitSound().getRegistryName().toString());
-	   json.put("placeSound", sound.getPlaceSound().getRegistryName().toString());
-	   json.put("stepSound", sound.getStepSound().getRegistryName().toString());
+	   json.put("breakSound", sound.getBreakSound().getRegistryName());
+	   json.put("fallSound", sound.getFallSound().getRegistryName());
+	   json.put("hitSound", sound.getHitSound().getRegistryName());
+	   json.put("placeSound", sound.getPlaceSound().getRegistryName());
+	   json.put("stepSound", sound.getStepSound().getRegistryName());
 	   return json;
    }
    
@@ -207,13 +207,13 @@ public class MinecraftUtil {
     */
    public static SoundType getSoundType(JSONObject json) 
    {
-	   float volume = (float)(double)json.get("volume");
-	   float pitch = (float)(double)json.get("pitch");
-	   SoundEvent breakSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("breakSound")));
-	   SoundEvent stepSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("stepSound")));
-	   SoundEvent fallSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("fallSound")));
-	   SoundEvent hitSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("hitSound")));
-	   SoundEvent placeSound = SoundEvent.REGISTRY.getObject(new ResourceLocation((String)json.get("placeSound")));
+	   float volume = json.getFloat("volume");
+	   float pitch = json.getFloat("pitch");
+	   SoundEvent breakSound = SoundEvent.REGISTRY.getObject(new ResourceLocation(json.getString("breakSound")));
+	   SoundEvent stepSound = SoundEvent.REGISTRY.getObject(new ResourceLocation(json.getString("stepSound")));
+	   SoundEvent fallSound = SoundEvent.REGISTRY.getObject(new ResourceLocation(json.getString("fallSound")));
+	   SoundEvent hitSound = SoundEvent.REGISTRY.getObject(new ResourceLocation(json.getString("hitSound")));
+	   SoundEvent placeSound = SoundEvent.REGISTRY.getObject(new ResourceLocation(json.getString("placeSound")));
 
 	   return new SoundType(volume, pitch, breakSound, stepSound, placeSound, hitSound, fallSound);
    }

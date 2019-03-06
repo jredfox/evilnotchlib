@@ -123,7 +123,7 @@ public class BlockProperty {
 	
 	public static void savePropertyToJSON(JSONObject json, BlockProperty prop)
 	{
-		json.put("mat", GeneralRegistry.getMaterialLoc(prop.mat).toString());
+		json.put("mat", GeneralRegistry.getMaterialLoc(prop.mat));
 		json.put("harvestTool", prop.harvestTool);
 		json.put("blockHardness", prop.blockHardness);
 		json.put("blastResistance", prop.blastResistance);
@@ -160,22 +160,22 @@ public class BlockProperty {
 	 */
 	public static BlockProperty getProperty(ResourceLocation propId, JSONObject json)
 	{
-		ResourceLocation mat = new ResourceLocation((String)json.get("mat"));
-		String harvestTool = (String) json.get("harvestTool");
-		float blockHardness = (float) (double)json.get("blockHardness");
-		float blastResistance = (float) (double)json.get("blastResistance");
-		int harvestLvl = (int) (long)json.get("harvestLvl");
-		SoundType type = MinecraftUtil.getSoundType((JSONObject)json.get("soundType"));
-		int flameEncoragement = (int)(long)json.get("flameEncoragement");
-		int flamability = (int)(long)json.get("flamability");
-		float slipperiness = (float)(double)json.get("slipperiness");
-		int lightValue = (int)(long)json.get("lightValue");
+		ResourceLocation mat = new ResourceLocation(json.getString("mat"));
+		String harvestTool = json.getString("harvestTool");
+		float blockHardness = json.getFloat("blockHardness");
+		float blastResistance = json.getFloat("blastResistance");
+		int harvestLvl = json.getInt("harvestLvl");
+		SoundType type = MinecraftUtil.getSoundType(json.getJSONObject("soundType"));
+		int flameEncoragement = json.getInt("flameEncoragement");
+		int flamability = json.getInt("flamability");
+		float slipperiness = json.getFloat("slipperiness");
+		int lightValue = json.getInt("lightValue");
 		
-		int lightOpacity = (int)(long)json.get("lightOpacity");
-		boolean translucent = (boolean)json.get("translucent");
-		boolean useNeighborBrightness = (boolean)json.get("useNeighborBrightness");
-		boolean enableStats = (boolean)json.get("enableStats");
-		float blockParticleGravity = (float)(double)json.get("blockParticleGravity");
+		int lightOpacity = json.getInt("lightOpacity");
+		boolean translucent = json.getBoolean("translucent");
+		boolean useNeighborBrightness = json.getBoolean("useNeighborBrightness");
+		boolean enableStats = json.getBoolean("enableStats");
+		float blockParticleGravity = json.getFloat("blockParticleGravity");
 		
 		return new BlockProperty(propId, mat, harvestTool, blockHardness, blastResistance, harvestLvl, type,
 				flameEncoragement, flamability, slipperiness, lightValue, 
