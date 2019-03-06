@@ -103,5 +103,293 @@ public class JSONArrayList extends ArrayList{
 	{
 		return (JSONArray)this.get(key);
 	}
+	
+	/**
+	 * @param non primitive object arrays are converted into valid json arrays no recursion this converts data into one JSONArray
+	 */
+	public boolean putStaticArray(Object[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(Object obj : value)
+		{
+			json.add(JSONUtil.getValidJsonValue(obj));
+		}
+		return this.add(json);
+	}
+	
+	public boolean putStaticArray(long[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(long obj : value)
+		{
+			json.add(obj);
+		}
+		return this.add(json);
+	}
+	
+	public boolean putStaticArray(int[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(int obj : value)
+		{
+			json.add(obj);
+		}
+		return this.add(json);
+	}
+	
+	public boolean putStaticArray(short[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(short obj : value)
+		{
+			json.add(obj);
+		}
+		return this.add(json);
+	}
+	
+	public boolean putStaticArray(byte[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(byte obj : value)
+		{
+			json.add(obj);
+		}
+		return this.add(json);
+	}
+	
+	public boolean putStaticArray(double[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(double obj : value)
+		{
+			json.add(obj);
+		}
+		return this.add(json);
+	}
+	
+	public boolean putStaticArray(float[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(float obj : value)
+		{
+			json.add(obj);
+		}
+		return this.add(json);
+	}
+	
+	public boolean putStaticArray(boolean[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(boolean obj : value)
+		{
+			json.add(obj);
+		}
+		return this.add(json);
+	}
+	
+	public boolean putStaticArray(char[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(char obj : value)
+		{
+			json.add("" + obj);
+		}
+		return this.add(json);
+	}
+	
+	/**
+	 * @param non primitive object arrays are converted into valid json arrays no recursion this converts data into one JSONArray
+	 */
+	public void putStaticArray(int index, Object[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(Object obj : value)
+		{
+			json.add(JSONUtil.getValidJsonValue(obj));
+		}
+		this.add(index, json);
+	}
+	
+	public void putStaticArray(int index, long[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(long obj : value)
+		{
+			json.add(obj);
+		}
+		this.add(index, json);
+	}
+	
+	public void putStaticArray(int index, int[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(int obj : value)
+		{
+			json.add(obj);
+		}
+		this.add(index, json);
+	}
+	
+	public void putStaticArray(int index, short[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(short obj : value)
+		{
+			json.add(obj);
+		}
+		this.add(index, json);
+	}
+	
+	public void putStaticArray(int index, byte[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(byte obj : value)
+		{
+			json.add(obj);
+		}
+		this.add(index, json);
+	}
+	
+	public void putStaticArray(int index, double[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(double obj : value)
+		{
+			json.add(obj);
+		}
+		this.add(index, json);
+	}
+	
+	public void putStaticArray(int index, float[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(float obj : value)
+		{
+			json.add(obj);
+		}
+		this.add(index, json);
+	}
+	
+	public void putStaticArray(int index, boolean[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(boolean obj : value)
+		{
+			json.add(obj);
+		}
+		this.add(index, json);
+	}
+	
+	public void putStaticArray(int index, char[] value)
+	{
+		JSONArray json = new JSONArray();
+		for(char obj : value)
+		{
+			json.add("" + obj);
+		}
+		this.add(index, json);
+	}
+	
+	/**
+	 * fetches the json array and converts back to static array. This is unoptimized only call it when needed
+	 */
+	public String[] getStringArray(int key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		String[] value = new String[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getString(index);
+		}
+		return value;
+	}
+	
+	public long[] getLongArray(int key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		long[] value = new long[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getLong(index);
+		}
+		return value;
+	}
+	
+	public int[] getIntArray(int key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		int[] value = new int[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getInt(index);
+		}
+		return value;
+	}
+	
+	public short[] getShortArray(int key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		short[] value = new short[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getShort(index);
+		}
+		return value;
+	}
+	
+	public byte[] getByteArray(int key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		byte[] value = new byte[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getByte(index);
+		}
+		return value;
+	}
+	
+	public double[] getDoubleArray(int key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		double[] value = new double[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getDouble(index);
+		}
+		return value;
+	}
+	
+	public float[] getFloatArray(int key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		float[] value = new float[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getFloat(index);
+		}
+		return value;
+	}
+	
+	public boolean[] getBooleanArray(int key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		boolean[] value = new boolean[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getBoolean(index);
+		}
+		return value;
+	}
+	
+	public char[] getCharArray(int key)
+	{
+		JSONArray arr = this.getJSONArray(key);
+		char[] value = new char[arr.size()];
+		for(int index=0;index<arr.size();index++)
+		{
+			value[index] = arr.getChar(index);
+		}
+		return value;
+	}
 
 }
