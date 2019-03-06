@@ -34,6 +34,43 @@ public class JSONUtil {
 		return value == null || value instanceof String || value instanceof Number || value instanceof Boolean || value instanceof JSONObject || value instanceof JSONArray;
 	}
 	
+	/**
+	 * this is called in addAll method to fix arrays doens't support inner arrays
+	 */
+	public static Collection fixCollection(Collection c)
+	{
+		if(c instanceof JSONArray)
+			return c;
+		else if(c instanceof List)
+		{
+			List li = (List)c;
+			for(int i=0;i<li.size();i++)
+			{
+				li.set(i, getValidJsonValue(li.get(i)));
+			}
+			return li;
+		}
+		List list = new ArrayList(c.size());
+		for(Object value : c)
+			list.add(getValidJsonValue(value));
+		return list;
+	}
+	
+	/**
+	 * called in the putAll for JSONObject not supported deeper map fixing
+	 */
+	public static Map fixMap(Map m)
+	{
+		if(m instanceof JSONObject)
+			return m;
+		Set<Map.Entry> set = m.entrySet();
+		for(Map.Entry pair : set)
+		{
+			m.put(pair.getKey(), getValidJsonValue(pair.getValue()));
+		}
+		return m;
+	}
+	
 	public static JSONArray getJSONArray(Object[] value)
 	{
 		JSONArray json = new JSONArray();

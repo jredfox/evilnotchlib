@@ -46,7 +46,7 @@ public class JSONMap extends LinkedHashMap{
 	@Override
 	public void putAll(Map map)
 	{
-		map = (Map) JSONUtil.getValidJsonValue(map);
+		map = JSONUtil.fixMap(map);
 		super.putAll(map);
 	}
 	

@@ -38,14 +38,14 @@ public class JSONArrayList extends ArrayList{
 	@Override
 	public boolean addAll(Collection map)
 	{
-		map = (Collection) JSONUtil.getValidJsonValue(map);
+		map = JSONUtil.fixCollection(map);
 		return super.addAll(map);
 	}
 	
 	@Override
 	public boolean addAll(int index, Collection map)
 	{
-		map = (Collection) JSONUtil.getValidJsonValue(map);
+		map = JSONUtil.fixCollection(map);
 		return super.addAll(index, map);
 	}
 	
