@@ -49,16 +49,6 @@ public class JSONArrayList extends ArrayList{
 		return super.addAll(index, map);
 	}
 	
-	public Float getFloat(int key)
-	{
-		return JavaUtil.getFloat((Number)this.get(key));
-	}
-	
-	public Double getDouble(int key)
-	{
-		return JavaUtil.getDouble((Number)this.get(key));
-	}
-	
 	public Long getLong(int key)
 	{
 		return JavaUtil.getLong((Number)this.get(key));
@@ -77,6 +67,26 @@ public class JSONArrayList extends ArrayList{
 	public Byte getByte(int key)
 	{
 		return JavaUtil.getByte((Number)this.get(key));
+	}
+	
+	public Double getDouble(int key)
+	{
+		return JavaUtil.getDouble((Number)this.get(key));
+	}
+	
+	public Float getFloat(int key)
+	{
+		return JavaUtil.getFloat((Number)this.get(key));
+	}
+	
+	public boolean getBoolean(int key)
+	{
+		return (boolean) this.get(key);
+	}
+	
+	public char getChar(int key)
+	{
+		return this.getString(key).charAt(0);
 	}
 	
 	public String getString(int key)

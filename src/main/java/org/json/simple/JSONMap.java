@@ -43,14 +43,11 @@ public class JSONMap extends LinkedHashMap{
 		return super.putIfAbsent(key, value);
 	}
 	
-	public Float getFloat(Object key)
+	@Override
+	public void putAll(Map map)
 	{
-		return JavaUtil.getFloat((Number)this.get(key));
-	}
-	
-	public Double getDouble(Object key)
-	{
-		return JavaUtil.getDouble((Number)this.get(key));
+		map = (Map) JSONUtil.getValidJsonValue(map);
+		super.putAll(map);
 	}
 	
 	public Long getLong(Object key)
@@ -71,6 +68,26 @@ public class JSONMap extends LinkedHashMap{
 	public Byte getByte(Object key)
 	{
 		return JavaUtil.getByte((Number)this.get(key));
+	}
+	
+	public Double getDouble(Object key)
+	{
+		return JavaUtil.getDouble((Number)this.get(key));
+	}
+	
+	public Float getFloat(Object key)
+	{
+		return JavaUtil.getFloat((Number)this.get(key));
+	}
+	
+	public boolean getBoolean(Object key)
+	{
+		return (boolean) this.get(key);
+	}
+	
+	public char getChar(Object key)
+	{
+		return this.getString(key).charAt(0);
 	}
 	
 	public String getString(Object key)
