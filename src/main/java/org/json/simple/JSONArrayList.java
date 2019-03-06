@@ -201,6 +201,54 @@ public class JSONArrayList extends ArrayList{
 	}
 	
 	/**
+	 * @param non primitive object arrays are converted into valid json arrays no recursion this converts data into one JSONArray
+	 */
+	public void setStaticArray(int index, Object[] value)
+	{
+		this.set(index, JSONUtil.getJSONArray(value));
+	}
+	
+	public void setStaticArray(int index, long[] value)
+	{
+		this.set(index, JSONUtil.getJSONArray(value));
+	}
+	
+	public void setStaticArray(int index, int[] value)
+	{
+		this.set(index, JSONUtil.getJSONArray(value));
+	}
+	
+	public void setStaticArray(int index, short[] value)
+	{
+		this.set(index, JSONUtil.getJSONArray(value));
+	}
+	
+	public void setStaticArray(int index, byte[] value)
+	{
+		this.set(index, JSONUtil.getJSONArray(value));
+	}
+	
+	public void setStaticArray(int index, double[] value)
+	{
+		this.set(index, JSONUtil.getJSONArray(value));
+	}
+	
+	public void setStaticArray(int index, float[] value)
+	{
+		this.set(index, JSONUtil.getJSONArray(value));
+	}
+	
+	public void setStaticArray(int index, boolean[] value)
+	{
+		this.set(index, JSONUtil.getJSONArray(value));
+	}
+	
+	public void setStaticArray(int index, char[] value)
+	{
+		this.set(index, JSONUtil.getJSONArray(value));
+	}
+	
+	/**
 	 * fetches the json array and converts back to static array. This is unoptimized only call it when needed
 	 */
 	public String[] getStringArray(int key)
