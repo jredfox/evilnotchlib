@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.simple.JSONObject;
+import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.loader.LoaderFields;

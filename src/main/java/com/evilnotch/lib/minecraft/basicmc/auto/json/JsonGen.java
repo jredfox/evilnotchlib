@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.simple.JSONObject;
+import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.main.loader.LoaderGen;
 import com.evilnotch.lib.main.loader.LoaderMain;
@@ -31,7 +31,6 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import scala.reflect.api.Trees.BlockApi;
 @SideOnly(Side.CLIENT)
 public class JsonGen {
 	

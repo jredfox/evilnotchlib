@@ -1,16 +1,9 @@
 package com.evilnotch.lib.minecraft.basicmc.client.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.json.simple.JSONObject;
 
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairString;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ModelPart {
 	

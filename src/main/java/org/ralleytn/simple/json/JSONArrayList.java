@@ -1,15 +1,16 @@
-package org.json.simple;
+package org.ralleytn.simple.json;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Date;
+
+import org.ralleytn.simple.json.internal.Util;
 
 import com.evilnotch.lib.util.JavaUtil;
 
-public class JSONArrayList extends ArrayList{
+public class JSONArrayList extends ArrayList<Object>{
 	
 	public JSONArrayList()
 	{
@@ -19,6 +20,10 @@ public class JSONArrayList extends ArrayList{
 	public JSONArrayList(int capacity)
 	{
 		super(capacity);
+	}
+
+	public JSONArrayList(Collection<?> collection) {
+		super((Collection<?>)JSONUtil.getValidJsonValue(collection));
 	}
 
 	@Override
@@ -109,47 +114,47 @@ public class JSONArrayList extends ArrayList{
 	 */
 	public boolean addStaticArray(Object[] value)
 	{
-		return this.add(JSONUtil.getJSONArray(value));
+		return this.add(new JSONArray(value));
 	}
 	
 	public boolean addStaticArray(long[] value)
 	{
-		return this.add(JSONUtil.getJSONArray(value));
+		return this.add(new JSONArray(value));
 	}
 	
 	public boolean addStaticArray(int[] value)
 	{
-		return this.add(JSONUtil.getJSONArray(value));
+		return this.add(new JSONArray(value));
 	}
 	
 	public boolean addStaticArray(short[] value)
 	{
-		return this.add(JSONUtil.getJSONArray(value));
+		return this.add(new JSONArray(value));
 	}
 	
 	public boolean addStaticArray(byte[] value)
 	{
-		return this.add(JSONUtil.getJSONArray(value));
+		return this.add(new JSONArray(value));
 	}
 	
 	public boolean addStaticArray(double[] value)
 	{
-		return this.add(JSONUtil.getJSONArray(value));
+		return this.add(new JSONArray(value));
 	}
 	
 	public boolean addStaticArray(float[] value)
 	{
-		return this.add(JSONUtil.getJSONArray(value));
+		return this.add(new JSONArray(value));
 	}
 	
 	public boolean addStaticArray(boolean[] value)
 	{
-		return this.add(JSONUtil.getJSONArray(value));
+		return this.add(new JSONArray(value));
 	}
 	
 	public boolean addStaticArray(char[] value)
 	{
-		return this.add(JSONUtil.getJSONArray(value));
+		return this.add(new JSONArray(value));
 	}
 	
 	/**
@@ -157,47 +162,47 @@ public class JSONArrayList extends ArrayList{
 	 */
 	public void addStaticArray(int index, Object[] value)
 	{
-		this.add(index, JSONUtil.getJSONArray(value));
+		this.add(index, new JSONArray(value));
 	}
 	
 	public void addStaticArray(int index, long[] value)
 	{
-		this.add(index, JSONUtil.getJSONArray(value));
+		this.add(index, new JSONArray(value));
 	}
 	
 	public void addStaticArray(int index, int[] value)
 	{
-		this.add(index, JSONUtil.getJSONArray(value));
+		this.add(index, new JSONArray(value));
 	}
 	
 	public void addStaticArray(int index, short[] value)
 	{
-		this.add(index, JSONUtil.getJSONArray(value));
+		this.add(index, new JSONArray(value));
 	}
 	
 	public void addStaticArray(int index, byte[] value)
 	{
-		this.add(index, JSONUtil.getJSONArray(value));
+		this.add(index, new JSONArray(value));
 	}
 	
 	public void addStaticArray(int index, double[] value)
 	{
-		this.add(index, JSONUtil.getJSONArray(value));
+		this.add(index, new JSONArray(value));
 	}
 	
 	public void addStaticArray(int index, float[] value)
 	{
-		this.add(index, JSONUtil.getJSONArray(value));
+		this.add(index, new JSONArray(value));
 	}
 	
 	public void addStaticArray(int index, boolean[] value)
 	{
-		this.add(index, JSONUtil.getJSONArray(value));
+		this.add(index, new JSONArray(value));
 	}
 	
 	public void addStaticArray(int index, char[] value)
 	{
-		this.add(index, JSONUtil.getJSONArray(value));
+		this.add(index, new JSONArray(value));
 	}
 	
 	/**
@@ -205,47 +210,47 @@ public class JSONArrayList extends ArrayList{
 	 */
 	public void setStaticArray(int index, Object[] value)
 	{
-		this.set(index, JSONUtil.getJSONArray(value));
+		this.set(index, new JSONArray(value));
 	}
 	
 	public void setStaticArray(int index, long[] value)
 	{
-		this.set(index, JSONUtil.getJSONArray(value));
+		this.set(index, new JSONArray(value));
 	}
 	
 	public void setStaticArray(int index, int[] value)
 	{
-		this.set(index, JSONUtil.getJSONArray(value));
+		this.set(index, new JSONArray(value));
 	}
 	
 	public void setStaticArray(int index, short[] value)
 	{
-		this.set(index, JSONUtil.getJSONArray(value));
+		this.set(index, new JSONArray(value));
 	}
 	
 	public void setStaticArray(int index, byte[] value)
 	{
-		this.set(index, JSONUtil.getJSONArray(value));
+		this.set(index, new JSONArray(value));
 	}
 	
 	public void setStaticArray(int index, double[] value)
 	{
-		this.set(index, JSONUtil.getJSONArray(value));
+		this.set(index, new JSONArray(value));
 	}
 	
 	public void setStaticArray(int index, float[] value)
 	{
-		this.set(index, JSONUtil.getJSONArray(value));
+		this.set(index, new JSONArray(value));
 	}
 	
 	public void setStaticArray(int index, boolean[] value)
 	{
-		this.set(index, JSONUtil.getJSONArray(value));
+		this.set(index, new JSONArray(value));
 	}
 	
 	public void setStaticArray(int index, char[] value)
 	{
-		this.set(index, JSONUtil.getJSONArray(value));
+		this.set(index, new JSONArray(value));
 	}
 	
 	/**
@@ -304,5 +309,34 @@ public class JSONArrayList extends ArrayList{
 		JSONArray arr = this.getJSONArray(key);
 		return JSONUtil.getCharArray(arr);
 	}
-
+	
+	/**
+	 * If the value already is a {@linkplain Date}, it will be casted and returned.
+	 * Otherwise the result of the value's {@link Object#toString()} will be parsed by the given
+	 * {@linkplain DateFormat}. The result is returned.
+	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * @param index index of the value
+	 * @param format the {@linkplain DateFormat} used to parse the date
+	 * @return a {@linkplain Date} or {@code null}
+	 * @throws ParseException if the date could not be parsed
+	 * @since 1.0.0
+	 */
+	public Date getDate(int index, DateFormat format) throws ParseException {
+		return Util.getDate(this.get(index), format);
+	}
+	
+	public void setDate(int index, Date date, DateFormat format)
+	{
+		this.set(index, format.format(date));
+	}
+	
+	public void addDate(int index, Date date, DateFormat format)
+	{
+		this.add(index, format.format(date));
+	}
+	
+	public boolean addDate(Date date, DateFormat format)
+	{
+		return this.add(format.format(date));
+	}
 }

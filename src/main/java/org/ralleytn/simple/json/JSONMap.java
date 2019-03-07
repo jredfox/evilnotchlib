@@ -1,15 +1,12 @@
-package org.json.simple;
+package org.ralleytn.simple.json;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.ralleytn.simple.json.internal.Util;
 
 import com.evilnotch.lib.util.JavaUtil;
 
@@ -17,7 +14,7 @@ import com.evilnotch.lib.util.JavaUtil;
  * this is a json map that allows only primitive and other json values into the map
  * @author jredfox
  */
-public class JSONMap extends LinkedHashMap{
+public class JSONMap extends LinkedHashMap<Object, Object>{
 	
 	public JSONMap()
 	{
@@ -27,6 +24,10 @@ public class JSONMap extends LinkedHashMap{
 	public JSONMap(int capacity)
 	{
 		super(capacity);
+	}
+
+	public JSONMap(Map map) {
+		super((Map)JSONUtil.getValidJsonValue(map));
 	}
 
 	@Override
@@ -110,47 +111,47 @@ public class JSONMap extends LinkedHashMap{
 	 */
 	public Object putStaticArray(String key, Object[] value)
 	{
-		return this.put(key, JSONUtil.getJSONArray(value));
+		return this.put(key, new JSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, long[] value)
 	{
-		return this.put(key, JSONUtil.getJSONArray(value));
+		return this.put(key, new JSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, int[] value)
 	{
-		return this.put(key, JSONUtil.getJSONArray(value));
+		return this.put(key, new JSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, short[] value)
 	{
-		return this.put(key, JSONUtil.getJSONArray(value));
+		return this.put(key, new JSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, byte[] value)
 	{
-		return this.put(key, JSONUtil.getJSONArray(value));
+		return this.put(key, new JSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, double[] value)
 	{
-		return this.put(key, JSONUtil.getJSONArray(value));
+		return this.put(key, new JSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, float[] value)
 	{
-		return this.put(key, JSONUtil.getJSONArray(value));
+		return this.put(key, new JSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, boolean[] value)
 	{
-		return this.put(key, JSONUtil.getJSONArray(value));
+		return this.put(key, new JSONArray(value));
 	}
 	
 	public Object putStaticArray(String key, char[] value)
 	{
-		return this.put(key, JSONUtil.getJSONArray(value));
+		return this.put(key, new JSONArray(value));
 	}
 	
 	/**
@@ -209,4 +210,29 @@ public class JSONMap extends LinkedHashMap{
 		JSONArray arr = this.getJSONArray(key);
 		return JSONUtil.getCharArray(arr);
 	}
+	
+	/**
+	 * If the value already is a {@linkplain Date}, it will be casted and returned.
+	 * Otherwise the result of the value's {@link Object#toString()} will be parsed by the given
+	 * {@linkplain DateFormat}. The result is returned.
+	 * If the actual value is {@code null}, this method will return {@code null}.
+	 * @param key key of the value
+	 * @param format the {@linkplain DateFormat} to parse the date with
+	 * @return a {@linkplain Date} or {@code null}
+	 * @throws ParseException if the date could not be parsed
+	 * @since 1.0.0
+	 */
+	public Date getDate(String key, DateFormat format) throws ParseException {
+		
+		return Util.getDate(this.get(key), format);
+	}
+	
+	/**
+	 * add a date into the json object
+	 */
+	public Object putDate(String key, Date date, DateFormat format)
+	{
+		return this.put(key, format.format(date));
+	}
+	
 }

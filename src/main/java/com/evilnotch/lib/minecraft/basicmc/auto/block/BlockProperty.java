@@ -5,14 +5,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.simple.JSONObject;
+import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;

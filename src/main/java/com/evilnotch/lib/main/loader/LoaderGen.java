@@ -2,23 +2,10 @@ package com.evilnotch.lib.main.loader;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorMat;
-import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
-import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
-import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.line.LineArray;
-
-import net.minecraft.item.ItemArmor.ArmorMaterial;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 
 public class LoaderGen {
 	

@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.simple.JSONObject;
+import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.util.JavaUtil;

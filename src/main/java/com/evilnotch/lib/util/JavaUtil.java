@@ -23,6 +23,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,9 +39,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.ralleytn.simple.json.JSONObject;
+import org.ralleytn.simple.json.JSONParseException;
+import org.ralleytn.simple.json.JSONParser;
 
 import com.evilnotch.lib.util.primitive.ByteObj;
 import com.evilnotch.lib.util.primitive.DoubleObj;
@@ -1054,7 +1055,7 @@ public class JavaUtil {
 		{
 			return (JSONObject)parser.parse(str);
 		} 
-		catch (ParseException e) 
+		catch (JSONParseException e) 
 		{
 			e.printStackTrace();
 		}
@@ -1098,7 +1099,7 @@ public class JavaUtil {
 
 	public static void saveJSON(JSONObject json, File file) 
 	{
-		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{toPrettyFormat(json.toJSONString())} ), file, true);
+		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{toPrettyFormat(json.toString())} ), file, true);
 	}
 	
     /**
@@ -1108,7 +1109,7 @@ public class JavaUtil {
 	{
 		JsonParser parser = new JsonParser();
 		JsonObject json = parser.parse(jsonString).getAsJsonObject();
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
 		String prettyJson = gson.toJson(json);
 	    return prettyJson.replaceAll("\n", "\r\n");
 	}
@@ -1135,7 +1136,7 @@ public class JavaUtil {
 		JSONParser p = new JSONParser();
 		try {
 			return (JSONObject) p.parse(string);
-		} catch (ParseException e) {
+		} catch (JSONParseException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -1378,7 +1379,7 @@ public class JavaUtil {
 		{
 			return (JSONObject) jsonParser.parse(new FileReader(armor));
 		} 
-		catch (IOException | ParseException e) 
+		catch (IOException | JSONParseException e) 
 		{
 			e.printStackTrace();
 		}
