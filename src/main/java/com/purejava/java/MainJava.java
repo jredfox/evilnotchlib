@@ -7,20 +7,27 @@ import java.io.IOException;
 import org.ralleytn.simple.json.JSONArray;
 import org.ralleytn.simple.json.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
+
+import net.minecraft.util.ResourceLocation;
+
 public class MainJava {
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args) throws IOException
 	{
-		JSONObject object = new JSONObject();
-		object.put("a","b");
-		object.put("b", "c");
-		object.put("ints", new JSONArray(new int[]{0,1,2,3,4,5}));
-		object.put("d", null);
-		FileWriter writer = new FileWriter(new File("C:/Users/jredfox/Desktop/tst.txt"));
-		object.write(writer);
-		writer.close();
-		System.out.println("Done:" + object.toString());
+		JsonObject json = new JsonObject();
+		json.addProperty("a", "b");
+		json.addProperty("c", "d");
+		json.addProperty("int", 1000);
+		json.addProperty("boolean", true);
+		json.addProperty("null", (String)null);
+		Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
+		System.out.println(gson.toJson(json));
 	}
 
 }
