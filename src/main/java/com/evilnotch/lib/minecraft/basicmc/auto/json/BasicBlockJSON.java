@@ -13,6 +13,7 @@ public class BasicBlockJSON implements IBasicBlockJSON{
 	public Block block;
 	public Item item;
 	public ModelPart model;
+	public boolean hasItemBlock = true;
 	
 	public BasicBlockJSON(Block b, ModelPart part)
 	{
@@ -47,5 +48,15 @@ public class BasicBlockJSON implements IBasicBlockJSON{
 	public ModelPart getModelPart() 
 	{
 		return this.model;
+	}
+
+	public boolean getHasItemBlock()
+	{
+		return this.hasItemBlock;
+	}
+	
+	public void setHasItemBlock(boolean b) 
+	{
+		this.hasItemBlock  = b;
 	}
 }

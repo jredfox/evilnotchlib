@@ -21,6 +21,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemShield;
@@ -85,9 +86,10 @@ public class JsonGen {
 				continue;
 			JSONObject json = getJSONItem(getParentModel(i.getObject()), i, 0, false);
 			ResourceLocation loc = i.getResourceLocation();
-			File file = new File(LoaderGen.root,loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
+			File file = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/" + loc.getResourcePath() + ".json");
 			saveIfJSON(json, file);
 		}
+		
 		for(BasicItemJSONMeta item : items_meta)
 		{
 			if(MinecraftUtil.isModCompiled(item.getResourceLocation().getResourceDomain()))
@@ -113,9 +115,12 @@ public class JsonGen {
 			saveIfJSON(json, file);
 				
 			//models/item/itemblock
-			File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + ".json");
-			JSONObject item = getJSONItemBlock(i, null);
-			saveIfJSON(item, itemFile);
+			if(i.getHasItemBlock())
+			{
+				File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + ".json");
+				JSONObject item = getJSONItemBlock(i, null);
+				saveIfJSON(item, itemFile);
+			}
 			
 			//blockstates
 			File blockstateFile = new File(LoaderGen.root, loc.getResourceDomain() + "/blockstates/" + loc.getResourcePath() + ".json");
@@ -139,9 +144,12 @@ public class JsonGen {
 				saveIfJSON(json, file);
 				
 				//model/item/itemblock
-				File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + "_" + BlockUtil.getPropertyValue(state, p) + ".json");
-				JSONObject item = getJSONItemBlock(i, state);
-				saveIfJSON(item, itemFile);
+				if(i.getHasItemBlock())
+				{
+					File itemFile = new File(LoaderGen.root, loc.getResourceDomain() + "/models/item/itemblock/" + loc.getResourcePath() + "_" + BlockUtil.getPropertyValue(state, p) + ".json");
+					JSONObject item = getJSONItemBlock(i, state);
+					saveIfJSON(item, itemFile);
+				}
 				
 				//blockstates
 				File blockstateFile = new File(LoaderGen.root, loc.getResourceDomain() + "/blockstates/" + loc.getResourcePath() + ".json");
@@ -271,8 +279,13 @@ public class JsonGen {
 		{
 			Block b = gen.getObject();
 			Item item = ItemBlock.getItemFromBlock(b);
-			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath(), "inventory"));
+			if(item == Items.AIR)
+			{
+				gen.setHasItemBlock(false);
+				continue;
+			}
 			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(gen.loc, "normal"));
+			ModelLoader.setCustomModelResourceLocation(item, 0,  new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath(), "inventory"));
 		}
 		
 		for(BasicBlockJSONMeta gen : blocks_meta)
@@ -280,11 +293,15 @@ public class JsonGen {
 			Block b = gen.getObject();
 			Item item = ItemBlock.getItemFromBlock(b);
 			ModelLoader.setCustomStateMapper(b, new StateMapperSupreme());
+			if(item == Items.AIR)
+			{
+				gen.setHasItemBlock(false);
+				continue;
+			}
 			for(IBlockState state : b.getBlockState().getValidStates())
 			{
 				int meta = b.getMetaFromState(state);
 				ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(gen.loc.getResourceDomain() + ":itemblock/" + gen.loc.getResourcePath() + "_" + BlockUtil.getPropertyValue(state, gen.property), "inventory"));
-//				ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(gen.loc + "_" + BlockApi.getPropertyValue(state, gen.property), BlockApi.getBlockStateName(state, gen.property)));
 			}
 		}
 		if(!LoaderMain.isDeObfuscated)

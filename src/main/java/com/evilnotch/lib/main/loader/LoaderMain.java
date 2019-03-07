@@ -155,6 +155,15 @@ public class LoaderMain {
 			BasicItemMeta i2 = new BasicItemMeta(new ResourceLocation(MainJava.MODID + ":" + "ingot"), 4,tab,
 				new LangEntry("en_us","Purple Ingot","0"),new LangEntry("en_us","Yellow Ingot","1"),new LangEntry("en_us","Tropical Ingot","2"),new LangEntry("en_us","Blue Ingot","3"),
 				new LangEntry("en_us","Cloud Ingot","4"));
+			
+			BasicBlock state = new BasicBlock(new ResourceLocation(MainJava.MODID,"statetest"),Material.ROCK)
+			{
+				@Override
+				public boolean hasItemBlock()
+				{
+					return false;
+				}
+			};
 		}
 	}
 
