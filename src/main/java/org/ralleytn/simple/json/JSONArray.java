@@ -161,7 +161,7 @@ public class JSONArray extends JSONArrayList {
 	 */
 	public JSONArray(String json) throws JSONParseException {
 		
-		super((JSONArray)new JSONParser().parse(json));
+		super(new JSONParser().parseJSONArray(json));
 	}
 	
 	/**
@@ -173,7 +173,7 @@ public class JSONArray extends JSONArrayList {
 	 */
 	public JSONArray(Reader reader) throws JSONParseException, IOException {
 		
-		super((JSONArray)new JSONParser().parse(reader));
+		super(new JSONParser().parseJSONArray(reader));
 	}
 	
 	/**

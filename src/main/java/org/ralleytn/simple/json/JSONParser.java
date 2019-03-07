@@ -440,6 +440,22 @@ public class JSONParser {
 		return this.lexer.getPosition();
 	}
 	
+	public JSONObject parseJSONObject(String s) throws JSONParseException{
+		return (JSONObject) this.parse(s);
+	}
+	
+	public JSONObject parseJSONObject(Reader in) throws IOException, JSONParseException{
+		return (JSONObject) this.parse(in);
+	}
+	
+	public JSONArray parseJSONArray(String s) throws JSONParseException{
+		return (JSONArray) this.parse(s);
+	}
+	
+	public JSONArray parseJSONArray(Reader in) throws IOException, JSONParseException{
+		return (JSONArray) this.parse(in);
+	} 
+	
 	/**
 	 * Parses JSON data.
 	 * @param json the JSON data

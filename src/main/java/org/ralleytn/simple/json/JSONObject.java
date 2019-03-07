@@ -47,7 +47,7 @@ public class JSONObject extends JSONMap {
 	 */
 	public JSONObject(String json) throws JSONParseException {
 		
-		super((JSONObject)new JSONParser().parse(json));
+		super(new JSONParser().parseJSONObject(json));
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class JSONObject extends JSONMap {
 	 */
 	public JSONObject(Reader reader) throws IOException, JSONParseException {
 		
-		super((JSONObject)new JSONParser().parse(reader));
+		super(new JSONParser().parseJSONObject(reader));
 	}
 	
 	/**
