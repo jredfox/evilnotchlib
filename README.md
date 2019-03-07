@@ -3,7 +3,7 @@ this is a library with minecraft and some forge bug fixes. It allows modders to 
 
 Embeded Libraries:
 ```
-Simple JSON(With Modifications): https://github.com/fangyidong/json-simple using this liscense http://www.apache.org/licenses/LICENSE-2.0
+Simple JSON(With Modifications): https://github.com/RalleYTN/SimpleJSON using this liscense http://www.apache.org/licenses/LICENSE-2.0
 ```
 
 Bug Fixes:
