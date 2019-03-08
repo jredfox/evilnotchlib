@@ -15,6 +15,7 @@ import com.evilnotch.lib.util.JavaUtil;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 
 public class BlockProperty {
 	
@@ -150,7 +151,8 @@ public class BlockProperty {
 		{
 			Map.Entry<String, JSONObject> pair = (Map.Entry<String, JSONObject>)obj;
 			ResourceLocation loc = new ResourceLocation(pair.getKey());
-			propReg.put(loc, getProperty(loc, pair.getValue() ));
+			if(Loader.isModLoaded(loc.getResourceDomain()))
+				propReg.put(loc, getProperty(loc, pair.getValue() ));
 		}
 	}
 	

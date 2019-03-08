@@ -48,7 +48,7 @@ public class LangRegistry {
 		}
 		LoaderGen.checkRootFile();
 		HashMap<File,ConfigLang> cfgs = new HashMap();
-		populateLang(LoaderGen.root,langs,cfgs);
+		populateLang(LoaderGen.root, langs, cfgs);
 		
 		if(langlistClient == null)
 		{
@@ -132,7 +132,7 @@ public class LangRegistry {
 		}
 		for(ConfigLang lang : map.values())
 		{	
-			lang.saveConfig(true,false,true);
+			lang.saveConfig(true, true, true);
 		}
 	}
 

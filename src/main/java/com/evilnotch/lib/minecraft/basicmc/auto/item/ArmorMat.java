@@ -15,6 +15,7 @@ import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.fml.common.Loader;
 
 public class ArmorMat implements IEnumContainer{
 	
@@ -82,7 +83,8 @@ public class ArmorMat implements IEnumContainer{
 		{
 			Map.Entry<String, JSONObject> pair = (Map.Entry<String, JSONObject>)obj;
 			ResourceLocation loc = new ResourceLocation(pair.getKey());
-			ArmorMat.armorenums.put(loc, parseArmorMat(loc, pair.getValue()) );
+			if(Loader.isModLoaded(loc.getResourceDomain()))
+				ArmorMat.armorenums.put(loc, parseArmorMat(loc, pair.getValue()) );
 		}
 	}
 	 

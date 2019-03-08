@@ -13,6 +13,7 @@ import com.evilnotch.lib.util.simple.IEnumContainer;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.fml.common.Loader;
 
 public class ToolMat implements IEnumContainer{
 	
@@ -76,7 +77,8 @@ public class ToolMat implements IEnumContainer{
 		{
 			Map.Entry<String, JSONObject> pair = (Map.Entry<String, JSONObject>)obj;
 			ResourceLocation loc = new ResourceLocation(pair.getKey());
-			ToolMat.toolenums.put(loc, parseToolMat(loc, pair.getValue()) );
+			if(Loader.isModLoaded(loc.getResourceDomain()))
+				ToolMat.toolenums.put(loc, parseToolMat(loc, pair.getValue()) );
 		}
 	}
 	
