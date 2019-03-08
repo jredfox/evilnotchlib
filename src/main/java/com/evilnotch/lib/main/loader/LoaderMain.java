@@ -141,7 +141,7 @@ public class LoaderMain {
 			BasicItem item = new BasicItem(new ResourceLocation(MainJava.MODID + ":" + "stick"),tab,new LangEntry("en_us","Modded Stick"));
 			ToolMat test = new ToolMat(new ResourceLocation(MainJava.MODID + ":" + "radioactive"), 2, 100, 10, 3, 30);
 			BasicPickaxe axe = new BasicPickaxe(new ResourceLocation(MainJava.MODID + ":" + "pickaxe"),test,tab, new LangEntry("en_us","RadioActive Pick"));
-			BasicBlock b = new BasicBlock(new ResourceLocation(MainJava.MODID + ":" + "spider"),Material.ROCK,tab,props,new LangEntry("en_us","Spider Master"),new LangEntry("ru_ru","Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº"));
+			BasicBlock b = new BasicBlock(new ResourceLocation(MainJava.MODID + ":" + "spider"),Material.ROCK,tab,props,new LangEntry("en_us","Spider FU"),new LangEntry("ru_ru","Ã�Â¿Ã�Â°Ã‘Æ’Ã�Âº"));
 		
 			BasicMetaBlock b2 = new BasicMetaBlock(new ResourceLocation(MainJava.MODID + ":" + "cheese"),PropertyMetaEnum.createProperty("cheese", EnumCheese.class), Material.ROCK, tab,new LangEntry("en_us","American Cheese","american"),new LangEntry("en_us","Swiss Cheese","swiss"));
 			BasicMetaBlock b3 = new BasicMetaBlock(new ResourceLocation(MainJava.MODID + ":" + "meat"), PropertyInteger.create("meat",0,15), Material.ROCK, tab,new LangEntry("en_us","Steak Block","0"),new LangEntry("en_us","Pork Block","1"));

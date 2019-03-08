@@ -132,7 +132,7 @@ public class LangRegistry {
 		}
 		for(ConfigLang lang : map.values())
 		{	
-			lang.saveConfig(true, true, true);
+			lang.saveConfig(true, false, true);
 		}
 	}
 

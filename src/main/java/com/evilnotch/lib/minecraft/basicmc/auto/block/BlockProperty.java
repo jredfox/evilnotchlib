@@ -8,6 +8,7 @@ import java.util.Map;
 import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.util.JavaUtil;
@@ -142,6 +143,8 @@ public class BlockProperty {
 	
 	public static void parseProperties()
 	{
+		if(LoaderMain.isDeObfuscated)
+			return;
 		File f = new File(Config.cfg.getParent(),"auto/properties/blockproperties.json");
 		if(!f.exists())
 			return;

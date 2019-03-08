@@ -104,6 +104,7 @@ public class MinecraftUtil {
 	   }
 	   return compiledTracker.get(modid);
    }
+   
    /**
     * supports 1.7.10 .zip and .jar mods
     */
