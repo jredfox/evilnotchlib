@@ -79,14 +79,14 @@ public class ToolMat implements IEnumContainer{
 		{
 			Map.Entry<String, JSONObject> pair = (Map.Entry<String, JSONObject>)obj;
 			ResourceLocation loc = new ResourceLocation(pair.getKey());
-			if(Loader.isModLoaded(loc.getResourceDomain()))
+			if(MinecraftUtil.isModCompiled(loc.getResourceDomain()))
 				ToolMat.toolenums.put(loc, parseToolMat(loc, pair.getValue()) );
 		}
 	}
 	
 	public static void saveToolMats()
 	{
-		if(LoaderMain.isDeObfuscated || ToolMat.toolenums.isEmpty())
+		if(ToolMat.toolenums.isEmpty())
 			return;
 		
 		JSONObject toolJson = new JSONObject();

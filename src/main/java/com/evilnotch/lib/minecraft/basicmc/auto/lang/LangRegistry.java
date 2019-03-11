@@ -3,6 +3,7 @@ package com.evilnotch.lib.minecraft.basicmc.auto.lang;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class LangRegistry {
 		clear();
 		try 
 		{
-			syncLang(cfgs.keySet());
+			syncLang(cfgs.values());
 		} 
 		catch (IOException e)
 		{
@@ -84,10 +85,13 @@ public class LangRegistry {
 		}
 	}
 
-	private static void syncLang(Set<File> files) throws IOException
+	private static void syncLang(Collection<ConfigLang> files) throws IOException
 	{
-		for(File f : files)
+		for(ConfigLang cfg : files)
 		{
+			if(!cfg.firstLaunch)
+				continue;
+			File f = cfg.file;
 			File file = LoaderGen.getSyncFile(f);
 			File parent = file.getParentFile();
 			if(!parent.exists())

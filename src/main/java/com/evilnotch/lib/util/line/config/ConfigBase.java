@@ -495,6 +495,7 @@ public abstract class ConfigBase {
 			if(!comments.contains(c))
 				newLine.addComment(c);
 	}
+	
 	/**
 	 * set a line at it's index if doesn't exist add a line
 	 */
@@ -509,6 +510,7 @@ public abstract class ConfigBase {
 		else
 			this.appendLine(line);
 	}
+	
 	/**
 	 * add a comment to a line
 	 */

@@ -84,7 +84,7 @@ public class ArmorMat implements IEnumContainer{
 		{
 			Map.Entry<String, JSONObject> pair = (Map.Entry<String, JSONObject>)obj;
 			ResourceLocation loc = new ResourceLocation(pair.getKey());
-			if(Loader.isModLoaded(loc.getResourceDomain()))
+			if(MinecraftUtil.isModCompiled(loc.getResourceDomain()))
 				ArmorMat.armorenums.put(loc, parseArmorMat(loc, pair.getValue()) );
 		}
 	}
@@ -104,7 +104,7 @@ public class ArmorMat implements IEnumContainer{
 	
 	public static void saveToolMats()
 	{
-		if(LoaderMain.isDeObfuscated || ToolMat.toolenums.isEmpty())
+		if(ToolMat.toolenums.isEmpty())
 			return;
 		JSONObject armorJson = new JSONObject();
 		File armor = new File(Config.cfg.getParent(),"auto/properties/armormats.json");

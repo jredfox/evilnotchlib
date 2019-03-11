@@ -143,8 +143,6 @@ public class BlockProperty {
 	
 	public static void parseProperties()
 	{
-		if(LoaderMain.isDeObfuscated)
-			return;
 		File f = new File(Config.cfg.getParent(),"auto/properties/blockproperties.json");
 		if(!f.exists())
 			return;
@@ -154,7 +152,7 @@ public class BlockProperty {
 		{
 			Map.Entry<String, JSONObject> pair = (Map.Entry<String, JSONObject>)obj;
 			ResourceLocation loc = new ResourceLocation(pair.getKey());
-			if(Loader.isModLoaded(loc.getResourceDomain()))
+			if(MinecraftUtil.isModCompiled(loc.getResourceDomain()))
 				propReg.put(loc, getProperty(loc, pair.getValue() ));
 		}
 	}
@@ -194,7 +192,6 @@ public class BlockProperty {
 		ResourceLocation loc = props.propId;
 		if(propReg.containsKey(loc))
 		{
-			System.out.println(props);
 			return propReg.get(loc);
 		}
 		
