@@ -204,7 +204,7 @@ public class TileEntityUtil {
     
 	public static void setSpawnerId(ResourceLocation loc, TileEntity tile) 
 	{
-		setSpawnerId(loc,tile,null,null);
+		setSpawnerId(loc, tile, null, null);
 	}
 	
     /**

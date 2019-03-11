@@ -14,7 +14,6 @@ public class BasicBlockJSON implements IBasicBlockJSON{
 	public Item item;
 	public ModelPart model;
 	public boolean hasItemBlock = true;
-	public String textureName;
 	
 	public BasicBlockJSON(Block b, ModelPart part)
 	{

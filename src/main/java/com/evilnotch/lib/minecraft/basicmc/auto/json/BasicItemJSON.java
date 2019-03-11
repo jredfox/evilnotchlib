@@ -7,13 +7,11 @@ public class BasicItemJSON implements IBasicItemJSON<Item>{
 	
 	public Item item;
 	public ResourceLocation loc;
-	public String textureName;
 	
 	public BasicItemJSON(Item item)
 	{
 		this.item = item;
 		this.loc = item.getRegistryName();
-		this.textureName = this.loc.getResourcePath();
 	}
 
 	@Override

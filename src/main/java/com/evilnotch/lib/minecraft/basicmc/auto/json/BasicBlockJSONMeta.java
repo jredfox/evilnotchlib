@@ -8,18 +8,11 @@ import net.minecraft.block.properties.IProperty;
 public class BasicBlockJSONMeta extends BasicBlockJSON implements IBasicBlockMetaJSON {
 
 	public IProperty property;
-	public String[] names = null;
-
-	public BasicBlockJSONMeta(Block b, ModelPart part, IProperty p) 
-	{
-		this(b, part, p, null);
-	}
 	
-	public BasicBlockJSONMeta(Block b, ModelPart part, IProperty p, String[] list)
+	public BasicBlockJSONMeta(Block b, ModelPart part, IProperty p)
 	{
 		super(b, part);
 		this.property = p;
-		this.names = list;
 	}
 
 	@Override
