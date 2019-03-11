@@ -7,9 +7,4 @@ public interface IBasicItemJSON<T> {
 	
 	public T getObject();
 	public ResourceLocation getResourceLocation();
-	
-	default public String getTextureName()
-	{
-		return getResourceLocation().getResourcePath();
-	}
 }

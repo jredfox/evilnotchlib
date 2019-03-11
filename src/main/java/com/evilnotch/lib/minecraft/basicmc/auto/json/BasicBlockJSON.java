@@ -14,6 +14,7 @@ public class BasicBlockJSON implements IBasicBlockJSON{
 	public Item item;
 	public ModelPart model;
 	public boolean hasItemBlock = true;
+	public String textureName;
 	
 	public BasicBlockJSON(Block b, ModelPart part)
 	{
@@ -21,15 +22,6 @@ public class BasicBlockJSON implements IBasicBlockJSON{
 		this.block = b;
 		this.item = ItemBlock.getItemFromBlock(b);
 		this.model = part;
-	}
-	
-	/**
-	 * used for the the object registry name isn't set for the json yet
-	 */
-	public BasicBlockJSON(Block b, ResourceLocation loc)
-	{
-		this.loc = loc;
-		this.block = b;
 	}
 
 	@Override

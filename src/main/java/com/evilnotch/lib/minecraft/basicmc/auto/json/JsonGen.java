@@ -237,7 +237,7 @@ public class JsonGen {
 		
 		JSONObject textures = new JSONObject();
 		ResourceLocation loc = item.getResourceLocation();
-		textures.put("layer0", loc.getResourceDomain() + ":items/" + item.getTextureName() + (isMeta ? "_" + meta : "") );
+		textures.put("layer0", loc.getResourceDomain() + ":items/" + loc.getResourcePath() + (isMeta ? "_" + meta : "") );
 		json.put("textures", textures);
 		return json;
 	}
@@ -254,7 +254,7 @@ public class JsonGen {
 		for(PairString s : block.getModelPart().getParts())
 		{
 			String side = s.getValue();
-			textures.put(side, loc.getResourceDomain() + ":blocks/" + block.getTextureName() + (state != null ? "_" + BlockUtil.getPropertyValue(state, ((IBasicBlockMetaJSON)block).getProperty() ) : "") + (side.equals("all") ? "" : "_" + side) );
+			textures.put(side, loc.getResourceDomain() + ":blocks/" + loc.getResourcePath() + (state != null ? "_" + BlockUtil.getPropertyValue(state, ((IBasicBlockMetaJSON)block).getProperty() ) : "") + (side.equals("all") ? "" : "_" + side) );
 		}
 		json.put("textures", textures);
 		return json;
