@@ -27,11 +27,12 @@ public class TileUseItemEvent extends TileDataEvent{
 	{
 		public ItemStack stack;
 		public EntityPlayer player;
+		public NBTTagCompound nbt;
 		
 		public boolean opsOnly;
 		public boolean canUseCommand;
 		
-		public Permissions(TileEntity tile, EntityPlayer player, ItemStack stack)
+		public Permissions(TileEntity tile, NBTTagCompound nbt, EntityPlayer player, ItemStack stack)
 		{
 			super(tile);
 			this.opsOnly = tile.onlyOpsCanSetNbt();
@@ -39,6 +40,7 @@ public class TileUseItemEvent extends TileDataEvent{
 			
 			this.stack = stack;
 			this.player = player;
+			this.nbt = nbt;
 		}
 	}
 	
@@ -67,13 +69,15 @@ public class TileUseItemEvent extends TileDataEvent{
 	{
 		public ItemStack stack;
 		public EntityPlayer player;
+		public NBTTagCompound nbt;
 		
-		public Post(TileEntity tile, EntityPlayer player, ItemStack stack)
+		public Post(TileEntity tile, NBTTagCompound nbt, EntityPlayer player, ItemStack stack)
 		{
 			super(tile);
 			
 			this.stack = stack;
 			this.player = player;
+			this.nbt = nbt;
 		}
 	}
 

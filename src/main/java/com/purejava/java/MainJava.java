@@ -9,13 +9,14 @@ import org.ralleytn.simple.json.JSONObject;
 import org.ralleytn.simple.json.JSONParseException;
 import org.ralleytn.simple.json.JSONParser;
 
+import com.evilnotch.lib.util.simple.RomanNumerals;
+
 public class MainJava {
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args) throws IOException, JSONParseException
 	{
-		JSONParser parser = new JSONParser();
-		System.out.println("Done:" + parser.parseJSONObject("{\"key\":1, \"key\":2}"));
+		System.out.println(RomanNumerals.translateIntToRoman(3999));
 	}
 
 }

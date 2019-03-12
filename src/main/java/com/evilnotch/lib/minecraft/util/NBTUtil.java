@@ -8,6 +8,7 @@ import java.io.IOException;
 import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
 import com.evilnotch.lib.util.JavaUtil;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTTagCompound;
@@ -164,6 +165,12 @@ public class NBTUtil {
 		NBTPathApi apiBase = new NBTPathApi(base);
 		NBTPathApi apiCompare = new NBTPathApi(toCompare);
 		apiBase.copySafley(apiCompare);
+	}
+
+	public static NBTTagCompound getNBT(ItemStack stack) 
+	{
+		NBTTagCompound nbt = stack.getTagCompound();
+		return nbt == null ? new NBTTagCompound() : nbt;
 	}
 
 }

@@ -79,7 +79,7 @@ public class ToolMat implements IEnumContainer{
 		{
 			Map.Entry<String, JSONObject> pair = (Map.Entry<String, JSONObject>)obj;
 			ResourceLocation loc = new ResourceLocation(pair.getKey());
-			if(MinecraftUtil.isModCompiled(loc.getResourceDomain()))
+			if(!LoaderMain.isDeObfuscated || MinecraftUtil.isModCompiled(loc.getResourceDomain()))
 				ToolMat.toolenums.put(loc, parseToolMat(loc, pair.getValue()) );
 		}
 	}

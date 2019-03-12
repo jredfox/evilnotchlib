@@ -91,8 +91,7 @@ public class TileEntityUtil {
 	{
 		if (tile != null && nbt != null)
 		{
-			TileUseItemEvent.Permissions permissions = new TileUseItemEvent.Permissions(tile, player, stack);
-		   	permissions.canUseCommand = true;
+			TileUseItemEvent.Permissions permissions = new TileUseItemEvent.Permissions(tile, nbt, player, stack);
 		   	MinecraftForge.EVENT_BUS.post(permissions);
 		   	if ((permissions.opsOnly) && (!permissions.canUseCommand))
 		   	{
@@ -116,7 +115,7 @@ public class TileEntityUtil {
 		   	{
 		   		tile.readFromNBT(tileData);
 		   		tile.markDirty();
-		   		TileUseItemEvent.Post event = new TileUseItemEvent.Post(tile, player, stack);
+		   		TileUseItemEvent.Post event = new TileUseItemEvent.Post(tile, nbt, player, stack);
 		       	MinecraftForge.EVENT_BUS.post(event);
 		       	return true;
 		    }
@@ -138,10 +137,15 @@ public class TileEntityUtil {
 	 */
 	public static boolean placeTileNBT(TileEntity tile, NBTTagCompound nbt, EntityPlayer player, ItemStack stack)
 	{
-	   if (tile != null && nbt != null)
+	   if (tile != null)
 	   {
-	   	   BlockDataEvent.Permissions permissions = new BlockDataEvent.Permissions(tile, player, stack);
-	   	   permissions.canUseCommand = true;
+		   BlockDataEvent.HasTileData check = new BlockDataEvent.HasTileData(tile, nbt, stack);
+		   MinecraftForge.EVENT_BUS.post(check);
+		   if(!check.canFire)
+			   return false;
+		   nbt = check.nbt;
+		   
+	   	   BlockDataEvent.Permissions permissions = new BlockDataEvent.Permissions(tile, nbt, player, stack);
 	   	   MinecraftForge.EVENT_BUS.post(permissions);
 	   	   if ((permissions.opsOnly) && (!permissions.canUseCommand))
 	   	   {
@@ -165,7 +169,7 @@ public class TileEntityUtil {
 	   	   {
 	   	      tile.readFromNBT(tileData);
 	   	      tile.markDirty();
-	   		  BlockDataEvent.Post event = new BlockDataEvent.Post(tile, player, stack);
+	   		  BlockDataEvent.Post event = new BlockDataEvent.Post(tile, nbt, player, stack);
 	          MinecraftForge.EVENT_BUS.post(event);
 	          return true;
 	      }

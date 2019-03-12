@@ -152,7 +152,7 @@ public class BlockProperty {
 		{
 			Map.Entry<String, JSONObject> pair = (Map.Entry<String, JSONObject>)obj;
 			ResourceLocation loc = new ResourceLocation(pair.getKey());
-			if(MinecraftUtil.isModCompiled(loc.getResourceDomain()))
+			if(!LoaderMain.isDeObfuscated || MinecraftUtil.isModCompiled(loc.getResourceDomain()))
 				propReg.put(loc, getProperty(loc, pair.getValue() ));
 		}
 	}
