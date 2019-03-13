@@ -13,12 +13,14 @@ public class PacketPickBlock implements IMessage{
 	public BlockPos pos;
 	public Vec3d vec;
 	public EnumFacing facing;
+	public boolean ctr;
 	
-	public PacketPickBlock(RayTraceResult trace)
+	public PacketPickBlock(RayTraceResult trace, boolean ctr)
 	{
 		this.pos = trace.getBlockPos();
 		this.vec = trace.hitVec;
 		this.facing = trace.sideHit;
+		this.ctr = ctr;
 	}
 	
 	public PacketPickBlock()
@@ -41,6 +43,9 @@ public class PacketPickBlock implements IMessage{
 		
 		//write the enum facing
 		buf.writeInt(this.facing.getIndex());
+		
+		//is control key down
+		buf.writeBoolean(this.ctr);
 	}
 
 	@Override
@@ -56,6 +61,8 @@ public class PacketPickBlock implements IMessage{
 		this.vec = new Vec3d(buf.readDouble(),buf.readDouble(),buf.readDouble());
 		
 		this.facing = EnumFacing.getFront(buf.readInt());
+		
+		this.ctr = buf.readBoolean();
 	}
 
 }

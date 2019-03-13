@@ -29,7 +29,7 @@ public class PacketPickEntityHandler extends MessegeBase<PacketPickEntity>{
 				System.out.println("recieved invalid packet for pickEntity event");
 				return;
 			}
-			PickBlock.pickBlock(new RayTraceResult(e,message.vec), player, player.world);
+			PickBlock.pickBlock(new RayTraceResult(e,message.vec), message.ctr, player, player.world);
 		});
 	}
 

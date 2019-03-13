@@ -9,6 +9,7 @@ import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -59,6 +60,11 @@ public class ClientProxy extends ServerProxy{
 	public static EntityPlayer getPlayer() 
 	{
 		return Minecraft.getMinecraft().player;
+	}
+
+	public static boolean isCtrlDown() 
+	{
+		return GuiScreen.isCtrlKeyDown();
 	}
 
 }

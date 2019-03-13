@@ -15,6 +15,8 @@ import net.minecraft.block.SoundType;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.CPacketCreativeInventoryAction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.util.ResourceLocation;
@@ -217,6 +219,14 @@ public class MinecraftUtil {
 	   SoundEvent placeSound = SoundEvent.REGISTRY.getObject(new ResourceLocation(json.getString("placeSound")));
 
 	   return new SoundType(volume, pitch, breakSound, stepSound, placeSound, hitSound, fallSound);
+   }
+
+   public static CPacketCreativeInventoryAction getCPacketCreativeInventoryAction(int slotId, ItemStack heldItem) 
+   {
+	   CPacketCreativeInventoryAction cp = new CPacketCreativeInventoryAction();
+	   cp.slotId = slotId;
+	   cp.stack = heldItem;
+	   return cp;
    }
    
 }

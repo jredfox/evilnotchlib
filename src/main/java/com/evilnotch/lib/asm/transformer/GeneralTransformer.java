@@ -91,6 +91,7 @@ public class GeneralTransformer {
 	   
 	   	method.instructions.remove(spot);
 	}
+	
 	/**
 	 * adds a method call fixNBT() via constructor and adds the method
 	 * @throws IOException 

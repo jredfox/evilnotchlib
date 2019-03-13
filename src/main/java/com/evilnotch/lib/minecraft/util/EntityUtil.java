@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -721,26 +722,27 @@ public class EntityUtil {
 	
 	public static void cacheEnts()
 	{
-		cacheEnts((List)null,LoaderMain.fake_world,true);
+		cacheEnts((List)null, LoaderMain.fake_world, true);
 	}
 	
 	public static void cacheEnts(Set<ResourceLocation> set,World w)
 	{
 		List<ResourceLocation> list = JavaUtil.asList(set);
-		cacheEnts(list,w,false);
+		cacheEnts(list, w, false);
 	}
 	
 	/**
 	 * Adds a basic level cache from loc to entity without interface
 	 * This also checks for broken entities, logs them and then stores their locs in array lists
 	 */
-	public static void cacheEnts(List<ResourceLocation> list,World world,boolean printLists)
+	public static void cacheEnts(Collection<ResourceLocation> list,World world,boolean printLists)
 	{
 		long time = System.currentTimeMillis();
 		if(cached && list == null)
 			return;
+		
 		if(list == null)
-			list = JavaUtil.asList(EntityList.getEntityNameList());
+			list = EntityList.getEntityNameList();
 		
 		for(EnumCreatureType type : EnumCreatureType.values())
 			cacheEndEnts(Biomes.SKY.getSpawnableList(type));

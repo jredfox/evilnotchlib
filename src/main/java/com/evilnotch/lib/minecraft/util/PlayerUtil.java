@@ -11,11 +11,11 @@ import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -201,11 +201,6 @@ public class PlayerUtil {
         }
 	}
     
-	public static EntityPlayer getClientPlayer()
-	{
-		return Minecraft.getMinecraft().player;
-	}
-
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
 	{
 		TickServerEvent.kicker.put(p, new PointId(0,ticks,msg) );
@@ -325,6 +320,10 @@ public class PlayerUtil {
 				net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(p, stack, hand);
 			}
 		}
+	}
+
+	public static EntityPlayer getClientPlayer() {
+		return ClientProxy.getPlayer();
 	}
 
 }

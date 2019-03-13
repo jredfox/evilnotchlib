@@ -80,11 +80,11 @@ public class BlockUtil {
 	}
 	
     /**
-     * Spawns this Block's drops into the World as EntityItems.
+     * Spawns this Block's drops into the World as EntityItems. Doesn't ignore the gamerule of tile drops
      */
     public void dropBlockAsItemWithChance(Block b,World worldIn,EntityPlayer player,boolean silktouch, BlockPos pos, IBlockState state, float chance, int fortune)
     {
-        if (!worldIn.isRemote && !worldIn.restoringBlockSnapshots) // do not drop items while restoring blockstates, prevents item dupe
+        if (!worldIn.isRemote && worldIn.getGameRules().getBoolean("doTileDrops") && !worldIn.restoringBlockSnapshots) // do not drop items while restoring blockstates, prevents item dupe
         {
             List<ItemStack> drops = b.getDrops(worldIn, pos, state, fortune); // use the old method until it gets removed, for backward compatibility
             chance = net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(drops, worldIn, pos, state, fortune, chance, silktouch, player);
@@ -92,14 +92,14 @@ public class BlockUtil {
             for (ItemStack drop : drops)
             {
                 if (worldIn.rand.nextFloat() <= chance)
-                    b.spawnAsEntity(worldIn, pos, drop);
+                    Block.spawnAsEntity(worldIn, pos, drop);
             }
         }
     }
     
     public static void DropBlock(World world, BlockPos p, ItemStack stack)
     {
-    	 if (!world.isRemote && world.getGameRules().hasRule("doTileDrops") && !world.restoringBlockSnapshots) // do not drop items while restoring blockstates, prevents item dupe
+    	 if (!world.isRemote && world.getGameRules().getBoolean("doTileDrops") && !world.restoringBlockSnapshots) // do not drop items while restoring blockstates, prevents item dupe
          {
             float f = 0.7F;
             double d0 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;

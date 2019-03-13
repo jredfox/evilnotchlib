@@ -35,11 +35,13 @@ public class PickEvent extends Event{
 	public static class Entity extends PickEvent
 	{
 		public net.minecraft.entity.Entity target;
+		public boolean ctr;
 		
-		public Entity(ItemStack resault, RayTraceResult target, EntityPlayer player, World world) 
+		public Entity(ItemStack resault, RayTraceResult target, boolean ctr, EntityPlayer player, World world) 
 		{
 			super(resault, target, player, world);
 			this.target = target.entityHit;
+			this.ctr = ctr;
 		}
 	}
 	
@@ -50,17 +52,35 @@ public class PickEvent extends Event{
 		public BlockPos pos;
 		public boolean copyTE;
 
-		public Block(ItemStack resault, RayTraceResult target, EntityPlayer player, World world, IBlockState state) 
+		public Block(ItemStack resault, RayTraceResult target, boolean ctr, EntityPlayer player, World world, IBlockState state) 
 		{
 			super(resault, target, player, world);
 			this.state = state;
 			this.pos = target.getBlockPos();
-			this.copyTE = GuiScreen.isCtrlKeyDown();
+			this.copyTE = ctr;
 	        if(state.getBlock().hasTileEntity(state))
 	        	this.tile = world.getTileEntity(target.getBlockPos());
 	        else
 	        	this.tile = null;
 		}
+	}
+	
+	/**
+	 * sync client controls here
+	 * @author jredfox
+	 */
+	public static class BlockClient extends Event
+	{
+		
+	}
+	
+	/**
+	 * sync client controls here that are not in the main packet of pick entity
+	 * @author jredfox
+	 */
+	public static class EntityClient extends Event
+	{
+		
 	}
 
 }

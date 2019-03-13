@@ -17,7 +17,7 @@ public class PacketPickBlockHandler extends MessegeBase<PacketPickBlock>{
 		EntityPlayerMP p = (EntityPlayerMP)player;
 		p.getServerWorld().addScheduledTask(() ->
 		{
-			PickBlock.pickBlock(new RayTraceResult(message.vec,message.facing,message.pos), player, player.world);
+			PickBlock.pickBlock(new RayTraceResult(message.vec,message.facing,message.pos), message.ctr, player, player.world);
 		});
 	}
 	

@@ -9,11 +9,13 @@ public class PacketPickEntity implements IMessage{
 	
 	public Vec3d vec;
 	public int entityId;
+	public boolean ctr;
 	
-	public PacketPickEntity(RayTraceResult trace)
+	public PacketPickEntity(RayTraceResult trace, boolean ctr)
 	{
 		this.vec = trace.hitVec;
 		this.entityId = trace.entityHit.getEntityId();
+		this.ctr = ctr;
 	}
 	
 	public PacketPickEntity()
@@ -31,6 +33,8 @@ public class PacketPickEntity implements IMessage{
 		
 		//entity
 		buf.writeInt(this.entityId);
+		
+		buf.writeBoolean(this.ctr);
 	}
 
 	@Override
@@ -38,6 +42,7 @@ public class PacketPickEntity implements IMessage{
 	{
 		this.vec = new Vec3d(buf.readDouble(),buf.readDouble(),buf.readDouble());
 		this.entityId = buf.readInt();
+		this.ctr = buf.readBoolean();
 	}
 
 }
