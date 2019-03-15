@@ -78,12 +78,11 @@ public class Transformer implements IClassTransformer
 			System.out.println("FATEL ERROR! REPORT TO EVIL NOTCH LIB. The fields of the class loader cannot be found and/or set");
 		}
 	}
-
+	
 	public static byte[] transform(int index, byte[] classToTransform, boolean obfuscated)
     {
     	String name = clazzes.get(index);
     	System.out.println("Transforming: " + name + " index:" + index);
-    	
         try
         {
             ClassNode classNode = new ClassNode();

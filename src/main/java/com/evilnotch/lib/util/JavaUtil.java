@@ -1073,17 +1073,28 @@ public class JavaUtil {
 
 	public static void saveJSONSafley(JSONObject json, File file) throws IOException 
 	{
-		createFileSafley(file);
-		saveJSON(json,file);
+		saveJSONSafley(json, file, true);
 	}
+	
+	public static void saveJSONSafley(JSONObject json, File file, boolean utf8) throws IOException 
+	{
+		createFileSafley(file);
+		saveJSON(json, file, utf8);
+	}
+	
+	public static boolean saveIfJSON(JSONObject json, File file) throws IOException 
+	{
+		return saveIfJSON(json, file, true);
+	}
+	
 	/**
 	 * @return if the file saved or not
 	 */
-	public static boolean saveIfJSON(JSONObject json, File file) throws IOException 
+	public static boolean saveIfJSON(JSONObject json, File file, boolean utf8) throws IOException 
 	{
 		if(!file.exists())
 		{
-			saveJSONSafley(json, file);
+			saveJSONSafley(json, file, utf8);
 			return true;
 		}
 		return false;
@@ -1097,9 +1108,9 @@ public class JavaUtil {
 			file.createNewFile();
 	}
 
-	public static void saveJSON(JSONObject json, File file) 
+	public static void saveJSON(JSONObject json, File file, boolean utf8) 
 	{
-		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{toPrettyFormat(json.toString())} ), file, true);
+		JavaUtil.saveFileLines(JavaUtil.asArray(new String[]{toPrettyFormat(json.toString())} ), file, utf8);
 	}
 	
     /**

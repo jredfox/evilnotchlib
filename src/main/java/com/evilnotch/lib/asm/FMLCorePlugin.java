@@ -12,15 +12,15 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions
 public class FMLCorePlugin implements IFMLLoadingPlugin
 {
 	public static boolean isObf;
-    public static volatile boolean configGenerated = false;
+	
+	static
+	{
+   		ConfigCore.load();
+	}
+	
     @Override
     public String[] getASMTransformerClass()
     {
-    	if(!configGenerated)
-    	{
-    		ConfigCore.load();
-    		configGenerated = true;
-    	}
         return new String[] {
         		"com.evilnotch.lib.asm.transformer.Transformer",
         		"com.evilnotch.lib.asm.transformer.EntityTransformer"
