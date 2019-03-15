@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 public class MainJava {
 	
 	public static final String MODID =  "evilnotchlib";
-	public static final String VERSION = "1.2.3.01";//SNAPSHOT 74
+	public static final String VERSION = "1.2.3.01";//SNAPSHOT 92
 	public static final String NAME = "Evil Notch Lib";
 	public static final String max_version = "4.0.0.0.0";//allows for 5 places in lib version
 	@SidedProxy(clientSide = "com.evilnotch.lib.minecraft.proxy.ClientProxy", serverSide = "com.evilnotch.lib.minecraft.proxy.ServerProxy")

@@ -9,6 +9,7 @@ import org.ralleytn.simple.json.JSONObject;
 import org.ralleytn.simple.json.JSONParseException;
 import org.ralleytn.simple.json.JSONParser;
 
+import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.RomanNumerals;
 
 public class MainJava {
@@ -16,7 +17,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args) throws IOException, JSONParseException
 	{
-		System.out.println(RomanNumerals.translateIntToRoman(3999));
+		
 	}
 
 }

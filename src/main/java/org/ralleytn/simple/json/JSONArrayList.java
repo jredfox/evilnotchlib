@@ -321,8 +321,9 @@ public class JSONArrayList extends ArrayList<Object>{
 	 * @throws ParseException if the date could not be parsed
 	 * @since 1.0.0
 	 */
-	public Date getDate(int index, DateFormat format) throws ParseException {
-		return Util.getDate(this.get(index), format);
+	public Date getDate(int index, DateFormat format) throws ParseException 
+	{
+		return format.parse(this.getString(index));
 	}
 	
 	public void setDate(int index, Date date, DateFormat format)

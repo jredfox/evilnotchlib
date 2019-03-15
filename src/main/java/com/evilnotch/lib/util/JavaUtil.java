@@ -1120,7 +1120,7 @@ public class JavaUtil {
 	{
 		JsonParser parser = new JsonParser();
 		JsonObject json = parser.parse(jsonString).getAsJsonObject();
-		Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
+		Gson gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().setPrettyPrinting().create();
 		String prettyJson = gson.toJson(json);
 	    return prettyJson.replaceAll("\n", "\r\n");
 	}

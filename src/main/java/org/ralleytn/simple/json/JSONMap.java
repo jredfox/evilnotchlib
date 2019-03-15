@@ -222,9 +222,9 @@ public class JSONMap extends LinkedHashMap<Object, Object>{
 	 * @throws ParseException if the date could not be parsed
 	 * @since 1.0.0
 	 */
-	public Date getDate(String key, DateFormat format) throws ParseException {
-		
-		return Util.getDate(this.get(key), format);
+	public Date getDate(String key, DateFormat format) throws ParseException
+	{
+		return format.parse(this.getString(key));
 	}
 	
 	/**
