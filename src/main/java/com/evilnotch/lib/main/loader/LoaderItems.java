@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.minecraft.basicmc.auto.creativetab.ItemCreativeTabs;
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorSet;
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
@@ -30,6 +31,7 @@ public class LoaderItems {
 	{
 		ArmorMat.parseArmorMats();
 		ToolMat.parseToolMats();
+		new ItemCreativeTabs();
 	}
 
 	public static void registerItems() 

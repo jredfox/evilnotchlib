@@ -4,29 +4,32 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiBasicButton extends GuiButton{
 	
 	public ResourceLocation texture;
+	public String unlocalizedName;
 	
-	public GuiBasicButton(int buttonId, int x, int y, String txt)
+	public GuiBasicButton(int buttonId, int x, int y, String unlocalName)
 	{
-		this(buttonId, x, y, 80, 40, txt);
+		this(buttonId, x, y, 80, 40, unlocalName);
 	}
 	
-	public GuiBasicButton(int buttonId, int x, int y, int widthIn, int heightIn, String txt) 
+	public GuiBasicButton(int buttonId, int x, int y, int widthIn, int heightIn, String unlocalName) 
 	{
-		this(buttonId, x, y, widthIn, heightIn, txt, null);
+		this(buttonId, x, y, widthIn, heightIn, unlocalName, null);
 	}
 
-	public GuiBasicButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText, ResourceLocation texture) 
+	public GuiBasicButton(int buttonId, int x, int y, int widthIn, int heightIn, String unlocalName, ResourceLocation texture) 
 	{
-		super(buttonId, x, y, widthIn, heightIn, buttonText);
+		super(buttonId, x, y, widthIn, heightIn, I18n.format(unlocalName));
 		if(texture != null)
 			this.texture = texture;
 		else
 			this.texture = BUTTON_TEXTURES;
+		this.unlocalizedName = unlocalName;
 	}
 
     /**

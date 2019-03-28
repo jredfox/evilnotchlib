@@ -988,5 +988,30 @@ public class EntityUtil {
 		NBTTagList nbttaglist3 = nbt.getTagList("Rotation", 5);
 		return nbttaglist3.getFloatAt(1);
 	}
+	
+	/**
+	 * use this for rendering
+	 */
+	public static void fixJocksRender(Entity base) 
+	{
+		List<Entity> toRender = getEntList(base);
+		fixJocksRender(toRender);
+	}
+
+	public static List<Entity> getEntList(Entity base)
+	{
+		List<Entity> toRender = JavaUtil.toArray(base.getRecursivePassengers());
+		toRender.add(0, base);
+		return toRender;
+	}
+
+	public static void fixJocksRender(List<Entity> toRender)
+	{
+    	for(Entity e : toRender)
+    	{
+    		e.world.removeEntityDangerously(e);
+    	}
+	}
+
 
 }
