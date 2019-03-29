@@ -358,7 +358,21 @@ public class EntityUtil {
 		return getEntityJockey(compound,worldIn,x,y,z,useInterface,attemptSpawn,null);
 	}
 	
-	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic) 
+	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic)
+	{
+		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic);
+		if(!attemptSpawn)
+		{
+			fixJockeyAndUpdate(base);
+		}
+		else
+		{
+			updateJockey(base);
+		}
+		return base;
+	}
+
+	public static Entity getEntityStack(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic) 
 	{	
         Entity entity = getEntity(compound,worldIn,new BlockPos(x,y,z),useInterface,logic);
         if(entity == null)
@@ -378,7 +392,7 @@ public class EntityUtil {
              NBTTagList nbttaglist = compound.getTagList("Passengers", 10);
              for (int i = 0; i < nbttaglist.tagCount(); ++i)
              {
-                 Entity entity1 = getEntityJockey(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z,useInterface,attemptSpawn,logic);
+                 Entity entity1 = getEntityStack(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z,useInterface,attemptSpawn,logic);
                   if (entity1 != null)
                   {
                       entity1.startRiding(entity, true);
@@ -992,10 +1006,10 @@ public class EntityUtil {
 	/**
 	 * use this for rendering
 	 */
-	public static void fixJocksRender(Entity base) 
+	public static void fixJockey(Entity base) 
 	{
 		List<Entity> toRender = getEntList(base);
-		fixJocksRender(toRender);
+		fixJockey(toRender);
 	}
 
 	public static List<Entity> getEntList(Entity base)
@@ -1005,13 +1019,67 @@ public class EntityUtil {
 		return toRender;
 	}
 
-	public static void fixJocksRender(List<Entity> toRender)
+	public static void fixJockey(List<Entity> toRender)
 	{
     	for(Entity e : toRender)
     	{
-    		e.world.removeEntityDangerously(e);
+    		removeEntityDangerously(e);
     	}
 	}
 
+	public static void updateJockey(Entity base) 
+	{
+		List<Entity> list = getEntList(base);
+		updateJockey(list);
+	}
+
+	public static void updateJockey(List<Entity> ents) 
+	{
+		for(Entity ent : ents)
+		{
+			if(ent.getRidingEntity() != null)
+				ent.getRidingEntity().updatePassenger(ent);
+		}
+	}
+	
+	public static void fixJockeyAndUpdate(Entity base) 
+	{
+		List<Entity> li = getEntList(base);
+		fixJockeyAndUpdate(li);
+	}
+	
+	public static void fixJockeyAndUpdate(List<Entity> ents) 
+	{
+    	for(Entity e : ents)
+    	{
+    		removeEntityDangerously(e);
+			if(e.getRidingEntity() != null)
+				e.getRidingEntity().updatePassenger(e);
+    	}
+	}
+	
+	/**
+	 * remove it from the world without setting it dead use with caution mostly for rendering or server hacks
+	 */
+	public static void removeEntityDangerously(Entity entityIn) 
+	{
+		World world = entityIn.world;
+        if (entityIn instanceof EntityPlayer)
+        {
+        	world.playerEntities.remove(entityIn);
+        	world.updateAllPlayersSleepingFlag();
+        }
+
+        int i = entityIn.chunkCoordX;
+        int j = entityIn.chunkCoordZ;
+
+        if (entityIn.addedToChunk && MinecraftUtil.isChunkLoaded(world, i, j, true))
+        {
+        	world.getChunkFromChunkCoords(i, j).removeEntity(entityIn);
+        }
+
+        world.loadedEntityList.remove(entityIn);
+        world.onEntityRemoved(entityIn);
+	}
 
 }
