@@ -80,8 +80,8 @@ processResources {
 }
 jar {
     manifest {
-        attributes 'FMLCorePlugin': 'com.evilnotch.lib.asm.FMLCorePlugin'
-        attributes 'FMLCorePluginContainsFMLMod': 'false'
-	    attributes 'FMLAT': 'evilnotchlib_at.cfg
+        attributes 'FMLCorePlugin': 'com.evilnotch.lib.asm.FMLCorePlugin',
+        'FMLCorePluginContainsFMLMod': 'false',
+	    'FMLAT': 'evilnotchlib_at.cfg'
     }
 }
