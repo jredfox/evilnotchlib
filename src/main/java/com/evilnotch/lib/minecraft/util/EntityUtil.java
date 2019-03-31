@@ -361,14 +361,6 @@ public class EntityUtil {
 	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic)
 	{
 		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic);
-		if(!attemptSpawn)
-		{
-			fixJockeyAndUpdate(base);
-		}
-		else
-		{
-			updateJockey(base);
-		}
 		return base;
 	}
 
@@ -1006,30 +998,30 @@ public class EntityUtil {
 	/**
 	 * use this for rendering
 	 */
-	public static void fixJockey(Entity base) 
+	public static void removeJockey(Entity base) 
 	{
-		List<Entity> toRender = getEntList(base);
-		fixJockey(toRender);
+		List<Entity> toRender = getEntityList(base);
+		removeJockey(toRender);
 	}
 
-	public static List<Entity> getEntList(Entity base)
+	public static List<Entity> getEntityList(Entity base)
 	{
 		List<Entity> toRender = JavaUtil.toArray(base.getRecursivePassengers());
 		toRender.add(0, base);
 		return toRender;
 	}
 
-	public static void fixJockey(List<Entity> toRender)
+	public static void removeJockey(List<Entity> toRender)
 	{
     	for(Entity e : toRender)
     	{
-    		removeEntityDangerously(e);
+    		e.world.removeEntityDangerously(e);
     	}
 	}
 
 	public static void updateJockey(Entity base) 
 	{
-		List<Entity> list = getEntList(base);
+		List<Entity> list = getEntityList(base);
 		updateJockey(list);
 	}
 
@@ -1042,44 +1034,20 @@ public class EntityUtil {
 		}
 	}
 	
-	public static void fixJockeyAndUpdate(Entity base) 
+	public static void removeJockeyAndUpdate(Entity base) 
 	{
-		List<Entity> li = getEntList(base);
-		fixJockeyAndUpdate(li);
+		List<Entity> li = getEntityList(base);
+		removeJockeyAndUpdate(li);
 	}
 	
-	public static void fixJockeyAndUpdate(List<Entity> ents) 
+	public static void removeJockeyAndUpdate(List<Entity> ents) 
 	{
     	for(Entity e : ents)
     	{
-    		removeEntityDangerously(e);
+    		e.world.removeEntityDangerously(e);
 			if(e.getRidingEntity() != null)
 				e.getRidingEntity().updatePassenger(e);
     	}
-	}
-	
-	/**
-	 * remove it from the world without setting it dead use with caution mostly for rendering or server hacks
-	 */
-	public static void removeEntityDangerously(Entity entityIn) 
-	{
-		World world = entityIn.world;
-        if (entityIn instanceof EntityPlayer)
-        {
-        	world.playerEntities.remove(entityIn);
-        	world.updateAllPlayersSleepingFlag();
-        }
-
-        int i = entityIn.chunkCoordX;
-        int j = entityIn.chunkCoordZ;
-
-        if (entityIn.addedToChunk && MinecraftUtil.isChunkLoaded(world, i, j, true))
-        {
-        	world.getChunkFromChunkCoords(i, j).removeEntity(entityIn);
-        }
-
-        world.loadedEntityList.remove(entityIn);
-        world.onEntityRemoved(entityIn);
 	}
 
 }
