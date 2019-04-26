@@ -524,4 +524,35 @@ public class ASMHelper
 	    s+=')';
 	    return s+getTypeForClass(m.getReturnType());
 	}
+	
+	public static MethodInsnNode getMethodInsnNode(MethodNode node, int opcode, String owner, String name, String desc, boolean itf)
+	{
+		AbstractInsnNode[] arr = node.instructions.toArray();
+		MethodInsnNode compare = new MethodInsnNode(opcode, owner, name, desc, itf);
+		for(AbstractInsnNode ab : arr)
+		{
+			if(ab instanceof MethodInsnNode)
+			{
+				if(ASMHelper.equals(compare, (MethodInsnNode)ab))
+				{
+					return (MethodInsnNode)ab;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static FieldInsnNode getFieldNode(MethodNode node, int opcode, String owner, String name, String desc)
+	{
+		AbstractInsnNode[] arr = node.instructions.toArray();
+		FieldInsnNode compare = new FieldInsnNode(opcode, owner, name, desc);
+		for(AbstractInsnNode ab : arr)
+		{
+			if(ab instanceof FieldInsnNode && ASMHelper.equals(compare, (FieldInsnNode)ab))
+			{
+				return (FieldInsnNode)ab;
+			}
+		}
+		return null;
+	}
 }

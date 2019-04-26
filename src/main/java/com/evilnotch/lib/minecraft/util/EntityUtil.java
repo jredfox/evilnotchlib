@@ -40,6 +40,7 @@ import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
@@ -1000,11 +1001,11 @@ public class EntityUtil {
 	 */
 	public static void removeJockey(Entity base) 
 	{
-		List<Entity> toRender = getEntityList(base);
+		List<Entity> toRender = getEntList(base);
 		removeJockey(toRender);
 	}
 
-	public static List<Entity> getEntityList(Entity base)
+	public static List<Entity> getEntList(Entity base)
 	{
 		List<Entity> toRender = JavaUtil.toArray(base.getRecursivePassengers());
 		toRender.add(0, base);
@@ -1015,13 +1016,13 @@ public class EntityUtil {
 	{
     	for(Entity e : toRender)
     	{
-    		e.world.removeEntityDangerously(e);
+    		removeEntityDangerously(e);
     	}
 	}
 
 	public static void updateJockey(Entity base) 
 	{
-		List<Entity> list = getEntityList(base);
+		List<Entity> list = getEntList(base);
 		updateJockey(list);
 	}
 
@@ -1036,7 +1037,7 @@ public class EntityUtil {
 	
 	public static void removeJockeyAndUpdate(Entity base) 
 	{
-		List<Entity> li = getEntityList(base);
+		List<Entity> li = getEntList(base);
 		removeJockeyAndUpdate(li);
 	}
 	
@@ -1044,10 +1045,41 @@ public class EntityUtil {
 	{
     	for(Entity e : ents)
     	{
-    		e.world.removeEntityDangerously(e);
+    		removeEntityDangerously(e);
 			if(e.getRidingEntity() != null)
 				e.getRidingEntity().updatePassenger(e);
     	}
+	}
+	
+	/**
+	 * remove an entity straight from the world
+	 */
+	public static void removeEntityDangerously(Entity e) 
+	{
+		World w = e.world;
+		
+		if(w instanceof WorldClient)
+		{
+			WorldClient client = (WorldClient)w;
+			client.entityList.remove(e);
+			client.entitySpawnQueue.remove(e);
+		}
+		
+        if (e instanceof EntityPlayer)
+        {
+            w.playerEntities.remove(e);
+            w.updateAllPlayersSleepingFlag();
+        }
+
+        int i = e.chunkCoordX;
+        int j = e.chunkCoordZ;
+
+        if (e.addedToChunk && MinecraftUtil.isChunkLoaded(w, i, j, true))
+        {
+            w.getChunkFromChunkCoords(i, j).removeEntity(e);
+        }
+
+        w.loadedEntityList.remove(e);
 	}
 
 }

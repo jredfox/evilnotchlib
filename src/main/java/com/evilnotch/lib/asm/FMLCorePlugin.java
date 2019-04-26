@@ -43,7 +43,6 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
     public void injectData(Map<String, Object> data)
     {
     	isObf = (Boolean) data.get("runtimeDeobfuscationEnabled");
-    	
     }
 
     @Override
