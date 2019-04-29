@@ -16,3 +16,4 @@ src/main/resources/assets/menulib/aetherii/panorama/panorama_4.png
 src/main/resources/assets/menulib/aetherii/panorama/panorama_5.png
 src/main/resources/assets/menulib/aetherii/buttons.png
 src/main/resources/assets/menulib/aetherii/background.png
+src/main/java/net/minecraft/entity/monster/EntityZombie.java

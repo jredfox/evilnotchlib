@@ -12,6 +12,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -32,7 +33,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.entity.EntityHanging",
     	"net.minecraft.entity.item.EntityFallingBlock",
     	"net.minecraft.entity.item.EntityPainting",
-    	"net.minecraft.entity.player.EntityPlayerMP"
+    	"net.minecraft.entity.player.EntityPlayerMP",
+    	"net.minecraft.entity.monster.EntityZombie"
     });
 
 	@Override
@@ -76,6 +78,10 @@ public class EntityTransformer implements IClassTransformer{
                 case 3:
                 	patchPlayer(classNode);
                 break;
+                
+                case 4:
+                	patchZombie(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -95,7 +101,54 @@ public class EntityTransformer implements IClassTransformer{
 		return null;
 	}
 	
-	private void transformEntityHanging(ClassNode classNode) 
+	public static void patchZombie(ClassNode classNode)
+	{
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("readEntityFromNBT", "func_70037_a").toString(), "(Lnet/minecraft/nbt/NBTTagCompound;)V");
+		
+		//stop broken method from firing to begin with
+		AbstractInsnNode spot = null;
+		LabelNode l2 = null;
+		for(AbstractInsnNode ab : node.instructions.toArray())
+		{
+			if(ab instanceof LdcInsnNode)
+			{
+				System.out.println("zombo:" + ((LdcInsnNode)ab).cst);
+				
+				if("IsBaby".equals(((LdcInsnNode)ab).cst))
+				{
+					spot = ab.getPrevious();//ALOAD INSTRUCTION FOUND
+					AbstractInsnNode compare = ab;
+					while(compare != null)
+					{
+						compare = compare.getNext();
+						if(compare instanceof JumpInsnNode)
+						{
+							l2 = ((JumpInsnNode)compare).label;
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		System.out.println(spot + " l2:" + l2);
+		InsnList list = new InsnList();
+		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/util/JavaUtil",  "returnFalse", "()Z", false));
+		list.add(new JumpInsnNode(Opcodes.IFEQ, l2));
+		node.instructions.insertBefore(spot, list);
+		
+		//inject this.setChild(nbt.getBoolean("isBaby")); to the end of the method
+		AbstractInsnNode spot2 = ASMHelper.getLastInstruction(node, Opcodes.RETURN);
+		InsnList list2 = new InsnList();
+		list2.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list2.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		list2.add(new LdcInsnNode("IsBaby"));
+		list2.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/nbt/NBTTagCompound", new MCPSidedString("getBoolean", "func_74767_n").toString(), "(Ljava/lang/String;)Z", false));
+		list2.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/monster/EntityZombie", new MCPSidedString("setChild", "func_82227_f").toString(), "(Z)V", false));
+		node.instructions.insertBefore(spot2, list2);
+	}
+
+	public static void transformEntityHanging(ClassNode classNode) 
 	{
 		MethodNode construct = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
 		AbstractInsnNode point = ASMHelper.getLastMethodInsn(construct, Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/EntityHanging", new MCPSidedString("setSize", "func_70105_a").toString(), "(FF)V", false);
@@ -118,7 +171,7 @@ public class EntityTransformer implements IClassTransformer{
 		construct.instructions.insert(point, list);
 	}
 
-	private void transformEntityPainting(ClassNode classNode) 
+	public static void transformEntityPainting(ClassNode classNode) 
 	{
 		MethodNode construct = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
 		
@@ -130,7 +183,7 @@ public class EntityTransformer implements IClassTransformer{
 		construct.instructions.insertBefore(ASMHelper.getLastInstruction(construct, Opcodes.RETURN), list);
 	}
 	
-	private void transformEntityFalling(ClassNode classNode) 
+	public static void transformEntityFalling(ClassNode classNode) 
 	{
 		MethodNode construct = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
 		
