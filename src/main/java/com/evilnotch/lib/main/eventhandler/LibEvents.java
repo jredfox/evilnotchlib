@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
@@ -17,12 +19,15 @@ import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairObj;
 import com.evilnotch.lib.util.simple.PointId;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -81,4 +86,53 @@ public class LibEvents {
 			 }
 		 }
 	 }
+	 
+		public static boolean canSpawnClient = true;
+		public static boolean canSpawnServer = true;
+		
+		@SubscribeEvent
+		public void stopSpawning(EntityJoinWorldEvent event)
+		{
+			World world = event.getWorld();
+			Entity entity = event.getEntity();
+			
+			//multi threaded packets are ok to keep this is for stopping an iterative version of entity jockeys
+			if(!isCurrentThread(world) || entity == null)
+			{
+				return;
+			}
+			
+			if(world.isRemote && !canSpawnClient)
+			{
+				event.setCanceled(true);
+			}
+			else if(!world.isRemote && !canSpawnServer)
+			{
+				event.setCanceled(true);
+			}
+		}
+		
+		public static boolean isCurrentThread(World w)
+		{
+			if(w.isRemote)
+			{
+				return ClientProxy.isCurrentThread();
+			}
+			else
+			{
+				return Thread.currentThread() == LoaderMain.serverThread;
+			}
+		}
+
+		public static void setSpawn(World world, boolean value)
+		{
+			if(world.isRemote)
+			{
+				canSpawnClient = value;
+			}
+			else
+			{
+				canSpawnServer = value;
+			}
+		}
 }

@@ -14,8 +14,10 @@ import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.mcp.MCPSidedString;
@@ -110,5 +112,94 @@ public class GeneralTransformer {
 		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/util/WeightedSpawnerEntity", "fixIdLib", "(Lnet/minecraft/nbt/NBTTagCompound;)V", false));
 		construct.instructions.insert(point, list);
 	}
+	
 
+	public static void patchWorldClient(ClassNode classNode)
+	{
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("spawnEntity","func_72838_d").toString(), "(Lnet/minecraft/entity/Entity;)Z");
+		AbstractInsnNode spot = ASMHelper.getFirstInstruction(node, Opcodes.ISTORE);
+		
+		//add if(MinecraftForge.EVENT_BUS.post(new EntityJoinWorldEvent(entityIn, this)) return;
+		InsnList list = new InsnList();
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
+		list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraftforge/event/entity/EntityJoinWorldEvent"));
+		list.add(new InsnNode(Opcodes.DUP));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraftforge/event/entity/EntityJoinWorldEvent", "<init>", "(Lnet/minecraft/entity/Entity;Lnet/minecraft/world/World;)V", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
+		LabelNode l2 = new LabelNode();
+		list.add(new JumpInsnNode(Opcodes.IFEQ, l2));
+		LabelNode l3 = new LabelNode();
+		list.add(l3);
+		list.add(new InsnNode(Opcodes.ICONST_0));
+		list.add(new InsnNode(Opcodes.IRETURN));
+		list.add(l2);
+		
+		node.instructions.insert(spot, list);
+	}
+	
+	public static void patchWorld(ClassNode classNode)
+	{
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("spawnEntity","func_72838_d").toString(), "(Lnet/minecraft/entity/Entity;)Z");
+		AbstractInsnNode spot = null;
+		LabelNode label = null;
+		
+		AbstractInsnNode[] arr =  node.instructions.toArray();
+		for(int i=arr.length-1;i>=0;i--)
+		{
+			AbstractInsnNode ab = arr[i];
+			if(ab.getOpcode() == Opcodes.INSTANCEOF && ((TypeInsnNode)ab).desc.equals("net/minecraft/entity/player/EntityPlayer") )
+			{
+				spot = ab.getPrevious().getPrevious();
+				break;
+			}
+		}
+		
+		//add if(MinecraftForge.EVENT_BUS.post(new EntityJoinWorldEvent(entityIn, this)) return false;
+		InsnList list = new InsnList();
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
+		list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraftforge/event/entity/EntityJoinWorldEvent"));
+		list.add(new InsnNode(Opcodes.DUP));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraftforge/event/entity/EntityJoinWorldEvent", "<init>", "(Lnet/minecraft/entity/Entity;Lnet/minecraft/world/World;)V", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
+		LabelNode l2 = new LabelNode();
+		list.add(new JumpInsnNode(Opcodes.IFEQ, l2));
+		LabelNode l3 = new LabelNode();
+		list.add(l3);
+		list.add(new InsnNode(Opcodes.ICONST_0));
+		list.add(new InsnNode(Opcodes.IRETURN));
+		list.add(l2);
+		
+		node.instructions.insert(spot, list);
+		
+		AbstractInsnNode spotDisable = null;
+		for(int i=arr.length-1;i>=0;i--)
+		{
+			AbstractInsnNode ab = arr[i];
+			FieldInsnNode field = new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;");
+			if(ab instanceof FieldInsnNode && ASMHelper.equals(field, (FieldInsnNode)ab) )
+			{
+				spotDisable = ab;
+				AbstractInsnNode compare = ab;
+				while(compare.getNext() != null)
+				{
+					compare = compare.getNext();
+					if(compare instanceof JumpInsnNode)
+					{
+						label = ((JumpInsnNode)compare).label;
+						break;
+					}
+				}
+			}
+		}
+		
+		//disable regular forge's if statement
+		InsnList list2 = new InsnList();
+		list2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/util/JavaUtil", "returnFalse", "()Z", false));
+		list2.add(new JumpInsnNode(Opcodes.IFEQ, label));
+		node.instructions.insertBefore(spotDisable, list2);
+	}
 }

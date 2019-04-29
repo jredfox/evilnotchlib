@@ -24,10 +24,13 @@ import org.apache.logging.log4j.Level;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
+import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.entity.EntityDefintions;
 import com.evilnotch.lib.minecraft.entity.EntityDefintions.EntityInfo;
 import com.evilnotch.lib.minecraft.entity.EntityDefintions.EntityType;
@@ -359,9 +362,12 @@ public class EntityUtil {
 		return getEntityJockey(compound,worldIn,x,y,z,useInterface,attemptSpawn,null);
 	}
 	
-	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic)
+	public static Entity getEntityJockey(NBTTagCompound compound, World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic)
 	{
+		LibEvents.setSpawn(worldIn, attemptSpawn);
 		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic);
+		EntityUtil.updateJockey(base);
+		LibEvents.setSpawn(worldIn, true);
 		return base;
 	}
 
@@ -416,11 +422,12 @@ public class EntityUtil {
 					((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(pos), (IEntityLivingData)null);
 				}
 			}
+			EntityUtil.setInitSpawned(e);
 		}
 		return e;
 	}
-	
-	private static int getEntityProps(NBTTagCompound nbt) 
+
+	public static int getEntityProps(NBTTagCompound nbt) 
 	{
 		if(nbt == null)
 			return 0;
@@ -995,29 +1002,12 @@ public class EntityUtil {
 		NBTTagList nbttaglist3 = nbt.getTagList("Rotation", 5);
 		return nbttaglist3.getFloatAt(1);
 	}
-	
-	/**
-	 * use this for rendering
-	 */
-	public static void removeJockey(Entity base) 
-	{
-		List<Entity> toRender = getEntList(base);
-		removeJockey(toRender);
-	}
 
 	public static List<Entity> getEntList(Entity base)
 	{
 		List<Entity> toRender = JavaUtil.toArray(base.getRecursivePassengers());
 		toRender.add(0, base);
 		return toRender;
-	}
-
-	public static void removeJockey(List<Entity> toRender)
-	{
-    	for(Entity e : toRender)
-    	{
-    		removeEntityDangerously(e);
-    	}
 	}
 
 	public static void updateJockey(Entity base) 
@@ -1035,51 +1025,14 @@ public class EntityUtil {
 		}
 	}
 	
-	public static void removeJockeyAndUpdate(Entity base) 
+	public static void setInitSpawned(Entity base) 
 	{
 		List<Entity> li = getEntList(base);
-		removeJockeyAndUpdate(li);
-	}
-	
-	public static void removeJockeyAndUpdate(List<Entity> ents) 
-	{
-    	for(Entity e : ents)
-    	{
-    		removeEntityDangerously(e);
-			if(e.getRidingEntity() != null)
-				e.getRidingEntity().updatePassenger(e);
-    	}
-	}
-	
-	/**
-	 * remove an entity straight from the world
-	 */
-	public static void removeEntityDangerously(Entity e) 
-	{
-		World w = e.world;
-		
-		if(w instanceof WorldClient)
+		for(Entity e : li)
 		{
-			WorldClient client = (WorldClient)w;
-			client.entityList.remove(e);
-			client.entitySpawnQueue.remove(e);
+			CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.initSpawned);
+			cap.value = true;
 		}
-		
-        if (e instanceof EntityPlayer)
-        {
-            w.playerEntities.remove(e);
-            w.updateAllPlayersSleepingFlag();
-        }
-
-        int i = e.chunkCoordX;
-        int j = e.chunkCoordZ;
-
-        if (e.addedToChunk && MinecraftUtil.isChunkLoaded(w, i, j, true))
-        {
-            w.getChunkFromChunkCoords(i, j).removeEntity(e);
-        }
-
-        w.loadedEntityList.remove(e);
 	}
 
 }

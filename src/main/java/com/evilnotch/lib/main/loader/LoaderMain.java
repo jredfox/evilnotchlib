@@ -10,6 +10,7 @@ import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickEventClient;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
@@ -26,6 +27,7 @@ import com.evilnotch.lib.minecraft.basicmc.client.creativetab.BasicCreativeTab;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItem;
 import com.evilnotch.lib.minecraft.basicmc.item.BasicItemMeta;
 import com.evilnotch.lib.minecraft.basicmc.item.tool.BasicPickaxe;
+import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
@@ -66,6 +68,7 @@ public class LoaderMain {
 	public static Logger logger;
 	public static World fake_world = null;
 	public static LoadingStage currentLoadingStage = null;
+	public static Thread serverThread = null;
 	
 	public static void loadpreinit(FMLPreInitializationEvent e)
 	{
@@ -127,6 +130,7 @@ public class LoaderMain {
 		GeneralRegistry.load();
 		loadEvents();
 		loadfoamFixFixer();
+		CapabilityRegistry.registerRegistry(new CapRegDefaultHandler());
 	}
 	
 	/**
@@ -207,6 +211,7 @@ public class LoaderMain {
 
 	public static void serverStart(FMLServerStartingEvent e) 
 	{
+		serverThread = Thread.currentThread();
 		LoaderCommands.registerToWorld(e);
 		
 		//directories instantiate

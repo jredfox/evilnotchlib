@@ -67,4 +67,9 @@ public class ClientProxy extends ServerProxy{
 		return GuiScreen.isCtrlKeyDown();
 	}
 
+	public static boolean isCurrentThread() 
+	{
+		return Minecraft.getMinecraft().isCallingFromMinecraftThread();
+	}
+
 }

@@ -46,7 +46,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.client.Minecraft",
     	"net.minecraft.server.integrated.IntegratedServer",
     	"net.minecraft.util.WeightedSpawnerEntity",
-    	"net.minecraft.enchantment.Enchantment"
+    	"net.minecraft.enchantment.Enchantment",
+    	"net.minecraft.client.multiplayer.WorldClient"
     });
     
     @Override
@@ -162,6 +163,7 @@ public class Transformer implements IClassTransformer
                 case 9:
                 	CapTransformer.transformWorld(name, classNode, inputBase, obfuscated);
                 	CapTransformer.injectWorldTickers(name, classNode, inputBase, obfuscated);
+                	GeneralTransformer.patchWorld(classNode);
                 break;
                 case 10:
                 	CapTransformer.transformWorldInfo(classNode, name, obfuscated);
@@ -192,6 +194,10 @@ public class Transformer implements IClassTransformer
                 		return classToTransform;
                 	}
                 	ASMHelper.replaceMethod(classNode, inputBase + "Enchantment", "getTranslatedName", "(I)Ljava/lang/String;", "func_77316_c");
+                break;
+                
+                case 17:
+                	GeneralTransformer.patchWorldClient(classNode);
                 break;
             }
             
