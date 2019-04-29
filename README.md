@@ -24,6 +24,7 @@ Fixed Packets of blockstates being sent to the client from the main hand when
 Placing a block in the offhand causing pig issues with silkspawners, and any other tile entities like signs
 Fixed WeightedSpawnerEntity constructor not fixing the id tag on construction
 Fixed EntityFallingBlock,EntityHanging,EntityPainting exceptions when simply using the default world constructor
+Fixed Forge Improperly Hooking EntityJoinWorld event now works on both client and server always
 
 BlockEntityTag fixes:
 sync client changes on the same tick rather then later,don't have to be in creative
@@ -62,6 +63,7 @@ FakeWorld allows you to instatiate entities before a main world is even loaded y
 NBTPathAPI(Not Working Quite Yet) allows for deep comparsions of nbt based upon logic type as well as comparing has tags merging nbt and compiling back into normal nbt
 
 Future:
+Fix EntityZombie not reading from nbt properly with isBaby boolean
 Font Renderer
 Lan Skin Host Fix
 ```
