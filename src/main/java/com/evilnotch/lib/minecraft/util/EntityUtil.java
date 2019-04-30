@@ -119,6 +119,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.DimensionManager;
@@ -357,23 +358,27 @@ public class EntityUtil {
 	 * Doesn't force nbt if you don't need it to unlike vanilla this is the forum of the /summon command
 	 * silkspawners eggs will support multiple indexes but, not to this extent not requiring recursion use only when fully supporting new format
 	 */
-	public static Entity getEntityJockey(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn) 
+	public static Entity getEntityJockey(NBTTagCompound compound, World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn) 
 	{	
-		return getEntityJockey(compound,worldIn,x,y,z,useInterface,attemptSpawn,null);
+		return getEntityJockey(compound, worldIn, x, y, z, useInterface, attemptSpawn, null, false);
 	}
 	
-	public static Entity getEntityJockey(NBTTagCompound compound, World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic)
+	public static Entity getEntityJockey(NBTTagCompound compound, World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn, MobSpawnerBaseLogic logic, boolean additionalMounts)
 	{
-		LibEvents.setSpawn(worldIn, attemptSpawn);
-		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic);
+		LibEvents.setSpawn(worldIn, false);
+		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic, additionalMounts);
 		EntityUtil.updateJockey(base);
 		LibEvents.setSpawn(worldIn, true);
+		if(attemptSpawn)
+		{
+			AnvilChunkLoader.spawnEntity(base, worldIn);
+		}
 		return base;
 	}
 
-	public static Entity getEntityStack(NBTTagCompound compound,World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn,MobSpawnerBaseLogic logic) 
+	public static Entity getEntityStack(NBTTagCompound compound, World worldIn, double x, double y, double z, boolean useInterface, boolean attemptSpawn, MobSpawnerBaseLogic logic, boolean additionalMounts) 
 	{	
-        Entity entity = getEntity(compound,worldIn,new BlockPos(x,y,z),useInterface,logic);
+        Entity entity = getEntity(compound, worldIn, new BlockPos(x,y,z), useInterface, logic, additionalMounts);
         if(entity == null)
         	return null;
         
@@ -391,11 +396,11 @@ public class EntityUtil {
              NBTTagList nbttaglist = compound.getTagList("Passengers", 10);
              for (int i = 0; i < nbttaglist.tagCount(); ++i)
              {
-                 Entity entity1 = getEntityStack(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z,useInterface,attemptSpawn,logic);
-                  if (entity1 != null)
-                  {
-                      entity1.startRiding(entity, true);
-                  }
+                 Entity entity1 = getEntityStack(nbttaglist.getCompoundTagAt(i), worldIn, x, y, z, useInterface, attemptSpawn, logic, additionalMounts);
+                 if (entity1 != null)
+                 {
+                	 entity1.startRiding(entity, true);
+                 }
              }
         }
 
@@ -405,12 +410,16 @@ public class EntityUtil {
 	/**
 	 * first index is to determine if your on the first part of the opening of the nbt if so treat nbt like normal with forge support
 	 */
-	public static Entity getEntity(NBTTagCompound nbt,World world,BlockPos pos,boolean useInterface,MobSpawnerBaseLogic logic) 
+	public static Entity getEntity(NBTTagCompound nbt,World world,BlockPos pos,boolean useInterface,MobSpawnerBaseLogic logic, boolean additionalMounts) 
 	{
 		Entity e = null;
 		if(getEntityProps(nbt) > 0)
 		{
 			e = EntityUtil.createEntityFromNBTQuietly(new ResourceLocation(nbt.getString("id")), nbt, world);
+			if(!additionalMounts)
+			{
+				e.removePassengers();
+			}
 		}
 		else
 		{
@@ -421,6 +430,10 @@ public class EntityUtil {
 				{
 					((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(pos), (IEntityLivingData)null);
 				}
+			}
+			if(!additionalMounts)
+			{
+				e.removePassengers();
 			}
 			EntityUtil.setInitSpawned(e);
 		}
