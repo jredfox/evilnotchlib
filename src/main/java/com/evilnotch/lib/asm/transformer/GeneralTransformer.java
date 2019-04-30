@@ -15,6 +15,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -201,5 +202,43 @@ public class GeneralTransformer {
 		list2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/util/JavaUtil", "returnFalse", "()Z", false));
 		list2.add(new JumpInsnNode(Opcodes.IFEQ, label));
 		node.instructions.insertBefore(spotDisable, list2);
+	}
+	/**
+	 * patch the cull being disabled
+	 */
+	public static void patchRenderManager(ClassNode classNode)
+	{
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("renderEntity", "func_188391_a").toString(), "(Lnet/minecraft/entity/Entity;DDDFFZ)V");
+		AbstractInsnNode spot = null;
+		
+		MethodInsnNode check = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/entity/Render", "doRender", "(Lnet/minecraft/entity/Entity;DDDFF)V", false);
+		for(AbstractInsnNode ab : node.instructions.toArray())
+		{
+			if(ab instanceof MethodInsnNode && ASMHelper.equals(check, (MethodInsnNode)ab))
+			{
+				AbstractInsnNode compare = ab;
+				while(compare != null)
+				{
+					compare = compare.getPrevious();
+					if(compare instanceof LineNumberNode)
+					{
+						spot = compare;
+						break;
+					}
+				}
+				break;
+			}
+		}
+		
+		InsnList list = new InsnList();
+		list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		list.add(new TypeInsnNode(Opcodes.INSTANCEOF, "net/minecraft/entity/item/EntityItem"));
+		LabelNode l15 = new LabelNode();
+		list.add(new JumpInsnNode(Opcodes.IFEQ, l15));
+		LabelNode l16 = new LabelNode();
+		list.add(l16);
+		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", new MCPSidedString("enableCull", "func_179089_o").toString(), "()V", false));
+		list.add(l15);
+		node.instructions.insert(spot, list);
 	}
 }

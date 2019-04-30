@@ -285,14 +285,13 @@ public class EntityUtil {
     		try
     		{
     			net.minecraftforge.fml.common.registry.EntityEntry entry = net.minecraftforge.fml.common.registry.ForgeRegistries.ENTITIES.getValue(loc);
-    			return entry == null ? null : entry.newInstance(worldIn);
+    			Entity e = entry == null ? null : entry.newInstance(worldIn);
+    			if(e != null)
+    				e.setLocationAndAngles(0, 0, 0, 0.0F, 0.0F);
+    			return e;
     		}
     		catch(Throwable e)
     		{
-    			if(Config.debug)
-    			{
-    				e.printStackTrace();
-    			}
     			return null;
     		}
     	}
@@ -302,14 +301,13 @@ public class EntityUtil {
     		{
     			Class clazz = EntityList.getClass(loc);
     			Constructor c = clazz.getConstructor(new Class[] {World.class});
-    			return (Entity) c.newInstance(worldIn);
+    			Entity e = (Entity) c.newInstance(worldIn);
+    			if(e != null)
+        			e.setLocationAndAngles(0, 0, 0, 0.0F, 0.0F);
+    			return e;
     		}
     		catch(Throwable e)
     		{
-    			if(Config.debug)
-    			{
-    				e.printStackTrace();
-    			}
     			return null;
     		}
     	}

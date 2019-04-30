@@ -47,7 +47,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.server.integrated.IntegratedServer",
     	"net.minecraft.util.WeightedSpawnerEntity",
     	"net.minecraft.enchantment.Enchantment",
-    	"net.minecraft.client.multiplayer.WorldClient"
+    	"net.minecraft.client.multiplayer.WorldClient",
+    	"net.minecraft.client.renderer.entity.RenderManager"
     });
     
     @Override
@@ -198,6 +199,10 @@ public class Transformer implements IClassTransformer
                 
                 case 17:
                 	GeneralTransformer.patchWorldClient(classNode);
+                break;
+                
+                case 18:
+                	GeneralTransformer.patchRenderManager(classNode);
                 break;
             }
             

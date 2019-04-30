@@ -5,6 +5,7 @@ import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
