@@ -1002,10 +1002,15 @@ public class EntityUtil {
 		NBTTagList nbttaglist3 = nbt.getTagList("Rotation", 5);
 		return nbttaglist3.getFloatAt(1);
 	}
-
+	
 	public static List<Entity> getEntList(Entity base)
 	{
-		List<Entity> toRender = JavaUtil.toArray(base.getRecursivePassengers());
+		return getEntList(base, true);
+	}
+
+	public static List<Entity> getEntList(Entity base, boolean recursive)
+	{
+		List<Entity> toRender = recursive ? JavaUtil.toArray(base.getRecursivePassengers()) : JavaUtil.toArray(base.getPassengers());
 		toRender.add(0, base);
 		return toRender;
 	}
@@ -1027,7 +1032,7 @@ public class EntityUtil {
 	
 	public static void setInitSpawned(Entity base) 
 	{
-		List<Entity> li = getEntList(base);
+		List<Entity> li = getEntList(base, false);
 		for(Entity e : li)
 		{
 			CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.initSpawned);

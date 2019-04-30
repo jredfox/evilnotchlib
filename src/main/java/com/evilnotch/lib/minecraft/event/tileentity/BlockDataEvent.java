@@ -70,7 +70,7 @@ public class BlockDataEvent {
 		{
 			super(tile);
 			this.canFire = nbt != null;
-			this.nbt = nbt != null ? nbt : NBTUtil.getNBT(stack);
+			this.nbt = nbt != null ? nbt.copy() : NBTUtil.getOrCreateNBT(stack).copy();
 			this.stack = stack;
 		}
 	}

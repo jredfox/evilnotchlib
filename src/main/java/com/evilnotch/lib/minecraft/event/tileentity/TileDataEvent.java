@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.event.tileentity;
 
+import com.evilnotch.lib.minecraft.util.NBTUtil;
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,8 +31,8 @@ public class TileDataEvent extends Event{
 		{
 			super(tile);
 			this.tileData = tileData;
-			this.nbt = nbt;
-		}	
+			this.nbt = NBTUtil.copyNBT(nbt);
+		}
 	}
 	
 	public static class Post extends TileDataEvent

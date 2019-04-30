@@ -111,9 +111,7 @@ public class EntityTransformer implements IClassTransformer{
 		for(AbstractInsnNode ab : node.instructions.toArray())
 		{
 			if(ab instanceof LdcInsnNode)
-			{
-				System.out.println("zombo:" + ((LdcInsnNode)ab).cst);
-				
+			{	
 				if("IsBaby".equals(((LdcInsnNode)ab).cst))
 				{
 					spot = ab.getPrevious();//ALOAD INSTRUCTION FOUND
@@ -131,7 +129,6 @@ public class EntityTransformer implements IClassTransformer{
 				}
 			}
 		}
-		System.out.println(spot + " l2:" + l2);
 		InsnList list = new InsnList();
 		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/util/JavaUtil",  "returnFalse", "()Z", false));
 		list.add(new JumpInsnNode(Opcodes.IFEQ, l2));

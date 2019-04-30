@@ -1,5 +1,7 @@
 package com.evilnotch.lib.minecraft.event.tileentity;
 
+import com.evilnotch.lib.minecraft.util.NBTUtil;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +15,6 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * @author jredfox
  */
 public class TileUseItemEvent extends TileDataEvent{
-	
 	
 	private TileUseItemEvent(TileEntity tile) 
 	{
@@ -40,7 +41,7 @@ public class TileUseItemEvent extends TileDataEvent{
 			
 			this.stack = stack;
 			this.player = player;
-			this.nbt = nbt;
+			this.nbt = NBTUtil.copyNBT(nbt);
 		}
 	}
 	
@@ -77,7 +78,7 @@ public class TileUseItemEvent extends TileDataEvent{
 			
 			this.stack = stack;
 			this.player = player;
-			this.nbt = nbt;
+			this.nbt = NBTUtil.copyNBT(nbt);
 		}
 	}
 

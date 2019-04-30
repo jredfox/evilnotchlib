@@ -167,10 +167,15 @@ public class NBTUtil {
 		apiBase.copySafley(apiCompare);
 	}
 
-	public static NBTTagCompound getNBT(ItemStack stack) 
+	public static NBTTagCompound getOrCreateNBT(ItemStack stack) 
 	{
 		NBTTagCompound nbt = stack.getTagCompound();
 		return nbt == null ? new NBTTagCompound() : nbt;
+	}
+
+	public static NBTTagCompound copyNBT(NBTTagCompound nbt) 
+	{
+		return nbt != null ? nbt.copy() : null;
 	}
 
 }
