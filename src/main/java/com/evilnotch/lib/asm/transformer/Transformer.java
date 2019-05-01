@@ -156,6 +156,7 @@ public class Transformer implements IClassTransformer
                 break;
                 //custom capability system to the Entity.class
                 case 7:
+                	GeneralTransformer.patchEntity(classNode);
                 	CapTransformer.transFormEntityCaps(name, classNode, obfuscated);
                 break;
                 case 8:

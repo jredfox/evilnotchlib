@@ -108,6 +108,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
@@ -286,8 +287,6 @@ public class EntityUtil {
     		{
     			net.minecraftforge.fml.common.registry.EntityEntry entry = net.minecraftforge.fml.common.registry.ForgeRegistries.ENTITIES.getValue(loc);
     			Entity e = entry == null ? null : entry.newInstance(worldIn);
-    			if(e != null)
-    				e.setLocationAndAngles(0, 0, 0, 0.0F, 0.0F);
     			return e;
     		}
     		catch(Throwable e)
@@ -302,8 +301,6 @@ public class EntityUtil {
     			Class clazz = EntityList.getClass(loc);
     			Constructor c = clazz.getConstructor(new Class[] {World.class});
     			Entity e = (Entity) c.newInstance(worldIn);
-    			if(e != null)
-        			e.setLocationAndAngles(0, 0, 0, 0.0F, 0.0F);
     			return e;
     		}
     		catch(Throwable e)
@@ -342,7 +339,7 @@ public class EntityUtil {
 			SpawnListEntryAdvanced advanced = (SpawnListEntryAdvanced)entry;
 			NBTTagCompound compound = advanced.NBT;
 			compound.setString("id", advanced.loc.toString());
-			Entity e = getEntityJockey(compound,w,x,y,z,true,true);
+			Entity e = getEntityJockey(compound, w, x, y, z, true, true);
 			return e != null;
 		} 
 		catch (Exception e) 
@@ -365,7 +362,11 @@ public class EntityUtil {
 	{
 		LibEvents.setSpawn(worldIn, false);
 		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic, additionalMounts);
-		EntityUtil.updateJockey(base);
+		if(base == null)
+			return null;
+		List<Entity> list = EntityUtil.getEntList(base);
+		EntityUtil.updateJockeyPosRnd(list, x, y, z, true);
+		EntityUtil.updateJockey(list);
 		LibEvents.setSpawn(worldIn, true);
 		if(attemptSpawn)
 		{
@@ -379,15 +380,6 @@ public class EntityUtil {
         Entity entity = getEntity(compound, worldIn, new BlockPos(x,y,z), useInterface, logic, additionalMounts);
         if(entity == null)
         	return null;
-        
-        entity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
-        
-        if(attemptSpawn)
-        {
-            entity.forceSpawn = true;
-        	if(!worldIn.spawnEntity(entity))
-        		return null;
-        }
         
         if (compound.hasKey("Passengers", 9))
         {
@@ -1041,14 +1033,56 @@ public class EntityUtil {
 		}
 	}
 	
-	public static void setInitSpawned(Entity base) 
+	public static void updateJockeyPosRnd(Entity base, double x, double y, double z, boolean syncBase) 
 	{
-		List<Entity> li = getEntList(base, false);
+		updateJockeyPosRnd(getEntList(base), x, y, z, syncBase);
+	}
+	
+	public static void updateJockeyPosRnd(List<Entity> list, double x, double y, double z, boolean syncBase) 
+	{
+		Entity base = list.get(0);
+		setLocationAndAngles(base, x, y, z, MathHelper.wrapDegrees(base.world.rand.nextFloat() * 360.0F), 0.0F);
+		
+		for(int i=1;i<list.size();i++)
+		{
+			Entity entity = list.get(i);
+			float yaw =  syncBase ? base.rotationYaw : MathHelper.wrapDegrees(base.world.rand.nextFloat() * 360.0F);
+			setLocationAndAngles(entity, x, y, z, yaw, 0.0F);
+		}
+	}
+
+	public static void updateJockeyPos(Entity base, double x, double y, double z, float yaw, float pitch) 
+	{
+		updateJockeyPos(getEntList(base), x, y, z, yaw, pitch);
+	}
+	
+	public static void updateJockeyPos(List<Entity> list, double x, double y, double z, float yaw, float pitch) 
+	{
+		for(Entity e : list)
+		{
+			setLocationAndAngles(e, x, y, z, yaw, pitch);
+		}
+	}
+	
+	public static void setInitSpawned(Entity base)
+	{
+		List<Entity> li = getEntList(base);
 		for(Entity e : li)
 		{
 			CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.initSpawned);
 			cap.value = true;
 		}
+	}
+
+	public static void setYaw(Entity entity, float yaw) 
+	{
+		entity.setRenderYawOffset(yaw);
+	}
+	
+	public static void setLocationAndAngles(Entity entity, double x, double y, double z, float yaw, float pitch)
+	{
+		entity.setLocationAndAngles(x, y, z, yaw, pitch);
+		EntityUtil.setYaw(entity, yaw);
 	}
 
 }

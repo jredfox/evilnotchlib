@@ -241,4 +241,47 @@ public class GeneralTransformer {
 		list.add(l15);
 		node.instructions.insert(spot, list);
 	}
+	
+	public static void patchEntity(ClassNode classNode) 
+	{
+		//inject line this.setLocationAndAngles(0, 0, 0, 0.0F, 0.0F);
+		MethodNode constructor = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
+		InsnList list = new InsnList();
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new InsnNode(Opcodes.DCONST_0));
+		list.add(new InsnNode(Opcodes.DCONST_0));
+		list.add(new InsnNode(Opcodes.DCONST_0));
+		list.add(new InsnNode(Opcodes.FCONST_0));
+		list.add(new InsnNode(Opcodes.FCONST_0));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", new MCPSidedString("setLocationAndAngles", "func_70012_b").toString(), "(DDDFF)V", false));
+		constructor.instructions.insert(ASMHelper.getLastPutField(constructor), list);
+
+		//inject EnittyUtil.setYaw(this, yaw) into Entity#setLocationAndAngles
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("setLocationAndAngles", "func_70012_b").toString(), "(DDDFF)V");
+		AbstractInsnNode spot = null;
+		MethodInsnNode check = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/Entity", new MCPSidedString("setPosition", "func_70107_b").toString(), "(DDD)V", false);
+		for(AbstractInsnNode ab : node.instructions.toArray())
+		{
+			if(ab instanceof MethodInsnNode && ASMHelper.equals(check, (MethodInsnNode)ab))
+			{
+				AbstractInsnNode compare = ab;
+				while(compare != null)
+				{
+					compare = compare.getPrevious();
+					if(compare instanceof LineNumberNode)
+					{
+						spot = compare;
+						break;
+					}
+				}
+				break;
+			}
+		}
+		
+		InsnList list2 = new InsnList();
+		list2.add(new VarInsnNode(ALOAD, 0));
+		list2.add(new VarInsnNode(Opcodes.FLOAD, 7));
+		list2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/EntityUtil", "setYaw", "(Lnet/minecraft/entity/Entity;F)V", false));
+		node.instructions.insert(spot, list2);
+	}
 }
