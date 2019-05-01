@@ -363,7 +363,10 @@ public class EntityUtil {
 		LibEvents.setSpawn(worldIn, false);
 		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic, additionalMounts);
 		if(base == null)
+		{
+			LibEvents.setSpawn(worldIn, true);
 			return null;
+		}
 		List<Entity> list = EntityUtil.getEntList(base);
 		EntityUtil.updateJockeyPosRnd(list, x, y, z, true);
 		EntityUtil.updateJockey(list);
@@ -1041,12 +1044,12 @@ public class EntityUtil {
 	public static void updateJockeyPosRnd(List<Entity> list, double x, double y, double z, boolean syncBase) 
 	{
 		Entity base = list.get(0);
-		setLocationAndAngles(base, x, y, z, MathHelper.wrapDegrees(base.world.rand.nextFloat() * 360.0F), 0.0F);
+		setLocationAndAngles(base, x, y, z, (base.world.rand.nextFloat() * 360.0F), 0.0F);
 		
 		for(int i=1;i<list.size();i++)
 		{
 			Entity entity = list.get(i);
-			float yaw =  syncBase ? base.rotationYaw : MathHelper.wrapDegrees(base.world.rand.nextFloat() * 360.0F);
+			float yaw =  syncBase ? base.rotationYaw : (base.world.rand.nextFloat() * 360.0F);
 			setLocationAndAngles(entity, x, y, z, yaw, 0.0F);
 		}
 	}
@@ -1100,16 +1103,18 @@ public class EntityUtil {
 			cap.value = true;
 		}
 	}
-
+	
 	public static void setYaw(Entity entity, float yaw) 
 	{
 		entity.setRenderYawOffset(yaw);
+		entity.setRotationYawHead(yaw);
 	}
 	
 	public static void setLocationAndAngles(Entity entity, double x, double y, double z, float yaw, float pitch)
 	{
 		entity.setLocationAndAngles(x, y, z, yaw, pitch);
 		EntityUtil.setYaw(entity, yaw);
+		
 	}
 
 }
