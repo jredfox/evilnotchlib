@@ -1050,17 +1050,44 @@ public class EntityUtil {
 			setLocationAndAngles(entity, x, y, z, yaw, 0.0F);
 		}
 	}
-
+	
 	public static void updateJockeyPos(Entity base, double x, double y, double z, float yaw, float pitch) 
 	{
-		updateJockeyPos(getEntList(base), x, y, z, yaw, pitch);
+		updateJockeyPos(base, x, y, z, yaw, pitch, false);
+	}
+
+	public static void updateJockeyPos(Entity base, double x, double y, double z, float yaw, float pitch, boolean prev) 
+	{
+		updateJockeyPos(getEntList(base), x, y, z, yaw, pitch, prev);
 	}
 	
 	public static void updateJockeyPos(List<Entity> list, double x, double y, double z, float yaw, float pitch) 
 	{
-		for(Entity e : list)
+		updateJockeyPos(list, x, y, z, yaw, pitch, false);
+	}
+	
+	public static void updateJockeyPos(List<Entity> list, double x, double y, double z, float yaw, float pitch, boolean prev) 
+	{
+		for(Entity entry : list)
 		{
-			setLocationAndAngles(e, x, y, z, yaw, pitch);
+			setLocationAndAngles(entry, x, y, z, yaw, pitch);
+			if(prev)
+			{
+				entry.prevRotationYaw = entry.rotationYaw;
+				entry.prevRotationPitch = entry.rotationPitch;
+				
+				if(entry instanceof EntityLivingBase)
+				{
+					EntityLivingBase living = (EntityLivingBase) entry;
+					living.prevRenderYawOffset = living.renderYawOffset;
+					living.prevRotationYawHead = living.rotationYawHead;
+					
+					//additional code not sure if really needed or not
+					living.prevCameraPitch = living.cameraPitch;
+					living.prevSwingProgress = living.swingProgress;
+					living.prevLimbSwingAmount = living.limbSwingAmount;
+				}
+			}
 		}
 	}
 	
