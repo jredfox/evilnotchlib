@@ -202,6 +202,20 @@ public class GeneralTransformer {
 		list2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/util/JavaUtil", "returnFalse", "()Z", false));
 		list2.add(new JumpInsnNode(Opcodes.IFEQ, label));
 		node.instructions.insertBefore(spotDisable, list2);
+		
+		//capaiblity hooks for whether or not the entity is added into the world
+		MethodNode node2 = ASMHelper.getMethodNode(classNode, new MCPSidedString("onEntityAdded", "func_72923_a").toString(), "(Lnet/minecraft/entity/Entity;)V");
+		InsnList list3 = new InsnList();
+		list3.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		list3.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/EntityUtil", "patchEntityAdded", "(Lnet/minecraft/entity/Entity;)V", false));
+		node2.instructions.insertBefore(ASMHelper.getFirstInstruction(node2, Opcodes.RETURN), list3);
+		
+		//capaiblity hooks for whether or not the entity is added into the world
+		MethodNode node3 = ASMHelper.getMethodNode(classNode, new MCPSidedString("onEntityRemoved", "func_72847_b").toString(), "(Lnet/minecraft/entity/Entity;)V");
+		InsnList list4 = new InsnList();
+		list4.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		list4.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/EntityUtil", "patchEntityRemoved", "(Lnet/minecraft/entity/Entity;)V", false));
+		node3.instructions.insertBefore(ASMHelper.getFirstInstruction(node3, Opcodes.RETURN), list4);
 	}
 	/**
 	 * patch the cull being disabled

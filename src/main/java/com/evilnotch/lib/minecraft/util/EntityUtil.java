@@ -409,6 +409,9 @@ public class EntityUtil {
 		if(getEntityProps(nbt) > 0)
 		{
 			e = EntityUtil.createEntityFromNBTQuietly(new ResourceLocation(nbt.getString("id")), nbt, world);
+			if(e == null)
+				return null;
+			
 			if(!additionalMounts)
 			{
 				e.removePassengers();
@@ -416,8 +419,10 @@ public class EntityUtil {
 		}
 		else
 		{
-			e = EntityUtil.createEntityByNameQuietly(new ResourceLocation(nbt.getString("id")),world);
-			if(e instanceof EntityLiving && useInterface)
+			e = EntityUtil.createEntityByNameQuietly(new ResourceLocation(nbt.getString("id")), world);
+			if(e == null)
+				return null;
+			if(useInterface && e instanceof EntityLiving)
 			{
 				if (!net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn((EntityLiving)e, world, JavaUtil.castFloat(e.posX), JavaUtil.castFloat(e.posY), JavaUtil.castFloat(e.posZ), logic))
 				{
@@ -428,7 +433,10 @@ public class EntityUtil {
 			{
 				e.removePassengers();
 			}
-			EntityUtil.setInitSpawned(e);
+			if(useInterface)
+			{
+				EntityUtil.setInitSpawned(e);
+			}
 		}
 		return e;
 	}
@@ -1099,8 +1107,11 @@ public class EntityUtil {
 		List<Entity> li = getEntList(base);
 		for(Entity e : li)
 		{
-			CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.initSpawned);
-			cap.value = true;
+			if(e instanceof EntityLiving)
+			{
+				CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.initSpawned);
+				cap.value = true;
+			}
 		}
 	}
 	
@@ -1114,7 +1125,34 @@ public class EntityUtil {
 	{
 		entity.setLocationAndAngles(x, y, z, yaw, pitch);
 		EntityUtil.setYaw(entity, yaw);
-		
+	}
+	
+	public static void patchShulker(EntityShulker shulker)
+	{
+		 shulker.renderYawOffset = 180.0F;
+		 shulker.prevRenderYawOffset = 180.0F;
+		 shulker.rotationYaw = 180.0F;
+		 shulker.prevRotationYaw = 180.0F;
+		 shulker.rotationYawHead = 180.0F;
+		 shulker.prevRotationYawHead = 180.0F;
+	}
+	
+	public static void patchEntityAdded(Entity e)
+	{
+		CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.addedToWorld);
+		cap.value = true;
+	}
+	
+	public static void patchEntityRemoved(Entity e)
+	{
+		CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.addedToWorld);
+		cap.value = false;
+	}
+
+	public static boolean addedToWorld(Entity e)
+	{
+		CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.addedToWorld);
+		return cap.value;
 	}
 
 }

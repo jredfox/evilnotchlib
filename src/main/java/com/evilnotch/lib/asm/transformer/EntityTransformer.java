@@ -8,6 +8,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -34,7 +35,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.entity.item.EntityFallingBlock",
     	"net.minecraft.entity.item.EntityPainting",
     	"net.minecraft.entity.player.EntityPlayerMP",
-    	"net.minecraft.entity.monster.EntityZombie"
+    	"net.minecraft.entity.monster.EntityZombie",
+    	"net.minecraft.entity.monster.EntityShulker"
     });
 
 	@Override
@@ -82,6 +84,10 @@ public class EntityTransformer implements IClassTransformer{
                 case 4:
                 	patchZombie(classNode);
                 break;
+                
+                case 5:
+                	patchShulker(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -101,6 +107,37 @@ public class EntityTransformer implements IClassTransformer{
 		return null;
 	}
 	
+	public static void patchShulker(ClassNode classNode) 
+	{
+		//insert EntityUtil#patchShulker into the constructor
+		MethodNode node = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/World;)V");
+		InsnList list = new InsnList();
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/EntityUtil", "patchShulker", "(Lnet/minecraft/entity/monster/EntityShulker;)V", false));
+		node.instructions.insert(ASMHelper.getLastPutField(node), list);
+		
+		//append && EntityUtil.addedToWorld(this) to see if it can teleport or not
+		MethodNode pos = ASMHelper.getMethodNode(classNode, new MCPSidedString("setPosition", "func_70107_b").toString(), "(DDD)V");
+		JumpInsnNode spot = null;
+		FieldInsnNode check = new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/entity/monster/EntityShulker", new MCPSidedString("ticksExisted","field_70173_aa").toString(), "I");
+		for(AbstractInsnNode ab : pos.instructions.toArray())
+		{
+			if(ab.getOpcode() == Opcodes.GETFIELD && ab.getNext() instanceof JumpInsnNode)
+			{
+				if(ASMHelper.equals(check, (FieldInsnNode)ab))
+				{
+					spot = (JumpInsnNode) ab.getNext();
+				}
+			}
+		}
+		
+		InsnList list2 = new InsnList();
+		list2.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/EntityUtil", "addedToWorld", "(Lnet/minecraft/entity/Entity;)Z", false));
+		list2.add(new JumpInsnNode(Opcodes.IFEQ, spot.label));
+		pos.instructions.insert(spot, list2);
+	}
+
 	public static void patchZombie(ClassNode classNode)
 	{
 		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("readEntityFromNBT", "func_70037_a").toString(), "(Lnet/minecraft/nbt/NBTTagCompound;)V");
