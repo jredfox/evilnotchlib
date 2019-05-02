@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 public class CapRegDefaultHandler extends CapRegEntity{
 
 	public static final ResourceLocation initSpawned = new ResourceLocation(MainJava.MODID, "initSpawned");
-	public static final ResourceLocation addedToWorld = new ResourceLocation(MainJava.MODID, "AddedToWorld");
+	public static final ResourceLocation addedToWorld = new ResourceLocation(MainJava.MODID, "addedToWorld");
 	
 	@Override
 	public void register(Entity e, CapContainer c) 
