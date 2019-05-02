@@ -380,7 +380,7 @@ public class EntityUtil {
 
 	public static Entity getEntityStack(NBTTagCompound compound, World worldIn, double x, double y, double z, boolean useInterface, boolean attemptSpawn, MobSpawnerBaseLogic logic, boolean additionalMounts) 
 	{	
-        Entity entity = getEntity(compound, worldIn, new BlockPos(x,y,z), useInterface, logic, additionalMounts);
+        Entity entity = getEntity(compound, worldIn, x, y, z, useInterface, logic, additionalMounts);
         if(entity == null)
         	return null;
         
@@ -403,7 +403,7 @@ public class EntityUtil {
 	/**
 	 * first index is to determine if your on the first part of the opening of the nbt if so treat nbt like normal with forge support
 	 */
-	public static Entity getEntity(NBTTagCompound nbt,World world,BlockPos pos,boolean useInterface,MobSpawnerBaseLogic logic, boolean additionalMounts) 
+	public static Entity getEntity(NBTTagCompound nbt, World world, double x, double y, double z, boolean useInterface, MobSpawnerBaseLogic logic, boolean additionalMounts) 
 	{
 		Entity e = null;
 		if(getEntityProps(nbt) > 0)
@@ -422,11 +422,13 @@ public class EntityUtil {
 			e = EntityUtil.createEntityByNameQuietly(new ResourceLocation(nbt.getString("id")), world);
 			if(e == null)
 				return null;
+			
 			if(useInterface && e instanceof EntityLiving)
 			{
+				e.setLocationAndAngles(x, y, z, e.rotationYaw, e.rotationPitch);
 				if (!net.minecraftforge.event.ForgeEventFactory.doSpecialSpawn((EntityLiving)e, world, JavaUtil.castFloat(e.posX), JavaUtil.castFloat(e.posY), JavaUtil.castFloat(e.posZ), logic))
 				{
-					((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(pos), (IEntityLivingData)null);
+					((EntityLiving) e).onInitialSpawn(world.getDifficultyForLocation(e.getPosition()), (IEntityLivingData)null);
 				}
 			}
 			if(!additionalMounts)
