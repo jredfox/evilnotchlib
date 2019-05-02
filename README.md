@@ -82,5 +82,4 @@ Contributing:
 ```
 download the entire source code and install to a new workspace
 run gradlew setupDecompWorkspace eclipse
-input the classwriter mod into your java build path in eclipse
 ```
