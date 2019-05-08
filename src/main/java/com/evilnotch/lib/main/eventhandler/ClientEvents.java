@@ -1,27 +1,26 @@
 package com.evilnotch.lib.main.eventhandler;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
+import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.event.client.ClientDisconnectEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
-import com.evilnotch.lib.minecraft.util.NBTUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -74,7 +73,7 @@ public class ClientEvents {
 		if(e.getGui() == null || !(e.getGui() instanceof GuiDisconnected) || PlayerUtil.msgShutdown == null)
 			return;
 		GuiDisconnected old = (GuiDisconnected)e.getGui();
-		e.setGui(new GuiDisconnected(new GuiMainMenu(),"disconnect.lost", PlayerUtil.msgShutdown) );
+		e.setGui(new GuiDisconnected(new GuiMainMenu(), "disconnect.lost", PlayerUtil.msgShutdown) );
 		PlayerUtil.msgShutdown = null;
 	}
 	
@@ -82,6 +81,22 @@ public class ClientEvents {
 	public void disconnect(ClientDisconnectEvent e)
 	{
 		ClientProxy.clearClientData();
+	}
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post e)
+	{
+		for(GuiButton b : e.getButtonList())
+		{
+			if(b instanceof GuiBasicButton)
+			{
+				GuiBasicButton button = (GuiBasicButton)b;
+				if(button.unlocalizedName != null)
+				{
+					button.displayString = I18n.format(button.unlocalizedName);
+				}
+			}
+		}
 	}
 	
 }

@@ -2,10 +2,7 @@ package com.evilnotch.lib.main;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
-import com.evilnotch.lib.util.JavaUtil;
 
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -19,7 +16,7 @@ import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 public class MainJava {
 	
 	public static final String MODID =  "evilnotchlib";
-	public static final String VERSION = "1.2.3.03";//SNAPSHOT 99
+	public static final String VERSION = "1.2.3.07";//SNAPSHOT 99
 	public static final String NAME = "Evil Notch Lib";
 	public static final String max_version = "4.0.0.0.0";//allows for 5 places in lib version
 	@SidedProxy(clientSide = "com.evilnotch.lib.minecraft.proxy.ClientProxy", serverSide = "com.evilnotch.lib.minecraft.proxy.ServerProxy")

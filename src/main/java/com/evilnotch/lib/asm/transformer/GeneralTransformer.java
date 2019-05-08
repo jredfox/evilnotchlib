@@ -23,6 +23,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.minecraft.util.EntityUtil;
 
 public class GeneralTransformer {
 	
@@ -117,10 +118,9 @@ public class GeneralTransformer {
 
 	public static void patchWorldClient(ClassNode classNode)
 	{
-		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("spawnEntity","func_72838_d").toString(), "(Lnet/minecraft/entity/Entity;)Z");
-		AbstractInsnNode spot = ASMHelper.getFirstInstruction(node, Opcodes.ISTORE);
-		
 		//add if(MinecraftForge.EVENT_BUS.post(new EntityJoinWorldEvent(entityIn, this)) return;
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("spawnEntity", "func_72838_d").toString(), "(Lnet/minecraft/entity/Entity;)Z");
+		AbstractInsnNode spot = ASMHelper.getFirstInstruction(node, Opcodes.ISTORE);
 		InsnList list = new InsnList();
 		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
 		list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraftforge/event/entity/EntityJoinWorldEvent"));
@@ -136,7 +136,6 @@ public class GeneralTransformer {
 		list.add(new InsnNode(Opcodes.ICONST_0));
 		list.add(new InsnNode(Opcodes.IRETURN));
 		list.add(l2);
-		
 		node.instructions.insert(spot, list);
 	}
 	
@@ -144,64 +143,20 @@ public class GeneralTransformer {
 	{
 		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("spawnEntity","func_72838_d").toString(), "(Lnet/minecraft/entity/Entity;)Z");
 		AbstractInsnNode spot = null;
-		LabelNode label = null;
-		
-		AbstractInsnNode[] arr =  node.instructions.toArray();
-		for(int i=arr.length-1;i>=0;i--)
+		MethodInsnNode check = new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false);
+		for(AbstractInsnNode ab : node.instructions.toArray())
 		{
-			AbstractInsnNode ab = arr[i];
-			if(ab.getOpcode() == Opcodes.INSTANCEOF && ((TypeInsnNode)ab).desc.equals("net/minecraft/entity/player/EntityPlayer") )
+			if(ab instanceof MethodInsnNode && ASMHelper.equals(check, (MethodInsnNode)ab))
 			{
-				spot = ab.getPrevious().getPrevious();
-				break;
+				spot = ab.getNext().getNext();
 			}
 		}
 		
-		//add if(MinecraftForge.EVENT_BUS.post(new EntityJoinWorldEvent(entityIn, this)) return false;
-		InsnList list = new InsnList();
-		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
-		list.add(new TypeInsnNode(Opcodes.NEW, "net/minecraftforge/event/entity/EntityJoinWorldEvent"));
-		list.add(new InsnNode(Opcodes.DUP));
-		list.add(new VarInsnNode(Opcodes.ALOAD, 1));
-		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "net/minecraftforge/event/entity/EntityJoinWorldEvent", "<init>", "(Lnet/minecraft/entity/Entity;Lnet/minecraft/world/World;)V", false));
-		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
-		LabelNode l2 = new LabelNode();
-		list.add(new JumpInsnNode(Opcodes.IFEQ, l2));
-		LabelNode l3 = new LabelNode();
-		list.add(l3);
-		list.add(new InsnNode(Opcodes.ICONST_0));
-		list.add(new InsnNode(Opcodes.IRETURN));
-		list.add(l2);
-		
-		node.instructions.insert(spot, list);
-		
-		AbstractInsnNode spotDisable = null;
-		for(int i=arr.length-1;i>=0;i--)
+		if(spot.getOpcode() == Opcodes.ILOAD)
 		{
-			AbstractInsnNode ab = arr[i];
-			FieldInsnNode field = new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;");
-			if(ab instanceof FieldInsnNode && ASMHelper.equals(field, (FieldInsnNode)ab) )
-			{
-				spotDisable = ab;
-				AbstractInsnNode compare = ab;
-				while(compare.getNext() != null)
-				{
-					compare = compare.getNext();
-					if(compare instanceof JumpInsnNode)
-					{
-						label = ((JumpInsnNode)compare).label;
-						break;
-					}
-				}
-			}
+			node.instructions.remove(spot.getNext());
+			node.instructions.remove(spot);
 		}
-		
-		//disable regular forge's if statement
-		InsnList list2 = new InsnList();
-		list2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/util/JavaUtil", "returnFalse", "()Z", false));
-		list2.add(new JumpInsnNode(Opcodes.IFEQ, label));
-		node.instructions.insertBefore(spotDisable, list2);
 		
 		//capaiblity hooks for whether or not the entity is added into the world
 		MethodNode node2 = ASMHelper.getMethodNode(classNode, new MCPSidedString("onEntityAdded", "func_72923_a").toString(), "(Lnet/minecraft/entity/Entity;)V");
@@ -216,7 +171,21 @@ public class GeneralTransformer {
 		list4.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		list4.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/EntityUtil", "patchEntityRemoved", "(Lnet/minecraft/entity/Entity;)V", false));
 		node3.instructions.insertBefore(ASMHelper.getFirstInstruction(node3, Opcodes.RETURN), list4);
+		
+		//add if(!EntityUtil#patchEntityUpdate(entityIn)) return;
+		MethodNode update = ASMHelper.getMethodNode(classNode, new MCPSidedString("updateEntityWithOptionalForce", "func_72866_a").toString(), "(Lnet/minecraft/entity/Entity;Z)V");
+		LabelNode l1 = new LabelNode();
+		InsnList toInsert = new InsnList();
+		toInsert.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/EntityUtil", "patchEntityUpdate", "(Lnet/minecraft/entity/Entity;)Z", false));
+		toInsert.add(new JumpInsnNode(Opcodes.IFNE, l1));
+		LabelNode l15 = new LabelNode();
+		toInsert.add(l15);
+		toInsert.add(new InsnNode(Opcodes.RETURN));
+		toInsert.add(l1);
+		update.instructions.insert(ASMHelper.getFirstInstruction(update, Opcodes.RETURN).getNext().getNext(), toInsert);
 	}
+	
 	/**
 	 * patch the cull being disabled
 	 */

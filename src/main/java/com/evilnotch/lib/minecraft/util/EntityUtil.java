@@ -1,15 +1,11 @@
 package com.evilnotch.lib.minecraft.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,11 +18,9 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
 
-import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
-import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.loader.LoaderFields;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
@@ -34,17 +28,9 @@ import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.entity.EntityDefintions;
 import com.evilnotch.lib.minecraft.entity.EntityDefintions.EntityInfo;
 import com.evilnotch.lib.minecraft.entity.EntityDefintions.EntityType;
-import com.evilnotch.lib.minecraft.network.NetWorkHandler;
-import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
-import com.evilnotch.lib.minecraft.network.packet.PacketYawOffset;
-import com.evilnotch.lib.minecraft.network.packet.PacketYawPitch;
 import com.evilnotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.simple.PointId;
-import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityCreature;
@@ -82,50 +68,25 @@ import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityFireball;
+import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.entity.projectile.EntityShulkerBullet;
 import net.minecraft.init.Biomes;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.server.SPacketEntityEffect;
-import net.minecraft.network.play.server.SPacketPlayerAbilities;
-import net.minecraft.network.play.server.SPacketPlayerPosLook;
-import net.minecraft.network.play.server.SPacketRespawn;
-import net.minecraft.network.play.server.SPacketSetExperience;
-import net.minecraft.network.play.server.SPacketSetPassengers;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.util.ClassInheritanceMultiMap;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.datafix.DataFixer;
-import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.GameType;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProviderEnd;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
-import net.minecraft.world.end.DragonFightManager;
-import net.minecraft.world.storage.SaveHandler;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 public class EntityUtil {
 	
@@ -367,6 +328,7 @@ public class EntityUtil {
 			LibEvents.setSpawn(worldIn, true);
 			return null;
 		}
+		
 		List<Entity> list = EntityUtil.getEntList(base);
 		EntityUtil.updateJockeyPosRnd(list, x, y, z, true);
 		EntityUtil.updateJockey(list);
@@ -415,6 +377,11 @@ public class EntityUtil {
 			if(!additionalMounts)
 			{
 				e.removePassengers();
+				e.dismountRidingEntity();
+			}
+			else
+			{
+				e = e.getLowestRidingEntity();
 			}
 		}
 		else
@@ -434,6 +401,11 @@ public class EntityUtil {
 			if(!additionalMounts)
 			{
 				e.removePassengers();
+				e.dismountRidingEntity();
+			}
+			else
+			{
+				e = e.getLowestRidingEntity();
 			}
 			if(useInterface)
 			{
@@ -664,7 +636,7 @@ public class EntityUtil {
 	
 	public static boolean isBoss(Entity e)
 	{
-		return e instanceof EntityWither || e instanceof EntityDragon || e instanceof EntityElderGuardian;
+		return !e.isNonBoss() || e instanceof EntityWither || e instanceof EntityDragon || e instanceof EntityElderGuardian;
 	}
 	
 	public static boolean isFlying(Entity e) 
@@ -765,7 +737,7 @@ public class EntityUtil {
 	 * Adds a basic level cache from loc to entity without interface
 	 * This also checks for broken entities, logs them and then stores their locs in array lists
 	 */
-	public static void cacheEnts(Collection<ResourceLocation> list,World world,boolean printLists)
+	public static void cacheEnts(Collection<ResourceLocation> list, World world, boolean printLists)
 	{
 		long time = System.currentTimeMillis();
 		if(cached && list == null)
@@ -1041,8 +1013,11 @@ public class EntityUtil {
 	{
 		for(Entity ent : ents)
 		{
-			if(ent.getRidingEntity() != null)
-				ent.getRidingEntity().updatePassenger(ent);
+			Entity riding = ent.getRidingEntity();
+			if(riding != null)
+			{
+				riding.updatePassenger(ent);
+			}
 		}
 	}
 	
@@ -1150,11 +1125,71 @@ public class EntityUtil {
 		CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.addedToWorld);
 		cap.value = false;
 	}
-
+	
+	/**
+	 * is this entity currently added into the world
+	 */
 	public static boolean addedToWorld(Entity e)
 	{
 		CapBoolean cap = (CapBoolean) CapabilityRegistry.getCapability(e, CapRegDefaultHandler.addedToWorld);
 		return cap.value;
+	}
+	
+	public static boolean chunkContains(Chunk c, Entity e)
+	{
+		for(ClassInheritanceMultiMap map : c.getEntityLists())
+		{
+			if(map.contains(e))
+				return true;
+		}
+		return false;
+	}
+
+	private static void patchUpdate(Entity entityIn)
+	{
+        entityIn.lastTickPosX = entityIn.posX;
+        entityIn.lastTickPosY = entityIn.posY;
+        entityIn.lastTickPosZ = entityIn.posZ;
+        entityIn.prevRotationYaw = entityIn.rotationYaw;
+        entityIn.prevRotationPitch = entityIn.rotationPitch;
+
+        if (Double.isNaN(entityIn.posX) || Double.isInfinite(entityIn.posX))
+        {
+            entityIn.posX = entityIn.lastTickPosX;
+        }
+
+        if (Double.isNaN(entityIn.posY) || Double.isInfinite(entityIn.posY))
+        {
+            entityIn.posY = entityIn.lastTickPosY;
+        }
+
+        if (Double.isNaN(entityIn.posZ) || Double.isInfinite(entityIn.posZ))
+        {
+            entityIn.posZ = entityIn.lastTickPosZ;
+        }
+
+        if (Double.isNaN((double)entityIn.rotationPitch) || Double.isInfinite((double)entityIn.rotationPitch))
+        {
+            entityIn.rotationPitch = entityIn.prevRotationPitch;
+        }
+
+        if (Double.isNaN((double)entityIn.rotationYaw) || Double.isInfinite((double)entityIn.rotationYaw))
+        {
+            entityIn.rotationYaw = entityIn.prevRotationYaw;
+        }
+	}
+	
+	/**
+	 * @return if the entity is inside the world or not
+	 */
+	public static boolean patchEntityUpdate(Entity entityIn) 
+	{
+		boolean spawned = EntityUtil.addedToWorld(entityIn);
+		if(!spawned)
+		{
+			patchUpdate(entityIn);
+		}
+    	return spawned;
 	}
 
 }

@@ -17,3 +17,6 @@ src/main/resources/assets/menulib/aetherii/panorama/panorama_5.png
 src/main/resources/assets/menulib/aetherii/buttons.png
 src/main/resources/assets/menulib/aetherii/background.png
 src/main/java/net/minecraft/entity/monster/EntityZombie.java
+src/main/resources/assets/silkspawners/lang/en_us.lang
+src/main/resources/assets/silkspawners/asm/srg/MobSpawnerBaseLogic
+src/main/resources/assets/silkspawners/asm/deob/MobSpawnerBaseLogic
