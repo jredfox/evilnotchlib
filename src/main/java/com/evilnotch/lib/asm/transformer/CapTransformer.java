@@ -27,7 +27,7 @@ public class CapTransformer {
 
 	public static void transFormEntityCaps(String name, ClassNode classNode, boolean obfuscated) throws IOException 
 	{
-    	implementICapProvider(classNode,name,"Lnet/minecraft/entity/Entity;");
+    	implementICapProvider(classNode, name, "Lnet/minecraft/entity/Entity;");
     	
     	//Serialization and ticks
     	String owner = "net/minecraft/entity/Entity";
@@ -343,7 +343,7 @@ public class CapTransformer {
 		
 		//writeToNBT
 		MethodNode writeToNBT = ASMHelper.getMethodNode(classNode, new MCPSidedString("updateTagCompound","func_76064_a").toString(), "(Lnet/minecraft/nbt/NBTTagCompound;Lnet/minecraft/nbt/NBTTagCompound;)V");
-		AbstractInsnNode spot = ASMHelper.getLineNumberNode(writeToNBT);
+		AbstractInsnNode spot = ASMHelper.getFirstInstruction(writeToNBT);
 		//inject line this.capContainer.writeToNBT(this,nbt);
 		InsnList toInsert = new InsnList();
 		toInsert.add(new VarInsnNode(ALOAD,0));

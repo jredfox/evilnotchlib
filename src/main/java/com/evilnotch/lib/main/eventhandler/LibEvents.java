@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
+import com.evilnotch.lib.minecraft.event.MessageEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 
@@ -105,6 +106,20 @@ public class LibEvents {
 		}
 	}
 	
+	public static boolean canSendMsgClient = true;
+	public static boolean canSendMsgServer = true;
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void stopMsg(MessageEvent event)
+	{
+		World world = event.getWorld();
+		if(!isCurrentThread(world))
+			return;
+		if(world.isRemote && !canSendMsgClient)
+			event.setCanceled(true);
+		else if(!world.isRemote && !canSendMsgServer)
+			event.setCanceled(true);
+	}
+	
 		
 	public static boolean isCurrentThread(World w)
 	{
@@ -144,6 +159,18 @@ public class LibEvents {
 		if(world.isRemote)
 		{
 			canPlaySound = value;
+		}
+	}
+	
+	public static void setCanSendMsg(World world, boolean value)
+	{
+		if(world.isRemote)
+		{
+			canSendMsgClient = value;
+		}
+		else
+		{
+			canSendMsgServer = value;
 		}
 	}
 	

@@ -326,12 +326,32 @@ public class ASMHelper
 	/**
 	 * getting the first instanceof of this will usually tell you where the initial injection point should be after
 	 */
-	public static LineNumberNode getLineNumberNode(MethodNode method) 
+	public static LineNumberNode getFirstInstruction(MethodNode method) 
 	{
 		for(AbstractInsnNode obj : method.instructions.toArray())
 			if(obj instanceof LineNumberNode)
 				return (LineNumberNode) obj;
 		return null;
+	}
+	
+	public static AbstractInsnNode getLastInstruction(MethodNode method)
+	{
+		AbstractInsnNode[] arr = method.instructions.toArray();
+		for(int i=arr.length;i>=0;i--)
+		{
+			AbstractInsnNode ab = arr[i];
+			int opcode = ab.getOpcode();
+			if(!isReturnOpcode(opcode))
+			{
+				return ab;
+			}
+		}
+		return null;
+	}
+	
+	public static boolean isReturnOpcode(int opcode)
+	{
+		return opcode == Opcodes.RETURN || opcode == Opcodes.ARETURN || opcode == Opcodes.DRETURN || opcode == Opcodes.FRETURN || opcode == Opcodes.IRETURN || opcode == Opcodes.LRETURN;
 	}
 	
 	/**

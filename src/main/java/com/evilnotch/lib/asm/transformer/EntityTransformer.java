@@ -16,6 +16,7 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.mcp.MCPSidedString;
@@ -36,7 +37,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.entity.item.EntityPainting",
     	"net.minecraft.entity.player.EntityPlayerMP",
     	"net.minecraft.entity.monster.EntityZombie",
-    	"net.minecraft.entity.monster.EntityShulker"
+    	"net.minecraft.entity.monster.EntityShulker",
+    	"net.minecraft.client.entity.EntityPlayerSP"
     });
 
 	@Override
@@ -88,6 +90,10 @@ public class EntityTransformer implements IClassTransformer{
                 case 5:
                 	patchShulker(classNode);
                 break;
+                
+                case 6:
+                	patchPlayerClient(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -106,7 +112,27 @@ public class EntityTransformer implements IClassTransformer{
         }
 		return null;
 	}
-	
+
+	public static void patchPlayerClient(ClassNode classNode) 
+	{
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("sendStatusMessage", "func_146105_b").toString(), "(Lnet/minecraft/util/text/ITextComponent;Z)V");
+		InsnList list = new InsnList();
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
+		list.add(new TypeInsnNode(Opcodes.NEW, "com/evilnotch/lib/minecraft/event/MessageEvent$PlayerStatusEvent"));
+		list.add(new InsnNode(Opcodes.DUP));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new VarInsnNode(Opcodes.ILOAD, 2));
+		list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "com/evilnotch/lib/minecraft/event/MessageEvent$PlayerStatusEvent", "<init>", "(Lnet/minecraft/entity/Entity;Z)V", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
+		LabelNode l1 = new LabelNode();
+		list.add(new JumpInsnNode(Opcodes.IFEQ, l1));
+		LabelNode l2 = new LabelNode();
+		list.add(l2);
+		list.add(new InsnNode(Opcodes.RETURN));
+		list.add(l1);
+		node.instructions.insert(ASMHelper.getFirstInstruction(node), list);
+	}
+
 	public static void patchShulker(ClassNode classNode) 
 	{
 		//insert EntityUtil#patchShulker into the constructor
@@ -271,6 +297,24 @@ public class EntityTransformer implements IClassTransformer{
       	insert2.add(label);
       	
         node.instructions.insertBefore(start, insert2);
+        
+        //add the chat event
+		MethodNode node2 = ASMHelper.getMethodNode(classNode, new MCPSidedString("sendStatusMessage", "func_146105_b").toString(), "(Lnet/minecraft/util/text/ITextComponent;Z)V");
+		InsnList list = new InsnList();
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
+		list.add(new TypeInsnNode(Opcodes.NEW, "com/evilnotch/lib/minecraft/event/MessageEvent$PlayerStatusEvent"));
+		list.add(new InsnNode(Opcodes.DUP));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new VarInsnNode(Opcodes.ILOAD, 2));
+		list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "com/evilnotch/lib/minecraft/event/MessageEvent$PlayerStatusEvent", "<init>", "(Lnet/minecraft/entity/Entity;Z)V", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
+		LabelNode l1 = new LabelNode();
+		list.add(new JumpInsnNode(Opcodes.IFEQ, l1));
+		LabelNode l2 = new LabelNode();
+		list.add(l2);
+		list.add(new InsnNode(Opcodes.RETURN));
+		list.add(l1);
+		node2.instructions.insert(ASMHelper.getFirstInstruction(node2), list);
 	}
 
 }

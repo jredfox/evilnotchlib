@@ -31,6 +31,7 @@ import com.evilnotch.lib.minecraft.entity.EntityDefintions.EntityType;
 import com.evilnotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.evilnotch.lib.util.JavaUtil;
 
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityCreature;
@@ -318,12 +319,15 @@ public class EntityUtil {
 	
 	public static Entity getEntityJockey(NBTTagCompound compound, World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn, MobSpawnerBaseLogic logic, boolean additionalMounts)
 	{
-		EntityPlayerMP player;
 		LibEvents.setSpawn(worldIn, false);
 		LibEvents.setCanPlaySound(worldIn, false);
+		if(worldIn.isRemote)
+			LibEvents.setCanSendMsg(worldIn, false);
 		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic, additionalMounts);
 		LibEvents.setCanPlaySound(worldIn, true);
 		LibEvents.setSpawn(worldIn, true);
+		if(worldIn.isRemote)
+			LibEvents.setCanSendMsg(worldIn, true);
 		if(base == null)
 			return null;
 		
