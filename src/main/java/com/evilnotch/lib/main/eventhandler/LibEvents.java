@@ -8,13 +8,11 @@ import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -94,10 +92,28 @@ public class LibEvents {
 			event.setCanceled(true);
 		}
 	}
+	
+	public static boolean canPlaySound = true;
+	@SubscribeEvent(priority=EventPriority.LOWEST)
+	public void stopSounds(PlaySoundEvent event)
+	{
+		if(!isCurrentThread(true))
+			return;//allow multi threading to still play sounds from packets
+		if(!canPlaySound)
+		{
+			event.setResultSound(null);
+		}
+	}
+	
 		
 	public static boolean isCurrentThread(World w)
 	{
-		if(w.isRemote)
+		return isCurrentThread(w.isRemote);
+	}
+	
+	public static boolean isCurrentThread(boolean isRemote) 
+	{
+		if(isRemote)
 		{
 			return ClientProxy.isCurrentThread();
 		}
@@ -106,7 +122,8 @@ public class LibEvents {
 			return Thread.currentThread() == LoaderMain.serverThread;
 		}
 	}
-	
+
+
 	public static void setSpawn(World world, boolean value)
 	{
 		if(world.isRemote)
@@ -116,6 +133,17 @@ public class LibEvents {
 		else
 		{
 			canSpawnServer = value;
+		}
+	}
+	
+	/**
+	 * ignores server side args
+	 */
+	public static void setCanPlaySound(World world, boolean value)
+	{
+		if(world.isRemote)
+		{
+			canPlaySound = value;
 		}
 	}
 	

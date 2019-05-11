@@ -81,4 +81,12 @@ public class GuiBasicButton extends GuiButton{
 	{
 		this.texture = loc;
 	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(!(obj instanceof GuiButton))
+			return false;
+		return this.id == ((GuiButton)obj).id;
+	}
 }

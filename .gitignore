@@ -20,3 +20,4 @@ src/main/java/net/minecraft/entity/monster/EntityZombie.java
 src/main/resources/assets/silkspawners/lang/en_us.lang
 src/main/resources/assets/silkspawners/asm/srg/MobSpawnerBaseLogic
 src/main/resources/assets/silkspawners/asm/deob/MobSpawnerBaseLogic
+src/main/java/net/minecraft/item/ItemMonsterPlacer.java

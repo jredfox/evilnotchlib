@@ -68,8 +68,8 @@ import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.entity.projectile.EntityShulkerBullet;
 import net.minecraft.init.Biomes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -78,15 +78,12 @@ import net.minecraft.tileentity.MobSpawnerBaseLogic;
 import net.minecraft.util.ClassInheritanceMultiMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 public class EntityUtil {
 	
@@ -321,18 +318,18 @@ public class EntityUtil {
 	
 	public static Entity getEntityJockey(NBTTagCompound compound, World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn, MobSpawnerBaseLogic logic, boolean additionalMounts)
 	{
+		EntityPlayerMP player;
 		LibEvents.setSpawn(worldIn, false);
+		LibEvents.setCanPlaySound(worldIn, false);
 		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic, additionalMounts);
+		LibEvents.setCanPlaySound(worldIn, true);
+		LibEvents.setSpawn(worldIn, true);
 		if(base == null)
-		{
-			LibEvents.setSpawn(worldIn, true);
 			return null;
-		}
 		
 		List<Entity> list = EntityUtil.getEntList(base);
 		EntityUtil.updateJockeyPosRnd(list, x, y, z, true);
 		EntityUtil.updateJockey(list);
-		LibEvents.setSpawn(worldIn, true);
 		if(attemptSpawn)
 		{
 			AnvilChunkLoader.spawnEntity(base, worldIn);
@@ -746,6 +743,8 @@ public class EntityUtil {
 		if(list == null)
 			list = EntityList.getEntityNameList();
 		
+		LibEvents.canPlaySound = false;
+		
 		for(EnumCreatureType type : EnumCreatureType.values())
 			cacheEndEnts(Biomes.SKY.getSpawnableList(type));
 		
@@ -772,14 +771,13 @@ public class EntityUtil {
 			try 
 			{
 				Constructor k = clazz.getConstructor(new Class[] {World.class});
-			} 
+			}
 			catch (Throwable t)
 			{
 				ent_blacklist.add(loc);
 				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod author:" + loc);
 				continue;
 			}
-			
 			Entity e = EntityUtil.createEntityByNameQuietly(loc, world,true);
 			if(e == null)
 			{
@@ -831,11 +829,11 @@ public class EntityUtil {
 					names[2] = EntityUtil.getColor(e);
 				
 				if(living)
-					EntityUtil.living.put(loc,names);
+					EntityUtil.living.put(loc, names);
 				else if(base)
-					EntityUtil.livingbase.put(loc,names);
+					EntityUtil.livingbase.put(loc, names);
 				else if(nonliving)
-					EntityUtil.nonliving.put(loc,names);
+					EntityUtil.nonliving.put(loc, names);
 				}
 				catch(Throwable t)
 				{
@@ -858,7 +856,7 @@ public class EntityUtil {
 			System.out.println("blacklistNBT:" + ent_blacklist_nbt);
 			System.out.println("blacklist CMD:" + ent_blacklist_commandsender);
 		}
-		
+		LibEvents.canPlaySound = true;
 		cached = true;
 	}
 	
