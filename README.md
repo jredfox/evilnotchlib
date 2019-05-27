@@ -25,7 +25,9 @@ Placing a block in the offhand causing pig issues with silkspawners, and any oth
 Fixed WeightedSpawnerEntity constructor not fixing the id tag on construction
 Fixed EntityFallingBlock,EntityHanging,EntityPainting exceptions when simply using the default world constructor
 Fixed Forge Improperly Hooking EntityJoinWorld event now works on both client and server always
-Fix EntityZombie not reading from nbt properly with isBaby boolean
+Fixed EntityZombie not reading from nbt properly with isBaby boolean
+Fixed Shulkers having improper initial values after constructing
+Fixed Shulkers shaking inside the spawners
 
 BlockEntityTag fixes:
 sync client changes on the same tick rather then later,don't have to be in creative
