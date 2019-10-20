@@ -94,5 +94,4 @@ public class CapContainer<T> {
 		for(IListener li : this.listeners)
 			li.postRead(nbt, (ICapabilityProvider)obj, this);
 	}
-
 }

@@ -9,6 +9,7 @@ import com.evilnotch.lib.minecraft.capability.ICapabilityProvider;
 import com.evilnotch.lib.minecraft.capability.ICapabilityTick;
 import com.evilnotch.lib.util.JavaUtil;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 public class CapabilityRegistry {
@@ -58,5 +59,10 @@ public class CapabilityRegistry {
 	public static ICapabilityTick getCapabilityTick(Object obj, ResourceLocation loc)
 	{
 		return ((ICapabilityProvider)obj).getCapabilityTick(loc);
+	}
+
+	public static void setCapContainer(Object obj, CapContainer container) 
+	{
+		((ICapabilityProvider)obj).setCapContainer(container);
 	}
 }

@@ -27,6 +27,7 @@ import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.server.management.PlayerList;
 
 public class EntityTransformer implements IClassTransformer{
 	
@@ -131,6 +132,9 @@ public class EntityTransformer implements IClassTransformer{
 		list.add(new InsnNode(Opcodes.RETURN));
 		list.add(l1);
 		node.instructions.insert(ASMHelper.getFirstInstruction(node), list);
+		
+		MethodNode node2 = ASMHelper.getMethodNode(classNode, new MCPSidedString("sendMessage","func_145747_a").toString(), "(Lnet/minecraft/util/text/ITextComponent;)V");
+		node2.instructions.insert(ASMHelper.getFirstInstruction(node2), list);
 	}
 
 	public static void patchShulker(ClassNode classNode) 
@@ -299,6 +303,7 @@ public class EntityTransformer implements IClassTransformer{
         node.instructions.insertBefore(start, insert2);
         
         //add the chat event
+        EntityPlayerMP
 		MethodNode node2 = ASMHelper.getMethodNode(classNode, new MCPSidedString("sendStatusMessage", "func_146105_b").toString(), "(Lnet/minecraft/util/text/ITextComponent;Z)V");
 		InsnList list = new InsnList();
 		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
@@ -315,6 +320,27 @@ public class EntityTransformer implements IClassTransformer{
 		list.add(new InsnNode(Opcodes.RETURN));
 		list.add(l1);
 		node2.instructions.insert(ASMHelper.getFirstInstruction(node2), list);
+
+		/*
+		 * 
+mv.visitFieldInsn(GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;");
+mv.visitTypeInsn(NEW, "com/evilnotch/lib/minecraft/event/MessageEvent$SendMessage");
+mv.visitInsn(DUP);
+mv.visitVarInsn(ALOAD, 0);
+mv.visitVarInsn(ALOAD, 1);
+mv.visitMethodInsn(INVOKESPECIAL, "com/evilnotch/lib/minecraft/event/MessageEvent$SendMessage", "<init>", "(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/text/ITextComponent;)V", false);
+mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false);
+Label l1 = new Label();
+mv.visitJumpInsn(IFNE, l1);
+Label l2 = new Label();
+mv.visitLabel(l2);
+mv.visitLineNumber(3292, l2);
+mv.visitInsn(RETURN);
+mv.visitLabel(l1);
+		 */
+		InsnList list2 = new InsnList();
+		MethodNode node3 = ASMHelper.getMethodNode(classNode, new MCPSidedString("sendMessage","func_145747_a").toString(), "(Lnet/minecraft/util/text/ITextComponent;)V");
+		node3.instructions.insert(ASMHelper.getFirstInstruction(node3), list2);
 	}
 
 }

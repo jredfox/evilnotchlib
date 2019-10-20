@@ -1,16 +1,18 @@
 package com.evilnotch.lib.minecraft.event;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
 @Cancelable
 public class MessageEvent extends EntityEvent{
 	
-	public MessageEvent(Entity e)
+	public ITextComponent text;
+	public MessageEvent(Entity e, ITextComponent txt)
 	{
 		super(e);
+		this.text = txt;
 	}
 	
 	public World getWorld()
@@ -23,9 +25,9 @@ public class MessageEvent extends EntityEvent{
 	 */
 	public static class SendMessage extends MessageEvent
 	{
-		public SendMessage(Entity e)
+		public SendMessage(Entity e, ITextComponent txt)
 		{
-			super(e);
+			super(e, txt);
 		}
 	}
 	
@@ -35,9 +37,9 @@ public class MessageEvent extends EntityEvent{
 	public static class PlayerStatusEvent extends MessageEvent
 	{
 		public boolean actionBar;
-		public PlayerStatusEvent(Entity e, boolean actionBar)
+		public PlayerStatusEvent(Entity e, ITextComponent txt, boolean actionBar)
 		{
-			super(e);
+			super(e, txt);
 			this.actionBar = actionBar;
 		}
 	}

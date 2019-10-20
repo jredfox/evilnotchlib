@@ -233,10 +233,9 @@ public class TeleportUtil {
     {
         player.renderYawOffset = yaw;
         player.prevRenderYawOffset = yaw;
-        PacketYawOffset packet = new PacketYawOffset(yaw,player.getEntityId());
-        PacketYawPitch packet2 = new PacketYawPitch(yaw,pitch,player.getEntityId());
-        NetWorkHandler.INSTANCE.sendTo(packet, player);
-        NetWorkHandler.INSTANCE.sendToTracking(packet2, player);
+        PacketYawOffset packet = new PacketYawOffset(yaw, player.getEntityId());
+//        PacketYawPitch packet2 = new PacketYawPitch(yaw, pitch, player.getEntityId());
+        NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(packet, player);
 	}
 
 	public static Entity teleportEntityInterdimentional(Entity entity, MinecraftServer server, int sourceDim, int targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) throws WrongUsageException 
@@ -256,51 +255,24 @@ public class TeleportUtil {
         
         WorldServer sourceWorld = server.getWorld(sourceDim);
         WorldServer targetWorld = server.getWorld(targetDim);
-
-        //hotfix for entities that don't handle onDeath() for what it's made for dropping actual items
-        List<ItemStack> stacks = new ArrayList();
-        if (!entity.isDead && entity instanceof IInventory) 
-        {
-           IInventory inventory = (IInventory)entity;
-           for(int i=0;i<inventory.getSizeInventory();i++)
-           {
-        	   ItemStack stack = inventory.getStackInSlot(i);
-        	   stacks.add(stack);
-           }
-           inventory.clear();
-        }
-
         entity.dimension = targetDim;
-
-        sourceWorld.removeEntity(entity);
-        entity.isDead = false;
-        entity.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
-        sourceWorld.updateEntityWithOptionalForce(entity, false);
-
         Entity newEntity = EntityList.newEntity(entity.getClass(), targetWorld);
+        
         if (newEntity != null) 
         {
         	try
         	{
         		newEntity.copyDataFromOld(entity);
         		newEntity.setLocationAndAngles(xCoord, yCoord, zCoord, yaw, pitch);
-        		//hotfix for minecarts and anything else that breaks onDeath() method
-        		if(newEntity instanceof IInventory)
-        		{
-        			IInventory inventory = (IInventory)newEntity;
-        			int index = 0;
-        			for(ItemStack stack : stacks)
-        			{
-        				inventory.setInventorySlotContents(index,stack);
-        				index++;
-        			}
-        			inventory.markDirty();
-        		}
         		boolean flag = newEntity.forceSpawn;
         		newEntity.forceSpawn = true;
         		targetWorld.spawnEntity(newEntity);
         		newEntity.forceSpawn = flag;
         		targetWorld.updateEntityWithOptionalForce(newEntity, false);
+        		
+                sourceWorld.removeEntity(entity);
+                entity.setDropItemsWhenDead(false);
+                sourceWorld.updateEntityWithOptionalForce(entity, false);
         	}
         	catch(Throwable t)
         	{
@@ -308,8 +280,6 @@ public class TeleportUtil {
         		return null;
         	}
         }
-
-        entity.isDead = true;
         sourceWorld.resetUpdateEntityTick();
         targetWorld.resetUpdateEntityTick();
 

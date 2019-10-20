@@ -319,15 +319,23 @@ public class EntityUtil {
 	
 	public static Entity getEntityJockey(NBTTagCompound compound, World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn, MobSpawnerBaseLogic logic, boolean additionalMounts)
 	{
+		boolean cachedSpawn = LibEvents.getSpawn(worldIn);
+		boolean cachedSound = LibEvents.getSound(worldIn);
+		boolean cachedMsg = LibEvents.getMsg(worldIn);
+		
 		LibEvents.setSpawn(worldIn, false);
-		LibEvents.setCanPlaySound(worldIn, false);
 		if(worldIn.isRemote)
+		{
+			LibEvents.setSound(worldIn, false);
 			LibEvents.setCanSendMsg(worldIn, false);
+		}
 		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic, additionalMounts);
-		LibEvents.setCanPlaySound(worldIn, true);
-		LibEvents.setSpawn(worldIn, true);
+		LibEvents.setSpawn(worldIn, cachedSpawn);
 		if(worldIn.isRemote)
-			LibEvents.setCanSendMsg(worldIn, true);
+		{
+			LibEvents.setSound(worldIn, cachedSound);
+			LibEvents.setCanSendMsg(worldIn, cachedMsg);
+		}
 		if(base == null)
 			return null;
 		
@@ -368,6 +376,9 @@ public class EntityUtil {
 	 */
 	public static Entity getEntity(NBTTagCompound nbt, World world, double x, double y, double z, boolean useInterface, MobSpawnerBaseLogic logic, boolean additionalMounts) 
 	{
+		long worldTime = world.getWorldTime();
+		long worldTotalTime = world.getTotalWorldTime();
+		
 		Entity e = null;
 		if(getEntityProps(nbt) > 0)
 		{
@@ -412,6 +423,11 @@ public class EntityUtil {
 			{
 				EntityUtil.setInitSpawned(e);
 			}
+		}
+		if(world.isRemote)
+		{
+			world.setWorldTime(worldTime);
+			world.setTotalWorldTime(worldTotalTime);
 		}
 		return e;
 	}
@@ -747,7 +763,9 @@ public class EntityUtil {
 		if(list == null)
 			list = EntityList.getEntityNameList();
 		
-		LibEvents.canPlaySound = false;
+		System.out.println("cache to false");
+		boolean cachedSound = LibEvents.getSound(world);
+		LibEvents.setSound(world, false);
 		
 		for(EnumCreatureType type : EnumCreatureType.values())
 			cacheEndEnts(Biomes.SKY.getSpawnableList(type));
@@ -860,7 +878,7 @@ public class EntityUtil {
 			System.out.println("blacklistNBT:" + ent_blacklist_nbt);
 			System.out.println("blacklist CMD:" + ent_blacklist_commandsender);
 		}
-		LibEvents.canPlaySound = true;
+		LibEvents.setSound(world, cachedSound);
 		cached = true;
 	}
 	

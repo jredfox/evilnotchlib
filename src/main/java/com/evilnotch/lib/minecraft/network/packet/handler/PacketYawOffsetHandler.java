@@ -11,7 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 public class PacketYawOffsetHandler extends MessegeBase<PacketYawOffset>{
 
 	@Override
-	public void handleClientSide(PacketYawOffset message, EntityPlayer p) 
+	public void handleClientSide(PacketYawOffset message, EntityPlayer player) 
 	{
 		Minecraft.getMinecraft().addScheduledTask(() -> 
 		{
@@ -21,9 +21,9 @@ public class PacketYawOffsetHandler extends MessegeBase<PacketYawOffset>{
 				System.out.println("invalid packet recieved for player:" + message.id);
 				return;
 			}
-			EntityLivingBase player = (EntityLivingBase)e;
-			player.renderYawOffset = message.yawOffsetRender;
-			player.prevRenderYawOffset = message.yawOffsetRender;
+			EntityLivingBase living = (EntityLivingBase)e;
+			living.renderYawOffset = message.yawOffsetRender;
+			living.prevRenderYawOffset = message.yawOffsetRender;
 		});
 	}
 

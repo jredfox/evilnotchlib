@@ -643,15 +643,15 @@ public class FakeWorld extends World{
    @Override
    public long getTotalWorldTime() 
    {
-	   return 1L;
+	   return 1000L;
    }
    @Override
-   public long getWorldTime() {
-	   return 1L;
-	}
-   @Override
-   public void setWorldTime(long par1) {
+   public long getWorldTime() 
+   {
+	   return 1000L;
    }
+   @Override
+   public void setWorldTime(long par1) {}
    @Override
    public BlockPos getSpawnPoint()
    {
