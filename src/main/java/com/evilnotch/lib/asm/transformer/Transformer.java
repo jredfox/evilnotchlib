@@ -49,7 +49,9 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.util.WeightedSpawnerEntity",
     	"net.minecraft.enchantment.Enchantment",
     	"net.minecraft.client.multiplayer.WorldClient",
-    	"net.minecraft.client.renderer.entity.RenderManager"
+    	"net.minecraft.client.renderer.entity.RenderManager",
+    	"net.minecraft.client.gui.GuiNewChat",
+    	"net.minecraft.client.gui.GuiIngame"
     });
     
     @Override
@@ -212,6 +214,14 @@ public class Transformer implements IClassTransformer
                 
                 case 18:
                 	GeneralTransformer.patchRenderManager(classNode);
+                break;
+                
+                case 19:
+                	GeneralTransformer.transformChat(classNode);
+                break;
+                
+                case 20:
+                	GeneralTransformer.transformChatOverlay(classNode);
                 break;
             }
             

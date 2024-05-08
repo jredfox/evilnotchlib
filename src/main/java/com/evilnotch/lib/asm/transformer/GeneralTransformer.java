@@ -224,4 +224,34 @@ public class GeneralTransformer {
 		list.add(l15);
 		node.instructions.insert(spot, list);
 	}
+
+	public static void transformChat(ClassNode classNode) 
+	{
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("printChatMessageWithOptionalDeletion", "func_146234_a").toString(), "(Lnet/minecraft/util/text/ITextComponent;I)V");
+		InsnList list = new InsnList();
+		
+		//if(!MinecraftForge.EVENT_BUS.post(new MessageEvent.Print(chatComponent, chatLineId))) return;
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
+		list.add(new TypeInsnNode(Opcodes.NEW, "com/evilnotch/lib/minecraft/event/client/MessageEvent$Print"));
+		list.add(new InsnNode(Opcodes.DUP));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		list.add(new VarInsnNode(Opcodes.ILOAD, 2));
+		list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "com/evilnotch/lib/minecraft/event/client/MessageEvent$Print", "<init>", "(Lnet/minecraft/util/text/ITextComponent;I)V", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
+		LabelNode l1 = new LabelNode();
+		list.add(new JumpInsnNode(Opcodes.IFEQ, l1));
+		LabelNode l2 = new LabelNode();
+		list.add(l2);
+		list.add(new InsnNode(Opcodes.RETURN));
+		list.add(l1);
+		
+		AbstractInsnNode spot = ASMHelper.getFirstInstruction(node);
+		node.instructions.insert(list);
+	}
+
+	public static void transformChatOverlay(ClassNode classNode) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

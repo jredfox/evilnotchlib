@@ -41,9 +41,17 @@ public class MessageEvent extends Event {
 	 */
 	public static class Print extends MessageEvent
 	{
+		public int indent;
+		
 		public Print(ITextComponent txt)
 		{
+			this(txt, 0);
+		}
+		
+		public Print(ITextComponent txt, int i)
+		{
 			super(txt);
+			this.indent = i;
 		}
 	}
 
