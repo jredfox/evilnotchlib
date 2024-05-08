@@ -22,3 +22,4 @@ src/main/resources/assets/silkspawners/asm/srg/MobSpawnerBaseLogic
 src/main/resources/assets/silkspawners/asm/deob/MobSpawnerBaseLogic
 src/main/java/net/minecraft/item/ItemMonsterPlacer.java
 src/main/java/net/minecraft/client/gui/GuiNewChat.java
+src/main/java/net/minecraft/client/gui/GuiIngame.java

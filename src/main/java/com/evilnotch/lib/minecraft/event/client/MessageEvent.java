@@ -1,6 +1,8 @@
 package com.evilnotch.lib.minecraft.event.client;
 
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -14,14 +16,22 @@ public class MessageEvent extends Event {
 		this.text = txt;
 	}
 	
+	public MessageEvent(String txt)
+	{
+		this.text = new TextComponentString(txt);
+	}
+	
 	/**
-	 * Fires Before IChatListeners
+	 * Fires When adding a MSG to the command history
 	 */
 	public static class Add extends MessageEvent
 	{
-		public Add(ITextComponent txt)
+		ChatType type;
+		
+		public Add(ChatType type, ITextComponent txt)
 		{
 			super(txt);
+			this.type = type;
 		}
 	}
 	
@@ -30,9 +40,18 @@ public class MessageEvent extends Event {
 	 */
 	public static class Overlay extends MessageEvent
 	{
-		public Overlay(ITextComponent txt)
+		boolean animateColor;
+		
+		public Overlay(String txt, boolean color)
 		{
 			super(txt);
+			this.animateColor = color;
+		}
+		
+		public Overlay(ITextComponent txt, boolean color)
+		{
+			super(txt);
+			this.animateColor = color;
 		}
 	}
 	
@@ -53,6 +72,24 @@ public class MessageEvent extends Event {
 			super(txt);
 			this.indent = i;
 		}
+	}
+	
+	/**
+	 * Fires when the client tries to send a msg to the server
+	 */
+	public static class Send extends MessageEvent
+	{
+
+		public Send(ITextComponent txt) 
+		{
+			super(txt);
+		}
+		
+		public Send(String txt) 
+		{
+			super(txt);
+		}
+		
 	}
 
 }

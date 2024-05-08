@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -137,7 +138,7 @@ public class LibEvents {
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void stopMsg(MessageEvent event)
 	{
-//		event.setCanceled(true);
+		event.setCanceled(true);
 	}
 	
 		
