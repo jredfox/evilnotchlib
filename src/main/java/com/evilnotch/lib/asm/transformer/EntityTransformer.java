@@ -303,7 +303,7 @@ public class EntityTransformer implements IClassTransformer{
         node.instructions.insertBefore(start, insert2);
         
         //add the chat event
-        EntityPlayerMP
+        /*EntityPlayerMP
 		MethodNode node2 = ASMHelper.getMethodNode(classNode, new MCPSidedString("sendStatusMessage", "func_146105_b").toString(), "(Lnet/minecraft/util/text/ITextComponent;Z)V");
 		InsnList list = new InsnList();
 		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
@@ -319,7 +319,7 @@ public class EntityTransformer implements IClassTransformer{
 		list.add(l2);
 		list.add(new InsnNode(Opcodes.RETURN));
 		list.add(l1);
-		node2.instructions.insert(ASMHelper.getFirstInstruction(node2), list);
+		node2.instructions.insert(ASMHelper.getFirstInstruction(node2), list);*/
 
 		/*
 		 * 

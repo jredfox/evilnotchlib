@@ -2,6 +2,7 @@ package com.evilnotch.lib.asm.transformer;
 
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Manifest;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -65,14 +66,22 @@ public class Transformer implements IClassTransformer
 	{
 		try
 		{
-			System.out.println("Fixing Forge Dupe Loading Byte Class Cache(net.minecraft.launchwrapper.LaunchClassLoader.resourceCache)");
+			System.out.println("Fixing RAM Leak LaunchClassLoader.resourceCache");
 			Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
 			init.clear();
 			ReflectionUtil.setObject(Launch.classLoader, new DummyMap<String,byte[]>(), LaunchClassLoader.class, "resourceCache");
-			System.out.println("Fixing Forge Dupe Loading Clas(net.minecraft.launchwrapper.LaunchClassLoader.cachedClasses)");
+			System.out.println("Fixing RAM Leak LaunchClassLoader.cachedClasses");
 			Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");
 			transformedCache.clear();
 			ReflectionUtil.setObject(Launch.classLoader, new DummyMap<String,Class<?>>(), LaunchClassLoader.class, "cachedClasses");
+			
+			if(ConfigCore.reflect_pkg)
+			{
+				System.out.println("Fixing RAM Leak LaunchClassLoader.packageManifests");
+				Map<Package, Manifest> init_pkg = (Map<Package, Manifest>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "packageManifests");
+				init_pkg.clear();
+				ReflectionUtil.setObject(Launch.classLoader, new DummyMap<String,byte[]>(), LaunchClassLoader.class, "packageManifests");
+			}
 		}
 		catch(Throwable t)
 		{

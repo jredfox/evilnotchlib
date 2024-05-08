@@ -11,6 +11,18 @@ public class DummyMap<K,V> extends HashMap<K,V>{
 	}
 	
 	@Override
+	public int size()
+	{
+		return 0;
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		return true;
+	}
+	
+	@Override
 	public V put(K key, V value)
 	{
 		return null;

@@ -2,12 +2,15 @@ package com.evilnotch.lib.main.loader;
 
 import java.io.File;
 import java.util.Map;
+import java.util.jar.Manifest;
 
 import org.apache.logging.log4j.Logger;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPMappings;
+import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
@@ -33,6 +36,7 @@ import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.world.FakeWorld;
+import com.evilnotch.lib.util.simple.DummyMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -108,9 +112,21 @@ public class LoaderMain {
 	{
 		Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
 		Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");
-		int sizeA = init.size();
-		int sizeB = transformedCache.size();
-		System.out.println("Did the clearing keep it's original form? resourceCache:" + (init.size() == 0) + " size:" + init.size() + " transformedCache:" + transformedCache.size());
+		Map<Package, Manifest> init_pkg = (Map<Package, Manifest>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "packageManifests");
+		int sizeA = init == null ? -1 : init.size();
+		int sizeB = transformedCache == null ? -1 : transformedCache.size();
+		int sizeC = init_pkg == null ? -1 : init_pkg.size();
+		
+		System.out.print("Checking LaunchClassLoader\r\n\r\n");
+		if(init != null && !(init instanceof DummyMap))
+			System.err.println("LaunchClassLoader Failed to Replace resourceCache with DummyMap size:" + sizeA);
+		if(transformedCache != null && !(transformedCache instanceof DummyMap))
+			System.err.println("LaunchClassLoader Failed to Replace cachedClasses with DummyMap size:" + sizeB);
+		if(ConfigCore.reflect_pkg && init_pkg != null && !(init_pkg instanceof DummyMap))
+			System.err.println("LaunchClassLoader Failed to Replace packageManifests with DummyMap size:" + sizeC);
+		
+		if(sizeA == -1 || sizeB == -1 || sizeC == -1)
+			System.err.println("LaunchClassLoader ERROR Getting Fields: resourceCache ERRORED:" + (init == null) + " cachedClasses ERRORED:" + (transformedCache == null) + " packageManifests ERRORED:" + (init_pkg == null));
 	}
 
 	private static void loaderMainPreInit(FMLPreInitializationEvent e) 
@@ -174,7 +190,7 @@ public class LoaderMain {
 	/**
 	 * stop foamfix fixer from being broken use mine instead
 	 */
-	private static void loadfoamFixFixer() 
+	private static void loadfoamFixFixer()
 	{
 		if(Loader.isModLoaded("foamfix"))
 		{
@@ -184,11 +200,19 @@ public class LoaderMain {
 				Object instance = ReflectionUtil.getObject(null, foamFixShared, "config");
 				ReflectionUtil.setObject(instance, false, ReflectionUtil.classForName("pl.asie.foamfix.shared.FoamFixConfig"), "lwWeakenResourceCache");
 				System.out.println("Successfully Disabled Broken Foamfix's fix on LaunchClassLoader#resourceCache");
+				
+				if(ConfigCore.reflect_pkg)
+				{
+					ReflectionUtil.setObject(instance, false, ReflectionUtil.classForName("pl.asie.foamfix.shared.FoamFixConfig"), "lwRemovePackageManifestMap");
+					System.out.println("Successfully Disabled Foamfix's fix on LaunchClassLoader#packageManifests");
+				}
 			}
 			catch(Throwable t)
 			{
 				t.printStackTrace();
 			}
+			//If EvilNotchLib loads after foamfix it could have already replaced the mappings again
+			Transformer.stopMemoryOverflow();
 		}
 	}
 
