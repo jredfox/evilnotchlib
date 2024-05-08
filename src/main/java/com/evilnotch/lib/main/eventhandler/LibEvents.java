@@ -8,7 +8,7 @@ import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.capability.CapContainer;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
-import com.evilnotch.lib.minecraft.event.MessageEvent;
+import com.evilnotch.lib.minecraft.event.client.MessageEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
@@ -137,13 +137,7 @@ public class LibEvents {
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void stopMsg(MessageEvent event)
 	{
-		World world = event.getWorld();
-		if(!isCurrentThread(world))
-			return;
-		if(world.isRemote && !canSendMsgClient)
-			event.setCanceled(true);
-		else if(!world.isRemote && !canSendMsgServer)
-			event.setCanceled(true);
+		
 	}
 	
 		
