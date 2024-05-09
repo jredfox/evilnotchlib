@@ -45,6 +45,7 @@ import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.INpc;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.item.EntityEnderEye;
@@ -1214,7 +1215,7 @@ public class EntityUtil {
 		{
 			patchUpdate(entityIn);
 		}
-    	return spawned;
+    	return spawned || entityIn instanceof MultiPartEntityPart;
 	}
 
 }
