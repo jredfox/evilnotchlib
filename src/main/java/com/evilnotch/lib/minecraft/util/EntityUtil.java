@@ -319,18 +319,22 @@ public class EntityUtil {
 	
 	public static Entity getEntityJockey(NBTTagCompound compound, World worldIn, double x, double y, double z,boolean useInterface,boolean attemptSpawn, MobSpawnerBaseLogic logic, boolean additionalMounts)
 	{	
-		LibEvents.setSpawn(false);
+		boolean cachedSound = LibEvents.disableSound.get();
+		boolean cachedMsg = LibEvents.disableMsg.get();
+		boolean cachedSpawn = LibEvents.disableSpawn.get();
+		LibEvents.setSpawnDisable(true);
 		if(worldIn.isRemote)
 		{
-			LibEvents.setSound(false);
-			LibEvents.setMsg(false);
+			LibEvents.setSoundDisable(true);
+			LibEvents.setMsgDisable(true);
 		}
+		
 		Entity base = getEntityStack(compound, worldIn, x, y, z, useInterface, attemptSpawn, logic, additionalMounts);
-		LibEvents.setSpawn(true);
+		LibEvents.setSpawnDisable(cachedSpawn);
 		if(worldIn.isRemote)
 		{
-			LibEvents.setSound(true);
-			LibEvents.setMsg(true);
+			LibEvents.setSoundDisable(cachedSound);
+			LibEvents.setMsgDisable(cachedMsg);
 		}
 		if(base == null)
 			return null;
@@ -759,10 +763,15 @@ public class EntityUtil {
 		if(list == null)
 			list = EntityList.getEntityNameList();
 		
-		LibEvents.setSound(false);
-		
 		for(EnumCreatureType type : EnumCreatureType.values())
 			cacheEndEnts(Biomes.SKY.getSpawnableList(type));
+		
+		boolean cachedSound = LibEvents.disableSound.get();
+		boolean cachedMsg = LibEvents.disableMsg.get();
+		boolean cachedSpawn = LibEvents.disableSpawn.get();
+		LibEvents.setSoundDisable(true);
+		LibEvents.setMsgDisable(true);
+		LibEvents.setSpawnDisable(true);
 		
 		for(ResourceLocation loc : list)
 		{
@@ -872,7 +881,9 @@ public class EntityUtil {
 			System.out.println("blacklistNBT:" + ent_blacklist_nbt);
 			System.out.println("blacklist CMD:" + ent_blacklist_commandsender);
 		}
-		LibEvents.setSound(true);
+		LibEvents.setSoundDisable(cachedSound);
+		LibEvents.setMsgDisable(cachedMsg);
+		LibEvents.setSpawnDisable(cachedSpawn);
 		cached = true;
 	}
 	

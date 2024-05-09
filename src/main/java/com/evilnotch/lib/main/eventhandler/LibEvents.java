@@ -14,6 +14,7 @@ import com.evilnotch.lib.minecraft.event.client.MessageEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -122,5 +123,20 @@ public class LibEvents {
 	public static void setSound(boolean enabled)
 	{
 		disableSound.set(!enabled);
+	}
+	
+	public static void setMsgDisable(boolean disable)
+	{
+		disableMsg.set(disable);
+	}
+
+	public static void setSpawnDisable(boolean disable)
+	{
+		disableSpawn.set(disable);
+	}
+
+	public static void setSoundDisable(boolean disable)
+	{
+		disableSound.set(disable);
 	}
 }
