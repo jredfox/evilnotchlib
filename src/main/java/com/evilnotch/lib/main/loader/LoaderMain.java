@@ -118,7 +118,6 @@ public class LoaderMain {
 		int sizeB = transformedCache == null ? -1 : transformedCache.size();
 		int sizeC = init_pkg == null ? -1 : init_pkg.size();
 		
-		System.out.print("Checking LaunchClassLoader\r\n\r\n");
 		if(init != null && !(init instanceof DummyMap))
 			System.err.println("LaunchClassLoader Failed to Replace resourceCache with DummyMap size:" + sizeA);
 		if(transformedCache != null && !(transformedCache instanceof DummyMap))

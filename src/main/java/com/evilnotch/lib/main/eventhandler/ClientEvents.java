@@ -21,6 +21,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -97,6 +98,13 @@ public class ClientEvents {
 				}
 			}
 		}
+	}
+	
+	@SubscribeEvent(priority=EventPriority.LOWEST)
+	public void stopSounds(PlaySoundEvent event)
+	{
+		if(LibEvents.disableSound.get())
+			event.setResultSound(null);
 	}
 	
 }

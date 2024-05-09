@@ -96,13 +96,6 @@ public class LibEvents {
 			event.setCanceled(true);
 	}
 	
-	@SubscribeEvent(priority=EventPriority.LOWEST)
-	public void stopSounds(PlaySoundEvent event)
-	{
-		if(disableSound.get())
-			event.setResultSound(null);
-	}
-	
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void stopMsg(MessageEvent event)
 	{
