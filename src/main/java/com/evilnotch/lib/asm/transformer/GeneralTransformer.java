@@ -16,6 +16,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LineNumberNode;
+import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -250,6 +251,25 @@ public class GeneralTransformer {
 		
 		AbstractInsnNode spot = ASMHelper.getFirstInstruction(node);
 		node.instructions.insert(spot, list);
+		
+		//if(MinecraftForge.EVENT_BUS.post(new MessageEvent.Add(message))) return
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("addToSentMessages", "func_146239_a").toString(), "(Ljava/lang/String;)V");
+		InsnList l = new InsnList();
+		l.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
+		l.add(new TypeInsnNode(Opcodes.NEW, "com/evilnotch/lib/minecraft/event/client/MessageEvent$Add"));
+		l.add(new InsnNode(Opcodes.DUP));
+		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		l.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "com/evilnotch/lib/minecraft/event/client/MessageEvent$Add", "<init>", "(Ljava/lang/String;)V", false));
+		l.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
+		LabelNode label1 = new LabelNode();
+		l.add(new JumpInsnNode(Opcodes.IFEQ, label1));
+		LabelNode label2 = new LabelNode();
+		l.add(label2);
+		l.add(new InsnNode(Opcodes.RETURN));
+		l.add(label1);
+		
+		AbstractInsnNode spot2 = ASMHelper.getFirstInstruction(m);
+		m.instructions.insert(spot2, l);
 	}
 	
 	public static void transformChatOverlay(ClassNode classNode) 
@@ -274,15 +294,15 @@ public class GeneralTransformer {
 		AbstractInsnNode spot = ASMHelper.getFirstInstruction(node);
 		node.instructions.insert(spot, li);
 		
-		//if(MinecraftForge.EVENT_BUS.post(new MessageEvent.Add(chatTypeIn, message))) return;
+		//if(MinecraftForge.EVENT_BUS.post(new MessageEvent.Say(chatTypeIn, message))) return;
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("addChatMessage", "func_191742_a").toString(), "(Lnet/minecraft/util/text/ChatType;Lnet/minecraft/util/text/ITextComponent;)V");
 		InsnList list = new InsnList();
 		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/MinecraftForge", "EVENT_BUS", "Lnet/minecraftforge/fml/common/eventhandler/EventBus;"));
-		list.add(new TypeInsnNode(Opcodes.NEW, "com/evilnotch/lib/minecraft/event/client/MessageEvent$Add"));
+		list.add(new TypeInsnNode(Opcodes.NEW, "com/evilnotch/lib/minecraft/event/client/MessageEvent$Say"));
 		list.add(new InsnNode(Opcodes.DUP));
 		list.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		list.add(new VarInsnNode(Opcodes.ALOAD, 2));
-		list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "com/evilnotch/lib/minecraft/event/client/MessageEvent$Add", "<init>", "(Lnet/minecraft/util/text/ChatType;Lnet/minecraft/util/text/ITextComponent;)V", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "com/evilnotch/lib/minecraft/event/client/MessageEvent$Say", "<init>", "(Lnet/minecraft/util/text/ChatType;Lnet/minecraft/util/text/ITextComponent;)V", false));
 		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraftforge/fml/common/eventhandler/EventBus", "post", "(Lnet/minecraftforge/fml/common/eventhandler/Event;)Z", false));
 		LabelNode label1 = new LabelNode();
 		list.add(new JumpInsnNode(Opcodes.IFEQ, label1));

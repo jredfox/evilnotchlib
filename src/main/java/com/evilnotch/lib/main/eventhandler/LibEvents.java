@@ -138,7 +138,8 @@ public class LibEvents {
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void stopMsg(MessageEvent event)
 	{
-		event.setCanceled(true);
+		System.out.println(event.text.getFormattedText());
+//		event.setCanceled(true);
 	}
 	
 		

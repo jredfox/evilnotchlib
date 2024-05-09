@@ -15,6 +15,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -334,10 +335,39 @@ public class ASMHelper
 		return null;
 	}
 	
+	public static LabelNode getFirstLabelNode(MethodNode method) 
+	{
+		for(AbstractInsnNode obj : method.instructions.toArray())
+			if(obj instanceof LabelNode)
+				return (LabelNode) obj;
+		return null;
+	}
+	
+	/**
+	 * Gets the Last LabelNode either before the return of the method or last label
+	 */
+	public static LabelNode getLastLabelNode(MethodNode method, boolean afterReturn)
+	{
+		AbstractInsnNode[] arr = method.instructions.toArray();
+		boolean found = afterReturn;
+		for(int i=arr.length-1;i>=0;i--)
+		{
+			AbstractInsnNode ab = arr[i];
+			if(!found && isReturnOpcode(ab.getOpcode()))
+				found = true;
+			
+			if(found && ab instanceof LabelNode)
+			{
+				return (LabelNode) ab;
+			}
+		}
+		return null;
+	}
+	
 	public static AbstractInsnNode getLastInstruction(MethodNode method)
 	{
 		AbstractInsnNode[] arr = method.instructions.toArray();
-		for(int i=arr.length;i>=0;i--)
+		for(int i=arr.length-1;i>=0;i--)
 		{
 			AbstractInsnNode ab = arr[i];
 			int opcode = ab.getOpcode();

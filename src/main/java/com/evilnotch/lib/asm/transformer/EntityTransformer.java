@@ -24,6 +24,7 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.minecraft.event.client.MessageEvent;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -38,7 +39,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.entity.item.EntityPainting",
     	"net.minecraft.entity.player.EntityPlayerMP",
     	"net.minecraft.entity.monster.EntityZombie",
-    	"net.minecraft.entity.monster.EntityShulker"
+    	"net.minecraft.entity.monster.EntityShulker",
+    	"net.minecraft.client.entity.EntityPlayerSP"
     });
 
 	@Override
@@ -90,6 +92,10 @@ public class EntityTransformer implements IClassTransformer{
                 case 5:
                 	patchShulker(classNode);
                 break;
+                
+                case 6:
+                	transformPlayerClient(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -107,6 +113,31 @@ public class EntityTransformer implements IClassTransformer{
         	t.printStackTrace();
         }
 		return null;
+	}
+
+	public static void transformPlayerClient(ClassNode classNode)
+	{
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("sendChatMessage", "func_71165_d").toString(), "(Ljava/lang/String;)V");
+		InsnList li = new InsnList();
+		
+		/*
+		 *  message = MessageEvent.Send(message);
+    		if(message == null)
+    			return
+		 */
+		li.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/event/client/MessageEvent", "Send", "(Ljava/lang/String;)Ljava/lang/String;", false));
+		li.add(new VarInsnNode(Opcodes.ASTORE, 1));
+		li.add(new LabelNode());
+		li.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		LabelNode l2 = new LabelNode();
+		li.add(new JumpInsnNode(Opcodes.IFNONNULL, l2));
+		LabelNode l3 = new LabelNode();
+		li.add(l3);
+		li.add(new InsnNode(Opcodes.RETURN));
+		li.add(l2);
+		
+		node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
 	}
 
 	public static void patchShulker(ClassNode classNode) 
