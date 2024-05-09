@@ -311,5 +311,6 @@ public class GeneralTransformer {
 		list.add(new InsnNode(Opcodes.RETURN));
 		list.add(label1);
 		m.instructions.insert(ASMHelper.getFirstInstruction(m), list);
+		
 	}
 }

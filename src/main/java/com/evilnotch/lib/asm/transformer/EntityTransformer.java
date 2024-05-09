@@ -40,7 +40,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.entity.player.EntityPlayerMP",
     	"net.minecraft.entity.monster.EntityZombie",
     	"net.minecraft.entity.monster.EntityShulker",
-    	"net.minecraft.client.entity.EntityPlayerSP"
+    	"net.minecraft.client.entity.EntityPlayerSP",
+    	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService"
     });
 
 	@Override
@@ -96,6 +97,11 @@ public class EntityTransformer implements IClassTransformer{
                 case 6:
                 	transformPlayerClient(classNode);
                 break;
+                
+                case 7:
+                	if(ConfigCore.asm_patchLanSkins)
+                		patchLanSkins(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -112,7 +118,20 @@ public class EntityTransformer implements IClassTransformer{
         {
         	t.printStackTrace();
         }
-		return null;
+		return classToTransform;
+	}
+
+	public static void patchLanSkins(ClassNode classNode)
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, "getTextures", "(Lcom/mojang/authlib/GameProfile;Z)Ljava/util/Map;");
+		JumpInsnNode jump = (JumpInsnNode) ASMHelper.getFirstInstruction(m, Opcodes.ILOAD).getNext();
+		LabelNode label = jump.label;
+		
+		//append && JavaUtil.returnFalse() so that lan skins works again
+		InsnList li = new InsnList();
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/util/JavaUtil", "returnFalse", "()Z", false));
+		li.add(new JumpInsnNode(Opcodes.IFEQ, label));
+		m.instructions.insert(jump, li);
 	}
 
 	public static void transformPlayerClient(ClassNode classNode)

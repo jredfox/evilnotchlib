@@ -14,6 +14,7 @@ public class ConfigCore {
 	public static boolean asm_middleClickEvent = true;
 	public static boolean asm_entityPatch = true;
 	public static boolean asm_enchantmentNameFix = true;
+	public static boolean asm_patchLanSkins = true;
 	public static boolean  reflect_pkg = true;
 	
 	public static boolean fixPlayerDataSP;
@@ -37,6 +38,7 @@ public class ConfigCore {
 		asm_middleClickEvent = config.get("asm","middleClickEvent",true).getBoolean();
 		asm_entityPatch = config.get("asm","asm_entityPatch",true).getBoolean();
 		asm_enchantmentNameFix = config.get("asm","asm_enchantmentNameFix",true).getBoolean();
+		asm_patchLanSkins = config.get("asm","asm_patchLanSkins",true).getBoolean();
 		
 		fixPlayerDataSP = config.get("general","fixHostPlayerDataSP",true).getBoolean();
 		
