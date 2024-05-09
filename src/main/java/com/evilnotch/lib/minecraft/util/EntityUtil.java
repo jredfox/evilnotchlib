@@ -759,7 +759,6 @@ public class EntityUtil {
 		if(list == null)
 			list = EntityList.getEntityNameList();
 		
-		System.out.println("cache to false");
 		LibEvents.setSound(false);
 		
 		for(EnumCreatureType type : EnumCreatureType.values())
