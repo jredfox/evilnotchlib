@@ -1210,12 +1210,16 @@ public class EntityUtil {
 	 */
 	public static boolean patchEntityUpdate(Entity entityIn) 
 	{
+		//Check WhiteList of Allowed Entities to update while not in the world
+		if(entityIn instanceof MultiPartEntityPart)
+			return true;
+		
 		boolean spawned = EntityUtil.addedToWorld(entityIn);
 		if(!spawned)
 		{
 			patchUpdate(entityIn);
 		}
-    	return spawned || entityIn instanceof MultiPartEntityPart;
+    	return spawned;
 	}
 
 }
