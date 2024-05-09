@@ -1,8 +1,10 @@
 package com.evilnotch.lib.main.eventhandler;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.capability.CapContainer;
@@ -11,23 +13,17 @@ import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.event.client.MessageEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -88,131 +84,43 @@ public class LibEvents {
 		 }
 	 }
 	 
-	public static boolean canSpawnClient = true;
-	public static boolean canSpawnServer = true;
+	public static ThreadLocal<Boolean> disableSpawn = ThreadLocal.withInitial(() -> false);
+	public static ThreadLocal<Boolean> disableSound = ThreadLocal.withInitial(() -> false);
+	public static ThreadLocal<Boolean> disableMsg = ThreadLocal.withInitial(() -> false);
 		
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void stopSpawning(EntityJoinWorldEvent event)
 	{
-		World world = event.getWorld();
-		Entity entity = event.getEntity();
-		
-		if(!isCurrentThread(world) || entity == null)
-		{
-			return;
-		}
-			
-		if(world.isRemote && !canSpawnClient)
-		{
+		if(disableSpawn.get())
 			event.setCanceled(true);
-		}
-		else if(!world.isRemote && !canSpawnServer)
-		{
-			event.setCanceled(true);
-		}
 	}
 	
-	public static boolean canPlaySoundClient = true;
-	public static boolean canPlaySoundServer = true;
 	@SubscribeEvent(priority=EventPriority.LOWEST)
 	public void stopSounds(PlaySoundEvent event)
 	{
-		Side side = FMLCommonHandler.instance().getEffectiveSide();
-		boolean isRemote = side == Side.CLIENT;
-		if(!isCurrentThread(isRemote))
-		{
-			return;//allow multi threading to still play sounds from packets
-		}
-		if(isRemote && !canPlaySoundClient)
-		{
+		if(disableSound.get())
 			event.setResultSound(null);
-		}
-		else if(!isRemote && !canPlaySoundServer)
-		{
-			event.setResultSound(null);
-		}
 	}
 	
-	public static boolean canSendMsgClient = true;
-	public static boolean canSendMsgServer = true;
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void stopMsg(MessageEvent event)
 	{
-		System.out.println(event.text.getFormattedText());
-//		event.setCanceled(true);
+		if(disableMsg.get())
+			event.setCanceled(true);
 	}
 	
-		
-	public static boolean isCurrentThread(World w)
+	public static void setMsg(boolean enabled)
 	{
-		return isCurrentThread(w.isRemote);
-	}
-	
-	public static boolean isCurrentThread(boolean isRemote) 
-	{
-		if(isRemote)
-		{
-			return ClientProxy.isCurrentThread();
-		}
-		else
-		{
-			return Thread.currentThread() == LoaderMain.serverThread;
-		}
+		disableMsg.set(!enabled);
 	}
 
-
-	public static void setSpawn(World world, boolean value)
+	public static void setSpawn(boolean enabled)
 	{
-		if(world.isRemote)
-		{
-			canSpawnClient = value;
-		}
-		else
-		{
-			canSpawnServer = value;
-		}
-	}
-	
-	/**
-	 * ignores server side args
-	 */
-	public static void setSound(World world, boolean value)
-	{
-		if(world.isRemote)
-		{
-			canPlaySoundClient = value;
-		}
-		else
-		{
-			canPlaySoundServer = value;
-		}
-	}
-	
-	public static void setCanSendMsg(World world, boolean value)
-	{
-		if(world.isRemote)
-		{
-			canSendMsgClient = value;
-		}
-		else
-		{
-			canSendMsgServer = value;
-		}
-	}
-	
-	public static boolean getSpawn(World world)
-	{
-		return world.isRemote ? canSpawnClient : canSpawnServer;
+		disableSpawn.set(!enabled);
 	}
 
-
-	public static boolean getSound(World world) 
+	public static void setSound(boolean enabled)
 	{
-		return world.isRemote ? canPlaySoundClient : canPlaySoundServer;
-	}
-	
-	public static boolean getMsg(World world) 
-	{
-		return world.isRemote ? canSendMsgClient : canSendMsgServer;
+		disableSound.set(!enabled);
 	}
 }
