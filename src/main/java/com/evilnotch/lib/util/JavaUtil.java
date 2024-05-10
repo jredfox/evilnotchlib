@@ -252,10 +252,22 @@ public class JavaUtil {
 	 */
 	public static String getPublicIp() throws IOException 
 	{
-		URL whatismyip = new URL("http://checkip.amazonaws.com");
-		BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-		String ip = in.readLine(); //you get the IP as a String
-		return ip.trim();
+		BufferedReader in = null;
+		try
+		{
+			URL whatismyip = new URL("http://checkip.amazonaws.com");
+			in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+			String ip = in.readLine(); //you get the IP as a String
+			return ip.trim();
+		}
+		catch(Throwable t)
+		{
+			throw t;
+		}
+		finally
+		{
+			IOUtils.closeQuietly(in);
+		}
 	}
 	/**
 	 * your current computer adress's ip
@@ -1386,13 +1398,19 @@ public class JavaUtil {
 	public static final JSONParser jsonParser = new JSONParser();
 	public static JSONObject getJson(File armor) 
 	{
+		FileReader r = null;
 		try 
 		{
-			return (JSONObject) jsonParser.parse(new FileReader(armor));
+			r = new FileReader(armor);
+			return (JSONObject) jsonParser.parse(r);
 		} 
 		catch (IOException | JSONParseException e) 
 		{
 			e.printStackTrace();
+		}
+		finally
+		{
+			IOUtils.closeQuietly(r);
 		}
 		return null;
 	}

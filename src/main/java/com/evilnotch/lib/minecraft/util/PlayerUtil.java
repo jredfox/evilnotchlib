@@ -303,7 +303,6 @@ public class PlayerUtil {
 	 */
 	public static void rightClickBlockSucess(RightClickBlock e, EntityPlayer p) 
 	{
-//		cancelRightClickBlock(e, true);
   		e.setResult(Result.ALLOW);
 	}
 	

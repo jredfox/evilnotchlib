@@ -17,7 +17,7 @@ public class MainJava {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args) throws IOException, JSONParseException
 	{
-		
+		System.out.println(JavaUtil.getPublicIp());
 	}
 
 }
