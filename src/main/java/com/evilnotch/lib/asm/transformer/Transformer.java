@@ -51,7 +51,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.client.multiplayer.WorldClient",
     	"net.minecraft.client.renderer.entity.RenderManager",
     	"net.minecraft.client.gui.GuiNewChat",
-    	"net.minecraft.client.gui.GuiIngame"
+    	"net.minecraft.client.gui.GuiIngame",
+    	"net.minecraft.client.renderer.ImageBufferDownload"
     });
     
     @Override
@@ -222,6 +223,10 @@ public class Transformer implements IClassTransformer
                 
                 case 20:
                 	GeneralTransformer.transformChatOverlay(classNode);
+                break;
+                
+                case 21:
+                	GeneralTransformer.transformSkinTrans(classNode);
                 break;
             }
             

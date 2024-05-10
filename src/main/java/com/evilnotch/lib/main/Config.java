@@ -18,6 +18,7 @@ public class Config {
 	public static boolean replaceTP = true;
 	public static boolean seedOpsOnly = false;
 	public static boolean seedDisplay = true;
+	public static boolean allowskintrans = true;
 	
 	/**
 	 * list of domains that are not acceptable
@@ -35,6 +36,7 @@ public class Config {
 		Configuration config = new Configuration(cfg);
 		config.load();
 		debug = config.get("general", "debug", false).getBoolean();
+		allowskintrans = config.get("general", "allowSkinTransparency", true).getBoolean();
 		tpAllowCrossDim = config.get("general", "tpAllowCrossDim", true).getBoolean();
 		replaceTP = config.get("general", "tpReplace", true).getBoolean();
 		seedOpsOnly = config.get("general", "seedOpsOnly", false).getBoolean();

@@ -10,6 +10,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -25,6 +26,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.minecraft.event.client.MessageEvent;
+import com.evilnotch.lib.minecraft.event.client.SkinTransparencyEvent;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -312,5 +314,35 @@ public class GeneralTransformer {
 		list.add(label1);
 		m.instructions.insert(ASMHelper.getFirstInstruction(m), list);
 		
+	}
+
+	public static void transformSkinTrans(ClassNode classNode)
+	{
+		//add the allowtrans field to the class
+		ASMHelper.addFeild(classNode, "allowtrans", "Z");
+		
+		//this.allowtrans = SkinTransparencyEvent.allow(this.imageData);
+		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("parseUserSkin", "func_78432_a").toString(), "(Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;");
+		AbstractInsnNode spot = ASMHelper.getFieldNode(node, Opcodes.PUTFIELD, "net/minecraft/client/renderer/ImageBufferDownload", new MCPSidedString("imageData", "field_78438_a").toString(), "[I");
+		InsnList toInsert = new InsnList();
+		toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		toInsert.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ImageBufferDownload", new MCPSidedString("imageData", "field_78438_a").toString(), "[I"));
+		toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/event/client/SkinTransparencyEvent", "allow", "([I)Z", false));
+		toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ImageBufferDownload", "allowtrans", "Z"));
+		node.instructions.insert(spot, toInsert);
+		
+		//if(this.allowtrans) return;
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("setAreaOpaque", "func_78433_b").toString(), "(IIII)V");
+		InsnList li = new InsnList();
+		li.add(new VarInsnNode(ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ImageBufferDownload", "allowtrans", "Z"));
+		LabelNode l1 = new LabelNode();
+		li.add(new JumpInsnNode(Opcodes.IFEQ, l1));
+		LabelNode l2 = new LabelNode();
+		li.add(l2);
+		li.add(new InsnNode(Opcodes.RETURN));
+		li.add(l1);
+		m.instructions.insert(ASMHelper.getFirstInstruction(m), li);
 	}
 }

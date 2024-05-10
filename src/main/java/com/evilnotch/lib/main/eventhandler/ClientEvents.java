@@ -7,6 +7,7 @@ import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.event.client.ClientDisconnectEvent;
+import com.evilnotch.lib.minecraft.event.client.SkinTransparencyEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
@@ -105,6 +106,12 @@ public class ClientEvents {
 	{
 		if(LibEvents.disableSound.get())
 			event.setResultSound(null);
+	}
+	
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void coolskins(SkinTransparencyEvent event)
+	{
+		event.allowTrans = Config.allowskintrans;
 	}
 	
 }
