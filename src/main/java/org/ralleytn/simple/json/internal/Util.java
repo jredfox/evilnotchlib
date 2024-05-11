@@ -924,7 +924,6 @@ public final class Util {
     		} else if(character == '\n') {builder.append("\\n");
     		} else if(character == '\r') {builder.append("\\r");
     		} else if(character == '\t') {builder.append("\\t");
-    		} else if(character == '/')  {builder.append("\\/");
     		} else {
     			
     			if((character >= '\u0000' && character <= '\u001F') ||

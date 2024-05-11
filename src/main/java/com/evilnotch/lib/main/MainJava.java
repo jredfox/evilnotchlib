@@ -1,8 +1,13 @@
 package com.evilnotch.lib.main;
 
+
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
+import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Session;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -31,6 +36,12 @@ public class MainJava {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent e) throws Exception
 	{
+		com.purejava.java.MainJava.fill(Minecraft.getMinecraft().getSession().getUsername());
+		ReflectionUtil.setFinalObject(null, new String[]{".minecraft.net", ".mojang.com", "crafatar.com", ".imgur.com"}, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
+		String[] strs = (String[]) ReflectionUtil.getObject(null, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
+		for(String s : strs)
+			System.out.println(s);
+		
 		LoaderMain.loadInit(e);
 	}
 	

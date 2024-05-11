@@ -1,10 +1,19 @@
 package com.evilnotch.lib.minecraft.util;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
+import org.ralleytn.simple.json.JSONObject;
+import org.ralleytn.simple.json.JSONParser;
+
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
@@ -15,6 +24,7 @@ import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -189,6 +199,9 @@ public class PlayerUtil {
 
     public static void patchUUID(GameProfile gameprofile) 
     {
+    	if(Config.LANSkins)
+    		patchLANSkin(gameprofile);
+    	
     	//set the inital value of the player's uuid to what it's suppose to be
         UUID init = EntityPlayer.getUUID(gameprofile);
         UUID actual = getServerPlayerUUID(gameprofile);
@@ -201,6 +214,39 @@ public class PlayerUtil {
         }
 	}
     
+	public static void patchLANSkin(GameProfile gameprofile) 
+	{
+		if(gameprofile.getName() == null)
+		{
+			System.err.println("Error Unable to Patch LAN Skin GameProfile Has No Username:" + gameprofile.getId());
+			return;
+		}
+		String username = gameprofile.getName().toLowerCase();
+		PropertyMap props = gameprofile.getProperties();
+	}
+	
+	public static String getMojangUUID(String username)
+	{
+		BufferedReader stream = null;
+		try
+		{
+			URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
+			stream = new BufferedReader(new InputStreamReader(url.openStream()));
+			JSONParser parser = new JSONParser();
+			JSONObject json = (JSONObject) parser.parse(stream);
+			String id = (String) json.get("id");
+			return id;
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		finally
+		{
+			IOUtils.closeQuietly(stream);
+		}
+	}
+
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
 	{
 		TickServerEvent.kicker.put(p, new PointId(0,ticks,msg) );
