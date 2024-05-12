@@ -199,8 +199,8 @@ public class PlayerUtil {
 
     public static void patchUUID(GameProfile gameprofile) 
     {
-    	if(Config.LANSkins)
-    		patchLANSkin(gameprofile);
+    	//if(Config.LANSkins)
+    		//patchLANSkin(gameprofile);
     	
     	//set the inital value of the player's uuid to what it's suppose to be
         UUID init = EntityPlayer.getUUID(gameprofile);

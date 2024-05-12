@@ -8,6 +8,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -38,7 +40,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.ralleytn.simple.json.JSONArray;
 import org.ralleytn.simple.json.JSONObject;
 import org.ralleytn.simple.json.JSONParseException;
 import org.ralleytn.simple.json.JSONParser;
@@ -52,6 +56,7 @@ import com.evilnotch.lib.util.primitive.ShortObj;
 import com.evilnotch.lib.util.simple.ICopy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -1058,6 +1063,12 @@ public class JavaUtil {
 		}
 		return false;
 	}
+	
+	public static String toBase64(String str) 
+	{
+		return new String(Base64.encodeBase64(str.getBytes()), StandardCharsets.UTF_8);
+	}
+	
 	public static JSONObject toJsonFrom64(String base64) 
 	{
 		byte[] out = org.apache.commons.codec.binary.Base64.decodeBase64(base64.getBytes());
@@ -1125,13 +1136,18 @@ public class JavaUtil {
 		JavaUtil.saveFileLines(JavaUtil.<String>asArray(new Object[]{toPrettyFormat(json.toString())} ), file, utf8);
 	}
 	
+	public static void saveJSONArray(JSONArray json, File file) 
+	{
+		JavaUtil.saveFileLines(JavaUtil.<String>asArray(new Object[]{toPrettyFormat(json.toString())} ), file, true);
+	}
+	
     /**
 	 * Convert a JSON string to freindly printed version
 	*/
 	public static String toPrettyFormat(String jsonString) 
 	{
 		JsonParser parser = new JsonParser();
-		JsonObject json = parser.parse(jsonString).getAsJsonObject();
+		JsonElement json = parser.parse(jsonString);
 		Gson gson = new GsonBuilder().serializeNulls().disableHtmlEscaping().setPrettyPrinting().create();
 		String prettyJson = gson.toJson(json);
 	    return prettyJson.replaceAll("\n", "\r\n");
@@ -1415,6 +1431,25 @@ public class JavaUtil {
 		return null;
 	}
 	
+	public static JSONArray getJsonArray(File f)
+	{
+		BufferedReader r = null;
+		try 
+		{
+			r = new BufferedReader(new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8) );
+			return (JSONArray) jsonParser.parse(r);
+		} 
+		catch (IOException | JSONParseException e) 
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			IOUtils.closeQuietly(r);
+		}
+		return null;
+	}
+	
 	public static int[] getStaticArrayInts(String str) 
 	{
 		str = str.substring(1, str.length()-1);
@@ -1434,5 +1469,49 @@ public class JavaUtil {
 	{
 		return value != null && value.getClass().isArray();
 	}
+	
+	public static final byte[] buffer = new byte[524288];
+	/**
+	 * needed to copy input to output with closing stream safely
+	 */
+	public static void copy(InputStream in, OutputStream out, boolean close) throws IOException
+	{
+		try
+		{
+			int length;
+   	 		while ((length = in.read(buffer)) > 0)
+   	 		{
+   	 			out.write(buffer, 0, length);
+   	 		}
+		}
+		catch(Exception e)
+		{
+			throw e;
+		}
+		finally
+		{
+   	 		if(close)
+   	 		{
+   	 			close(in);
+   	 			close(out);
+   	 		}
+		}
+	}
+	
+	public static void close(Closeable clos)
+	{
+		try
+		{
+			if (clos != null)
+			{
+				clos.close();
+			}
+		} 
+		catch (IOException var3) 
+		{
+			var3.printStackTrace();
+		}
+	}
+
 	
 }

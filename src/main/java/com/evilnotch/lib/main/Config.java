@@ -18,8 +18,14 @@ public class Config {
 	public static boolean replaceTP = true;
 	public static boolean seedOpsOnly = false;
 	public static boolean seedDisplay = true;
+	
+	//start skin fixes
 	public static boolean allowskintrans = true;
-	public static boolean LANSkins = true;
+	public static boolean fixSkins = true;
+	public static int skinCacheMax = 1000;
+	public static long skinCacheHours = 48;
+	public static String cape = "";
+	public static String skin = "";
 	
 	/**
 	 * list of domains that are not acceptable
@@ -33,16 +39,21 @@ public class Config {
 	public static void loadConfig(File d)
 	{
 		if(cfg == null)
-			cfg = new File(d,MainJava.MODID + "/" + MainJava.MODID + ".cfg");
+			cfg = new File(d, MainJava.MODID + "/" + MainJava.MODID + ".cfg");
 		Configuration config = new Configuration(cfg);
 		config.load();
 		debug = config.get("general", "debug", false).getBoolean();
-		allowskintrans = config.get("general", "allowSkinTransparency", true).getBoolean();
-		LANSkins = config.get("general", "PatchLANSkins", true).getBoolean();
 		tpAllowCrossDim = config.get("general", "tpAllowCrossDim", true).getBoolean();
 		replaceTP = config.get("general", "tpReplace", true).getBoolean();
 		seedOpsOnly = config.get("general", "seedOpsOnly", false).getBoolean();
 		seedDisplay = config.get("general", "seedF3", true).getBoolean();
+		
+		allowskintrans = config.get("skins", "allowSkinTransparency", true).getBoolean();
+		fixSkins = config.get("skins", "fixSkins", true).getBoolean();
+		skinCacheMax = config.get("skins", "skinCacheMax", skinCacheMax).getInt();
+		skinCacheHours = config.get("skins", "skinCacheMax", skinCacheHours).getInt();
+		skin = config.get("skins", "skin", "", "Input a Different Username").getString();
+		cape = config.get("skins", "cape", "", "Override Your Skin's Cape with a URL Pointing to textures.minecraft.net").getString();
 		
 		//entity cache data for black list and allow certain entities to pass through
 		cacheEntDeny = JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));
