@@ -1061,7 +1061,7 @@ public class JavaUtil {
 	public static JSONObject toJsonFrom64(String base64) 
 	{
 		byte[] out = org.apache.commons.codec.binary.Base64.decodeBase64(base64.getBytes());
-		String str = new String(out,StandardCharsets.UTF_8);
+		String str = new String(out, StandardCharsets.UTF_8);
 		JSONParser parser = new JSONParser();
 		try 
 		{

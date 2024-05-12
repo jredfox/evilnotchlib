@@ -1,8 +1,6 @@
 package com.purejava.java;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -13,15 +11,15 @@ import java.util.Collection;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.ralleytn.simple.json.JSONArray;
 import org.ralleytn.simple.json.JSONObject;
 import org.ralleytn.simple.json.JSONParseException;
 import org.ralleytn.simple.json.JSONParser;
 
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.simple.RomanNumerals;
+import com.google.common.collect.Iterables;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 
@@ -35,7 +33,51 @@ public class MainJava {
 	{
 		int a = PlayerUtil.nbts.size();
 		long ms = System.currentTimeMillis();
-		fill("Miclee");
+//		fill("Miclee");
+	}
+	
+	public static void RefreshSkin()
+	{
+		if(shouldRefreshSkin())
+		{
+			System.out.println("Refreshing Skin");
+		}
+		else
+		{
+			System.out.println("Not Refreshing SKIN");
+		}
+	}
+	
+	public static boolean shouldRefreshSkin()
+	{
+		try
+		{
+			Minecraft mc = Minecraft.getMinecraft();
+			Session session = mc.getSession();
+			PropertyMap prop = mc.getProfileProperties();
+			Collection<Property> textureMap = prop.get("textures");
+			Property p = (Property) JavaUtil.getFirst(textureMap);
+			//missing or corrupted textures
+			if(p == null || p.getValue() == null)
+				return true;
+			
+			String base64str = p.getValue();
+			JSONObject jprops = JavaUtil.toJsonFrom64(base64str);
+			
+			//correcupted base64 json
+			if(jprops == null)
+				return true;
+			
+			JSONObject jtexture = jprops.getJSONObject("textures");
+			
+			return false;
+		}
+		//If Exception occurs getting property map then the property map was null or corrupted Refresh the skin
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return true;
 	}
 	
 	public static void fill(String username)
@@ -48,7 +90,8 @@ public class MainJava {
 			return;
 		}
 		
-		String uuid = json.getString("id").replace("-", "");
+		String orguuid = json.getString("id");
+		String uuid = orguuid.replace("-", "");
 		
 		//Create the decompiled JSON
 		JSONObject props = new JSONObject();
@@ -60,7 +103,7 @@ public class MainJava {
 		props.put("textures", textures);
 		
 		//Use craftar.com when possible as their cache is updated every 20-60 minuets
-		if(JavaUtil.isOnline("crafatar.com"))
+		if(JavaUtil.returnFalse() && JavaUtil.isOnline("crafatar.com"))
 		{
 			//Add the skin
 			JSONObject skin = new JSONObject();
@@ -71,7 +114,7 @@ public class MainJava {
 			if(HasCraftarCape(uuid))
 			{
 				JSONObject cape = new JSONObject();
-				cape.put("url", "https://i.imgur.com/3Lm3rfx.png");
+				cape.put("url", "https://crafatar.com/capes/" + orguuid);
 				textures.put("CAPE", cape);
 			}
 		}
@@ -96,13 +139,15 @@ public class MainJava {
 		}
 		
 		//update properties
-		String base64json = Base64.encodeBase64String(props.toString().getBytes());
+		String base64json = Base64.encodeBase64String(JavaUtil.toPrettyFormat(props.toString()).getBytes());
 		properties.removeAll("textures");
 		properties.put("textures", new EvilProps("textures", base64json));
 		
 		ReflectionUtil.setObject(Minecraft.getMinecraft().getSession(), null, Session.class, "properties");
-		ReflectionUtil.setFinalObject(Minecraft.getMinecraft(), properties, Minecraft.class, "profileProperties");
+		ReflectionUtil.setFinalObject(Minecraft.getMinecraft(), properties, Minecraft.class, new MCPSidedString("profileProperties","field_181038_N").toString());
 		Minecraft.getMinecraft().getSession().setProperties(properties);
+		
+		System.out.println(base64json);
 	}
 	
 	public static class EvilProps extends Property{
@@ -121,7 +166,6 @@ public class MainJava {
 		 }
 
 	}
-
 	public static boolean HasCraftarCape(String uuid)
 	{
 		URLConnection obj = null;

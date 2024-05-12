@@ -7,6 +7,7 @@ import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.Session;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -30,18 +31,15 @@ public class MainJava {
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
 	{	
+//		com.purejava.java.MainJava.RefreshSkin();
+//		Object o = null;
+//		o.toString();
 		LoaderMain.loadpreinit(e);
 	}
 	
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent e) throws Exception
 	{
-		com.purejava.java.MainJava.fill(Minecraft.getMinecraft().getSession().getUsername());
-		ReflectionUtil.setFinalObject(null, new String[]{".minecraft.net", ".mojang.com", "crafatar.com", ".imgur.com"}, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
-		String[] strs = (String[]) ReflectionUtil.getObject(null, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
-		for(String s : strs)
-			System.out.println(s);
-		
 		LoaderMain.loadInit(e);
 	}
 	
