@@ -31,9 +31,6 @@ public class MainJava {
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
 	{	
-//		com.purejava.java.MainJava.RefreshSkin();
-//		Object o = null;
-//		o.toString();
 		LoaderMain.loadpreinit(e);
 	}
 	

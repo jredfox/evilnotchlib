@@ -1,5 +1,6 @@
 package com.evilnotch.lib.main.skin;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,14 +13,24 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.ralleytn.simple.json.JSONArray;
 import org.ralleytn.simple.json.JSONObject;
 import org.ralleytn.simple.json.JSONParser;
 
+import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.util.JavaUtil;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Session;
 
 public class SkinCache {
 	
@@ -37,6 +48,11 @@ public class SkinCache {
 			
 			JSONObject j = (JSONObject) o;
 			SkinEntry data = new SkinEntry(j);
+			if(hasExpired(data))
+			{
+				System.out.println("removing expired skin from cache:" + data.user + " uuid:" + data.uuid);
+				continue;
+			}
 			skins.put(data.user, data);
 			i++;
 			if(i >= Config.skinCacheMax)
@@ -60,17 +76,18 @@ public class SkinCache {
 		return skins.containsKey(user) ? skins.get(user) : cacheSkin(user);
 	}
 
-	public void refresh(String user, boolean force)
+	public SkinEntry refresh(String user, boolean force)
 	{
 		user = user.toLowerCase();
-		if(force || shouldRefresh(user))
+		if(force || shouldRefresh(user, true))
 		{
-			System.out.println("Refreshing Skin");
-			cacheSkin(user);
+			System.out.println("Refreshing Skin:" + user);
+			return cacheSkin(user);
 		}
+		return skins.get(user);
 	}
 
-	public boolean shouldRefresh(String user) 
+	public boolean shouldRefresh(String user, boolean checkHashes) 
 	{
 		user = user.toLowerCase();
 		SkinEntry entry = skins.get(user);
@@ -79,50 +96,25 @@ public class SkinCache {
 			return true;
 		
 		//check if it's expired
-		boolean expired = System.currentTimeMillis() >= (entry.cacheTime + ( ( (Config.skinCacheHours * 60L) * 60L) * 1000L) );
-		if(expired)
+		if(hasExpired(entry))
 			return true;
 		
 		//Uses Crafatar.com as a hash checker if they don't match sync with mojang
-		if(JavaUtil.isOnline("crafatar.com"))
+		if(checkHashes && JavaUtil.isOnline("crafatar.com"))
 		{
 			return !entry.skinhash.equals(getCrafatarHash(entry.uuid, false)) || !entry.capehash.equals(getCrafatarHash(entry.uuid, true));
 		}
 		return false;
 	}
 	
+	public boolean hasExpired(SkinEntry entry) 
+	{
+		return System.currentTimeMillis() >= (entry.cacheTime + ( ( (Config.skinCacheHours * 60L) * 60L) * 1000L) );
+	}
+
 	public static String getCrafatarHash(String uuid, boolean isCape)
 	{
-		URLConnection con = null;
-		InputStream in = null;
-		
-		try
-		{
-			URL cape = isCape ? new URL("https://crafatar.com/capes/" + uuid) : new URL("https://crafatar.com/skins/" + uuid);
-			con = cape.openConnection();
-			con.setRequestProperty("User-Agent", "Mozilla");
-			con.setConnectTimeout(3500);
-			in = con.getInputStream();
-			return getMD5(in);
-		}
-		catch(Exception e)
-		{
-			
-		}
-		finally
-		{
-			IOUtils.closeQuietly(in);
-			if(con instanceof HttpURLConnection)
-				((HttpURLConnection)con).disconnect();
-		}
-		return "";
-	}
-	
-	public static String getMD5(InputStream input) throws IOException
-	{
-		String hash = DigestUtils.md5Hex(input).toLowerCase();
-		input.close();
-		return hash;
+		return JavaUtil.getOnlinePNGMD5(isCape ? ("https://crafatar.com/capes/" + uuid) : ("https://crafatar.com/skins/" + uuid));
 	}
 
 	public boolean playerdb = false;
@@ -155,10 +147,19 @@ public class SkinCache {
 		JSONObject decoded = JavaUtil.toJsonFrom64(base64payload);
 		JSONObject textures = decoded.getJSONObject("textures");
 		String skin = textures.getJSONObject("SKIN").getString("url");
-		String cape = textures.containsKey("CAPE") ? textures.getJSONObject("CAPE").getString("url") : "";
+		String cape = "";
+		String skinhash = JavaUtil.getOnlinePNGMD5(skin);
+		String capehash = "";
 		
-//		return new SkinEntry(uuid, user, System.currentTimeMillis(), );
-		return null;
+		if(textures.containsKey("CAPE"))
+		{
+			cape = textures.getJSONObject("CAPE").getString("url");
+			capehash = JavaUtil.getOnlinePNGMD5(cape);
+		}
+		
+		SkinEntry entry = new SkinEntry(uuid, user, System.currentTimeMillis(), skin, cape, skinhash, capehash);
+		skins.put(user, entry);
+		return entry;
 	}
 	
 	/**
@@ -221,6 +222,41 @@ public class SkinCache {
 		} finally {
 			IOUtils.closeQuietly(stream);
 		}
+	}
+
+	public static SkinCache INSTANCE;
+	public static void start() 
+	{
+		System.out.println("Loading Skin Fix");
+		long ms = System.currentTimeMillis();
+		INSTANCE = new SkinCache();
+		INSTANCE.load();
+		Minecraft mc = Minecraft.getMinecraft();
+		Session session = mc.getSession();
+		GameProfile profile = session.getProfile();
+		String username = Config.skin.isEmpty() ? profile.getName() : Config.skin;
+		SkinEntry skin = INSTANCE.refresh(username, false).copy();
+		skin.user = profile.getName();
+		
+		//overide the cape to what the client has sent
+		if(!Config.cape.isEmpty())
+			skin.cape = Config.cape;
+		
+		//Fix the skin if it's not erroring
+		if(skin != null)
+		{
+			String base64payload = skin.encode();
+			PropertyMap properties = new PropertyMap();
+			properties.removeAll("textures");
+			properties.put("textures", new Property("textures", base64payload));
+			
+			ReflectionUtil.setObject(session, null, Session.class, "properties");
+			ReflectionUtil.setFinalObject(mc, properties, Minecraft.class,
+					new MCPSidedString("profileProperties", "field_181038_N").toString());
+			session.setProperties(properties);
+		}
+		INSTANCE.save();
+		JavaUtil.printTime(ms, "Skin Fix Took:");
 	}
 
 }

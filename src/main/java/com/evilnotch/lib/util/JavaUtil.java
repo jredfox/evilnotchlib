@@ -6,6 +6,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -19,10 +20,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -38,9 +41,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
+
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.ralleytn.simple.json.JSONArray;
 import org.ralleytn.simple.json.JSONObject;
@@ -1512,6 +1519,50 @@ public class JavaUtil {
 			var3.printStackTrace();
 		}
 	}
-
+	public static String getOnlinePNGMD5(String str_url) 
+	{
+		URLConnection con = null;
+		InputStream in = null;
+		FileInputStream tmpin = null;
+		
+		try
+		{
+			URL url = new URL(str_url);
+			con = url.openConnection();
+			con.setRequestProperty("User-Agent", "Mozilla");
+			con.setConnectTimeout(3500);
+			in = con.getInputStream();
+			
+			//Remove metadata from the file before hashing it
+			BufferedImage image = ImageIO.read(in);
+			File tmp = new File(System.getProperty("java.io.tmpdir"), "tmp-" + System.currentTimeMillis() + ".png");
+			ImageIO.write(image, "png", tmp);
+			
+			tmpin = new FileInputStream(tmp);
+			String md5 = DigestUtils.md5Hex(tmpin).toLowerCase();
+			tmp.delete();
+			return md5;
+		}
+		catch(Exception e)
+		{
+			
+		}
+		finally
+		{
+			IOUtils.closeQuietly(in);
+			IOUtils.closeQuietly(tmpin);
+			if(con instanceof HttpURLConnection)
+				((HttpURLConnection)con).disconnect();
+		}
+		return "";
+	}
+	
+	/**
+	 * if string is null or blank return blank otherwise return itself
+	 */
+	public static String safeString(String s) 
+	{
+		return s == null || s.trim().isEmpty() ? "" : s;
+	}
 	
 }

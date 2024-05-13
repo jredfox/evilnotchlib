@@ -1,7 +1,9 @@
 package com.purejava.java;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -10,6 +12,8 @@ import java.net.URLConnection;
 import java.security.PublicKey;
 import java.util.Collection;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -37,17 +41,11 @@ public class Main {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args) throws IOException, JSONParseException 
 	{
-		if(JavaUtil.returnTrue())
-		{
-			for(int i=0;i<100;i++)
-				System.out.println(JavaUtil.isOnline("playerdb.co"));
-			return;
-		}
 		String uuid = "4223a2b1-ed37-4577-adb2-d18eca6411f4";
 		SkinCache cache = new SkinCache();
 		cache.load();
 //		cache.skins.put("jredfox", new SkinEntry(uuid, "jredfox", System.currentTimeMillis(), "", "", "6777E74E5A4A26EE22C524BE32033964", "CAEF3C49EBB3F83E83D56826349A0A24"));
-		cache.refresh("jredfox", false);
+		cache.refresh("SubBastion", false);
 		cache.save();
 	}
 

@@ -21,9 +21,9 @@ public class SkinEntry implements ICopy {
 		this.user = username.toLowerCase();
 		this.cacheTime = cacheTime;
 		this.skin = skin;
-		this.cape = cape;
+		this.cape = JavaUtil.safeString(cape);
 		this.skinhash = skinmd5.toLowerCase();
-		this.capehash = capemd5.toLowerCase();
+		this.capehash = JavaUtil.safeString(capemd5).toLowerCase();
 	}
 	
 	public SkinEntry(JSONObject json)
@@ -68,9 +68,12 @@ public class SkinEntry implements ICopy {
 		jskin.put("url", this.skin);
 		textures.put("SKIN", jskin);
 		
-		JSONObject jcape = new JSONObject();
-		jcape.put("url", this.cape);
-		textures.put("CAPE", jcape);
+		if(!this.cape.isEmpty())
+		{
+			JSONObject jcape = new JSONObject();
+			jcape.put("url", this.cape);
+			textures.put("CAPE", jcape);
+		}
 		
 		return json;
 	}

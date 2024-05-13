@@ -4,6 +4,7 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.ClientEvents;
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.command.client.ClientUUID;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
@@ -30,7 +31,7 @@ public class ClientProxy extends ServerProxy{
 	{
 		super.preinit(e);
 		registerEvents();
-		
+		SkinCache.start();
 //		com.purejava.java.MainJava.fill(Minecraft.getMinecraft().getSession().getUsername());
 //		ReflectionUtil.setFinalObject(null, new String[]{".minecraft.net", ".mojang.com", "crafatar.com", ".imgur.com"}, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
 //		String[] strs = (String[]) ReflectionUtil.getObject(null, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
