@@ -39,6 +39,7 @@ public class SkinCache {
 	
 	public void load()
 	{
+		boolean isOnline = JavaUtil.isOnline(null);
 		JSONArray arr = skinCacheLoc.exists() ? JavaUtil.getJsonArray(skinCacheLoc) : new JSONArray();
 		int i = 0;
 		for(Object o : arr)
@@ -48,7 +49,7 @@ public class SkinCache {
 			
 			JSONObject j = (JSONObject) o;
 			SkinEntry data = new SkinEntry(j);
-			if(hasExpired(data))
+			if(isOnline && hasExpired(data))
 			{
 				System.out.println("removing expired skin from cache:" + data.user + " uuid:" + data.uuid);
 				continue;
