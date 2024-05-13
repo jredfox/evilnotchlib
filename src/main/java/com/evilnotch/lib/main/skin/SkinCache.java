@@ -232,6 +232,13 @@ public class SkinCache {
 		long ms = System.currentTimeMillis();
 		INSTANCE = new SkinCache();
 		INSTANCE.load();
+		INSTANCE.refreshClientSkin();
+		INSTANCE.save();
+		JavaUtil.printTime(ms, "Skin Fix Took:");
+	}
+
+	public void refreshClientSkin() 
+	{
 		Minecraft mc = Minecraft.getMinecraft();
 		Session session = mc.getSession();
 		GameProfile profile = session.getProfile();
@@ -256,8 +263,6 @@ public class SkinCache {
 					new MCPSidedString("profileProperties", "field_181038_N").toString());
 			session.setProperties(properties);
 		}
-		INSTANCE.save();
-		JavaUtil.printTime(ms, "Skin Fix Took:");
 	}
 
 }

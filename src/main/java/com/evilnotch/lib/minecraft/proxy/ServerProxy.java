@@ -1,10 +1,17 @@
 package com.evilnotch.lib.minecraft.proxy;
 
+import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.skin.SkinCache;
+import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.Session;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -31,6 +38,11 @@ public class ServerProxy {
 		VanillaBugFixes.playerDataNames = null;
 		VanillaBugFixes.playerFlags.clear();
 		PlayerUtil.nbts.clear();
+	}
+	
+	public void handleUUIDChange(PacketUUID message) 
+	{
+		
 	}
 	
 }

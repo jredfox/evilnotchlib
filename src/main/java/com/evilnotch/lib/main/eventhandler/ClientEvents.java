@@ -3,11 +3,13 @@ package com.evilnotch.lib.main.eventhandler;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.event.client.ClientDisconnectEvent;
 import com.evilnotch.lib.minecraft.event.client.SkinTransparencyEvent;
+import com.evilnotch.lib.minecraft.event.client.UUIDChangeEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
@@ -112,6 +114,12 @@ public class ClientEvents {
 	public void coolskins(SkinTransparencyEvent event)
 	{
 		event.allowTrans = Config.allowskintrans;
+	}
+	
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void uuidchange(UUIDChangeEvent event)
+	{
+		SkinCache.INSTANCE.refreshClientSkin();
 	}
 	
 }
