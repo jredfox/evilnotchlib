@@ -28,3 +28,4 @@ src/main/resources/assets/zevilnotchlib/models/item/creativetabdummy.json
 src/main/java/net/minecraft/client/renderer/ImageBufferDownload.java
 src.rar
 src/main/java/net/minecraft/server/network/NetHandlerLoginServer.java
+src/main/java/net/minecraft/server/management/PlayerList.java

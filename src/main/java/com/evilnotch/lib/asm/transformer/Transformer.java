@@ -114,7 +114,7 @@ public class Transformer implements IClassTransformer
 //                	}
 //                	ASMHelper.replaceMethod(classNode, inputBase + "PlayerList", "getPlayerNBT", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT");
 //                	ASMHelper.replaceMethod(classNode, inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "func_72380_a");
-//                	GeneralTransformer.injectUUIDPatcher(classNode, obfuscated);
+                	GeneralTransformer.injectUUIDPatcher(classNode);
                 break;
                 
                 case 1:

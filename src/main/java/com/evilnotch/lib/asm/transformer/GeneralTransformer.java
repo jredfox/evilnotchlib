@@ -25,9 +25,11 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.event.client.MessageEvent;
 import com.evilnotch.lib.minecraft.event.client.SkinTransparencyEvent;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
+import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 
 import net.minecraftforge.common.MinecraftForge;
 
@@ -58,16 +60,23 @@ public class GeneralTransformer {
 	/**
 	 * injects line EntityUtil.patchUUID(profile); into the classNode
 	 */
-	public static void injectUUIDPatcher(ClassNode playerList, boolean obfuscated) 
+	public static void injectUUIDPatcher(ClassNode classNode) 
 	{
-		 final String method_name = obfuscated ? "func_148545_a" : "createPlayerForUser";
-		 final String method_desc = "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;";
+		 MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("createPlayerForUser", "func_148545_a").toString(), "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;");
 		 
-		 MethodNode method = ASMHelper.getMethodNode(playerList, method_name, method_desc);
-		 InsnList toInsert = new InsnList();
-         toInsert.add(new VarInsnNode(ALOAD, 1));
-         toInsert.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "patchUUID", "(Lcom/mojang/authlib/GameProfile;)V", false));
-         method.instructions.insertBefore(ASMHelper.getFirstInstruction(method, Opcodes.ALOAD), toInsert);
+		 //if(!(profile instanceof EvilGameProfile)) profile = UUIDPatcher.patch(profile);
+		 InsnList li = new InsnList();
+		 li.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		 li.add(new TypeInsnNode(Opcodes.INSTANCEOF, "com/evilnotch/lib/minecraft/auth/EvilGameProfile"));
+		 LabelNode l1 = new LabelNode();
+		 li.add(new JumpInsnNode(Opcodes.IFNE, l1));
+		 LabelNode l2 = new LabelNode();
+		 li.add(l2);
+		 li.add(new VarInsnNode(ALOAD, 1));
+		 li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patch", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
+		 li.add(new VarInsnNode(Opcodes.ASTORE, 1));
+		 li.add(l1);
+		 node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
 	}
     
     /**
@@ -349,6 +358,7 @@ public class GeneralTransformer {
 	public static void patchUUID(ClassNode classNode)
 	{
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("tryAcceptPlayer", "func_147326_c").toString(), "()V");
+		//this.loginGameProfile = UUIDPatcher.patch(gameprofile)
 		String loginGameProfile = new MCPSidedString("loginGameProfile", "field_147337_i").toString();
 		InsnList list = new InsnList();
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
