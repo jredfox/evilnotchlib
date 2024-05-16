@@ -22,6 +22,7 @@ import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
@@ -528,6 +529,11 @@ public class ASMHelper
 		return compare.cst.equals(ab.cst);
 	}
 	
+	public static boolean equals(VarInsnNode obj1, VarInsnNode obj2)
+	{
+		return obj1.getOpcode() == obj2.getOpcode() && obj1.var == obj2.var;
+	}
+	
 	/**
 	 * dumps a file from memory
 	 */
@@ -656,6 +662,19 @@ public class ASMHelper
 			if(current instanceof LineNumberNode || current instanceof LabelNode)
 			{
 				return current;
+			}
+		}
+		return null;
+	}
+
+	public static VarInsnNode getVarInsnNode(MethodNode node, VarInsnNode compare) 
+	{
+		AbstractInsnNode[] arr = node.instructions.toArray();
+		for(AbstractInsnNode ab : arr)
+		{
+			if(ab instanceof VarInsnNode && ASMHelper.equals(compare, (VarInsnNode)ab))
+			{
+				return (VarInsnNode)ab;
 			}
 		}
 		return null;

@@ -145,6 +145,7 @@ public class LoaderMain {
 		MainJava.proxy.preinit(e);
 		
 		GeneralRegistry.load();
+		GeneralRegistry.registerGameRule("PlayerLvlDAT", true);
 		loadEvents();
 		loadfoamFixFixer();
 		CapabilityRegistry.registerRegistry(new CapRegDefaultHandler());

@@ -31,7 +31,7 @@ public class Transformer implements IClassTransformer
 	
     public static final List<String> clazzes = (List<String>)JavaUtil.<String>asArray(new Object[]
     {
-    	"net.minecraft.server.management.PlayerList",
+    	"net.minecraft.server.management.PlayerList", //UUIDPatcher
     	"net.minecraft.tileentity.TileEntityFurnace",
     	"net.minecraft.client.gui.inventory.GuiFurnace",
     	"net.minecraft.item.ItemStack",
@@ -53,7 +53,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.client.gui.GuiNewChat",
     	"net.minecraft.client.gui.GuiIngame",
     	"net.minecraft.client.renderer.ImageBufferDownload",
-    	"net.minecraft.server.network.NetHandlerLoginServer" //UUIDPatcher
+    	"net.minecraft.server.network.NetHandlerLoginServer", //UUIDPatcher
+    	"net.minecraftforge.fml.common.network.handshake.NetworkDispatcher" //UUIDPatcher
     });
     
     @Override
@@ -107,13 +108,11 @@ public class Transformer implements IClassTransformer
             switch(index)
             {
                 case 0:
-//                	if(!ConfigCore.asm_playerlist)
-//                	{
-//                		print(name);
-//                		return classToTransform;
-//                	}
-//                	ASMHelper.replaceMethod(classNode, inputBase + "PlayerList", "getPlayerNBT", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT");
-//                	ASMHelper.replaceMethod(classNode, inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "func_72380_a");
+                	if(!ConfigCore.asm_playerlist)
+                	{
+                		print(name);
+                		return classToTransform;
+                	}
                 	GeneralTransformer.injectUUIDPatcher(classNode);
                 break;
                 
@@ -232,6 +231,10 @@ public class Transformer implements IClassTransformer
                 
                 case 22:
                 	GeneralTransformer.patchUUID(classNode);
+                break;
+                
+                case 23:
+                	GeneralTransformer.patchLoginNBT(classNode);
                 break;
             }
             

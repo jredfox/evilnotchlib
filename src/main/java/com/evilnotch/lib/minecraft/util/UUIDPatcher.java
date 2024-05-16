@@ -8,7 +8,13 @@ import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.datafix.FixTypes;
+import net.minecraft.world.World;
+import net.minecraft.world.storage.SaveHandler;
+import net.minecraftforge.event.ForgeEventFactory;
 
 public class UUIDPatcher {
 
@@ -23,6 +29,7 @@ public class UUIDPatcher {
 			id = cached;
 		}
 		EvilGameProfile profile = new EvilGameProfile(id, old);
+		PlayerUtil.patchLANSkin(profile);
 		return profile;
 	}
 	
@@ -65,5 +72,43 @@ public class UUIDPatcher {
         UUID uuid = profile.getId();
         return uuid != null ? uuid : UUID.nameUUIDFromBytes(("OfflinePlayer:" + profile.getName()).getBytes(StandardCharsets.UTF_8));
     }
+
+	public static NBTTagCompound getLevelDat(World w, NBTTagCompound level) 
+	{
+		return w.getGameRules().getBoolean("PlayerLvlDAT") ? level : null;
+	}
+
+	/**
+	 * if the EvilGameProfile has login NBT return true
+	 */
+	public static boolean hasLogin(EntityPlayerMP player) 
+	{
+		GameProfile p = player.getGameProfile();
+		return p instanceof EvilGameProfile ? ((EvilGameProfile)p).login != null : false;
+	}
+	
+	/**
+	 * get the login NBT without safety checks
+	 */
+	public static NBTTagCompound getLogin(EntityPlayerMP player)
+	{
+		return ((EvilGameProfile)player.getGameProfile()).login;
+	}
+
+	public static NBTTagCompound fireLogin(PlayerList list, EntityPlayerMP playerIn)
+	{
+		EvilGameProfile profile = (EvilGameProfile) playerIn.getGameProfile();
+		NBTTagCompound nbt = ((SaveHandler)list.playerDataManager).dataFixer.process(FixTypes.PLAYER, profile.login);
+		playerIn.readFromNBT(nbt);
+		ForgeEventFactory.firePlayerLoadingEvent(playerIn, list.playerDataManager, playerIn.getUniqueID().toString());
+		return nbt;
+	}
+
+	public static void setLogin(EntityPlayerMP player, NBTTagCompound playerNBT)
+	{
+		GameProfile p = player.getGameProfile();
+		if(p instanceof EvilGameProfile)
+			((EvilGameProfile)player.getGameProfile()).login = playerNBT;
+	}
 
 }

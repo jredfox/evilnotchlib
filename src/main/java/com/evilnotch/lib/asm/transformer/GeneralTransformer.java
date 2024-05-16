@@ -31,6 +31,7 @@ import com.evilnotch.lib.minecraft.event.client.SkinTransparencyEvent;
 import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
 public class GeneralTransformer {
@@ -70,6 +71,69 @@ public class GeneralTransformer {
 		 li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchCheck", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
 		 li.add(new VarInsnNode(Opcodes.ASTORE, 1));
 		 node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
+		 
+		 //Dissallow Reading of Level.DAT when Player is Owner and the GameRule is false
+		 MethodNode m = ASMHelper.getMethodNode(classNode, "getPlayerNBT", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;");
+		 VarInsnNode spot = ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 2));
+		 
+		 //nbttagcompound = UUIDPatcher.getLevelDat(this.mcServer.worlds[0], nbttagcompound);
+		 InsnList l = new InsnList();
+		 l.add(new VarInsnNode(ALOAD, 0));
+		 l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/management/PlayerList", new MCPSidedString("mcServer", "field_72400_f").toString(), "Lnet/minecraft/server/MinecraftServer;"));
+		 l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/MinecraftServer", new MCPSidedString("worlds", "field_71305_c").toString(), "[Lnet/minecraft/world/WorldServer;"));
+		 l.add(new InsnNode(Opcodes.ICONST_0));
+		 l.add(new InsnNode(Opcodes.AALOAD));
+		 l.add(new VarInsnNode(ALOAD, 2));
+		 l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "getLevelDat", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", false));
+		 l.add(new VarInsnNode(Opcodes.ASTORE, 2));
+		 
+		 m.instructions.insert(spot, l);
+		 
+		 
+		 //if(UUIDPatcher.hasLogin(playerIn)) return UUIDPatcher.getLogin(playerIn);
+		 InsnList clist = new InsnList();
+		 clist.add(new VarInsnNode(ALOAD, 1));
+		 clist.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "hasLogin", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Z", false));
+		 LabelNode clabel = new LabelNode();
+		 clist.add(new JumpInsnNode(Opcodes.IFEQ, clabel));
+		 LabelNode clabel2 = new LabelNode();
+		 clist.add(clabel2);
+		 clist.add(new VarInsnNode(ALOAD, 1));
+		 clist.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "getLogin", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", false));
+		 clist.add(new InsnNode(Opcodes.ARETURN));
+		 clist.add(clabel);
+		 m.instructions.insert(ASMHelper.getFirstInstruction(m), clist);
+		 
+		 //nbttagcompound = UUIDPatcher.getLevelDat(this.mcServer.worlds[0], nbttagcompound);
+		 MethodNode method = ASMHelper.getMethodNode(classNode, new MCPSidedString("readPlayerDataFromFile", "func_72380_a").toString(), "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;");
+		 InsnList list = new InsnList();
+		 list.add(new VarInsnNode(ALOAD, 0));
+		 list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/management/PlayerList", new MCPSidedString("mcServer", "field_72400_f").toString(), "Lnet/minecraft/server/MinecraftServer;"));
+		 list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/MinecraftServer", new MCPSidedString("worlds", "field_71305_c").toString(), "[Lnet/minecraft/world/WorldServer;"));
+		 list.add(new InsnNode(Opcodes.ICONST_0));
+		 list.add(new InsnNode(Opcodes.AALOAD));
+		 list.add(new VarInsnNode(ALOAD, 2));
+		 list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "getLevelDat", "(Lnet/minecraft/world/World;Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;", false));
+		 list.add(new VarInsnNode(Opcodes.ASTORE, 2));
+		 
+		 VarInsnNode spot2 = ASMHelper.getVarInsnNode(method, new VarInsnNode(Opcodes.ASTORE, 2));
+		 method.instructions.insert(spot2, list);
+		 
+		 //if(UUIDPatcher.hasLogin(playerIn)) return UUIDPatcher.fireLogin(this, playerIn);
+		 InsnList rlist = new InsnList();
+		 rlist.add(new VarInsnNode(ALOAD, 1));
+		 rlist.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "hasLogin", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Z", false));
+		 LabelNode r1 = new LabelNode();
+		 rlist.add(new JumpInsnNode(Opcodes.IFEQ, r1));
+		 LabelNode r2 = new LabelNode();
+		 rlist.add(r2);
+		 rlist.add(new VarInsnNode(ALOAD, 0));
+		 rlist.add(new VarInsnNode(ALOAD, 1));
+		 rlist.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "fireLogin", "(Lnet/minecraft/server/management/PlayerList;Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", false));
+		 rlist.add(new InsnNode(Opcodes.ARETURN));
+		 rlist.add(r1);
+		 
+		 method.instructions.insert(ASMHelper.getFirstInstruction(method), rlist);
 	}
     
     /**
@@ -362,6 +426,20 @@ public class GeneralTransformer {
 	
 		AbstractInsnNode spot = ASMHelper.getTypeInsnNode(m, new TypeInsnNode(Opcodes.NEW, "net/minecraft/network/login/server/SPacketLoginSuccess")).getPrevious().getPrevious();
 		m.instructions.insertBefore(spot, list);
+	}
+
+	public static void patchLoginNBT(ClassNode classNode) 
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, "serverInitiateHandshake", "()I");
+		
+		InsnList li = new InsnList();
+		li.add(new VarInsnNode(ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraftforge/fml/common/network/handshake/NetworkDispatcher", "player", "Lnet/minecraft/entity/player/EntityPlayerMP;"));
+		li.add(new VarInsnNode(ALOAD, 1));
+		li.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "setLogin", "(Lnet/minecraft/entity/player/EntityPlayerMP;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+		
+		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/server/management/PlayerList", "getPlayerNBT", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", false).getNext();
+		m.instructions.insert(spot, li);
 	}
 	
 	

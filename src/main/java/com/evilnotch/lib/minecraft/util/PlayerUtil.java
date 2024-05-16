@@ -108,77 +108,6 @@ public class PlayerUtil {
     	}
     }
     
-    public static File getPlayerFile(EntityPlayer player,boolean uuid)
-	{
-		if(uuid)
-			return new File(VanillaBugFixes.playerDataDir,player.getUniqueID().toString() + ".dat");
-		else
-			return new File(VanillaBugFixes.playerDataNames,player.getName() + ".dat");
-	}
-    
-	public static File getPlayerFile(String username,boolean uuid)
-	{
-		if(uuid)
-			return new File(VanillaBugFixes.playerDataDir,username + ".dat");
-		else
-			return new File(VanillaBugFixes.playerDataNames,username + ".dat");
-	}
-	
-	public static File getPlayerFileNameSafley(GameProfile profile)
-	{
-		File file = getPlayerFile(profile.getName(),false);
-		if(!file.exists())
-		{
-			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setString("uuid", profile.getId().toString() );
-			updatePlayerFile(file,nbt);
-		}
-		return file;
-	}
-	
-	/**
-	 * Update Player file
-	 */
-	public static void updatePlayerFile(File file, NBTTagCompound nbt) 
-	{
-		NBTUtil.updateNBTFileSafley(file,nbt);
-	}
-	
-	public static NBTTagCompound getPlayerFileNBT(String display,EntityPlayerMP player,boolean uuidDir) 
-	{
-		return getPlayerFileNBT(getPlayerFile(player, uuidDir),player.mcServer.getPlayerList());
-	}
-	
-	/**
-	 * Gets cached playerdata from filename don't call unless you have the exact string
-	 */
-	public static NBTTagCompound getPlayerFileNBT(File f, PlayerList list) 
-	{
-		NBTTagCompound nbt = NBTUtil.getFileNBTSafley(f);
-		if(nbt != null)
-		{
-			nbt = getFixedPlayerNBT(list,nbt);
-		}
-		return nbt;
-	}
-	
-	private static NBTTagCompound getFixedPlayerNBT(PlayerList playerlist,NBTTagCompound nbt) 
-	{
-		SaveHandler handler = getPlayerDataManager(playerlist);
-		nbt = getDataFixer(handler).process(FixTypes.PLAYER, nbt);
-		return nbt;
-	}
-
-	public static SaveHandler getPlayerDataManager(PlayerList playerList) 
-	{
-		return (SaveHandler) playerList.playerDataManager;
-	}
-	
-	public static DataFixer getDataFixer(SaveHandler handler) 
-	{
-		return (DataFixer) handler.dataFixer;
-	}
-	
 	/**
 	 * this alters both the uuid of the player object and the gameprofile uuid
 	 */
@@ -186,42 +115,6 @@ public class PlayerUtil {
 	{
 		ReflectionUtil.setFinalObject(player.getGameProfile(), uuid, GameProfile.class, "id");
 		EntityUtil.setEntityUUID(player, uuid);
-	}
-
-	public static UUID getServerPlayerUUID(GameProfile profile) 
-	{
-		File file = getPlayerFileNameSafley(profile);//updates player file synced to uuid on login
-		NBTTagCompound nbt = NBTUtil.getFileNBT(file);
-		return UUID.fromString(nbt.getString("uuid"));
-	}
-
-    public static void patchUUID(GameProfile gameprofile) 
-    {	
-    	//set the inital value of the player's uuid to what it's suppose to be
-        UUID init = EntityPlayer.getUUID(gameprofile);
-        UUID actual = getServerPlayerUUID(gameprofile);
-        
-        if(!actual.toString().equals(init.toString()))
-        {
-        	System.out.println("Patching Player UUID uuidPlayer:" + gameprofile.getId() + " with uuidServer:" + actual);
-    		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, "id");
-//    		VanillaBugFixes.playerFlags.add(gameprofile.getName());
-        }
-        
-        String username = gameprofile.getName();
-    	SkinEntry skin = SkinCache.INSTANCE.refresh(username, false).copy();
-    	if(skin != null)
-    	{
-    		//make sure the skin encodes correctly for the user
-    		skin.uuid = actual.toString().replace("-", "");
-    		skin.user = username;
-    		
-    		PropertyMap map = gameprofile.getProperties();
-    		map.removeAll("textures");
-    		String payload = skin.encode();
-    		map.put("textures", new Property(gameprofile.getName(), payload));
-    		System.out.println("payload:" + payload);
-    	}
 	}
     
 	public static void patchLANSkin(GameProfile gameprofile) 
@@ -231,30 +124,22 @@ public class PlayerUtil {
 			System.err.println("Error Unable to Patch LAN Skin GameProfile Has No Username:" + gameprofile.getId());
 			return;
 		}
-		String username = gameprofile.getName().toLowerCase();
+        String username = gameprofile.getName();
+    	SkinEntry skin = SkinCache.INSTANCE.refresh(username, false).copy();
+    	if(skin != null)
+    	{
+    		//make sure the skin encodes correctly for the user
+    		skin.uuid = gameprofile.getId().toString().replace("-", "");
+    		skin.user = username;
+    		
+    		PropertyMap map = gameprofile.getProperties();
+    		map.removeAll("textures");
+    		String payload = skin.encode();
+    		map.put("textures", new Property(gameprofile.getName(), payload));
+    		System.out.println("payload:" + payload);
+    	}
+    	
 		PropertyMap props = gameprofile.getProperties();
-	}
-	
-	public static String getMojangUUID(String username)
-	{
-		BufferedReader stream = null;
-		try
-		{
-			URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
-			stream = new BufferedReader(new InputStreamReader(url.openStream()));
-			JSONParser parser = new JSONParser();
-			JSONObject json = (JSONObject) parser.parse(stream);
-			String id = (String) json.get("id");
-			return id;
-		}
-		catch (Exception e)
-		{
-			return null;
-		}
-		finally
-		{
-			IOUtils.closeQuietly(stream);
-		}
 	}
 
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
