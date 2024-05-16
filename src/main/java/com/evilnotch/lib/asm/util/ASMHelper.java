@@ -16,6 +16,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -522,6 +523,11 @@ public class ASMHelper
 		return compare.getOpcode() == ab.getOpcode() && compare.desc.equals(ab.desc);
 	}
 	
+	public static boolean equals(LdcInsnNode compare, LdcInsnNode ab) 
+	{
+		return compare.cst.equals(ab.cst);
+	}
+	
 	/**
 	 * dumps a file from memory
 	 */
@@ -620,6 +626,19 @@ public class ASMHelper
 			if(ab instanceof TypeInsnNode && ASMHelper.equals(compare, (TypeInsnNode)ab))
 			{
 				return (TypeInsnNode)ab;
+			}
+		}
+		return null;
+	}
+
+	public static LdcInsnNode getLdcInsnNode(MethodNode node, LdcInsnNode compare) 
+	{
+		AbstractInsnNode[] arr = node.instructions.toArray();
+		for(AbstractInsnNode ab : arr)
+		{
+			if(ab instanceof LdcInsnNode && ASMHelper.equals(compare, (LdcInsnNode)ab))
+			{
+				return (LdcInsnNode)ab;
 			}
 		}
 		return null;

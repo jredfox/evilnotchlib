@@ -285,44 +285,36 @@ public class EntityTransformer implements IClassTransformer{
 	/**
 	 * patch seed check
 	 */
-	public static void patchPlayer(ClassNode classNode) 
+	public static void patchPlayer(ClassNode classNode)
     {    
-      	//if ("seed".equals(commandName) && !this.mcServer.isDedicatedServer() && PlayerUtil.isPlayerOwner(this)) return true;
       	MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("canUseCommand","func_70003_b").toString(), "(ILjava/lang/String;)Z");
-      	AbstractInsnNode start = null;
-      	for(AbstractInsnNode ab : node.instructions.toArray())
-      	{
-      	   if(ab.getOpcode() == Opcodes.INVOKEVIRTUAL && ab instanceof MethodInsnNode)
-      	   {
-      		  MethodInsnNode m = (MethodInsnNode)ab;
-      		  if(m.owner.equals("net/minecraft/server/MinecraftServer") && m.name.equals(new MCPSidedString("isDedicatedServer","func_71262_S").toString()) && m.desc.equals("()Z"))
-      		  {
-					start = ab.getNext();
-					break;
-      		  }
-      	   }
-      	}
       	
-      	InsnList insert = new InsnList();
-      	insert.add(new VarInsnNode(Opcodes.ALOAD,0));
-      	insert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "isPlayerOwner", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Z", false));
-        insert.add(new JumpInsnNode(Opcodes.IFEQ, ((JumpInsnNode)start).label));
-        node.instructions.insert(start, insert);
-        
-        //add if(permisionLevel == 0) return true;
-        start = node.instructions.getFirst();
-        
-        InsnList insert2 = new InsnList();
-      	insert2.add(new VarInsnNode(Opcodes.ILOAD, 1));
-      	LabelNode label = new LabelNode();
-      	insert2.add(new JumpInsnNode(Opcodes.IFNE, label) );
-      	LabelNode label2 = new LabelNode();
-      	insert2.add(label2);
-      	insert2.add(new InsnNode(Opcodes.ICONST_1));
-      	insert2.add(new InsnNode(Opcodes.IRETURN));
-      	insert2.add(label);
+      	//makes the seed check never happen
+      	LdcInsnNode strseed = ASMHelper.getLdcInsnNode(node, new LdcInsnNode("seed"));
+      	if(strseed != null)
+      		strseed.cst = "_mc.1.12.2";
       	
-        node.instructions.insertBefore(start, insert2);
+      	//add if(permLevel == 0 || commandName.equals("seed") && PlayerUtil.isPlayerOwner(this)) return true;
+      	InsnList li = new InsnList();
+      	LabelNode l0 = new LabelNode();
+      	li.add(l0);
+      	li.add(new VarInsnNode(Opcodes.ILOAD, 1));
+      	LabelNode l1 = new LabelNode();
+      	li.add(new JumpInsnNode(Opcodes.IFEQ, l1));
+      	li.add(new VarInsnNode(Opcodes.ALOAD, 2));
+      	li.add(new LdcInsnNode("seed"));
+      	li.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z", false));
+      	LabelNode l2 = new LabelNode();
+      	li.add(new JumpInsnNode(Opcodes.IFEQ, l2));
+      	li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+      	li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "isPlayerOwner", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Z", false));
+      	li.add(new JumpInsnNode(Opcodes.IFEQ, l2));
+      	li.add(l1);
+      	li.add(new InsnNode(Opcodes.ICONST_1));
+      	li.add(new InsnNode(Opcodes.IRETURN));
+      	li.add(l2);
+      	
+      	node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
 	}
 
 }

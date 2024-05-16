@@ -271,6 +271,11 @@ public class PlayerUtil {
 	{
 		return player.getName().equals(player.getServer().getServerOwner());
 	}
+	
+	public static boolean isPlayerOwner(String name, MinecraftServer server)
+	{
+		return name.equals(server.getServerOwner());
+	}
 
 	public static TextComponentTranslation msgShutdown = null;
 	public static void disconnectPlayer(EntityPlayerMP player,TextComponentString msg) 

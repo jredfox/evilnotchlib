@@ -26,6 +26,11 @@ public class UUIDPatcher {
 		return profile;
 	}
 	
+	public static GameProfile patchCheck(GameProfile profile)
+	{
+		return profile instanceof EvilGameProfile ? profile : patch(profile);
+	}
+	
 	/**
 	 * Get the Player's Cached UUID from previous logins by providing current uuid and username
 	 */
