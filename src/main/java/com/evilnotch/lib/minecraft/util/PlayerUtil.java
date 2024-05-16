@@ -54,11 +54,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 
 public class PlayerUtil {
-	
-	/**
-	 * used on player login so it doesn't parse twice will self empty login complete so don't expect data to be here long
-	 */
-    public static HashMap<UUID,NBTTagCompound> nbts = new HashMap();
     
     /**
      * send to clipboard with both url and message being the same color
@@ -210,7 +205,7 @@ public class PlayerUtil {
         {
         	System.out.println("Patching Player UUID uuidPlayer:" + gameprofile.getId() + " with uuidServer:" + actual);
     		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, "id");
-    		VanillaBugFixes.playerFlags.add(gameprofile.getName());
+//    		VanillaBugFixes.playerFlags.add(gameprofile.getName());
         }
         
         String username = gameprofile.getName();

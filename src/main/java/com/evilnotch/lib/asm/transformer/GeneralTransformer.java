@@ -64,18 +64,11 @@ public class GeneralTransformer {
 	{
 		 MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("createPlayerForUser", "func_148545_a").toString(), "(Lcom/mojang/authlib/GameProfile;)Lnet/minecraft/entity/player/EntityPlayerMP;");
 		 
-		 //if(!(profile instanceof EvilGameProfile)) profile = UUIDPatcher.patch(profile);
+		 //profile = UUIDPatcher.patchCheck(profile);
 		 InsnList li = new InsnList();
-		 li.add(new VarInsnNode(Opcodes.ALOAD, 1));
-		 li.add(new TypeInsnNode(Opcodes.INSTANCEOF, "com/evilnotch/lib/minecraft/auth/EvilGameProfile"));
-		 LabelNode l1 = new LabelNode();
-		 li.add(new JumpInsnNode(Opcodes.IFNE, l1));
-		 LabelNode l2 = new LabelNode();
-		 li.add(l2);
 		 li.add(new VarInsnNode(ALOAD, 1));
-		 li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patch", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
+		 li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchCheck", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
 		 li.add(new VarInsnNode(Opcodes.ASTORE, 1));
-		 li.add(l1);
 		 node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
 	}
     
@@ -370,17 +363,6 @@ public class GeneralTransformer {
 		AbstractInsnNode spot = ASMHelper.getTypeInsnNode(m, new TypeInsnNode(Opcodes.NEW, "net/minecraft/network/login/server/SPacketLoginSuccess")).getPrevious().getPrevious();
 		m.instructions.insertBefore(spot, list);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

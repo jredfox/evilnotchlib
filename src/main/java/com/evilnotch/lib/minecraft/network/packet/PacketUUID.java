@@ -8,11 +8,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 public class PacketUUID implements IMessage{
 	
 	public UUID uuid = null;
-	public int id;
 	
-	public PacketUUID(int id, UUID uuid)
+	public PacketUUID(UUID uuid)
 	{
-		this.id = id;
 		this.uuid = uuid;
 	}
 	
@@ -27,7 +25,6 @@ public class PacketUUID implements IMessage{
 		long max = buf.readLong();
 		long min = buf.readLong();
 		this.uuid = new UUID(max,min);
-		this.id = buf.readInt();
 	}
 
 	@Override
@@ -37,7 +34,6 @@ public class PacketUUID implements IMessage{
 		long min = this.uuid.getLeastSignificantBits();
 		buf.writeLong(max);
 		buf.writeLong(min);
-		buf.writeInt(this.id);
 	}
 
 }

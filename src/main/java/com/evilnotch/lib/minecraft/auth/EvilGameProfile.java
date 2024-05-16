@@ -6,10 +6,18 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class EvilGameProfile extends GameProfile {
 	
+	/**
+	 * The Original UUID before it get's Patched by the Server
+	 */
 	public UUID org;
+	/**
+	 * The NBTTagCompound of the player during login it's cached so it doesn't get parsed multiple times
+	 */
+	public NBTTagCompound login;
 
 	public EvilGameProfile(UUID id, String name) 
 	{
@@ -21,6 +29,6 @@ public class EvilGameProfile extends GameProfile {
 	{
 		super(id, old.getName());
 		this.getProperties().putAll(old.getProperties());
-		this.org = old instanceof EvilGameProfile ? ((EvilGameProfile)old).org : id;
+		this.org = old instanceof EvilGameProfile ? ((EvilGameProfile)old).org : old.getId();
 	}
 }

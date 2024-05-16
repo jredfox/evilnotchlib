@@ -643,4 +643,21 @@ public class ASMHelper
 		}
 		return null;
 	}
+
+	/**
+	 * Gets the previous LineNumberNode or LabelNode whichever comes first
+	 */
+	public static AbstractInsnNode PreviousLabel(FieldInsnNode f)
+	{
+		AbstractInsnNode current = f;
+		while(current != null)
+		{
+			current = current.getPrevious();
+			if(current instanceof LineNumberNode || current instanceof LabelNode)
+			{
+				return current;
+			}
+		}
+		return null;
+	}
 }

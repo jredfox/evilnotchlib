@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
@@ -13,6 +14,7 @@ import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,22 +43,27 @@ public class VanillaBugFixes {
 	public static File playerDataNames = null;
 	public static File playerDataDir = null;
 	
-	public static Set<String> playerFlags = new HashSet();
 	/**
 	 * send the corrected uuid of the player to the client
 	 */
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void join(PlayerLoggedInEvent e)
 	{
-		if(!e.player.world.isRemote && playerFlags.contains(e.player.getName()))
+		if(e.player.world.isRemote)
+			return;
+		
+		GameProfile prof = e.player.getGameProfile();
+		if(prof instanceof EvilGameProfile)
 		{
-			EntityPlayerMP playerIn = (EntityPlayerMP) e.player;
-			PacketUUID id = new PacketUUID(playerIn.getEntityId(), playerIn.getUniqueID());
-			NetWorkHandler.INSTANCE.sendTo(id, playerIn);
-			playerFlags.remove(e.player.getName());
+			EvilGameProfile profile = (EvilGameProfile)prof;
+			profile.login = null;//clear the login cache NBT as we are now fully logged in
+			if(!profile.org.equals(profile.getId()))
+			{
+				//TODO: get client UUID changes working correctly NetPlayServer
+//				System.out.println("Sending UUID Change to Client:" + e.player.getName());
+//				NetWorkHandler.INSTANCE.sendTo(new PacketUUID(e.player.getUniqueID()), (EntityPlayerMP)e.player);
+			}
 		}
-//		else
-//			NetWorkHandler.INSTANCE.sendTo(new PacketRefreshSkin(), (EntityPlayerMP) e.player);
 	}
 	
 	/**

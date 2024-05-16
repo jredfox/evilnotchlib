@@ -315,6 +315,22 @@ public class EntityTransformer implements IClassTransformer{
       	li.add(l2);
       	
       	node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
-	}
+      	
+      	MethodNode m = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/WorldServer;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/server/management/PlayerInteractionManager;)V");
+      	//UUIDPatcher.patch(profile)
+      	InsnList l = new InsnList();
+      	l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchCheck", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
+      	m.instructions.insertBefore(ASMHelper.getFirstMethodInsn(m, Opcodes.INVOKESPECIAL, "net/minecraft/entity/player/EntityPlayer", "<init>", "(Lnet/minecraft/world/World;Lcom/mojang/authlib/GameProfile;)V", false), l);
+      	
+      	
+      	//profile = this.getGameProfile();
+      	InsnList list = new InsnList();
+      	list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+      	list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayerMP", new MCPSidedString("getGameProfile", "func_146103_bH").toString(), "()Lcom/mojang/authlib/GameProfile;", false));
+      	list.add(new VarInsnNode(Opcodes.ASTORE, 3));
+      	AbstractInsnNode spot = ASMHelper.PreviousLabel(ASMHelper.getFieldNode(m, Opcodes.PUTFIELD, "net/minecraft/server/management/PlayerInteractionManager", new MCPSidedString("player", "field_73090_b").toString(), "Lnet/minecraft/entity/player/EntityPlayerMP;"));
+      	m.instructions.insert(spot, list);
+      	
+    }
 
 }

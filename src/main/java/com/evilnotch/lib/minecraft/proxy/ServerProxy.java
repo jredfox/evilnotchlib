@@ -36,8 +36,6 @@ public class ServerProxy {
 		VanillaBugFixes.worlDir = null;
 		VanillaBugFixes.playerDataDir = null;
 		VanillaBugFixes.playerDataNames = null;
-		VanillaBugFixes.playerFlags.clear();
-		PlayerUtil.nbts.clear();
 	}
 	
 	public void handleUUIDChange(PacketUUID message) 
