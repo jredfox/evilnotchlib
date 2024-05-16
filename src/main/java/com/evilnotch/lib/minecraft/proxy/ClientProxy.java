@@ -37,12 +37,6 @@ public class ClientProxy extends ServerProxy{
 	{
 		super.preinit(e);
 		registerEvents();
-		SkinCache.start();
-//		com.purejava.java.MainJava.fill(Minecraft.getMinecraft().getSession().getUsername());
-//		ReflectionUtil.setFinalObject(null, new String[]{".minecraft.net", ".mojang.com", "crafatar.com", ".imgur.com"}, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
-//		String[] strs = (String[]) ReflectionUtil.getObject(null, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
-//		for(String s : strs)
-//			System.out.println(s);
 	}
 	
 	@Override
@@ -100,6 +94,7 @@ public class ClientProxy extends ServerProxy{
 			PlayerUtil.setPlayerUUID(player, message.uuid);
 			ReflectionUtil.setFinalObject(mc.getSession(), message.uuid.toString().replace("-", ""), Session.class, new MCPSidedString("playerID", "field_148257_b").toString());
 			MinecraftForge.EVENT_BUS.post(new UUIDChangeEvent(org, message.uuid, player));
+//			SkinCache.INSTANCE.refreshClientSkin();
 		});
 	}
 

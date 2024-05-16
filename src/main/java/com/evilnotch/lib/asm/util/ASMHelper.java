@@ -20,6 +20,7 @@ import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
@@ -516,6 +517,11 @@ public class ASMHelper
 		return obj1.name.equals(obj2.name) && obj1.desc.equals(obj2.desc);
 	}
 	
+	public static boolean equals(TypeInsnNode compare, TypeInsnNode ab) 
+	{
+		return compare.getOpcode() == ab.getOpcode() && compare.desc.equals(ab.desc);
+	}
+	
 	/**
 	 * dumps a file from memory
 	 */
@@ -601,6 +607,19 @@ public class ASMHelper
 			if(ab instanceof FieldInsnNode && ASMHelper.equals(compare, (FieldInsnNode)ab))
 			{
 				return (FieldInsnNode)ab;
+			}
+		}
+		return null;
+	}
+
+	public static TypeInsnNode getTypeInsnNode(MethodNode node, TypeInsnNode compare)
+	{
+		AbstractInsnNode[] arr = node.instructions.toArray();
+		for(AbstractInsnNode ab : arr)
+		{
+			if(ab instanceof TypeInsnNode && ASMHelper.equals(compare, (TypeInsnNode)ab))
+			{
+				return (TypeInsnNode)ab;
 			}
 		}
 		return null;

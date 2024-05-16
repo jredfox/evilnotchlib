@@ -17,6 +17,8 @@ import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.skin.SkinCache;
+import com.evilnotch.lib.main.skin.SkinEntry;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
@@ -24,6 +26,7 @@ import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -198,10 +201,7 @@ public class PlayerUtil {
 	}
 
     public static void patchUUID(GameProfile gameprofile) 
-    {
-    	//if(Config.LANSkins)
-    		//patchLANSkin(gameprofile);
-    	
+    {	
     	//set the inital value of the player's uuid to what it's suppose to be
         UUID init = EntityPlayer.getUUID(gameprofile);
         UUID actual = getServerPlayerUUID(gameprofile);
@@ -212,6 +212,21 @@ public class PlayerUtil {
     		ReflectionUtil.setFinalObject(gameprofile, actual, GameProfile.class, "id");
     		VanillaBugFixes.playerFlags.add(gameprofile.getName());
         }
+        
+        String username = gameprofile.getName();
+    	SkinEntry skin = SkinCache.INSTANCE.refresh(username, false).copy();
+    	if(skin != null)
+    	{
+    		//make sure the skin encodes correctly for the user
+    		skin.uuid = actual.toString().replace("-", "");
+    		skin.user = username;
+    		
+    		PropertyMap map = gameprofile.getProperties();
+    		map.removeAll("textures");
+    		String payload = skin.encode();
+    		map.put("textures", new Property(gameprofile.getName(), payload));
+    		System.out.println("payload:" + payload);
+    	}
 	}
     
 	public static void patchLANSkin(GameProfile gameprofile) 

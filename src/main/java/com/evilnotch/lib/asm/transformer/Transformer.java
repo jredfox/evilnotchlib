@@ -52,7 +52,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.client.renderer.entity.RenderManager",
     	"net.minecraft.client.gui.GuiNewChat",
     	"net.minecraft.client.gui.GuiIngame",
-    	"net.minecraft.client.renderer.ImageBufferDownload"
+    	"net.minecraft.client.renderer.ImageBufferDownload",
+    	"net.minecraft.server.network.NetHandlerLoginServer" //UUIDPatcher
     });
     
     @Override
@@ -106,14 +107,14 @@ public class Transformer implements IClassTransformer
             switch(index)
             {
                 case 0:
-                	if(!ConfigCore.asm_playerlist)
-                	{
-                		print(name);
-                		return classToTransform;
-                	}
-                	ASMHelper.replaceMethod(classNode, inputBase + "PlayerList", "getPlayerNBT", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT");
-                	ASMHelper.replaceMethod(classNode, inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "func_72380_a");
-                	GeneralTransformer.injectUUIDPatcher(classNode, obfuscated);
+//                	if(!ConfigCore.asm_playerlist)
+//                	{
+//                		print(name);
+//                		return classToTransform;
+//                	}
+//                	ASMHelper.replaceMethod(classNode, inputBase + "PlayerList", "getPlayerNBT", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "getPlayerNBT");
+//                	ASMHelper.replaceMethod(classNode, inputBase + "PlayerList", "readPlayerDataFromFile", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", "func_72380_a");
+//                	GeneralTransformer.injectUUIDPatcher(classNode, obfuscated);
                 break;
                 
                 case 1:
@@ -227,6 +228,10 @@ public class Transformer implements IClassTransformer
                 
                 case 21:
                 	GeneralTransformer.transformSkinTrans(classNode);
+                break;
+                
+                case 22:
+                	GeneralTransformer.patchUUID(classNode);
                 break;
             }
             

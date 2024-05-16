@@ -345,4 +345,33 @@ public class GeneralTransformer {
 		li.add(l1);
 		m.instructions.insert(ASMHelper.getFirstInstruction(m), li);
 	}
+
+	public static void patchUUID(ClassNode classNode)
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("tryAcceptPlayer", "func_147326_c").toString(), "()V");
+		String loginGameProfile = new MCPSidedString("loginGameProfile", "field_147337_i").toString();
+		InsnList list = new InsnList();
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
+		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patch", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
+		list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
+	
+		AbstractInsnNode spot = ASMHelper.getTypeInsnNode(m, new TypeInsnNode(Opcodes.NEW, "net/minecraft/network/login/server/SPacketLoginSuccess")).getPrevious().getPrevious();
+		m.instructions.insertBefore(spot, list);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

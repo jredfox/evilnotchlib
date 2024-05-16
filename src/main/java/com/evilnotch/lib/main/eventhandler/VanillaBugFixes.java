@@ -55,6 +55,8 @@ public class VanillaBugFixes {
 			NetWorkHandler.INSTANCE.sendTo(id, playerIn);
 			playerFlags.remove(e.player.getName());
 		}
+//		else
+//			NetWorkHandler.INSTANCE.sendTo(new PacketRefreshSkin(), (EntityPlayerMP) e.player);
 	}
 	
 	/**

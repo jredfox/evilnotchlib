@@ -2,6 +2,8 @@ package com.evilnotch.lib.main.eventhandler;
 
 import java.util.List;
 
+import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
@@ -13,12 +15,14 @@ import com.evilnotch.lib.minecraft.event.client.UUIDChangeEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
+import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.Session;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -83,7 +87,7 @@ public class ClientEvents {
 	
 	@SubscribeEvent
 	public void disconnect(ClientDisconnectEvent e)
-	{
+	{ 
 		ClientProxy.clearClientData();
 	}
 	
@@ -114,12 +118,6 @@ public class ClientEvents {
 	public void coolskins(SkinTransparencyEvent event)
 	{
 		event.allowTrans = Config.allowskintrans;
-	}
-	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void uuidchange(UUIDChangeEvent event)
-	{
-		SkinCache.INSTANCE.refreshClientSkin();
 	}
 	
 }

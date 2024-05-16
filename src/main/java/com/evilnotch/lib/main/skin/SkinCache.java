@@ -1,21 +1,13 @@
 package com.evilnotch.lib.main.skin;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.ralleytn.simple.json.JSONArray;
 import org.ralleytn.simple.json.JSONObject;
@@ -28,17 +20,21 @@ import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Session;
 
 public class SkinCache {
 	
-	public HashMap<String, SkinEntry> skins = new HashMap(Config.fixSkins ? 100 : 1);
-	public File skinCacheLoc = new File(System.getProperty("user.dir"), "skinCache.json");
+	public HashMap<String, SkinEntry> skins = new HashMap(100);
+	public File skinCacheLoc = new File(System.getProperty("user.dir"), "skinCacher.json");
 	
 	public void load()
 	{
+		//Update the White listed domains
+		ReflectionUtil.setFinalObject(null, Config.skinDomains, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
+		
 		boolean isOnline = JavaUtil.isOnline(null);
 		JSONArray arr = skinCacheLoc.exists() ? JavaUtil.getJsonArray(skinCacheLoc) : new JSONArray();
 		int i = 0;
@@ -226,15 +222,14 @@ public class SkinCache {
 	}
 
 	public static SkinCache INSTANCE;
-	public static void start() 
+	public static void init() 
 	{
-		System.out.println("Loading Skin Fix");
+		System.out.println("Loading Skin Cache");
 		long ms = System.currentTimeMillis();
 		INSTANCE = new SkinCache();
 		INSTANCE.load();
-		INSTANCE.refreshClientSkin();
 		INSTANCE.save();
-		JavaUtil.printTime(ms, "Skin Fix Took:");
+		JavaUtil.printTime(ms, "Skin Cache Took:");
 	}
 
 	public void refreshClientSkin() 
@@ -242,13 +237,10 @@ public class SkinCache {
 		Minecraft mc = Minecraft.getMinecraft();
 		Session session = mc.getSession();
 		GameProfile profile = session.getProfile();
-		String username = Config.skin.isEmpty() ? profile.getName() : Config.skin;
+		String username = profile.getName();
 		SkinEntry skin = INSTANCE.refresh(username, false).copy();
-		skin.user = profile.getName();
-		
-		//overide the cape to what the client has sent
-		if(!Config.cape.isEmpty())
-			skin.cape = Config.cape;
+		skin.user = username;
+		skin.uuid = profile.getId().toString().replace("-", "");
 		
 		//Fix the skin if it's not erroring
 		if(skin != null)

@@ -1,14 +1,12 @@
 package com.evilnotch.lib.main;
 
 
-import com.evilnotch.lib.api.ReflectionUtil;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.TypeInsnNode;
+
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
-import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.util.Session;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
