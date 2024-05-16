@@ -25,7 +25,7 @@ public class UUIDPatcher {
 		UUID cached = getCachedUUID(id, user);
 		if(cached != null && !id.equals(cached))
 		{
-			System.out.println("Patched " + user + " UUID Set From:" + id + " To:" + cached);
+			System.out.println("Patched " + user + " UUID From:" + id + " To:" + cached);
 			id = cached;
 		}
 		EvilGameProfile profile = new EvilGameProfile(id, old);
