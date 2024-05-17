@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.mojang.authlib.GameProfile;
+import com.mojang.util.UUIDTypeAdapter;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -57,12 +58,42 @@ public class UUIDPatcher {
 		
 		try
 		{
-			return NBTUtil.getFileNBT(u).getUniqueId("uuid");
+			NBTTagCompound nbt = NBTUtil.getFileNBT(u);
+			
+			//Detect UUIDPatcher 1.0 or missing UUID
+			if(!nbt.hasUniqueId("uuid"))
+			{
+				//Get UUID as String
+				if(nbt.hasKey("uuid", 8))
+				{
+					System.out.println("Converting Cached UUID to UUIDPatcher " + VERSION + " " + user);
+					UUID oldid = UUIDTypeAdapter.fromString(nbt.getString("uuid").replace("-", ""));
+					nbt.setUniqueId("uuid", oldid);
+					NBTUtil.updateNBTFileSafley(u, nbt);
+					return oldid;
+				}
+				else
+				{
+					System.err.println("Cached UUID Missing:" + u.getAbsolutePath());
+					nbt.setUniqueId("uuid", id);
+					NBTUtil.updateNBTFileSafley(u, nbt);
+					return id;
+				}
+			}
+			
+			return nbt.getUniqueId("uuid");
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			
+			//delete the corrupted file
 			u.delete();
+			
+			//update the corrupted file
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setUniqueId("uuid", id);
+			NBTUtil.updateNBTFileSafley(u, nbt);
 			return id;
 		}
 	}

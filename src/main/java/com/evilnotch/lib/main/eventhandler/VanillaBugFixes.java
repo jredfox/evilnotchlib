@@ -1,9 +1,8 @@
 package com.evilnotch.lib.main.eventhandler;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
+import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
@@ -19,17 +18,29 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.play.server.SPacketDestroyEntities;
+import net.minecraft.network.play.server.SPacketHeldItemChange;
+import net.minecraft.network.play.server.SPacketPlayerListItem;
+import net.minecraft.network.play.server.SPacketRespawn;
+import net.minecraft.network.play.server.SPacketSetExperience;
+import net.minecraft.network.play.server.SPacketSpawnPlayer;
+import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -63,7 +74,89 @@ public class VanillaBugFixes {
 				NetWorkHandler.INSTANCE.sendTo(new PacketUUID(e.player.getUniqueID()), (EntityPlayerMP)e.player);
 			}
 		}
+		
+//		updateSkinPackets((EntityPlayerMP) e.player);
 	}
+	
+	/**
+	 * force update skin render for you and all other players 
+	 * note skin has to be changed before calling this method
+	 */
+    public static void updateSkinPackets(EntityPlayerMP p)
+    {
+		SPacketPlayerListItem removeInfo;
+		SPacketDestroyEntities removeEntity;
+		SPacketSpawnPlayer addNamed;
+	    SPacketPlayerListItem addInfo;
+	    SPacketRespawn respawn;
+	    try
+	    {
+	      int entId = p.getEntityId();
+	      removeInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.REMOVE_PLAYER,p);
+	      removeEntity = new SPacketDestroyEntities(new int[] { entId });
+	      addNamed = new SPacketSpawnPlayer(p);
+	      addInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.ADD_PLAYER,p);
+	      respawn = new SPacketRespawn(p.dimension, p.getServerWorld().getDifficulty(), p.getServerWorld().getWorldType(), p.getServer().getGameType());
+	      
+	     for (EntityPlayer pOnlines : p.mcServer.getPlayerList().getPlayers())
+	     {
+	        EntityPlayerMP pOnline = (EntityPlayerMP)pOnlines;
+	        NetHandlerPlayServer con = pOnline.connection;
+	        if (pOnline.equals(p))
+	        {
+		       con.sendPacket(removeInfo);
+		       con.sendPacket(respawn);
+		       con.sendPacket(addInfo);
+			       
+	      	  //gamemode packet
+	      	   PlayerUtil.setGameTypeSafley(p,p.interactionManager.getGameType());
+	      	   p.mcServer.getPlayerList().updatePermissionLevel(p);
+	      	   p.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(p, (WorldServer) p.world);
+	      	   p.world.updateAllPlayersSleepingFlag();
+	      	  
+	           //prevent the moved too quickly message
+	      	   p.setRotationYawHead(p.rotationYawHead);
+	           p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, p.rotationYaw, p.rotationPitch);
+	           //trigger update exp
+	           p.connection.sendPacket(new SPacketSetExperience(p.experience, p.experienceTotal, p.experienceLevel));
+
+	           //send the current inventory - otherwise player would have an empty inventory
+	           p.sendContainerToPlayer(p.inventoryContainer);
+	           p.setPlayerHealthUpdated();
+	           p.setPrimaryHand(p.getPrimaryHand());
+	           p.connection.sendPacket(new SPacketHeldItemChange(p.inventory.currentItem));
+
+	           InventoryPlayer inventory = p.inventory;
+	           p.setHeldItem(EnumHand.MAIN_HAND, p.getHeldItemMainhand());
+	           p.setHeldItem(EnumHand.OFF_HAND, p.getHeldItemOffhand());
+
+	           //health && food
+	           p.setHealth(p.getHealth());
+	           FoodStats fs = p.getFoodStats();
+	           fs.setFoodLevel(fs.getFoodLevel());
+	           MainJava.proxy.setFoodSaturationLevel(fs, fs.getSaturationLevel());
+	           p.interactionManager.setWorld(p.getServerWorld()); 
+	          
+	           con.sendPacket(new SPacketSpawnPosition(p.getPosition()));
+	           
+	           boolean end = true;
+	           p.copyFrom(p, end);
+	           net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerRespawnEvent(p, end);
+	         }
+	         else 
+	         {
+	           con.sendPacket(removeEntity);
+	           con.sendPacket(removeInfo);
+	           con.sendPacket(addInfo);
+	           con.sendPacket(addNamed);
+	         }
+	      }
+           //show && hide player to update their skin on their render
+	       PlayerUtil.hidePlayer(p);
+	       PlayerUtil.showPlayer(p);
+	    }
+	    catch (Exception localException) {}
+    }
 	
 	/**
 	 * data fixers

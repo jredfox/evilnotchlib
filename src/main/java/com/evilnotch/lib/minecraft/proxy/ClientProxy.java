@@ -26,6 +26,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerLoginClient;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.FoodStats;
 import net.minecraft.util.Session;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -153,6 +154,10 @@ public class ClientProxy extends ServerProxy{
 		});
 	}
 	
-	
+	@Override
+	public void setFoodSaturationLevel(FoodStats fs, float saturationLevel)
+	{
+		fs.setFoodSaturationLevel(saturationLevel);
+	}
 
 }
