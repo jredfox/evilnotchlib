@@ -18,6 +18,8 @@ import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class UUIDPatcher {
+	
+	public static final String VERSION = "2.0.0";
 
 	public static GameProfile patch(GameProfile old) 
 	{
@@ -108,7 +110,7 @@ public class UUIDPatcher {
 		EvilGameProfile profile = (EvilGameProfile) playerIn.getGameProfile();
 		NBTTagCompound nbt = ((SaveHandler)list.playerDataManager).dataFixer.process(FixTypes.PLAYER, profile.login);
 		playerIn.readFromNBT(nbt);
-		ForgeEventFactory.firePlayerLoadingEvent(playerIn, list.playerDataManager, playerIn.getUniqueID().toString());
+		ForgeEventFactory.firePlayerLoadingEvent(playerIn, list.playerDataManager, playerIn.getCachedUniqueIdString());
 		return nbt;
 	}
 

@@ -1,16 +1,9 @@
 package com.evilnotch.lib.main;
 
 
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.TypeInsnNode;
-
-import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
-import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
