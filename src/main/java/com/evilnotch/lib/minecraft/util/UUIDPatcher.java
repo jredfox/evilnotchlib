@@ -8,6 +8,7 @@ import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
@@ -94,6 +95,13 @@ public class UUIDPatcher {
 	{
 		return ((EvilGameProfile)player.getGameProfile()).login;
 	}
+	
+	public static void setLogin(EntityPlayerMP player, NBTTagCompound playerNBT)
+	{
+		GameProfile p = player.getGameProfile();
+		if(p instanceof EvilGameProfile)
+			((EvilGameProfile)player.getGameProfile()).login = playerNBT;
+	}
 
 	public static NBTTagCompound fireLogin(PlayerList list, EntityPlayerMP playerIn)
 	{
@@ -102,13 +110,6 @@ public class UUIDPatcher {
 		playerIn.readFromNBT(nbt);
 		ForgeEventFactory.firePlayerLoadingEvent(playerIn, list.playerDataManager, playerIn.getUniqueID().toString());
 		return nbt;
-	}
-
-	public static void setLogin(EntityPlayerMP player, NBTTagCompound playerNBT)
-	{
-		GameProfile p = player.getGameProfile();
-		if(p instanceof EvilGameProfile)
-			((EvilGameProfile)player.getGameProfile()).login = playerNBT;
 	}
 
 }

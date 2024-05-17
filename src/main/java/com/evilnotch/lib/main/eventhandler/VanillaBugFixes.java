@@ -59,9 +59,8 @@ public class VanillaBugFixes {
 			profile.login = null;//clear the login cache NBT as we are now fully logged in
 			if(!profile.org.equals(profile.getId()))
 			{
-				//TODO: get client UUID changes working correctly NetPlayServer
-//				System.out.println("Sending UUID Change to Client:" + e.player.getName());
-//				NetWorkHandler.INSTANCE.sendTo(new PacketUUID(e.player.getUniqueID()), (EntityPlayerMP)e.player);
+				System.out.println("Sending UUID Change to Client:" + e.player.getName());
+				NetWorkHandler.INSTANCE.sendTo(new PacketUUID(e.player.getUniqueID()), (EntityPlayerMP)e.player);
 			}
 		}
 	}

@@ -36,6 +36,7 @@ import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
+import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.evilnotch.lib.minecraft.world.FakeWorld;
 import com.evilnotch.lib.util.simple.DummyMap;
 
