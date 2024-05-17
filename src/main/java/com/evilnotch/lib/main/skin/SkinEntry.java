@@ -14,11 +14,13 @@ public class SkinEntry implements ICopy {
 	public String cape;
 	public String skinhash;
 	public String capehash;
+	public boolean isEmpty;
 	
 	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String skinmd5, String capemd5)
 	{
 		this.uuid = uuid.replace("-", "");
 		this.user = username.toLowerCase();
+		this.isEmpty = this.uuid.isEmpty() && this.user.isEmpty();
 		this.cacheTime = cacheTime;
 		this.skin = skin;
 		this.cape = JavaUtil.safeString(cape);

@@ -39,14 +39,16 @@ import net.minecraft.util.Session;
 public class Main {
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
-	public static void main(String[] args) throws IOException, JSONParseException 
+	public static void main(String[] args) throws IOException, JSONParseException, InterruptedException 
 	{
-		String uuid = "4223a2b1-ed37-4577-adb2-d18eca6411f4";
-		SkinCache cache = new SkinCache();
-		cache.load();
-//		cache.skins.put("jredfox", new SkinEntry(uuid, "jredfox", System.currentTimeMillis(), "", "", "6777E74E5A4A26EE22C524BE32033964", "CAEF3C49EBB3F83E83D56826349A0A24"));
-		cache.refresh("SubBastion", false);
-		cache.save();
+		SkinCache.init();
+		for(int i=0;i<1000;i++)
+		{
+//			JSONObject b = SkinCache.INSTANCE.getMojangProfile("4223a2b1ed374577adb2d18eca6411f4");
+//			JSONObject b = SkinCache.INSTANCE.getPlayerDBJSON("jredfox");
+//			Thread.sleep(5000L);
+			SkinCache.INSTANCE.getMojangUUID("jredfox2");
+		}
 	}
 
 	public static void RefreshSkin() {

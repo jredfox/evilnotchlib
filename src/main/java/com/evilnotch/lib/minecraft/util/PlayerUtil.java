@@ -125,9 +125,10 @@ public class PlayerUtil {
 			return;
 		}
         String username = gameprofile.getName();
-    	SkinEntry skin = SkinCache.INSTANCE.refresh(username, false).copy();
-    	if(skin != null)
+    	SkinEntry skin = SkinCache.INSTANCE.refresh(username, false);
+    	if(!skin.isEmpty)
     	{
+    		skin = skin.copy();
     		//make sure the skin encodes correctly for the user
     		skin.uuid = gameprofile.getId().toString().replace("-", "");
     		skin.user = username;

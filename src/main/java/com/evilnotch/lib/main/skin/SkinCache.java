@@ -2,11 +2,16 @@ package com.evilnotch.lib.main.skin;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
+import java.net.UnknownServiceException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.ralleytn.simple.json.JSONArray;
@@ -28,7 +33,10 @@ import net.minecraft.util.Session;
 public class SkinCache {
 	
 	public HashMap<String, SkinEntry> skins = new HashMap(100);
+	public Set<String> refreshque = new HashSet();
 	public File skinCacheLoc = new File(System.getProperty("user.dir"), "skinCacher.json");
+	public boolean dirty = false;
+	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "", "", "");
 	
 	public void load()
 	{
@@ -62,7 +70,8 @@ public class SkinCache {
 		JSONArray arr = new JSONArray();
 		for(SkinEntry skin : skins.values())
 		{
-			arr.add(skin.serialize());
+			if(!skin.isEmpty)
+				arr.add(skin.serialize());
 		}
 		JavaUtil.saveJSONArray(arr, skinCacheLoc);
 	}
@@ -70,7 +79,7 @@ public class SkinCache {
 	public SkinEntry getSkinEntry(String user)
 	{
 		user = user.toLowerCase();
-		return skins.containsKey(user) ? skins.get(user) : cacheSkin(user);
+		return refreshque.contains(user) ? EMPTY : skins.containsKey(user) ? skins.get(user) : cacheSkin(user);
 	}
 
 	public SkinEntry refresh(String user, boolean force)
@@ -88,12 +97,8 @@ public class SkinCache {
 	{
 		user = user.toLowerCase();
 		SkinEntry entry = skins.get(user);
-		//if it doesn't exist cache it
-		if(entry == null)
-			return true;
-		
-		//check if it's expired
-		if(hasExpired(entry))
+		//if it doesn't exist or has expired cache it
+		if(entry == null || entry.isEmpty || hasExpired(entry))
 			return true;
 		
 		//Uses Crafatar.com as a hash checker if they don't match sync with mojang
@@ -129,7 +134,7 @@ public class SkinCache {
 		if(uuid == null)
 		{
 			System.err.println("Error Unable to get UUID of player:" + user);
-			return null;
+			return EMPTY;
 		}
 		
 		//downloads the skin data and if it fails it will get added to the skin refresher
@@ -137,7 +142,8 @@ public class SkinCache {
 		if(json == null)
 		{
 			System.err.println("Error Unable to get Mojang profile:" + user);
-			return null;
+			refreshque.add(user);
+			return EMPTY;
 		}
 		
 		String base64payload = json.getJSONArray("properties").getJSONObject(0).getString("value");
@@ -156,6 +162,9 @@ public class SkinCache {
 		
 		SkinEntry entry = new SkinEntry(uuid, user, System.currentTimeMillis(), skin, cape, skinhash, capehash);
 		skins.put(user, entry);
+		this.refreshque.remove(user);
+		this.dirty = true;
+		this.save();//TODO: remove to save every 2s when going multi-threaded
 		return entry;
 	}
 	
@@ -204,21 +213,81 @@ public class SkinCache {
 		}
 	}
 	
-	public static String getMojangUUID(String username) {
+	public volatile boolean lockedUUID = false;
+	public String getMojangUUID(String username) 
+	{
+		if(lockedUUID)
+		{
+			JavaUtil.sleep(5000L);
+			this.lockedUUID = false;
+		}
+		
 		BufferedReader stream = null;
-		try {
+		URLConnection con = null;
+		try 
+		{
 			URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
-			stream = new BufferedReader(new InputStreamReader(url.openStream()));
+			con = url.openConnection();
+			con.setConnectTimeout(3500);
+			stream = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			JSONParser parser = new JSONParser();
 			JSONObject json = (JSONObject) parser.parse(stream);
 			String id = json.getString("id").replace("-", "");
 			return id;
-		} catch (Exception e) {
+		}
+		catch (IOException e)
+		{
+			//if error code isn't 429 aka too many requests assume it's a bad username
+			if(JavaUtil.isOnline("api.mojang.com"))
+			{
+				int response = getCode(con);
+				System.out.println("code:" + response);
+				if(response == 429)
+				{
+					this.lockedUUID = true;
+					this.refreshque.add(username);
+				}
+				else if(response == 404)
+				{
+					this.refreshque.remove(username);
+				}
+				else
+					e.printStackTrace();
+			}
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
-			return null;
-		} finally {
+		} 
+		finally 
+		{
 			IOUtils.closeQuietly(stream);
 		}
+		return null;
+	}
+
+	public int getCode(URLConnection con)
+	{
+		if(con instanceof HttpURLConnection)
+		{
+			try 
+			{
+				return ((HttpURLConnection)con).getResponseCode();
+			} 
+			catch(UnknownServiceException um)
+			{
+				return 415;//unsupported media
+			}
+			catch(UnknownHostException uh)
+			{
+				return 10001;//Custom Defined error code to specify unkown host exception
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return 0;
 	}
 
 	public static SkinCache INSTANCE;

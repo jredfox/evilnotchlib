@@ -1535,7 +1535,13 @@ public class JavaUtil {
 			
 			//Remove metadata from the file before hashing it
 			BufferedImage image = ImageIO.read(in);
-			File tmp = new File(System.getProperty("java.io.tmpdir"), "tmp-" + System.currentTimeMillis() + ".png");
+			File tmp;
+			do 
+			{
+				tmp = new File(System.getProperty("java.io.tmpdir"), "tmp-" + System.currentTimeMillis() + new Object().toString().replace("@", "-") + ".png");
+			}
+			while(tmp.exists());
+			
 			ImageIO.write(image, "png", tmp);
 			
 			tmpin = new FileInputStream(tmp);
@@ -1563,6 +1569,23 @@ public class JavaUtil {
 	public static String safeString(String s) 
 	{
 		return s == null || s.trim().isEmpty() ? "" : s;
+	}
+	
+	public static void sleep(long l) 
+	{
+		long start = System.currentTimeMillis();
+		try 
+		{
+			Thread.sleep(l);
+		} 
+		catch (InterruptedException e)
+		{
+			while(System.currentTimeMillis() - start < l)
+			{
+				;
+			}
+		}
+		
 	}
 	
 }
