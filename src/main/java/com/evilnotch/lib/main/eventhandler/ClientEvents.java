@@ -19,7 +19,6 @@ import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -38,17 +37,20 @@ public class ClientEvents {
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderPlayerEvent.Pre event)
 	{
-		if(hasJoined2)
+		if(hasJoined2 || !Config.fixSteves)
 			return;
 		
 		if(event.getEntityPlayer() == Minecraft.getMinecraft().player)
 		{
 			EntityPlayerSP player = Minecraft.getMinecraft().player;
 			NetworkPlayerInfo info = player.connection.getPlayerInfo(player.getUniqueID());
-			if(info == null || info.skinType == null)
+			if(info == null)
 			{
-				if(info != null)
-					info.getLocationSkin();//make it download the skin
+				event.setCanceled(true);
+			}
+			else if(info.skinType == null)
+			{
+				info.getLocationSkin();//make it download the skin
 				event.setCanceled(true);
 			}
 			else
@@ -62,7 +64,7 @@ public class ClientEvents {
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderHandEvent event)
 	{
-		if(hasJoined)
+		if(hasJoined || !Config.fixSteves)
 			return;
 		
 		//return from canceling if we are not inside of the world
@@ -71,11 +73,15 @@ public class ClientEvents {
 		{
 			return;
 		}
+		
 		NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
-		if(info == null || info.skinType == null)
+		if(info == null)
 		{
-			if(info != null)
-				info.getLocationSkin();//make it download the skin
+			event.setCanceled(true);
+		}
+		else if(info.skinType == null)
+		{
+			info.getLocationSkin();//make it download the skin
 			event.setCanceled(true);
 		}
 		else

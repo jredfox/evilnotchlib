@@ -7,6 +7,8 @@ import com.evilnotch.lib.util.simple.ICopy;
 
 public class SkinEntry implements ICopy {
 	
+	public static final String EMPTY_SKIN_ENCODE = "eyJ0aW1lc3RhbXAiOjE3MTYwMTgzNDU4MjksInByb2ZpbGVJZCI6IjQ4YjliMzAwYTM1NzM2N2ViNjZhYThmOGZlZGRlNGNmIiwicHJvZmlsZU5hbWUiOiIkTlVMTCIsInNpZ25hdHVyZVJlcXVpcmVkIjpmYWxzZSwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiIifX19";
+	
 	public String uuid;
 	public String user;
 	public long cacheTime;
@@ -82,7 +84,7 @@ public class SkinEntry implements ICopy {
 	
 	public String encode()
 	{
-		return JavaUtil.toBase64(encodeJSON().toString());
+		return !this.isEmpty ? JavaUtil.toBase64(encodeJSON().toString()) : EMPTY_SKIN_ENCODE;
 	}
 	
 }

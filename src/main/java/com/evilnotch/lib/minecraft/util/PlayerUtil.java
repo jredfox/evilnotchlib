@@ -126,8 +126,8 @@ public class PlayerUtil {
 		}
         String username = gameprofile.getName();
     	SkinEntry skin = SkinCache.INSTANCE.refresh(username, false);
-    	if(!skin.isEmpty)
-    	{
+//    	if(!skin.isEmpty)
+//    	{
     		skin = skin.copy();
     		//make sure the skin encodes correctly for the user
     		skin.uuid = gameprofile.getId().toString().replace("-", "");
@@ -138,7 +138,7 @@ public class PlayerUtil {
     		String payload = skin.encode();
     		map.put("textures", new SkinCache.EvilProperty("textures", payload));
     		System.out.println("payload:" + payload);
-    	}
+//    	}
     	
 		PropertyMap props = gameprofile.getProperties();
 	}
