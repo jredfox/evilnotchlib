@@ -45,28 +45,29 @@ public class ClientEvents {
 		if(hasJoined2)
 			return;
 		
-		if(event.getEntityPlayer() == Minecraft.getMinecraft().player)
+		Minecraft mc = Minecraft.getMinecraft();
+		if(event.getEntityPlayer() != Minecraft.getMinecraft().player || mc.world == null || mc.player == null)
+			return;
+		
+		EntityPlayerSP player = Minecraft.getMinecraft().player;
+		NetworkPlayerInfo info = player.connection.getPlayerInfo(player.getUniqueID());
+		if(info == null)
 		{
-			EntityPlayerSP player = Minecraft.getMinecraft().player;
-			NetworkPlayerInfo info = player.connection.getPlayerInfo(player.getUniqueID());
-			if(info == null)
-			{
-				event.setCanceled(true);
-				return;
-			}
-			
-			if(msJoined2 == 0)
-				msJoined2 = System.currentTimeMillis();
-			
-			if(info.skinType == null && (System.currentTimeMillis() - msJoined2) < 2500 && !SkinEntry.EMPTY_SKIN_ENCODE.equals(getEncode(info.getGameProfile().getProperties())))
-			{
-				info.getLocationSkin();//make it download the skin
-				event.setCanceled(true);
-			}
-			else
-			{
-				hasJoined2 = true;
-			}
+			event.setCanceled(true);
+			return;
+		}
+		
+		if(msJoined2 == 0)
+			msJoined2 = System.currentTimeMillis();
+		
+		if(info.skinType == null && (System.currentTimeMillis() - msJoined2) < 2500 && !SkinEntry.EMPTY_SKIN_ENCODE.equals(getEncode(info.getGameProfile().getProperties())))
+		{
+			info.getLocationSkin();//make it download the skin
+			event.setCanceled(true);
+		}
+		else
+		{
+			hasJoined2 = true;
 		}
 	}
     
