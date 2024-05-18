@@ -23,7 +23,6 @@ public class Config {
 	public static boolean allowskintrans = true;
 	public static int skinCacheMax = 1000;
 	public static int skinCacheHours = 48;
-	public static boolean fixSteves = false;
 	
 	/**
 	 * list of domains that are not acceptable
@@ -50,7 +49,6 @@ public class Config {
 		allowskintrans = config.get("skins", "allowSkinTransparency", true).getBoolean();
 		skinCacheMax = config.get("skins", "skinCacheMax", skinCacheMax).getInt();
 		skinCacheHours = config.get("skins", "skinCacheMax", skinCacheHours).getInt();
-		fixSteves = config.get("skins", "fixStevesGlitch", fixSteves).getBoolean();
 		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");
 		
 		//entity cache data for black list and allow certain entities to pass through

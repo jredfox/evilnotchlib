@@ -72,6 +72,10 @@ public class ClientProxy extends ServerProxy{
 	{
 		clearClientData();
 		MainJava.proxy.handleUUIDChange(new PacketUUID(ClientProxy.org.org));//Undo UUID Changes done from connecting to a server
+		ClientEvents.hasJoined = false;
+		ClientEvents.hasJoined2 = false;
+		ClientEvents.msJoined =  0;
+		ClientEvents.msJoined2 = 0;
 	}
 	
 	public static void clearClientData()

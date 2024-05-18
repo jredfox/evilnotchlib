@@ -3,6 +3,7 @@ package com.evilnotch.lib.main.eventhandler;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.skin.SkinEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.lib.minecraft.client.Seeds;
@@ -11,6 +12,9 @@ import com.evilnotch.lib.minecraft.event.client.SkinTransparencyEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
+import com.evilnotch.lib.util.JavaUtil;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -34,10 +38,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 public class ClientEvents {
 	
     public static boolean hasJoined2 = false;
+    public static long msJoined2 = 0;
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderPlayerEvent.Pre event)
 	{
-		if(hasJoined2 || !Config.fixSteves)
+		if(hasJoined2)
 			return;
 		
 		if(event.getEntityPlayer() == Minecraft.getMinecraft().player)
@@ -48,7 +53,11 @@ public class ClientEvents {
 			{
 				event.setCanceled(true);
 			}
-			else if(info.skinType == null)
+			
+			if(msJoined2 == 0)
+				msJoined2 = System.currentTimeMillis();
+			
+			if(info.skinType == null && (System.currentTimeMillis() - msJoined2) < 2500 && !SkinEntry.EMPTY_SKIN_ENCODE.equals(getEncode(info.getGameProfile().getProperties())))
 			{
 				info.getLocationSkin();//make it download the skin
 				event.setCanceled(true);
@@ -61,10 +70,11 @@ public class ClientEvents {
 	}
     
 	public static boolean hasJoined = false;
+	public static long msJoined = 0;
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderHandEvent event)
 	{
-		if(hasJoined || !Config.fixSteves)
+		if(hasJoined)
 			return;
 		
 		//return from canceling if we are not inside of the world
@@ -74,12 +84,15 @@ public class ClientEvents {
 			return;
 		}
 		
+		if(msJoined == 0)
+			msJoined = System.currentTimeMillis();
+		
 		NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
 		if(info == null)
 		{
 			event.setCanceled(true);
 		}
-		else if(info.skinType == null)
+		if(info.skinType == null && (System.currentTimeMillis() - msJoined) < 2500 && !SkinEntry.EMPTY_SKIN_ENCODE.equals(getEncode(info.getGameProfile().getProperties())) )
 		{
 			info.getLocationSkin();//make it download the skin
 			event.setCanceled(true);
@@ -90,6 +103,14 @@ public class ClientEvents {
 		}
 	}
 	
+	public static String getEncode(PropertyMap map) 
+	{
+		if(map.isEmpty())
+			return null;
+		Property p = ((Property)JavaUtil.getFirst(map.get("textures")));
+		return p == null ? null : p.getValue();
+	}
+
 	/**
 	 * future:Generate models with textures coming from the registry name
 	 */
@@ -144,8 +165,6 @@ public class ClientEvents {
 	public void disconnect(ClientDisconnectEvent e)
 	{ 
 		ClientProxy.disconnect();
-		hasJoined = false;
-		hasJoined2 = false;
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
