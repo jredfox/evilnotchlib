@@ -52,6 +52,7 @@ public class ClientEvents {
 			if(info == null)
 			{
 				event.setCanceled(true);
+				return;
 			}
 			
 			if(msJoined2 == 0)
@@ -84,14 +85,16 @@ public class ClientEvents {
 			return;
 		}
 		
-		if(msJoined == 0)
-			msJoined = System.currentTimeMillis();
-		
 		NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
 		if(info == null)
 		{
 			event.setCanceled(true);
+			return;
 		}
+		
+		if(msJoined == 0)
+			msJoined = System.currentTimeMillis();
+		
 		if(info.skinType == null && (System.currentTimeMillis() - msJoined) < 2500 && !SkinEntry.EMPTY_SKIN_ENCODE.equals(getEncode(info.getGameProfile().getProperties())) )
 		{
 			info.getLocationSkin();//make it download the skin
