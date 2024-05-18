@@ -117,7 +117,7 @@ public class PlayerUtil {
 		EntityUtil.setEntityUUID(player, uuid);
 	}
     
-	public static void patchLANSkin(GameProfile gameprofile) 
+	public static void patchLANSkin(GameProfile gameprofile)
 	{
 		if(gameprofile.getName() == null)
 		{
@@ -136,7 +136,7 @@ public class PlayerUtil {
     		PropertyMap map = gameprofile.getProperties();
     		map.removeAll("textures");
     		String payload = skin.encode();
-    		map.put("textures", new Property(gameprofile.getName(), payload));
+    		map.put("textures", new SkinCache.EvilProperty("textures", payload));
     		System.out.println("payload:" + payload);
     	}
     	

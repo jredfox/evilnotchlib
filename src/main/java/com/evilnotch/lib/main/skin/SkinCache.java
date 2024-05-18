@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.net.UnknownServiceException;
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -317,13 +318,27 @@ public class SkinCache {
 			String base64payload = skin.encode();
 			PropertyMap properties = new PropertyMap();
 			properties.removeAll("textures");
-			properties.put("textures", new Property("textures", base64payload));
+			properties.put("textures", new EvilProperty("textures", base64payload));
 			
 			ReflectionUtil.setObject(session, null, Session.class, "properties");
 			ReflectionUtil.setFinalObject(mc, properties, Minecraft.class,
 					new MCPSidedString("profileProperties", "field_181038_N").toString());
 			session.setProperties(properties);
 		}
+	}
+	
+	public static class EvilProperty extends Property
+	{
+		public EvilProperty(String name, String value)
+		{
+			super(name, value, null);
+		}
+		
+//		@Override
+//		public boolean isSignatureValid(final PublicKey publicKey)
+//		{
+//			return true;
+//		}
 	}
 
 }
