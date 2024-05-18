@@ -248,7 +248,7 @@ public class SkinCache {
 					this.lockedUUID = true;
 					this.refreshque.add(username);
 				}
-				else if(response == 404)
+				else if(response == 404 || response == 400)
 				{
 					this.refreshque.remove(username);
 				}

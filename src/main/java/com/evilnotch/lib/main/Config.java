@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +34,7 @@ public class Config {
 	 */
 	public static List<ResourceLocation> cacheEntNamesDeny = new ArrayList();
 	public static String[] skinDomains = new String[]{".minecraft.net", ".mojang.com", "crafatar.com"};
+	public static List<Class> multiparts = new ArrayList();
 	
 	public static void loadConfig(File d)
 	{
@@ -55,6 +57,19 @@ public class Config {
 		cacheEntDeny = JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));
 		String[] str = config.getStringList("blacklistEntity", "cache_entity", new String[]{""}, "don't want to blacklist entire mod domain use this list");
 		cacheEntNamesDeny = JavaUtil.stringToLocArray(str);
+		
+		//parse MultiPart Entity's Parts
+		String[] parts = config.getStringList("EntityParts", "cache_entity", new String[]{""}, "List of Entity Classes That is a Part of an Entity like MultiPartEntityPart");
+		for(String s : parts)
+		{
+			s = s.trim();
+			if(s.isEmpty())
+				continue;
+			Class c = ReflectionUtil.classForName(s);
+			if(c != null)
+				multiparts.add(c);
+		}
+		
 		config.save();
 	}
 }
