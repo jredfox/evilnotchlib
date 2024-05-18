@@ -37,14 +37,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class ClientEvents {
 	
-    public static boolean hasJoined2 = false;
     public static long msJoined2 = 0;
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderPlayerEvent.Pre event)
 	{
-		if(hasJoined2)
-			return;
-		
 		Minecraft mc = Minecraft.getMinecraft();
 		if(event.getEntityPlayer() != Minecraft.getMinecraft().player || mc.world == null || mc.player == null)
 			return;
@@ -67,18 +63,14 @@ public class ClientEvents {
 		}
 		else
 		{
-			hasJoined2 = true;
+			msJoined2 = 0;
 		}
 	}
     
-	public static boolean hasJoined = false;
 	public static long msJoined = 0;
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderHandEvent event)
 	{
-		if(hasJoined)
-			return;
-		
 		//return from canceling if we are not inside of the world
 		Minecraft mc = Minecraft.getMinecraft();
 		if(mc.getRenderViewEntity() != mc.player || mc.world == null || mc.player == null)
@@ -103,7 +95,7 @@ public class ClientEvents {
 		}
 		else
 		{
-			hasJoined = true;
+			msJoined = 0;
 		}
 	}
 	

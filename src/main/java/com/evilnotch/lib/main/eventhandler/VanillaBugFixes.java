@@ -47,6 +47,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class VanillaBugFixes {
 	
@@ -75,7 +76,6 @@ public class VanillaBugFixes {
 			}
 		}
 		
-//		updateSkinPackets((EntityPlayerMP) e.player);
 	}
 	
 	/**

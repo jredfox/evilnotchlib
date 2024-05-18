@@ -13,6 +13,7 @@ import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.command.client.ClientUUID;
 import com.evilnotch.lib.minecraft.event.client.UUIDChangeEvent;
+import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
@@ -72,8 +73,6 @@ public class ClientProxy extends ServerProxy{
 	{
 		clearClientData();
 		MainJava.proxy.handleUUIDChange(new PacketUUID(ClientProxy.org.org));//Undo UUID Changes done from connecting to a server
-		ClientEvents.hasJoined = false;
-		ClientEvents.hasJoined2 = false;
 		ClientEvents.msJoined =  0;
 		ClientEvents.msJoined2 = 0;
 	}
@@ -82,6 +81,7 @@ public class ClientProxy extends ServerProxy{
 	{
 		TickRegistry.garbageCollectClient();
 		Seeds.clearSeeds();
+		IgnoreTilePacket.ignoreTiles.clear();
 		System.out.println("disconnecting..........................");
 	}
 
