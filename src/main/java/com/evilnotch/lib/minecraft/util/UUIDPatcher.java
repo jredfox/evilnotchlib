@@ -33,7 +33,7 @@ public class UUIDPatcher {
 			id = cached;
 		}
 		EvilGameProfile profile = new EvilGameProfile(id, old);
-		PlayerUtil.patchLANSkin(profile);
+//		PlayerUtil.patchLANSkin(profile);
 		return profile;
 	}
 	

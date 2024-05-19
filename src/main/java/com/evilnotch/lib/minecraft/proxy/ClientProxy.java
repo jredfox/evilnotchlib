@@ -7,6 +7,7 @@ import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.ClientEvents;
+import com.evilnotch.lib.main.eventhandler.StopSteve;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
@@ -63,6 +64,10 @@ public class ClientProxy extends ServerProxy{
 	private void registerEvents() 
 	{
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
+		if(Config.stopSteve)
+		{
+			MinecraftForge.EVENT_BUS.register(new StopSteve());
+		}
 		if(Config.debug)
 		{
 			GeneralRegistry.registerClientCommand(new ClientUUID());
@@ -73,8 +78,8 @@ public class ClientProxy extends ServerProxy{
 	{
 		clearClientData();
 		MainJava.proxy.handleUUIDChange(new PacketUUID(ClientProxy.org.org));//Undo UUID Changes done from connecting to a server
-		ClientEvents.msJoined =  0;
-		ClientEvents.msJoined2 = 0;
+		StopSteve.msJoined =  0;
+		StopSteve.msJoined2 = 0;
 	}
 	
 	public static void clearClientData()

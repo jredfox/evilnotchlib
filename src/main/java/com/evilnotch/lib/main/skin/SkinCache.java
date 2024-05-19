@@ -120,7 +120,7 @@ public class SkinCache {
 		return JavaUtil.getOnlinePNGMD5(isCape ? ("https://crafatar.com/capes/" + uuid) : ("https://crafatar.com/skins/" + uuid));
 	}
 
-	public boolean playerdb = false;
+	public static volatile boolean playerdb = false;
 	public SkinEntry cacheSkin(String user)
 	{
 		//is player db online
@@ -188,7 +188,14 @@ public class SkinCache {
 			JSONObject data = json.getJSONObject("data");
 			JSONObject player = data.getJSONObject("player");
 			return player;
-		} catch (Exception e) {
+		} 
+		catch (UnknownHostException e)
+		{
+			playerdb = false;
+			System.err.println("playerdb is offline!");
+			return null;
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		} finally {

@@ -22,7 +22,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -36,76 +38,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class ClientEvents {
-	
-    public static long msJoined2 = 0;
-	@SubscribeEvent(priority=EventPriority.HIGH)
-	public void stopSteve(RenderPlayerEvent.Pre event)
-	{
-		Minecraft mc = Minecraft.getMinecraft();
-		if(event.getEntityPlayer() != Minecraft.getMinecraft().player || mc.world == null || mc.player == null)
-			return;
-		
-		EntityPlayerSP player = Minecraft.getMinecraft().player;
-		NetworkPlayerInfo info = player.connection.getPlayerInfo(player.getUniqueID());
-		if(info == null)
-		{
-			event.setCanceled(true);
-			return;
-		}
-		
-		if(msJoined2 == 0)
-			msJoined2 = System.currentTimeMillis();
-		
-		if(info.skinType == null && (System.currentTimeMillis() - msJoined2) < 2500 && !SkinEntry.EMPTY_SKIN_ENCODE.equals(getEncode(info.getGameProfile().getProperties())))
-		{
-			info.getLocationSkin();//make it download the skin
-			event.setCanceled(true);
-		}
-		else
-		{
-			msJoined2 = 0;
-		}
-	}
-    
-	public static long msJoined = 0;
-	@SubscribeEvent(priority=EventPriority.HIGH)
-	public void stopSteve(RenderHandEvent event)
-	{
-		//return from canceling if we are not inside of the world
-		Minecraft mc = Minecraft.getMinecraft();
-		if(mc.getRenderViewEntity() != mc.player || mc.world == null || mc.player == null)
-		{
-			return;
-		}
-		
-		NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
-		if(info == null)
-		{
-			event.setCanceled(true);
-			return;
-		}
-		
-		if(msJoined == 0)
-			msJoined = System.currentTimeMillis();
-		
-		if(info.skinType == null && (System.currentTimeMillis() - msJoined) < 2500 && !SkinEntry.EMPTY_SKIN_ENCODE.equals(getEncode(info.getGameProfile().getProperties())) )
-		{
-			info.getLocationSkin();//make it download the skin
-			event.setCanceled(true);
-		}
-		else
-		{
-			msJoined = 0;
-		}
-	}
-	
-	public static String getEncode(PropertyMap map) 
-	{
-		if(map.isEmpty())
-			return null;
-		Property p = ((Property)JavaUtil.getFirst(map.get("textures")));
-		return p == null ? null : p.getValue();
-	}
 
 	/**
 	 * future:Generate models with textures coming from the registry name
