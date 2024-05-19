@@ -19,6 +19,8 @@ public class Config {
 	public static boolean replaceTP = true;
 	public static boolean seedOpsOnly = false;
 	public static boolean seedDisplay = true;
+	public static boolean unloadDimensions = false;
+	public static boolean unloadDimOverride = true;
 	
 	//start skin fixes
 	public static boolean allowskintrans = true;
@@ -35,6 +37,7 @@ public class Config {
 	public static List<ResourceLocation> cacheEntNamesDeny = new ArrayList();
 	public static String[] skinDomains = new String[]{".minecraft.net", ".mojang.com", "crafatar.com"};
 	public static List<Class> multiparts = new ArrayList();
+
 	
 	public static void loadConfig(File d)
 	{
@@ -47,8 +50,10 @@ public class Config {
 		replaceTP = config.get("general", "tpReplace", true).getBoolean();
 		seedOpsOnly = config.get("general", "seedOpsOnly", false).getBoolean();
 		seedDisplay = config.get("general", "seedF3", true).getBoolean();
+		unloadDimensions = config.get("general", "unloadDimensions", unloadDimensions).getBoolean();
+		unloadDimOverride = config.get("general", "unloadDimensionsOverride", unloadDimOverride, "This Requires unloadDimensions to be true! Overrides DimensionManager#keepLoaded. Disable this if Issues Occur").getBoolean();
 		
-		allowskintrans = config.get("skins", "allowSkinTransparency", true).getBoolean();
+		allowskintrans = config.get("skins", "allowSkinTransparency", allowskintrans).getBoolean();
 		skinCacheMax = config.get("skins", "skinCacheMax", skinCacheMax).getInt();
 		skinCacheHours = config.get("skins", "skinCacheMax", skinCacheHours).getInt();
 		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");

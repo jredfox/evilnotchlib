@@ -441,6 +441,34 @@ public class GeneralTransformer {
 		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/server/management/PlayerList", "getPlayerNBT", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Lnet/minecraft/nbt/NBTTagCompound;", false).getNext();
 		m.instructions.insert(spot, li);
 	}
+
+	public static void patchUnloadDim(ClassNode classNode)
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, "canUnloadWorld", "(Lnet/minecraft/world/WorldServer;)Z");
+		
+		//if(Config.unloadDimensions) return VanillaBugFixes.canUnload(world, keepLoaded);
+		InsnList li = new InsnList();
+		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/Config", "unloadDimensions", "Z"));
+		LabelNode l1 = new LabelNode();
+		li.add(new JumpInsnNode(Opcodes.IFEQ, l1));
+		LabelNode l2 = new LabelNode();
+		li.add(l2);
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "net/minecraftforge/common/DimensionManager", "keepLoaded", "Lit/unimi/dsi/fastutil/ints/IntSet;"));
+		li.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/VanillaBugFixes", "canUnload", "(Lnet/minecraft/world/WorldServer;Lit/unimi/dsi/fastutil/ints/IntSet;)Z", false));
+		li.add(new InsnNode(Opcodes.IRETURN));
+		li.add(l1);
+		m.instructions.insert(ASMHelper.getFirstInstruction(m), li);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

@@ -54,7 +54,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.client.gui.GuiIngame",
     	"net.minecraft.client.renderer.ImageBufferDownload",
     	"net.minecraft.server.network.NetHandlerLoginServer", //UUIDPatcher
-    	"net.minecraftforge.fml.common.network.handshake.NetworkDispatcher" //UUIDPatcher
+    	"net.minecraftforge.fml.common.network.handshake.NetworkDispatcher", //UUIDPatcher
+    	"net.minecraftforge.common.DimensionManager"//Unload Dimension Patch
     });
     
     @Override
@@ -235,6 +236,10 @@ public class Transformer implements IClassTransformer
                 
                 case 23:
                 	GeneralTransformer.patchLoginNBT(classNode);
+                break;
+                
+                case 24:
+                	GeneralTransformer.patchUnloadDim(classNode);
                 break;
             }
             
