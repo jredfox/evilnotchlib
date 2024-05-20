@@ -2,6 +2,8 @@ package com.evilnotch.lib.asm;
 
 import java.util.Map;
 
+import com.evilnotch.lib.asm.util.Crashy;
+
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
@@ -15,7 +17,14 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
 	
 	static
 	{
-   		ConfigCore.load();
+		try
+		{
+			ConfigCore.load();
+		}
+		catch(Throwable t)
+		{
+			Crashy.crash("Debug ASM CRASH", t, true);
+		}
 	}
 	
     @Override

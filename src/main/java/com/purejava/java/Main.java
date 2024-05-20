@@ -38,17 +38,16 @@ import net.minecraft.util.Session;
 
 public class Main {
 
+	public static PropertyMap map1;
+	public static PropertyMap map2;
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args) throws IOException, JSONParseException, InterruptedException 
 	{
-		SkinCache.init();
-		for(int i=0;i<1000;i++)
-		{
-//			JSONObject b = SkinCache.INSTANCE.getMojangProfile("4223a2b1ed374577adb2d18eca6411f4");
-//			JSONObject b = SkinCache.INSTANCE.getPlayerDBJSON("jredfox");
-//			Thread.sleep(5000L);
-			SkinCache.INSTANCE.getMojangUUID("jredfox2");
-		}
+		map1 = new PropertyMap();
+		map2 = null;
+		map2 = map1;
+		map1.put("test", new Property("a", "test"));
+		System.out.println(map2.size());
 	}
 
 	public static void RefreshSkin() {

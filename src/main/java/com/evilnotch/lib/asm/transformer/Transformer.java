@@ -13,6 +13,7 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.asm.util.Crashy;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.DummyMap;
@@ -91,7 +92,7 @@ public class Transformer implements IClassTransformer
 		}
 		catch(Throwable t)
 		{
-			t.printStackTrace();
+			Crashy.crash("Unable to Fix RAM Leaks for LaunchClassLoader", t, true);
 			System.out.println("FATEL ERROR! REPORT TO EVIL NOTCH LIB. The fields of the class loader cannot be found and/or set");
 		}
 	}
@@ -255,9 +256,9 @@ public class Transformer implements IClassTransformer
             }
             return bytes;
         }
-        catch (Exception e)
+        catch (Throwable e)
         {
-            e.printStackTrace();
+            Crashy.crash("EvilNotchLib ASM Isn't Magical Tonight :(", e, true);
         }
         return classToTransform;
     }
