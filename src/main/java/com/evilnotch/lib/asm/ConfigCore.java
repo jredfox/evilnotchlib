@@ -18,8 +18,6 @@ public class ConfigCore {
 	public static boolean asm_patchLanSkins = true;
 	public static boolean  reflect_pkg = true;
 	
-	public static boolean fixPlayerDataSP;
-	
 	public static boolean dumpASM = false;
 
 	
@@ -41,8 +39,6 @@ public class ConfigCore {
 		asm_enchantmentNameFix = config.get("asm","asm_enchantmentNameFix",true).getBoolean();
 		asm_patchLanSkins = config.get("asm","asm_patchLanSkins",true).getBoolean();
 		Crashy.GUI = config.get("asm","asm_gui_crash", true).getBoolean();
-		
-		fixPlayerDataSP = config.get("general","fixHostPlayerDataSP",true).getBoolean();
 		
 		reflect_pkg = config.get("reflect","fix_pkg_manifest",true).getBoolean();
 		

@@ -19,7 +19,6 @@ import com.evilnotch.lib.util.simple.DummyMap;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import net.minecraftforge.fml.crashy.Crashy;
 
 public class Transformer implements IClassTransformer
 {
@@ -91,7 +90,7 @@ public class Transformer implements IClassTransformer
 		}
 		catch(Throwable t)
 		{
-			Crashy.crash("Unable to Fix RAM Leaks for LaunchClassLoader", t, true);
+			t.printStackTrace();
 			System.out.println("FATEL ERROR! REPORT TO EVIL NOTCH LIB. The fields of the class loader cannot be found and/or set");
 		}
 	}
@@ -257,7 +256,7 @@ public class Transformer implements IClassTransformer
         }
         catch (Throwable e)
         {
-            Crashy.crash("EvilNotchLib ASM Isn't Magical Tonight :(", e, true);
+            e.printStackTrace();
         }
         return classToTransform;
     }

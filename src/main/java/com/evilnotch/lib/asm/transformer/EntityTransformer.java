@@ -25,7 +25,6 @@ import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.crashy.Crashy;
 
 public class EntityTransformer implements IClassTransformer{
 	
@@ -119,7 +118,7 @@ public class EntityTransformer implements IClassTransformer{
         }
         catch(Throwable t)
         {
-        	Crashy.crash("EvilNotchLib Entity Transformer Has Been Defeated!", t, true);
+        	t.printStackTrace();
         }
 		return classToTransform;
 	}
