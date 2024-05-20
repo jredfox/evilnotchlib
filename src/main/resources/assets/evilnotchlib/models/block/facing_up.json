@@ -1,1 +1,6 @@
-{"parent":"block/cube_all","textures":{"all":"evilnotchlib:blocks/facing_up"}}
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "evilnotchlib:blocks/facing_up"
+  }
+}

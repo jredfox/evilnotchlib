@@ -1,1 +1,6 @@
-{"parent":"item/handheld","textures":{"layer0":"evilnotchlib:items/pickaxe"}}
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "evilnotchlib:items/pickaxe"
+  }
+}

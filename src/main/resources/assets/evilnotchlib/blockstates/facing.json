@@ -1,1 +1,22 @@
-{"variants":{"direction=up":{"model":"evilnotchlib:facing_up"},"direction=east":{"model":"evilnotchlib:facing_east"},"direction=north":{"model":"evilnotchlib:facing_north"},"direction=south":{"model":"evilnotchlib:facing_south"},"direction=west":{"model":"evilnotchlib:facing_west"},"direction=down":{"model":"evilnotchlib:facing_down"}}}
+{
+  "variants": {
+    "direction=down": {
+      "model": "evilnotchlib:facing_down"
+    },
+    "direction=up": {
+      "model": "evilnotchlib:facing_up"
+    },
+    "direction=north": {
+      "model": "evilnotchlib:facing_north"
+    },
+    "direction=south": {
+      "model": "evilnotchlib:facing_south"
+    },
+    "direction=west": {
+      "model": "evilnotchlib:facing_west"
+    },
+    "direction=east": {
+      "model": "evilnotchlib:facing_east"
+    }
+  }
+}

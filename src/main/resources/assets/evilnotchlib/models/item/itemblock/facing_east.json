@@ -1,1 +1,3 @@
-{"parent":"evilnotchlib:block/facing_east"}
+{
+  "parent": "evilnotchlib:block/facing_east"
+}

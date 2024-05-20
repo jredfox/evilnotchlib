@@ -1,1 +1,7 @@
-{"variants":{"normal":{"model":"evilnotchlib:spider"}}}
+{
+  "variants": {
+    "normal": {
+      "model": "evilnotchlib:spider"
+    }
+  }
+}

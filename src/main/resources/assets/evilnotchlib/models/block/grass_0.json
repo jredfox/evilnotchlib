@@ -1,1 +1,8 @@
-{"parent":"block/cube_bottom_top","textures":{"side":"evilnotchlib:blocks/grass_0_side","top":"evilnotchlib:blocks/grass_0_top","bottom":"evilnotchlib:blocks/grass_0_bottom"}}
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "side": "evilnotchlib:blocks/grass_0_side",
+    "top": "evilnotchlib:blocks/grass_0_top",
+    "bottom": "evilnotchlib:blocks/grass_0_bottom"
+  }
+}

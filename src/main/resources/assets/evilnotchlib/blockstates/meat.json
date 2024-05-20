@@ -1,1 +1,52 @@
-{"variants":{"meat=1":{"model":"evilnotchlib:meat_1"},"meat=0":{"model":"evilnotchlib:meat_0"},"meat=7":{"model":"evilnotchlib:meat_7"},"meat=14":{"model":"evilnotchlib:meat_14"},"meat=6":{"model":"evilnotchlib:meat_6"},"meat=13":{"model":"evilnotchlib:meat_13"},"meat=9":{"model":"evilnotchlib:meat_9"},"meat=8":{"model":"evilnotchlib:meat_8"},"meat=15":{"model":"evilnotchlib:meat_15"},"meat=3":{"model":"evilnotchlib:meat_3"},"meat=10":{"model":"evilnotchlib:meat_10"},"meat=2":{"model":"evilnotchlib:meat_2"},"meat=5":{"model":"evilnotchlib:meat_5"},"meat=12":{"model":"evilnotchlib:meat_12"},"meat=4":{"model":"evilnotchlib:meat_4"},"meat=11":{"model":"evilnotchlib:meat_11"}}}
+{
+  "variants": {
+    "meat=0": {
+      "model": "evilnotchlib:meat_0"
+    },
+    "meat=1": {
+      "model": "evilnotchlib:meat_1"
+    },
+    "meat=2": {
+      "model": "evilnotchlib:meat_2"
+    },
+    "meat=3": {
+      "model": "evilnotchlib:meat_3"
+    },
+    "meat=4": {
+      "model": "evilnotchlib:meat_4"
+    },
+    "meat=5": {
+      "model": "evilnotchlib:meat_5"
+    },
+    "meat=6": {
+      "model": "evilnotchlib:meat_6"
+    },
+    "meat=7": {
+      "model": "evilnotchlib:meat_7"
+    },
+    "meat=8": {
+      "model": "evilnotchlib:meat_8"
+    },
+    "meat=9": {
+      "model": "evilnotchlib:meat_9"
+    },
+    "meat=10": {
+      "model": "evilnotchlib:meat_10"
+    },
+    "meat=11": {
+      "model": "evilnotchlib:meat_11"
+    },
+    "meat=12": {
+      "model": "evilnotchlib:meat_12"
+    },
+    "meat=13": {
+      "model": "evilnotchlib:meat_13"
+    },
+    "meat=14": {
+      "model": "evilnotchlib:meat_14"
+    },
+    "meat=15": {
+      "model": "evilnotchlib:meat_15"
+    }
+  }
+}
