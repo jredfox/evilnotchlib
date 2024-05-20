@@ -41,7 +41,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.entity.monster.EntityZombie",
     	"net.minecraft.entity.monster.EntityShulker",
     	"net.minecraft.client.entity.EntityPlayerSP",
-    	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService"
+    	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService",
+    	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService$1"
     });
 
 	@Override
@@ -102,6 +103,11 @@ public class EntityTransformer implements IClassTransformer{
                 	if(ConfigCore.asm_patchLanSkins)
                 		patchLanSkins(classNode);
                 break;
+                
+                case 8:
+                	if(ConfigCore.asm_patchLanSkins)
+                		patchLanSkinsCache(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -119,6 +125,21 @@ public class EntityTransformer implements IClassTransformer{
         	t.printStackTrace();
         }
 		return classToTransform;
+	}
+
+	private void patchLanSkinsCache(ClassNode classNode) 
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, "load", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;");
+		AbstractInsnNode ab = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService", "fillGameProfile", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;", false);
+		AbstractInsnNode is = ab.getPrevious();
+		
+		//changes fillGameProfile(gameProfile, false) to fillGameProfile(gameProfile, true) 
+		if(is.getOpcode() == Opcodes.ICONST_0)
+		{
+			InsnNode spot = (InsnNode) is;
+			m.instructions.insert(spot, new InsnNode(Opcodes.ICONST_1));
+			m.instructions.remove(spot);
+		}
 	}
 
 	public static void patchLanSkins(ClassNode classNode)

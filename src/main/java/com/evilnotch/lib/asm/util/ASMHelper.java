@@ -15,6 +15,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
@@ -676,6 +677,18 @@ public class ASMHelper
 			{
 				return (VarInsnNode)ab;
 			}
+		}
+		return null;
+	}
+
+	public static JumpInsnNode nextJumpInsnNode(AbstractInsnNode pretarg) 
+	{
+		AbstractInsnNode ab = pretarg;
+		while(ab != null)
+		{
+			ab = pretarg.getNext();
+			if(ab instanceof JumpInsnNode)
+				return (JumpInsnNode) ab;
 		}
 		return null;
 	}

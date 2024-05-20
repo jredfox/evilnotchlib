@@ -56,6 +56,50 @@ public class GeneralTransformer {
     			}
     		}
     	}
+    	
+    	//make profileProperties public minus final
+    	String props = new MCPSidedString("profileProperties", "field_181038_N").toString();
+    	String getprops = new MCPSidedString("getProfileProperties", "func_181037_M").toString();
+    	for(FieldNode f : classNode.fields)
+    	{
+    		if(f.name.equals(props))
+    		{
+    			f.access = Opcodes.ACC_PUBLIC;
+    			break;
+    		}
+    	}
+    	
+    	//VanillaBugFixes.fixMcProperties();
+    	MethodNode m = ASMHelper.getMethodNode(classNode, getprops, "()Lcom/mojang/authlib/properties/PropertyMap;");
+    	m.instructions.insert(ASMHelper.getFirstInstruction(m), new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/VanillaBugFixes", "fixMcProfileProperties", "()V", false));
+	
+
+    	MethodNode method = ASMHelper.getMethodNode(classNode, new MCPSidedString("launchIntegratedServer", "func_71371_a").toString(), "(Ljava/lang/String;Ljava/lang/String;Lnet/minecraft/world/WorldSettings;)V");
+    	
+    	//this.getProfileProperties();
+    	InsnList li = new InsnList();
+    	li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+    	li.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/Minecraft", getprops, "()Lcom/mojang/authlib/properties/PropertyMap;", false));
+    	li.add(new InsnNode(Opcodes.POP));
+    	method.instructions.insert(ASMHelper.getFirstInstruction(method), li);
+    	
+    	try
+    	{
+    		//append && JavaUtil.returnFalse() to if statement
+	    	AbstractInsnNode pretarg = ASMHelper.getMethodInsnNode(method, Opcodes.INVOKEVIRTUAL, "net/minecraft/util/Session", "hasCachedProperties", "()Z", false);
+	    	JumpInsnNode jump = ASMHelper.nextJumpInsnNode(pretarg);
+	    	
+	    	InsnList list = new InsnList();
+	    	list.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/util/JavaUtil", "returnFalse", "()Z", false));
+	    	list.add(new JumpInsnNode(Opcodes.IFEQ, jump.label));
+	    	method.instructions.insert(jump, list);
+    	}
+    	catch(Throwable t)
+    	{
+    		System.err.println("Error Unable to append JavaUtil#returnFalse to prevent mojang 429 error for skins. Please report to EvilNotchLib's github");
+    		t.printStackTrace();
+    	}
+    	
 	}
 	
 	/**
