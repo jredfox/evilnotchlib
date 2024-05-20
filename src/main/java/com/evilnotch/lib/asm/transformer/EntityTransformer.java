@@ -8,7 +8,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -16,7 +15,6 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.mcp.MCPSidedString;
@@ -24,12 +22,10 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.asm.util.Crashy;
-import com.evilnotch.lib.minecraft.event.client.MessageEvent;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.server.management.PlayerList;
+import net.minecraftforge.fml.crashy.Crashy;
 
 public class EntityTransformer implements IClassTransformer{
 	

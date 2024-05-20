@@ -2,8 +2,7 @@ package com.evilnotch.lib.asm;
 
 import java.util.Map;
 
-import com.evilnotch.lib.asm.util.Crashy;
-
+import net.minecraftforge.fml.crashy.Crashy;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
@@ -23,7 +22,7 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
 		}
 		catch(Throwable t)
 		{
-			Crashy.crash("Debug ASM CRASH", t, true);
+			Crashy.crash("ASM CoreMod Config Failed to Load this is Bad!", t, true);
 		}
 	}
 	

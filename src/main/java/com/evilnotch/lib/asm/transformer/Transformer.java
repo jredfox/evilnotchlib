@@ -13,14 +13,13 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.asm.util.Crashy;
-import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.DummyMap;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.fml.crashy.Crashy;
 
 public class Transformer implements IClassTransformer
 {

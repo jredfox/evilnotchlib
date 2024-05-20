@@ -1,5 +1,7 @@
-package com.evilnotch.lib.asm.util;
+package net.minecraftforge.fml.crashy;
 
+import java.awt.GraphicsEnvironment;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,10 +12,9 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.commons.compress.utils.IOUtils;
-
 import net.minecraft.crash.CrashReport;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.crashy.Crashy.ModEntry.MODSIDE;
 
 /**
  * Copy this class and GuiCrashReport.jar into your project to use
@@ -78,14 +79,24 @@ public class Crashy {
     
 	public static void displayCrash(String msg, boolean exit) throws IOException
 	{
+		//don't display GUI on web servers
+		if(IS_HEADLESS || !GUI)
+		{
+			if(exit)
+				exit(-1);
+			return;
+		}
+		
     	File guicrashjar = new File("GuiCrashReport.jar").getAbsoluteFile();
     	if(!guicrashjar.exists())
     	{
     		InputStream in = Crashy.class.getClassLoader().getResourceAsStream("GuiCrashReport.jar");
+    		if(in == null)
+    			throw new NullPointerException();
     		OutputStream out = new FileOutputStream(guicrashjar);
-    		IOUtils.copy(in, out);
-    		IOUtils.closeQuietly(in);
-    		IOUtils.closeQuietly(out);
+    		copy(in, out);
+    		closeQuietly(in);
+    		closeQuietly(out);
     	}
 		String java = System.getProperty("java.home") + "/bin/java".replace("/", File.separator);
 		ProcessBuilder pb = new ProcessBuilder(java, "-jar", guicrashjar.getPath(), msg);
@@ -103,10 +114,121 @@ public class Crashy {
 			exit(-1);
 		}
 	}
+	
+    public static void displayMissingMods(ModEntry... mods)
+    {
+    	String s = "Minecraft is:" + ModEntry.CURRENT_SIDE + "\n\n";
+    	s += "Missing Mods";
+    	boolean missing = false;
+    	for(ModEntry mod : mods)
+    	{
+    		if(mod.side == MODSIDE.ANY || mod.side == ModEntry.CURRENT_SIDE)
+    		{
+    			try
+    			{
+					Class.forName(mod.clazz);
+				} 
+    			catch (Throwable e)
+    			{
+    				s += "\n" + mod.name + " for Side:" + mod.side;
+    				missing = true;
+				}
+    		}
+    	}
+    	if(missing)
+    	{
+        	try 
+        	{
+    			displayCrash(s, true);
+    		} 
+        	catch (Throwable e)
+        	{
+    			e.printStackTrace();
+    		}
+    	}
+    }
+	
+	public static class ModEntry
+	{
+		public static MODSIDE CURRENT_SIDE = MODSIDE.SERVER;
+		static
+		{
+			ClassLoader cl = Crashy.class.getClassLoader();
+			CURRENT_SIDE = (cl.getResource("net/minecraft/client/renderer/RenderGlobal.class") != null || cl.getResource("buy.class") != null) ? MODSIDE.CLIENT : MODSIDE.SERVER;
+		}
+		
+		public static enum MODSIDE
+		{
+			CLIENT(),
+			SERVER(),
+			ANY()
+		}
+		
+		public String clazz;
+		public String name;
+		public MODSIDE side;
+		
+		public ModEntry(String clazz, String name, MODSIDE side)
+		{
+			this.clazz = clazz;
+			this.name = name;
+			this.side = side;
+		}
+	}
+	
+	//_______________________________________________START IOUTILS METHODS REQUIRED______________________________\\
+	public static final int BUFFER_SIZE = 1048576/2;
+	public static final boolean IS_HEADLESS = GraphicsEnvironment.isHeadless();
+	/**
+	 * Gets set by ConfigCore#load
+	 */
+	public static boolean GUI = true;
+	/**
+	 * enforce thread safety with per thread local variables
+	 */
+	public static final ThreadLocal<byte[]> bufferes = new ThreadLocal<byte[]>()
+	{
+        @Override
+        protected byte[] initialValue() 
+        {
+			return new byte[BUFFER_SIZE];
+        }
+	};
+	
+	public static void copy(InputStream in, OutputStream out) throws IOException
+	{
+		byte[] buffer = bufferes.get();
+		int length;
+   	 	while ((length = in.read(buffer)) >= 0)
+		{
+			out.write(buffer, 0, length);
+		}
+	}
 
 	public static void exit(int i) 
 	{
-		FMLCommonHandler.instance().handleExit(-1);
+		FMLCommonHandler fml = FMLCommonHandler.instance();
+		if(fml != null)
+		{
+			fml.handleExit(i);
+		}
+		else
+		{
+			System.exit(i);
+		}
+	}
+	
+	public static void closeQuietly(Closeable clos)
+	{
+		try 
+		{
+			if(clos != null)
+				clos.close();
+		}
+		catch (IOException e)
+		{
+			
+		}
 	}
 
 }

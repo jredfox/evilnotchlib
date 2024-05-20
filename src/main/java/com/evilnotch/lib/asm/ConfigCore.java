@@ -3,6 +3,7 @@ package com.evilnotch.lib.asm;
 import java.io.File;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.crashy.Crashy;
 
 public class ConfigCore {
 	
@@ -39,6 +40,7 @@ public class ConfigCore {
 		asm_entityPatch = config.get("asm","asm_entityPatch",true).getBoolean();
 		asm_enchantmentNameFix = config.get("asm","asm_enchantmentNameFix",true).getBoolean();
 		asm_patchLanSkins = config.get("asm","asm_patchLanSkins",true).getBoolean();
+		Crashy.GUI = config.get("asm","asm_gui_crash", true).getBoolean();
 		
 		fixPlayerDataSP = config.get("general","fixHostPlayerDataSP",true).getBoolean();
 		
