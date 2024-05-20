@@ -15,9 +15,11 @@ import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.PropertyMap;
 
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -39,6 +41,7 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Session;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -50,7 +53,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class VanillaBugFixes {
 	
@@ -256,6 +258,15 @@ public class VanillaBugFixes {
 		return w.playerEntities.isEmpty() 
 				&& ForgeChunkManager.getPersistentChunksFor(w).isEmpty()
 				&& (Config.unloadDimOverride || !keepLoaded.contains(w.provider.getDimension()));
+	}
+
+	public static void fixMcProfileProperties() 
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.profileProperties == null)
+			mc.profileProperties = new PropertyMap();
+		Session session = mc.getSession();
+		session.setProperties(mc.profileProperties);
 	}
 
 }

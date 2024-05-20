@@ -8,6 +8,7 @@ import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.ClientEvents;
 import com.evilnotch.lib.main.eventhandler.StopSteve;
+import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
@@ -115,7 +116,9 @@ public class ClientProxy extends ServerProxy{
 		if(org != null)
 			return;
 		
-		GameProfile p = Minecraft.getMinecraft().getSession().getProfile();
+		Minecraft mc = Minecraft.getMinecraft();
+		GameProfile p = mc.getSession().getProfile();
+		VanillaBugFixes.fixMcProfileProperties();
 		UUID id = p.getId();
 		org = new EvilGameProfile(UUIDPatcher.getUUID(p), p);
 		org.getProperties().removeAll("textures");

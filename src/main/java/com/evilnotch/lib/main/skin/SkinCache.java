@@ -348,4 +348,28 @@ public class SkinCache {
 //		}
 	}
 
+	/**
+	 * Fills the property map with the cached skin without refresh
+	 */
+	public static void fill(Session session, PropertyMap properties) 
+	{
+		String username = session.getUsername();
+		SkinCache cache = SkinCache.getInstance();
+		SkinEntry current = cache.skins.get(username);
+		if(properties.isEmpty() || current == null || current.isEmpty)
+		{
+			SkinEntry skin = cache.getSkinEntry(username).copy();
+			properties.removeAll("textures");
+			properties.put("textures", new EvilProperty("textures", skin.encode()));
+		}
+	}
+
+	public static SkinCache getInstance() 
+	{
+		if(SkinCache.INSTANCE == null)
+			SkinCache.init();
+		
+		return SkinCache.INSTANCE;
+	}
+
 }
