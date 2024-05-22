@@ -24,6 +24,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.mcp.MCPSidedString;
+import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.event.client.MessageEvent;
@@ -68,6 +69,9 @@ public class GeneralTransformer {
     			break;
     		}
     	}
+    	
+    	if(!ConfigCore.asm_patchLanSkins)
+    		return;
     	
     	//VanillaBugFixes.fixMcProperties();
     	MethodNode m = ASMHelper.getMethodNode(classNode, getprops, "()Lcom/mojang/authlib/properties/PropertyMap;");

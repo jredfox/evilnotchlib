@@ -262,11 +262,7 @@ public class VanillaBugFixes {
 
 	public static void fixMcProfileProperties() 
 	{
-		Minecraft mc = Minecraft.getMinecraft();
-		if(mc.profileProperties == null)
-			mc.profileProperties = new PropertyMap();
-		Session session = mc.getSession();
-		session.setProperties(mc.profileProperties);
+		MainJava.proxy.fixMcProfileProperties();
 	}
 
 }

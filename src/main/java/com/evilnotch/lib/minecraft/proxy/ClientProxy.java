@@ -23,6 +23,7 @@ import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -119,7 +120,6 @@ public class ClientProxy extends ServerProxy{
 		Minecraft mc = Minecraft.getMinecraft();
 		GameProfile p = mc.getSession().getProfile();
 		VanillaBugFixes.fixMcProfileProperties();
-		UUID id = p.getId();
 		org = new EvilGameProfile(UUIDPatcher.getUUID(p), p);
 		org.getProperties().removeAll("textures");
 	}
@@ -170,6 +170,21 @@ public class ClientProxy extends ServerProxy{
 	public void setFoodSaturationLevel(FoodStats fs, float saturationLevel)
 	{
 		fs.setFoodSaturationLevel(saturationLevel);
+	}
+	
+	@Override
+	public void fixMcProfileProperties()
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.profileProperties == null)
+			mc.profileProperties = new PropertyMap();
+		Session session = mc.getSession();
+		
+		//sync forge's profile properties with vanilla's. I don't understand why they are not one and the same
+		if(session.hasCachedProperties())
+			ReflectionUtil.setObject(session, mc.profileProperties, Session.class, "properties");
+		else
+			session.setProperties(mc.profileProperties);
 	}
 
 }

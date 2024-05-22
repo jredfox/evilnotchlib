@@ -117,8 +117,7 @@ public class Crashy {
 	
     public static void displayMissingMods(ModEntry... mods)
     {
-    	String s = "Minecraft is:" + ModEntry.CURRENT_SIDE + "\n\n";
-    	s += "Missing Mods";
+    	String s = "Missing Mods For " + ModEntry.CURRENT_SIDE;
     	boolean missing = false;
     	for(ModEntry mod : mods)
     	{

@@ -22,6 +22,7 @@ import org.ralleytn.simple.json.JSONParser;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -312,26 +313,17 @@ public class SkinCache {
 	public void refreshClientSkin() 
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		Session session = mc.getSession();
-		GameProfile profile = session.getProfile();
+		GameProfile profile = mc.getSession().getProfile();
 		String username = profile.getName();
 		SkinEntry skin = INSTANCE.refresh(username, false).copy();
 		skin.user = username;
 		skin.uuid = profile.getId().toString().replace("-", "");
 		
-		//Fix the skin if it's not erroring
-		if(skin != null)
-		{
-			String base64payload = skin.encode();
-			PropertyMap properties = new PropertyMap();
-			properties.removeAll("textures");
-			properties.put("textures", new EvilProperty("textures", base64payload));
-			
-			ReflectionUtil.setObject(session, null, Session.class, "properties");
-			ReflectionUtil.setFinalObject(mc, properties, Minecraft.class,
-					new MCPSidedString("profileProperties", "field_181038_N").toString());
-			session.setProperties(properties);
-		}
+		String base64payload = skin.encode();
+		VanillaBugFixes.fixMcProfileProperties();//instead of Minecraft#getProfileProperties witch could cause a Mojang 429 error fix them then use the PropertyMap directly
+		PropertyMap properties = mc.profileProperties;
+		properties.removeAll("textures");
+		properties.put("textures", new EvilProperty("textures", base64payload));
 	}
 	
 	public static class EvilProperty extends Property
@@ -339,28 +331,6 @@ public class SkinCache {
 		public EvilProperty(String name, String value)
 		{
 			super(name, value, null);
-		}
-		
-//		@Override
-//		public boolean isSignatureValid(final PublicKey publicKey)
-//		{
-//			return true;
-//		}
-	}
-
-	/**
-	 * Fills the property map with the cached skin without refresh
-	 */
-	public static void fill(Session session, PropertyMap properties) 
-	{
-		String username = session.getUsername();
-		SkinCache cache = SkinCache.getInstance();
-		SkinEntry current = cache.skins.get(username);
-		if(properties.isEmpty() || current == null || current.isEmpty)
-		{
-			SkinEntry skin = cache.getSkinEntry(username).copy();
-			properties.removeAll("textures");
-			properties.put("textures", new EvilProperty("textures", skin.encode()));
 		}
 	}
 

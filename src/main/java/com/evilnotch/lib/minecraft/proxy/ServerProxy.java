@@ -20,6 +20,14 @@ public class ServerProxy {
 	 * generate lan files and inject here
 	 */
 	public void postinit(){}
+	/**
+	 * Client only event
+	 */
+	public void handleUUIDChange(PacketUUID message) {}
+	/**
+	 * fix Minecraft#profileProperties and syncs it with forge
+	 */
+	public void fixMcProfileProperties() {}
 	
 	
 	public static void clearServerData()
@@ -30,14 +38,11 @@ public class ServerProxy {
 		VanillaBugFixes.playerDataNames = null;
 	}
 	
-	public void handleUUIDChange(PacketUUID message) 
-	{
-		
-	}
-	
 	public void setFoodSaturationLevel(FoodStats fs, float saturationLevel)
 	{
 		fs.foodSaturationLevel = saturationLevel;
 	}
+	
+
 	
 }
