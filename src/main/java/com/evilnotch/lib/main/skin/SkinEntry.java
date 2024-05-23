@@ -14,11 +14,9 @@ public class SkinEntry implements ICopy {
 	public long cacheTime;
 	public String skin;
 	public String cape;
-	public String skinhash;
-	public String capehash;
 	public boolean isEmpty;
 	
-	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String skinmd5, String capemd5)
+	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape)
 	{
 		this.uuid = uuid.replace("-", "");
 		this.user = username.toLowerCase();
@@ -26,13 +24,11 @@ public class SkinEntry implements ICopy {
 		this.cacheTime = cacheTime;
 		this.skin = skin;
 		this.cape = JavaUtil.safeString(cape);
-		this.skinhash = skinmd5.toLowerCase();
-		this.capehash = JavaUtil.safeString(capemd5).toLowerCase();
 	}
 	
 	public SkinEntry(JSONObject json)
 	{
-		this(json.getString("uuid"), json.getString("user"), json.getLong("cacheTime"), json.getString("skin"),  json.getString("cape"), json.getString("skinhash"), json.getString("capehash"));
+		this(json.getString("uuid"), json.getString("user"), json.getLong("cacheTime"), json.getString("skin"),  json.getString("cape"));
 	}
 	
 	public JSONObject serialize()
@@ -43,8 +39,6 @@ public class SkinEntry implements ICopy {
 		json.put("cacheTime", this.cacheTime);
 		json.put("skin", this.skin);
 		json.put("cape", this.cape);
-		json.put("skinhash", this.skinhash);
-		json.put("capehash", this.capehash);
 		return json;
 	}
 	
@@ -54,7 +48,7 @@ public class SkinEntry implements ICopy {
 	@Override
 	public SkinEntry copy()
 	{
-		return new SkinEntry(this.uuid, this.user, this.cacheTime, this.skin, this.cape, this.skinhash, this.capehash);
+		return new SkinEntry(this.uuid, this.user, this.cacheTime, this.skin, this.cape);
 	}
 	
 	public JSONObject encodeJSON()

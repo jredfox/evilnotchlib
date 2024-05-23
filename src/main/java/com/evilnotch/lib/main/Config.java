@@ -24,7 +24,6 @@ public class Config {
 	
 	//start skin fixes
 	public static boolean allowskintrans = true;
-	public static int skinCacheMax = 1000;
 	public static int skinCacheHours = 48;
 	public static boolean stopSteve = true;
 	
@@ -55,7 +54,6 @@ public class Config {
 		unloadDimOverride = config.get("general", "unloadDimensionsOverride", unloadDimOverride, "This Requires unloadDimensions to be true! Overrides DimensionManager#keepLoaded. Disable this if Issues Occur").getBoolean();
 		
 		allowskintrans = config.get("skins", "allowSkinTransparency", allowskintrans).getBoolean();
-		skinCacheMax = config.get("skins", "skinCacheMax", skinCacheMax).getInt();
 		skinCacheHours = config.get("skins", "skinCacheMax", skinCacheHours).getInt();
 		stopSteve = config.get("skins", "stopSteveGlitch", stopSteve).getBoolean();
 		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");

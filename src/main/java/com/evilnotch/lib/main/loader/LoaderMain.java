@@ -150,9 +150,6 @@ public class LoaderMain {
 		loadEvents();
 		loadfoamFixFixer();
 		CapabilityRegistry.registerRegistry(new CapRegDefaultHandler());
-		
-		SkinCache.init();
-//		SkinCache.INSTANCE.refreshClientSkin();
 	}
 	
 	/**

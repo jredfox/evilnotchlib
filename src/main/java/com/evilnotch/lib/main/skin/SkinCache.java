@@ -9,10 +9,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.net.UnknownServiceException;
-import java.security.PublicKey;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.ralleytn.simple.json.JSONArray;
@@ -20,34 +18,52 @@ import org.ralleytn.simple.json.JSONObject;
 import org.ralleytn.simple.json.JSONParser;
 
 import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
+import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
+import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
+import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packet.PacketSkinChange;
 import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.Session;
 
 public class SkinCache {
 	
-	public HashMap<String, SkinEntry> skins = new HashMap(100);
-	public Set<String> refreshque = new HashSet();
+	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "");
+	
+	public HashMap<String, SkinEntry> skins = new HashMap(25);
+	public Map<String, SkinEntry> refreshque = new HashMap();
 	public File skinCacheLoc = new File(System.getProperty("user.dir"), "skinCacher.json");
-	public boolean dirty = false;
-	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "", "", "");
+	public SkinEntry selected = EMPTY;
+	public volatile boolean isOnline = false;
+	
+	public boolean isMojangOnline()
+	{
+		if(!this.isOnline)
+			this.isOnline = JavaUtil.isOnline("sessionserver.mojang.com");
+		return this.isOnline;
+	}
 	
 	public void load()
 	{
+		if(!skins.isEmpty())
+		{
+			skins.clear();
+			synchronized (this.refreshque)
+			{
+				refreshque.clear();
+			}
+		}
+		
 		//Update the White listed domains
 		ReflectionUtil.setFinalObject(null, Config.skinDomains, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
 		
-		boolean isOnline = JavaUtil.isOnline(null);
+		boolean isOnline = this.isMojangOnline();
 		JSONArray arr = skinCacheLoc.exists() ? JavaUtil.getJsonArray(skinCacheLoc) : new JSONArray();
-		int i = 0;
 		for(Object o : arr)
 		{
 			if(!(o instanceof JSONObject))
@@ -61,9 +77,6 @@ public class SkinCache {
 				continue;
 			}
 			skins.put(data.user, data);
-			i++;
-			if(i >= Config.skinCacheMax)
-				break;
 		}
 	}
 	
@@ -78,59 +91,128 @@ public class SkinCache {
 		JavaUtil.saveJSONArray(arr, skinCacheLoc);
 	}
 	
+	/**
+	 * gets the current cached skin will be empty if skins doesn't contain the user
+	 */
 	public SkinEntry getSkinEntry(String user)
 	{
 		user = user.toLowerCase();
-		return refreshque.contains(user) ? EMPTY : skins.containsKey(user) ? skins.get(user) : cacheSkin(user);
+		return skins.containsKey(user) ? skins.get(user) : EMPTY;
+	}
+	
+	public void select(SkinEntry s)
+	{
+		this.selected = s;
 	}
 
-	public SkinEntry refresh(String user, boolean force)
+	/**
+	 * returns cached skin if it exists and adds the skin to the refresh cache
+	 */
+	public SkinEntry refresh(String user, boolean select)
 	{
 		user = user.toLowerCase();
-		if(force || shouldRefresh(user, true))
-		{
-			System.out.println("Refreshing Skin:" + user);
-			return cacheSkin(user);
-		}
-		return skins.get(user);
+		SkinEntry current = getSkinEntry(user);
+		if(select)
+			this.select(current);
+		this.addQue(user, current);
+		return current;
 	}
-
-	public boolean shouldRefresh(String user, boolean checkHashes) 
+	
+	public void addQue(String user, SkinEntry skin)
 	{
-		user = user.toLowerCase();
-		SkinEntry entry = skins.get(user);
-		//if it doesn't exist or has expired cache it
-		if(entry == null || entry.isEmpty || hasExpired(entry))
-			return true;
-		
-		//Uses Crafatar.com as a hash checker if they don't match sync with mojang
-		if(checkHashes && JavaUtil.isOnline("crafatar.com"))
+		synchronized (this.refreshque)
 		{
-			return !entry.skinhash.equals(getCrafatarHash(entry.uuid, false)) || !entry.capehash.equals(getCrafatarHash(entry.uuid, true));
+			this.refreshque.put(user.toLowerCase(), skin);
 		}
-		return false;
+	}
+	
+	public void removeQue(String user)
+	{
+		synchronized (this.refreshque)
+		{
+			this.refreshque.remove(user.toLowerCase());
+		}
 	}
 	
 	public boolean hasExpired(SkinEntry entry) 
 	{
 		return System.currentTimeMillis() >= (entry.cacheTime + ( ( (Config.skinCacheHours * 60L) * 60L) * 1000L) );
 	}
-
-	public static String getCrafatarHash(String uuid, boolean isCape)
+	
+	public Thread refreshThread = null;
+	public void start()
 	{
-		return JavaUtil.getOnlinePNGMD5(isCape ? ("https://crafatar.com/capes/" + uuid) : ("https://crafatar.com/skins/" + uuid));
+		if(this.refreshThread == null)
+		{
+			this.refreshThread = new Thread(()-> 
+			{
+				while(true)
+				{
+					//copy the que because downloading while the que is locked will lag the main thread
+					Map<String, SkinEntry> que = new HashMap();
+					boolean flag = false;
+					synchronized (this.refreshque)
+					{
+						flag = this.refreshque.isEmpty();
+						que.putAll(this.refreshque);
+					}
+					
+					if(this.isMojangOnline())
+					{
+						for(Map.Entry<String, SkinEntry> m : que.entrySet())
+						{
+							String user = m.getKey();
+							SkinEntry dl = this.downloadSkin(user, m.getValue());
+							if(!dl.isEmpty)
+							{
+								this.removeQue(user);
+								Minecraft.getMinecraft().addScheduledTask(()->
+								{
+									this.skins.put(user, dl);
+									if(this.selected.isEmpty || user.equals(this.selected.user))
+									{
+										this.refreshSelected();
+									}
+									this.save();
+								});
+							}
+						}
+					}
+					JavaUtil.sleep(2500);
+				}
+			});
+			this.refreshThread.setPriority(4);//set's it below normal thread priority so it doesn't interfear with the game
+			this.refreshThread.start();
+		}
 	}
 
-	public static volatile boolean playerdb = false;
-	public SkinEntry cacheSkin(String user)
+	/**
+	 * Call this on the main thread after a SkinEntry is downloaded
+	 */
+	public void refreshSelected()
+	{
+		if(this.selected.isEmpty)
+			this.select(this.getSkinEntry(Minecraft.getMinecraft().getSession().getUsername()));
+			
+		//update the encoding to send to the server
+		this.selected = this.getSkinEntry(this.selected.user);
+		
+		//if player is already in the world send a packet
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.player != null && mc.player.connection != null && ((CapBoolean) CapabilityRegistry.getCapability(mc.player, CapRegDefaultHandler.addedToWorld)).value)
+		{
+			NetWorkHandler.INSTANCE.sendToServer(new PacketSkinChange(this.selected));
+		}
+	}
+
+	public volatile boolean playerdb = false;
+	public SkinEntry downloadSkin(String user, SkinEntry current)
 	{
 		//is player db online
 		if(playerdb || JavaUtil.isOnline("playerdb.co"))
 			playerdb = true;
 		
-		//fetches the real uuid of the player
-		JSONObject dbjson = playerdb ? getPlayerDBJSON(user) : null;
-		String uuid = dbjson != null && dbjson.containsKey("id") ? dbjson.getString("id").replace("-", "") : getMojangUUID(user);
+		String uuid = current.isEmpty || this.hasExpired(current) ? getUUID(user) : current.uuid;//grab the cached uuid when possible
 		
 		//Error occured fetching the UUID
 		if(uuid == null)
@@ -144,7 +226,6 @@ public class SkinCache {
 		if(json == null)
 		{
 			System.err.println("Error Unable to get Mojang profile:" + user);
-			refreshque.add(user);
 			return EMPTY;
 		}
 		
@@ -152,28 +233,24 @@ public class SkinCache {
 		JSONObject decoded = JavaUtil.toJsonFrom64(base64payload);
 		JSONObject textures = decoded.getJSONObject("textures");
 		String skin = textures.getJSONObject("SKIN").getString("url");
-		String cape = "";
-		String skinhash = JavaUtil.getOnlinePNGMD5(skin);
-		String capehash = "";
-		
-		if(textures.containsKey("CAPE"))
-		{
-			cape = textures.getJSONObject("CAPE").getString("url");
-			capehash = JavaUtil.getOnlinePNGMD5(cape);
-		}
-		
-		SkinEntry entry = new SkinEntry(uuid, user, System.currentTimeMillis(), skin, cape, skinhash, capehash);
-		skins.put(user, entry);
-		this.refreshque.remove(user);
-		this.dirty = true;
-		this.save();//TODO: remove to save every 2s when going multi-threaded
+		String cape = textures.containsKey("CAPE") ? textures.getJSONObject("CAPE").getString("url") : "";
+		SkinEntry entry = new SkinEntry(uuid, user, System.currentTimeMillis(), skin, cape);
 		return entry;
 	}
-	
+
+	/**
+	 * gets the real uuid for the player using playerdb when possible to prevent mojang's 429 error
+	 */
+	public String getUUID(String user)
+	{
+		JSONObject dbjson = playerdb ? getPlayerDBJSON(user) : null;
+		return dbjson != null && dbjson.containsKey("id") ? dbjson.getString("id").replace("-", "") : getMojangUUID(user);
+	}
+
 	/**
 	 * unlike mojang will not return an error code 429 (too many requests) when obtaining the uuid of the player
 	 */
-	public static JSONObject getPlayerDBJSON(String username) 
+	public JSONObject getPlayerDBJSON(String username) 
 	{
 		BufferedReader stream = null;
 		URLConnection con = null;
@@ -206,20 +283,26 @@ public class SkinCache {
 		}
 	}
 	
-	public static JSONObject getMojangProfile(String uuid) {
+	public JSONObject getMojangProfile(String uuid) 
+	{
 		BufferedReader stream = null;
-		try {
+		try 
+		{
 			URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
 			stream = new BufferedReader(new InputStreamReader(url.openStream()));
 			JSONParser parser = new JSONParser();
 			JSONObject json = (JSONObject) parser.parse(stream);
 			return json;
-		} catch (Exception e) {
+		} 
+		catch (UnknownHostException e) {
+			this.isOnline = false;
+		}
+		catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		} finally {
 			IOUtils.closeQuietly(stream);
 		}
+		return null;
 	}
 	
 	public volatile boolean lockedUUID = false;
@@ -244,31 +327,34 @@ public class SkinCache {
 			String id = json.getString("id").replace("-", "");
 			return id;
 		}
+		catch (UnknownHostException e) {
+			this.isOnline = false;
+		}
 		catch (IOException e)
 		{
 			//if error code isn't 429 aka too many requests assume it's a bad username
 			if(JavaUtil.isOnline("api.mojang.com"))
 			{
 				int response = getCode(con);
-				System.out.println("code:" + response);
+				//If too many requests lock the refresh thread
 				if(response == 429)
 				{
 					this.lockedUUID = true;
-					this.refreshque.add(username);
 				}
-				else if(response == 404 || response == 400)
+				//           Not Found      Bad Request       Forbidden
+				else if(response == 404 || response == 400 || response == 403)
 				{
-					this.refreshque.remove(username);
+					this.removeQue(username);
 				}
 				else
-					e.printStackTrace();
+					System.err.println("Unexpected HTTPS Error Code:" + response);
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		} 
-		finally 
+		finally
 		{
 			IOUtils.closeQuietly(stream);
 		}
@@ -307,6 +393,10 @@ public class SkinCache {
 		INSTANCE = new SkinCache();
 		INSTANCE.load();
 		INSTANCE.save();
+		INSTANCE.start();
+		long ms2 = System.currentTimeMillis();
+		INSTANCE.refreshClientSkin();
+		JavaUtil.printTime(ms2, "Skin Fetch From Cache took:");
 		JavaUtil.printTime(ms, "Skin Cache Took:");
 	}
 
@@ -315,15 +405,17 @@ public class SkinCache {
 		Minecraft mc = Minecraft.getMinecraft();
 		GameProfile profile = mc.getSession().getProfile();
 		String username = profile.getName();
-		SkinEntry skin = INSTANCE.refresh(username, false).copy();
+		
+//		SkinEvent.Select event = new SkinEvent.Select(username);//allows changing of initial username
+//		MinecraftForge.EVENT_BUS.post(event);
+//		username = event.name;
+		
+		SkinEntry skin = INSTANCE.refresh(username, true).copy();
 		skin.user = username;
 		skin.uuid = profile.getId().toString().replace("-", "");
-		
-		String base64payload = skin.encode();
-		VanillaBugFixes.fixMcProfileProperties();//instead of Minecraft#getProfileProperties witch could cause a Mojang 429 error fix them then use the PropertyMap directly
-		PropertyMap properties = mc.profileProperties;
-		properties.removeAll("textures");
-		properties.put("textures", new EvilProperty("textures", base64payload));
+//		SkinEvent.Refreshed eventpost = new SkinEvent.Refreshed(skin);//allows things like cape capabilities or overrides to happen like custom URL skins that are hashed
+//		skin = eventpost.skin;
+		this.select(skin);
 	}
 	
 	public static class EvilProperty extends Property

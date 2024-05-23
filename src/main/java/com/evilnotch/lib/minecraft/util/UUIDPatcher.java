@@ -34,6 +34,9 @@ public class UUIDPatcher {
 		}
 		EvilGameProfile profile = new EvilGameProfile(id, old);
 //		PlayerUtil.patchLANSkin(profile);
+//		properties.removeAll("textures");
+//		properties.put("textures", new EvilProperty("textures", base64payload));
+		
 		return profile;
 	}
 	

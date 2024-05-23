@@ -49,6 +49,9 @@ public class ClientProxy extends ServerProxy{
 		super.preinit(e);
 		registerEvents();
 		this.cacheUUID();
+		
+		SkinCache.init();
+		SkinCache.INSTANCE.refreshClientSkin();
 	}
 	
 	@Override
