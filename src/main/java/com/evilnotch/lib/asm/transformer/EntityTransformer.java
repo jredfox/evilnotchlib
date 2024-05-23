@@ -11,6 +11,7 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -40,7 +41,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.entity.EntityPlayerSP",
     	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService",
     	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService$1",
-    	"net.minecraft.client.network.NetworkPlayerInfo"//stopSteve
+    	"net.minecraft.client.network.NetworkPlayerInfo",//stopSteve
+    	"net.minecraft.network.login.client.CPacketLoginStart"//sends skin to server
     });
 
 	@Override
@@ -110,6 +112,10 @@ public class EntityTransformer implements IClassTransformer{
                 case 9:
                 	patchStopSteve(classNode);
                 break;
+                
+                case 10:
+                	patchCPacketLoginStart(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -127,6 +133,52 @@ public class EntityTransformer implements IClassTransformer{
         	t.printStackTrace();
         }
 		return classToTransform;
+	}
+
+	public void patchCPacketLoginStart(ClassNode classNode)
+	{
+		//public skindata
+		classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "skindata", "Ljava/lang/String;", null, null));
+		
+		//this.skindata = Config.skinCache ? SkinCache.getEncode(SkinCache.INSTANCE.selected) : "";
+		MethodNode ctr = ASMHelper.getConstructionNode(classNode, "(Lcom/mojang/authlib/GameProfile;)V");
+		InsnList li = new InsnList();
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/Config", "skinCache", "Z"));
+		LabelNode l3 = new LabelNode();
+		li.add(new JumpInsnNode(Opcodes.IFEQ, l3));
+		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/skin/SkinCache", "INSTANCE", "Lcom/evilnotch/lib/main/skin/SkinCache;"));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "com/evilnotch/lib/main/skin/SkinCache", "selected", "Lcom/evilnotch/lib/main/skin/SkinEntry;"));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "getEncode", "(Lcom/evilnotch/lib/main/skin/SkinEntry;)Ljava/lang/String;", false));
+		LabelNode l4 = new LabelNode();
+		li.add(new JumpInsnNode(Opcodes.GOTO, l4));
+		li.add(l3);
+		li.add(new LdcInsnNode(""));
+		li.add(l4);
+		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "skindata", "Ljava/lang/String;"));
+		ctr.instructions.insert(ASMHelper.getFirstInstruction(ctr, Opcodes.PUTFIELD), li);
+		
+		//this.skindata = buf.readString(Short.MAX_VALUE);
+		MethodNode read = ASMHelper.getMethodNode(classNode, new MCPSidedString("readPacketData", "func_148837_a").toString(), "(Lnet/minecraft/network/PacketBuffer;)V");
+		InsnList rlist = new InsnList();
+		rlist.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		rlist.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		rlist.add(new IntInsnNode(Opcodes.SIPUSH, 32767));
+		rlist.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", new MCPSidedString("readString", "func_150789_c").toString(), "(I)Ljava/lang/String;", false));
+		rlist.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "skindata", "Ljava/lang/String;"));
+		read.instructions.insert(ASMHelper.getFieldNode(read, Opcodes.PUTFIELD, "net/minecraft/network/login/client/CPacketLoginStart", new MCPSidedString("profile", "field_149305_a").toString(), "Lcom/mojang/authlib/GameProfile;"), rlist);
+	
+		//buf.writeString(this.skindata);
+		MethodNode write = ASMHelper.getMethodNode(classNode, new MCPSidedString("writePacketData", "func_148840_b").toString(), "(Lnet/minecraft/network/PacketBuffer;)V");
+		InsnList wlist = new InsnList();
+		String writestring = new MCPSidedString("writeString", "func_180714_a").toString();
+		wlist.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		wlist.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		wlist.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "skindata", "Ljava/lang/String;"));
+		wlist.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", writestring, "(Ljava/lang/String;)Lnet/minecraft/network/PacketBuffer;", false));
+		wlist.add(new InsnNode(Opcodes.POP));
+		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(write, Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", writestring, "(Ljava/lang/String;)Lnet/minecraft/network/PacketBuffer;", false).getNext();
+		write.instructions.insert(spot, wlist);
 	}
 
 	public void patchStopSteve(ClassNode classNode) 
