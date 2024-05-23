@@ -116,32 +116,6 @@ public class PlayerUtil {
 		ReflectionUtil.setFinalObject(player.getGameProfile(), uuid, GameProfile.class, "id");
 		EntityUtil.setEntityUUID(player, uuid);
 	}
-    
-	public static void patchLANSkin(GameProfile gameprofile)
-	{
-		if(gameprofile.getName() == null)
-		{
-			System.err.println("Error Unable to Patch LAN Skin GameProfile Has No Username:" + gameprofile.getId());
-			return;
-		}
-        String username = gameprofile.getName();
-    	SkinEntry skin = SkinCache.INSTANCE.refresh(username, false);
-//    	if(!skin.isEmpty)
-//    	{
-    		skin = skin.copy();
-    		//make sure the skin encodes correctly for the user
-    		skin.uuid = gameprofile.getId().toString().replace("-", "");
-    		skin.user = username;
-    		
-    		PropertyMap map = gameprofile.getProperties();
-    		map.removeAll("textures");
-    		String payload = skin.encode();
-    		map.put("textures", new SkinCache.EvilProperty("textures", payload));
-    		System.out.println("payload:" + payload);
-//    	}
-    	
-		PropertyMap props = gameprofile.getProperties();
-	}
 
 	public static void kickPlayer(EntityPlayerMP p, int ticks,String msg) 
 	{

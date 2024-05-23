@@ -125,10 +125,4 @@ public class ClientEvents {
 		event.allowTrans = Config.allowskintrans;
 	}
 	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void skincaps(SkinEvent.User event)
-	{
-		event.username = Config.current_skin.isEmpty() ? event.username : Config.current_skin;
-	}
-	
 }

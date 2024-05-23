@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.network.packet;
 
+import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.main.skin.SkinEntry;
 
 import io.netty.buffer.ByteBuf;
@@ -17,14 +18,7 @@ public class PacketSkinChange implements IMessage{
 	{
 		if(!s.isEmpty)
 		{
-			//sync skins with client
-			s = s.copy();
-			Session session = Minecraft.getMinecraft().getSession();
-			s.user = session.getUsername();
-			s.uuid = session.getPlayerID().toString().replace("-", "");
-			
-			//encode the skin into a useable payload
-			this.payload = s.encode();
+			this.payload = SkinCache.getEncode(s);
 		}
 	}
 

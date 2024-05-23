@@ -4,12 +4,18 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import org.ralleytn.simple.json.JSONObject;
+
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.skin.SkinCache.EvilProperty;
+import com.evilnotch.lib.main.skin.SkinEntry;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
+import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.util.UUIDTypeAdapter;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
@@ -32,14 +38,12 @@ public class UUIDPatcher {
 			System.out.println("Patched " + user + " UUID From:" + id + " To:" + cached);
 			id = cached;
 		}
-		EvilGameProfile profile = new EvilGameProfile(id, old);
-//		PlayerUtil.patchLANSkin(profile);
-//		properties.removeAll("textures");
-//		properties.put("textures", new EvilProperty("textures", base64payload));
 		
+		EvilGameProfile profile = new EvilGameProfile(id, old);
+		patchSkin(profile);
 		return profile;
 	}
-	
+
 	public static GameProfile patchCheck(GameProfile profile)
 	{
 		return profile instanceof EvilGameProfile ? profile : patch(profile);
@@ -147,5 +151,47 @@ public class UUIDPatcher {
 		ForgeEventFactory.firePlayerLoadingEvent(playerIn, list.playerDataManager, playerIn.getCachedUniqueIdString());
 		return nbt;
 	}
+	
+	
+	public static void patchSkin(GameProfile profile)
+	{
+		PropertyMap props = profile.getProperties();
+		String payload = getEncode(props);
+		if(payload == null)
+			return;
+		setSkin(props, patchSkin(profile, payload));
+	}
 
+	public static String patchSkin(GameProfile profile, String payload) 
+	{
+		try
+		{
+			JSONObject json = JavaUtil.toJsonFrom64(payload);
+			json.put("profileId", profile.getId().toString().replace("-", ""));
+			json.put("profileName", profile.getName());
+			return JavaUtil.toBase64(json.toString());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static String getEncode(PropertyMap map) 
+	{
+		if(map.isEmpty())
+			return null;
+		Property p = ((Property)JavaUtil.getFirst(map.get("textures")));
+		return p == null ? null : p.getValue();
+	}
+	
+	public static void setSkin(PropertyMap props, String skindata) 
+	{
+		if(skindata == null || skindata.isEmpty())
+			return;
+		props.removeAll("textures");
+		props.put("textures", new EvilProperty("textures", skindata));
+	}
+	
 }

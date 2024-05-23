@@ -24,12 +24,14 @@ import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkinChange;
+import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Session;
 
 public class SkinCache {
 	
@@ -395,6 +397,8 @@ public class SkinCache {
 	public static SkinCache INSTANCE;
 	public static void init() 
 	{
+		if(!Config.skinCache)
+			return;
 		System.out.println("Loading Skin Cache");
 		long ms = System.currentTimeMillis();
 		INSTANCE = new SkinCache();
@@ -421,6 +425,20 @@ public class SkinCache {
 			SkinCache.init();
 		
 		return SkinCache.INSTANCE;
+	}
+
+	public static String getEncode(SkinEntry s)
+	{
+		if(s.isEmpty)
+			return s.encode();
+		
+		//sync skins with client
+		s = s.copy();
+		Session session = Minecraft.getMinecraft().getSession();
+		s.user = session.getUsername();
+		
+		//encode the skin into a usable payload
+		return s.encode();
 	}
 
 }
