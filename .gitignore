@@ -31,3 +31,5 @@ src/main/java/net/minecraft/server/network/NetHandlerLoginServer.java
 src/main/java/net/minecraft/server/management/PlayerList.java
 src/main/java/net/minecraft/entity/player/EntityPlayerMP.java
 src/main/java/net/minecraft/client/Minecraft.java
+src/main/java/purejava/Main.java
+src/main/java/net/minecraft/*
