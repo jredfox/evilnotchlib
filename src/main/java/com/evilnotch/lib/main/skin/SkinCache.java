@@ -110,12 +110,37 @@ public class SkinCache {
 	 */
 	public SkinEntry refresh(String user, boolean select)
 	{
-		user = user.toLowerCase();
+		user = SkinEvent.User.fire(user.toLowerCase());
 		SkinEntry current = getSkinEntry(user);
 		if(select)
 			this.select(current);
 		this.addQue(user, current);
 		return current;
+	}
+	
+	public void refreshClientSkin() 
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		GameProfile profile = mc.getSession().getProfile();
+		String username = profile.getName();
+		SkinEntry skin = this.refresh(username, true);
+	}
+
+	/**
+	 * fired after a SkinEntry is downloaded successfully
+	 * syncs the selected user with skins#get(user) and updates skin packets if in game
+	 */
+	public void refreshSelected(String user)
+	{
+		//update the encoding to send to the server
+		this.selected = this.getSkinEntry(user);
+		
+		//if player is already in the world send a packet
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.player != null && mc.player.connection != null && ((CapBoolean) CapabilityRegistry.getCapability(mc.player, CapRegDefaultHandler.addedToWorld)).value)
+		{
+			NetWorkHandler.INSTANCE.sendToServer(new PacketSkinChange(this.selected));
+		}
 	}
 	
 	public void addQue(String user, SkinEntry skin)
@@ -166,12 +191,13 @@ public class SkinCache {
 							if(!dl.isEmpty)
 							{
 								this.removeQue(user);
+								final SkinEntry cap = SkinEvent.Capability.fire(dl);
 								Minecraft.getMinecraft().addScheduledTask(()->
 								{
-									this.skins.put(user, dl);
+									this.skins.put(user, cap);
 									if(this.selected.isEmpty || user.equals(this.selected.user))
 									{
-										this.refreshSelected();
+										this.refreshSelected(user);
 									}
 									this.save();
 								});
@@ -181,27 +207,8 @@ public class SkinCache {
 					JavaUtil.sleep(2500);
 				}
 			});
-			this.refreshThread.setPriority(4);//set's it below normal thread priority so it doesn't interfear with the game
+			this.refreshThread.setPriority(4);//set's it below normal thread priority so it doesn't interfere with the game
 			this.refreshThread.start();
-		}
-	}
-
-	/**
-	 * Call this on the main thread after a SkinEntry is downloaded
-	 */
-	public void refreshSelected()
-	{
-		if(this.selected.isEmpty)
-			this.select(this.getSkinEntry(Minecraft.getMinecraft().getSession().getUsername()));
-			
-		//update the encoding to send to the server
-		this.selected = this.getSkinEntry(this.selected.user);
-		
-		//if player is already in the world send a packet
-		Minecraft mc = Minecraft.getMinecraft();
-		if(mc.player != null && mc.player.connection != null && ((CapBoolean) CapabilityRegistry.getCapability(mc.player, CapRegDefaultHandler.addedToWorld)).value)
-		{
-			NetWorkHandler.INSTANCE.sendToServer(new PacketSkinChange(this.selected));
 		}
 	}
 
@@ -398,24 +405,6 @@ public class SkinCache {
 		INSTANCE.refreshClientSkin();
 		JavaUtil.printTime(ms2, "Skin Fetch From Cache took:");
 		JavaUtil.printTime(ms, "Skin Cache Took:");
-	}
-
-	public void refreshClientSkin() 
-	{
-		Minecraft mc = Minecraft.getMinecraft();
-		GameProfile profile = mc.getSession().getProfile();
-		String username = profile.getName();
-		
-//		SkinEvent.Select event = new SkinEvent.Select(username);//allows changing of initial username
-//		MinecraftForge.EVENT_BUS.post(event);
-//		username = event.name;
-		
-		SkinEntry skin = INSTANCE.refresh(username, true).copy();
-		skin.user = username;
-		skin.uuid = profile.getId().toString().replace("-", "");
-//		SkinEvent.Refreshed eventpost = new SkinEvent.Refreshed(skin);//allows things like cape capabilities or overrides to happen like custom URL skins that are hashed
-//		skin = eventpost.skin;
-		this.select(skin);
 	}
 	
 	public static class EvilProperty extends Property

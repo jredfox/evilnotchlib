@@ -37,6 +37,7 @@ public class Config {
 	public static List<ResourceLocation> cacheEntNamesDeny = new ArrayList();
 	public static String[] skinDomains = new String[]{".minecraft.net", ".mojang.com", "crafatar.com"};
 	public static List<Class> multiparts = new ArrayList();
+	public static String current_skin = "";
 
 	
 	public static void loadConfig(File d)
@@ -56,6 +57,7 @@ public class Config {
 		allowskintrans = config.get("skins", "allowSkinTransparency", allowskintrans).getBoolean();
 		skinCacheHours = config.get("skins", "skinCacheMax", skinCacheHours).getInt();
 		stopSteve = config.get("skins", "stopSteveGlitch", stopSteve).getBoolean();
+		current_skin = config.get("skins", "current_skin", current_skin).getString();
 		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");
 		
 		//entity cache data for black list and allow certain entities to pass through

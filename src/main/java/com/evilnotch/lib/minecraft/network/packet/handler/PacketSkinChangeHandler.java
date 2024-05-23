@@ -12,10 +12,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 public class PacketSkinChangeHandler extends MessegeBase<PacketSkinChange> {
 
 	@Override
-	public void handleClientSide(PacketSkinChange message, EntityPlayer player) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void handleClientSide(PacketSkinChange message, EntityPlayer player) {}
 
 	@Override
 	public void handleServerSide(PacketSkinChange message, EntityPlayer player)

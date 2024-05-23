@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.skin.SkinEntry;
+import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.lib.minecraft.client.Seeds;
@@ -122,6 +123,12 @@ public class ClientEvents {
 	public void coolskins(SkinTransparencyEvent event)
 	{
 		event.allowTrans = Config.allowskintrans;
+	}
+	
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void skincaps(SkinEvent.User event)
+	{
+		event.username = Config.current_skin.isEmpty() ? event.username : Config.current_skin;
 	}
 	
 }
