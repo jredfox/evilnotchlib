@@ -14,6 +14,7 @@ public class SkinEntry implements ICopy {
 	public long cacheTime;
 	public String skin;
 	public String cape;
+	public boolean isAlex;//TODO: I forgot
 	public boolean isEmpty;
 	
 	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape)
@@ -48,7 +49,9 @@ public class SkinEntry implements ICopy {
 	@Override
 	public SkinEntry copy()
 	{
-		return new SkinEntry(this.uuid, this.user, this.cacheTime, this.skin, this.cape);
+		SkinEntry s = new SkinEntry(this.uuid, this.user, this.cacheTime, this.skin, this.cape);
+		s.isEmpty = this.isEmpty;
+		return s;
 	}
 	
 	public JSONObject encodeJSON()

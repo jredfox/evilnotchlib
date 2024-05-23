@@ -157,13 +157,17 @@ public class UUIDPatcher {
 	{
 		PropertyMap props = profile.getProperties();
 		String payload = getEncode(props);
-		if(payload == null)
+		if(isSkinEmpty(payload))
 			return;
 		setSkin(props, patchSkin(profile, payload));
 	}
 
 	public static String patchSkin(GameProfile profile, String payload) 
 	{
+		//do not modify empty skins encoding
+		if(isSkinEmpty(payload))
+			return SkinEntry.EMPTY_SKIN_ENCODE;
+		
 		try
 		{
 			JSONObject json = JavaUtil.toJsonFrom64(payload);
@@ -177,14 +181,6 @@ public class UUIDPatcher {
 		}
 		return null;
 	}
-
-	public static String getEncode(PropertyMap map) 
-	{
-		if(map.isEmpty())
-			return null;
-		Property p = ((Property)JavaUtil.getFirst(map.get("textures")));
-		return p == null ? null : p.getValue();
-	}
 	
 	public static void setSkin(PropertyMap props, String skindata) 
 	{
@@ -192,6 +188,19 @@ public class UUIDPatcher {
 			return;
 		props.removeAll("textures");
 		props.put("textures", new EvilProperty("textures", skindata));
+	}
+	
+	private static boolean isSkinEmpty(String payload) 
+	{
+		return payload == null || SkinEntry.EMPTY_SKIN_ENCODE.equals(payload);
+	}
+
+	public static String getEncode(PropertyMap map) 
+	{
+		if(map.isEmpty())
+			return null;
+		Property p = ((Property)JavaUtil.getFirst(map.get("textures")));
+		return p == null ? null : p.getValue();
 	}
 	
 }

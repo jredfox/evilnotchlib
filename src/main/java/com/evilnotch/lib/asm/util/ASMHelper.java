@@ -692,4 +692,12 @@ public class ASMHelper
 		}
 		return null;
 	}
+
+	public static boolean containsFieldNode(ClassNode classNode, String name) 
+	{
+		for(FieldNode f : classNode.fields)
+			if(f.name.equals(name))
+				return true;
+		return false;
+	}
 }

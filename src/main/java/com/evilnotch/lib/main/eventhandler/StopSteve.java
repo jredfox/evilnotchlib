@@ -8,7 +8,6 @@ import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -31,6 +30,8 @@ public class StopSteve {
 			event.setCanceled(true);
 			return;
 		}
+		else if(info.stopSteve)//if we already stopped steve return
+			return;
 		
 		if(msJoined2 == 0)
 			msJoined2 = System.currentTimeMillis();
@@ -43,8 +44,7 @@ public class StopSteve {
 		}
 		else
 		{
-			if(encode == null)
-				info.skinType = DefaultPlayerSkin.getSkinType(player.entityUniqueID);
+			info.stopSteve = true;
 			msJoined2 = 0;
 		}
 	}
@@ -66,6 +66,8 @@ public class StopSteve {
 			event.setCanceled(true);
 			return;
 		}
+		else if(info.stopSteve)//if we already stopped steve return
+			return;
 		
 		if(msJoined == 0)
 			msJoined = System.currentTimeMillis();
@@ -78,8 +80,7 @@ public class StopSteve {
 		}
 		else
 		{
-			if(encode == null)
-				info.skinType = DefaultPlayerSkin.getSkinType(mc.player.entityUniqueID);
+			info.stopSteve = true;
 			msJoined = 0;
 		}
 	}
