@@ -64,10 +64,12 @@ PickEvent.Block(allows you to override what the block returns via middle click)
 PickEvent.Entity(allows you to override what the entity returns via middle click)
 FakeWorld allows you to instatiate entities before a main world is even loaded you will have to exception handle for broken entities
 NBTPathAPI(Not Working Quite Yet) allows for deep comparsions of nbt based upon logic type as well as comparing has tags merging nbt and compiling back into normal nbt
+LAN Skin Fix
+Dedicated Server Skin Fix
+Skins that are already downloaded should appear without the internet (offline)
 
 Future:
 Font Renderer
-Lan Skin Host Fix
 ```
 
 Instalation This as a Dependancy:
