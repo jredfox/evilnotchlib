@@ -25,7 +25,7 @@ public class SkinEvent extends Event {
 	}
 	
 	/**
-	 * Fires on the SkinCache Downloading thread use with caution
+	 * Fires on the SkinCache Downloading thread use with CAUTION
 	 * Use this to update capes and skin urls. Call {@link SkinCache#INSTANCE#getSkinEntry(String cap)} and if Empty Call {@link SkinCache#INSTANCE#downloadSkin(String, SkinEntry)} Directly to get another player's cape or skin
 	 * Set {@link Capability#skin} to change the SkinEntry for the SkinCache Downloading Thread
 	 */

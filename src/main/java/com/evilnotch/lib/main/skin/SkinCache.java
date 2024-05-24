@@ -9,8 +9,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.net.UnknownServiceException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.ralleytn.simple.json.JSONArray;
@@ -35,10 +37,10 @@ import net.minecraft.util.Session;
 
 public class SkinCache {
 	
-	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "");
+	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "", "");
 	
 	public HashMap<String, SkinEntry> skins = new HashMap(25);
-	public Map<String, SkinEntry> refreshque = new HashMap();
+	public Map<String, SkinEntry> refreshque = new HashMap<>();
 	public File skinCacheLoc = new File(System.getProperty("user.dir"), "skinCacher.json");
 	public SkinEntry selected = EMPTY;
 	public volatile boolean isOnline = false;
@@ -161,6 +163,14 @@ public class SkinCache {
 		}
 	}
 	
+	public void containsQue(String user)
+	{
+		synchronized (this.refreshque)
+		{
+			this.refreshque.containsKey(user.toLowerCase());
+		}
+	}
+	
 	public boolean hasExpired(SkinEntry entry) 
 	{
 		return System.currentTimeMillis() >= (entry.cacheTime + ( ( (Config.skinCacheHours * 60L) * 60L) * 1000L) );
@@ -189,14 +199,13 @@ public class SkinCache {
 						for(Map.Entry<String, SkinEntry> m : que.entrySet())
 						{
 							String user = m.getKey();
-							SkinEntry dl = this.downloadSkin(user, m.getValue());
+							SkinEntry dl = SkinEvent.Capability.fire(this.downloadSkin(user, m.getValue()));
 							if(!dl.isEmpty)
 							{
 								this.removeQue(user);
-								final SkinEntry cap = SkinEvent.Capability.fire(dl);
 								Minecraft.getMinecraft().addScheduledTask(()->
 								{
-									this.skins.put(user, cap);
+									this.skins.put(user, dl);
 									if(this.selected.isEmpty || user.equals(this.selected.user))
 									{
 										this.refreshSelected(user);
@@ -239,12 +248,7 @@ public class SkinCache {
 		}
 		
 		String base64payload = json.getJSONArray("properties").getJSONObject(0).getString("value");
-		JSONObject decoded = JavaUtil.toJsonFrom64(base64payload);
-		JSONObject textures = decoded.getJSONObject("textures");
-		String skin = textures.getJSONObject("SKIN").getString("url");
-		String cape = textures.containsKey("CAPE") ? textures.getJSONObject("CAPE").getString("url") : "";
-		SkinEntry entry = new SkinEntry(uuid, user, System.currentTimeMillis(), skin, cape);
-		return entry;
+		return SkinEntry.fromPayload(uuid, user, base64payload);
 	}
 
 	/**

@@ -152,7 +152,6 @@ public class UUIDPatcher {
 		return nbt;
 	}
 	
-	
 	public static void patchSkin(GameProfile profile)
 	{
 		PropertyMap props = profile.getProperties();
@@ -184,7 +183,7 @@ public class UUIDPatcher {
 	
 	public static void setSkin(PropertyMap props, String skindata) 
 	{
-		if(skindata == null || skindata.isEmpty())
+		if(skindata == null || skindata.trim().isEmpty())
 			return;
 		props.removeAll("textures");
 		props.put("textures", new EvilProperty("textures", skindata));
