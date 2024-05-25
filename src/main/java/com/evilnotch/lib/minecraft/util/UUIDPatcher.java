@@ -169,6 +169,7 @@ public class UUIDPatcher {
 		
 		try
 		{
+			System.out.println("payload:" + payload);
 			JSONObject json = JavaUtil.toJsonFrom64(payload);
 			json.put("profileId", profile.getId().toString().replace("-", ""));
 			json.put("profileName", profile.getName());
@@ -191,7 +192,7 @@ public class UUIDPatcher {
 	
 	private static boolean isSkinEmpty(String payload) 
 	{
-		return payload == null || SkinEntry.EMPTY_SKIN_ENCODE.equals(payload);
+		return payload == null || payload.isEmpty() || SkinEntry.EMPTY_SKIN_ENCODE.equals(payload);
 	}
 
 	public static String getEncode(PropertyMap map) 

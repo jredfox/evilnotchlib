@@ -218,7 +218,7 @@ public class SkinCache {
 							boolean selected = pair.obj2;
 							
 							SkinEntry dl = this.downloadSkin(user, current);
-							SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl, user) : dl;
+							SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl.isEmpty ? current : dl, user) : dl;
 							if(!dl.isEmpty)
 							{
 								this.removeQue(user);
@@ -253,7 +253,7 @@ public class SkinCache {
 	/**
 	 * Call this when SkinEvent.Capability Fires
 	 */
-	public SkinEntry getOrDownload(SkinEntry skin, String user, boolean selected)
+	public SkinEntry getOrDownload(SkinEntry skin, String user)
 	{
 		user = user.toLowerCase();
 		
@@ -262,7 +262,7 @@ public class SkinCache {
 			return skin;
 		
 		SkinEntry cached = this.getSkinEntry(user);
-		boolean shouldDL = cached.isEmpty || this.hasExpired(cached) || selected && this.hasExpiredFast(cached);
+		boolean shouldDL = cached.isEmpty || this.hasExpiredFast(cached);
 		if(shouldDL)
 		{
 			SkinEntry dl = this.downloadSkin(user, EMPTY);
