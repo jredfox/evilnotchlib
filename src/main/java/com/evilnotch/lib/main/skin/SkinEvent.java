@@ -5,6 +5,9 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class SkinEvent extends Event {
 	
+	/**
+	 * Fires on the Main thread before the selected skin is about to be refreshed
+	 */
 	public static class User extends SkinEvent
 	{
 		public final String org_username;
@@ -25,8 +28,9 @@ public class SkinEvent extends Event {
 	}
 	
 	/**
-	 * Fires on the SkinCache Downloading thread use with CAUTION
-	 * Use this to update capes and skin urls. Call {@link SkinCache#INSTANCE#getOrDownload(String, boolean)}
+	 * Fires on the SkinCache Downloading thread and the Skin is the selected skin
+	 * Use this to update capes and skin urls and override the player model (slim or default). 
+	 * Call {@link SkinCache#INSTANCE#getOrDownload(String, boolean)} to get a SkinEntry during this event
 	 */
 	public static class Capability extends SkinEvent
 	{
@@ -34,20 +38,19 @@ public class SkinEvent extends Event {
 		public SkinEntry skin;
 		public boolean selected;
 		
-		public Capability(SkinEntry s, boolean selected)
+		public Capability(SkinEntry s)
 		{
 			this.org_skin = s; 
 			this.skin = s;
-			this.selected = selected;
 		}
 
-		public static SkinEntry fire(SkinEntry s, String user, boolean selected) 
+		public static SkinEntry fire(SkinEntry s, String user) 
 		{
 			//sync skin with username
 			s = s.copy();
 			s.user = user;
 			
-			Capability cap = new Capability(s, selected);
+			Capability cap = new Capability(s);
 			MinecraftForge.EVENT_BUS.post(cap);
 			return cap.skin;
 		}

@@ -116,7 +116,7 @@ public class SkinCache {
 	 */
 	public SkinEntry refresh(String user, boolean select)
 	{
-		user = SkinEvent.User.fire(user.toLowerCase());
+		user = select ? SkinEvent.User.fire(user.toLowerCase()) : user;
 		SkinEntry current = getSkinEntry(user);
 		if(select)
 			this.select(current);
@@ -218,7 +218,7 @@ public class SkinCache {
 							boolean selected = pair.obj2;
 							
 							SkinEntry dl = this.downloadSkin(user, current);
-							SkinEntry dl2 = SkinEvent.Capability.fire(dl, user, selected);
+							SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl, user) : dl;
 							if(!dl.isEmpty)
 							{
 								this.removeQue(user);
