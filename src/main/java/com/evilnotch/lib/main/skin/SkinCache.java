@@ -187,13 +187,15 @@ public class SkinCache {
 	}
 	
 	public Thread refreshThread = null;
+	public volatile boolean running;
 	public void start()
 	{
 		if(this.refreshThread == null)
 		{
+			this.running = true;
 			this.refreshThread = new Thread(()-> 
 			{
-				while(true)
+				while(running)
 				{
 					//copy the que because downloading while the que is locked will lag the main thread
 					Map<String, PairObj<SkinEntry, Boolean>> que = new HashMap();
@@ -208,13 +210,15 @@ public class SkinCache {
 					{
 						for(Map.Entry<String, PairObj<SkinEntry, Boolean>> m : que.entrySet())
 						{
+							if(!this.running)
+								break;
 							String user = m.getKey();
 							PairObj<SkinEntry, Boolean> pair = m.getValue();
 							SkinEntry current = pair.obj1;
 							boolean selected = pair.obj2;
 							
 							SkinEntry dl = this.downloadSkin(user, current);
-							SkinEntry dl2 = SkinEvent.Capability.fire(dl, selected);
+							SkinEntry dl2 = SkinEvent.Capability.fire(dl, user, selected);
 							if(!dl.isEmpty)
 							{
 								this.removeQue(user);
@@ -236,8 +240,10 @@ public class SkinCache {
 							}
 						}
 					}
-					JavaUtil.sleep(2500);
+					if(this.running)
+						JavaUtil.sleep(2500);
 				}
+				this.refreshThread = null;
 			});
 			this.refreshThread.setPriority(4);//set's it below normal thread priority so it doesn't interfere with the game
 			this.refreshThread.start();
@@ -247,9 +253,14 @@ public class SkinCache {
 	/**
 	 * Call this when SkinEvent.Capability Fires
 	 */
-	public SkinEntry getOrDownload(String user, boolean selected)
+	public SkinEntry getOrDownload(SkinEntry skin, String user, boolean selected)
 	{
 		user = user.toLowerCase();
+		
+		//Don't redownload or fetched outdated cached skin if we know that the downloaded skin is the skin we are trying to use
+		if(user.isEmpty() || skin.user.equals(user) )
+			return skin;
+		
 		SkinEntry cached = this.getSkinEntry(user);
 		boolean shouldDL = cached.isEmpty || this.hasExpired(cached) || selected && this.hasExpiredFast(cached);
 		if(shouldDL)

@@ -3,6 +3,7 @@ package com.evilnotch.lib.main.eventhandler;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.main.skin.SkinEntry;
 import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
@@ -39,7 +40,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class ClientEvents {
-
 	/**
 	 * future:Generate models with textures coming from the registry name
 	 */

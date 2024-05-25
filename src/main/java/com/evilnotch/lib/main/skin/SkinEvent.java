@@ -26,25 +26,28 @@ public class SkinEvent extends Event {
 	
 	/**
 	 * Fires on the SkinCache Downloading thread use with CAUTION
-	 * Use this to update capes and skin urls. Call {@link SkinCache#INSTANCE#getSkinEntry(String cap)} and if Empty Call {@link SkinCache#INSTANCE#downloadSkin(String, SkinEntry)} Directly to get another player's cape or skin
-	 * Set {@link Capability#skin} to change the SkinEntry for the SkinCache Downloading Thread
+	 * Use this to update capes and skin urls. Call {@link SkinCache#INSTANCE#getOrDownload(String, boolean)}
 	 */
 	public static class Capability extends SkinEvent
 	{
 		public final SkinEntry org_skin;
 		public SkinEntry skin;
-		public boolean isCurrent;
+		public boolean selected;
 		
-		public Capability(SkinEntry s, boolean isCurrent)
+		public Capability(SkinEntry s, boolean selected)
 		{
 			this.org_skin = s; 
 			this.skin = s;
-			this.isCurrent = isCurrent;
+			this.selected = selected;
 		}
 
-		public static SkinEntry fire(SkinEntry s, boolean current) 
+		public static SkinEntry fire(SkinEntry s, String user, boolean selected) 
 		{
-			Capability cap = new Capability(s, current);
+			//sync skin with username
+			s = s.copy();
+			s.user = user;
+			
+			Capability cap = new Capability(s, selected);
 			MinecraftForge.EVENT_BUS.post(cap);
 			return cap.skin;
 		}
