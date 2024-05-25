@@ -26,6 +26,7 @@ public class Config {
 	public static boolean allowskintrans = true;
 	public static boolean stopSteve = true;
 	public static int skinCacheHours = 48;
+	public static int skinCacheFast = 20;
 	public static boolean skinCache = true;
 	
 	/**
@@ -57,6 +58,7 @@ public class Config {
 		allowskintrans = config.get("skins", "allowSkinTransparency", allowskintrans).getBoolean();
 		skinCache = config.get("skins", "skinCache", skinCache).getBoolean();
 		skinCacheHours = config.get("skins", "skinCacheMax", skinCacheHours).getInt();
+		skinCacheFast = config.get("skins", "skinCacheFast", skinCacheFast).getInt();
 		stopSteve = config.get("skins", "stopSteveGlitch", stopSteve).getBoolean();
 		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");
 		

@@ -33,16 +33,18 @@ public class SkinEvent extends Event {
 	{
 		public final SkinEntry org_skin;
 		public SkinEntry skin;
+		public boolean isCurrent;
 		
-		public Capability(SkinEntry s)
+		public Capability(SkinEntry s, boolean isCurrent)
 		{
 			this.org_skin = s; 
 			this.skin = s;
+			this.isCurrent = isCurrent;
 		}
 
-		public static SkinEntry fire(SkinEntry s) 
+		public static SkinEntry fire(SkinEntry s, boolean current) 
 		{
-			Capability cap = new Capability(s);
+			Capability cap = new Capability(s, current);
 			MinecraftForge.EVENT_BUS.post(cap);
 			return cap.skin;
 		}

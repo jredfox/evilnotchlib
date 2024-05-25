@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.IOUtils;
 import org.ralleytn.simple.json.JSONArray;
@@ -28,6 +29,7 @@ import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkinChange;
 import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.evilnotch.lib.util.JavaUtil;
+import com.evilnotch.lib.util.simple.PairObj;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
@@ -39,8 +41,8 @@ public class SkinCache {
 	
 	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "", "");
 	
-	public HashMap<String, SkinEntry> skins = new HashMap(25);
-	public Map<String, SkinEntry> refreshque = new HashMap<>();
+	public Map<String, SkinEntry> skins = new ConcurrentHashMap(25);
+	public Map<String, PairObj<SkinEntry, Boolean>> refreshque = new HashMap<>();
 	public File skinCacheLoc = new File(System.getProperty("user.dir"), "skinCacher.json");
 	public SkinEntry selected = EMPTY;
 	public volatile boolean isOnline = false;
@@ -118,7 +120,7 @@ public class SkinCache {
 		SkinEntry current = getSkinEntry(user);
 		if(select)
 			this.select(current);
-		this.addQue(user, current);
+		this.addQue(user, new PairObj<SkinEntry, Boolean>(current, select));
 		return current;
 	}
 	
@@ -134,10 +136,10 @@ public class SkinCache {
 	 * fired after a SkinEntry is downloaded successfully
 	 * syncs the selected user with skins#get(user) and updates skin packets if in game
 	 */
-	public void refreshSelected(String user)
+	public void refreshSelected(SkinEntry dl)
 	{
 		//update the encoding to send to the server
-		this.selected = this.getSkinEntry(user);
+		this.selected = dl;
 		
 		//if player is already in the world send a packet
 		Minecraft mc = Minecraft.getMinecraft();
@@ -147,7 +149,7 @@ public class SkinCache {
 		}
 	}
 	
-	public void addQue(String user, SkinEntry skin)
+	public void addQue(String user, PairObj<SkinEntry, Boolean> skin)
 	{
 		synchronized (this.refreshque)
 		{
@@ -176,6 +178,14 @@ public class SkinCache {
 		return System.currentTimeMillis() >= (entry.cacheTime + ( ( (Config.skinCacheHours * 60L) * 60L) * 1000L) );
 	}
 	
+	/**
+	 * Used for Skin Capabilities to see if they should redownload a cached skin in minuets
+	 */
+	public boolean hasExpiredFast(SkinEntry entry)
+	{
+		return System.currentTimeMillis() >= (entry.cacheTime + ( (Config.skinCacheFast * 60L) * 1000L) );
+	}
+	
 	public Thread refreshThread = null;
 	public void start()
 	{
@@ -186,7 +196,7 @@ public class SkinCache {
 				while(true)
 				{
 					//copy the que because downloading while the que is locked will lag the main thread
-					Map<String, SkinEntry> que = new HashMap();
+					Map<String, PairObj<SkinEntry, Boolean>> que = new HashMap();
 					boolean flag = false;
 					synchronized (this.refreshque)
 					{
@@ -196,20 +206,31 @@ public class SkinCache {
 					
 					if(this.isMojangOnline())
 					{
-						for(Map.Entry<String, SkinEntry> m : que.entrySet())
+						for(Map.Entry<String, PairObj<SkinEntry, Boolean>> m : que.entrySet())
 						{
 							String user = m.getKey();
-							SkinEntry dl = SkinEvent.Capability.fire(this.downloadSkin(user, m.getValue()));
+							PairObj<SkinEntry, Boolean> pair = m.getValue();
+							SkinEntry current = pair.obj1;
+							boolean selected = pair.obj2;
+							
+							SkinEntry dl = this.downloadSkin(user, current);
+							SkinEntry dl2 = SkinEvent.Capability.fire(dl, selected);
 							if(!dl.isEmpty)
 							{
 								this.removeQue(user);
 								Minecraft.getMinecraft().addScheduledTask(()->
 								{
 									this.skins.put(user, dl);
-									if(this.selected.isEmpty || user.equals(this.selected.user))
-									{
-										this.refreshSelected(user);
-									}
+									if(selected)
+										this.refreshSelected(dl2);
+									this.save();
+								});
+							}
+							else if(selected)
+							{
+								Minecraft.getMinecraft().addScheduledTask(()->
+								{
+									this.refreshSelected(dl2);
 									this.save();
 								});
 							}
@@ -221,6 +242,23 @@ public class SkinCache {
 			this.refreshThread.setPriority(4);//set's it below normal thread priority so it doesn't interfere with the game
 			this.refreshThread.start();
 		}
+	}
+	
+	/**
+	 * Call this when SkinEvent.Capability Fires
+	 */
+	public SkinEntry getOrDownload(String user, boolean selected)
+	{
+		user = user.toLowerCase();
+		SkinEntry cached = this.getSkinEntry(user);
+		boolean shouldDL = cached.isEmpty || this.hasExpired(cached) || selected && this.hasExpiredFast(cached);
+		if(shouldDL)
+		{
+			SkinEntry dl = this.downloadSkin(user, EMPTY);
+			this.skins.put(user, dl);
+			return dl;
+		}
+		return cached;
 	}
 
 	public volatile boolean playerdb = false;
