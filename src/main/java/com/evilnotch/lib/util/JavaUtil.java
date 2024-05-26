@@ -1087,6 +1087,7 @@ public class JavaUtil {
 		} 
 		catch (JSONParseException e) 
 		{
+			System.err.println(str);
 			e.printStackTrace();
 		}
 		return null;

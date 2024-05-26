@@ -83,6 +83,11 @@ public class VanillaBugFixes {
 		}
 	}
 	
+    public static void updateSkinPackets2(EntityPlayerMP p)
+    {
+    	updateSkinPackets(p);
+    }
+	
 	/**
 	 * force update skin render for you and all other players 
 	 * note skin has to be changed before calling this method
@@ -96,6 +101,11 @@ public class VanillaBugFixes {
 	    SPacketRespawn respawn;
 	    try
 	    {
+	    	//hide player
+	        p.getServerWorld().getEntityTracker().removePlayerFromTrackers(p);
+	        p.getServerWorld().getEntityTracker().untrack(p);
+	        p.getServerWorld().getPlayerChunkMap().removePlayer(p);
+	        
 	      int entId = p.getEntityId();
 	      removeInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.REMOVE_PLAYER,p);
 	      removeEntity = new SPacketDestroyEntities(new int[] { entId });
@@ -109,6 +119,7 @@ public class VanillaBugFixes {
 	        NetHandlerPlayServer con = pOnline.connection;
 	        if (pOnline.equals(p))
 	        {
+	           con.sendPacket(removeEntity);
 		       con.sendPacket(removeInfo);
 		       con.sendPacket(respawn);
 		       con.sendPacket(addInfo);
@@ -122,18 +133,18 @@ public class VanillaBugFixes {
 	           //prevent the moved too quickly message
 	      	   p.setRotationYawHead(p.rotationYawHead);
 	           p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, p.rotationYaw, p.rotationPitch);
+	           p.setPositionAndRotation(p.posX, p.posY, p.posZ, p.rotationYaw, p.rotationPitch);
+	           con.sendPacket(new SPacketSpawnPosition(p.getServerWorld().getSpawnPoint()));
 	           //trigger update exp
 	           p.connection.sendPacket(new SPacketSetExperience(p.experience, p.experienceTotal, p.experienceLevel));
 
 	           //send the current inventory - otherwise player would have an empty inventory
 	           p.sendContainerToPlayer(p.inventoryContainer);
 	           p.setPlayerHealthUpdated();
-	           p.setPrimaryHand(p.getPrimaryHand());
-	           p.connection.sendPacket(new SPacketHeldItemChange(p.inventory.currentItem));
-
-	           InventoryPlayer inventory = p.inventory;
 	           p.setHeldItem(EnumHand.MAIN_HAND, p.getHeldItemMainhand());
 	           p.setHeldItem(EnumHand.OFF_HAND, p.getHeldItemOffhand());
+	           p.setPrimaryHand(p.getPrimaryHand());
+	           p.connection.sendPacket(new SPacketHeldItemChange(p.inventory.currentItem));
 
 	           //health && food
 	           p.setHealth(p.getHealth());
@@ -141,8 +152,6 @@ public class VanillaBugFixes {
 	           fs.setFoodLevel(fs.getFoodLevel());
 	           MainJava.proxy.setFoodSaturationLevel(fs, fs.getSaturationLevel());
 	           p.interactionManager.setWorld(p.getServerWorld()); 
-	          
-	           con.sendPacket(new SPacketSpawnPosition(p.getPosition()));
 	           
 	           boolean end = true;
 	           p.copyFrom(p, end);
@@ -156,9 +165,10 @@ public class VanillaBugFixes {
 	           con.sendPacket(addNamed);
 	         }
 	      }
-           //show && hide player to update their skin on their render
-	       PlayerUtil.hidePlayer(p);
-	       PlayerUtil.showPlayer(p);
+           //show player
+	       p.getServerWorld().getPlayerChunkMap().addPlayer(p);
+	       p.getServerWorld().getEntityTracker().track(p);
+	    	
 	    }
 	    catch (Exception localException) {}
     }
