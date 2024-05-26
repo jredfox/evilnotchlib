@@ -24,7 +24,7 @@ public class PacketSkinChangeHandler extends MessegeBase<PacketSkinChange> {
 		{
 			GameProfile profile = p.getGameProfile();
 	    	UUIDPatcher.setSkin(profile.getProperties(), UUIDPatcher.patchSkin(profile, message.payload));
-			VanillaBugFixes.updateSkinPackets2((EntityPlayerMP) player);
+			VanillaBugFixes.updateSkinPackets((EntityPlayerMP) player);
 		});
 	}
 

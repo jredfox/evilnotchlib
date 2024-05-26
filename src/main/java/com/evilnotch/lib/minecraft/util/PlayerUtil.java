@@ -1,44 +1,27 @@
 package com.evilnotch.lib.minecraft.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.io.IOUtils;
-import org.ralleytn.simple.json.JSONObject;
-import org.ralleytn.simple.json.JSONParser;
-
 import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
-import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
-import com.evilnotch.lib.main.skin.SkinCache;
-import com.evilnotch.lib.main.skin.SkinEntry;
-import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PointId;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
-import net.minecraft.stats.StatList;
+import net.minecraft.server.management.PlayerChunkMap;
+import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.datafix.DataFixer;
-import net.minecraft.util.datafix.FixTypes;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
@@ -46,10 +29,8 @@ import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.end.DragonFightManager;
-import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 
@@ -244,6 +225,21 @@ public class PlayerUtil {
 
 	public static EntityPlayer getClientPlayer() {
 		return ClientProxy.getPlayer();
+	}
+
+	public static List<EntityPlayerMP> getWatchingPlayers(EntityPlayerMP p, boolean addSelf) 
+	{
+		List<EntityPlayerMP> players = new ArrayList<>();
+		if(addSelf)
+			players.add(p);
+    	PlayerChunkMap playerChunkMap = p.getServerWorld().getPlayerChunkMap();
+    	ChunkPos chunkPos = new ChunkPos(p.chunkCoordX, p.chunkCoordZ);
+    	PlayerChunkMapEntry entry = playerChunkMap.getEntry(chunkPos.x, chunkPos.z);
+    	if(entry != null)
+    	{
+    		players.addAll(entry.getWatchingPlayers());
+    	}
+    	return players;
 	}
 
 }

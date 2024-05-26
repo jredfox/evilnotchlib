@@ -1,6 +1,7 @@
 package com.evilnotch.lib.main.eventhandler;
 
 import java.io.File;
+import java.util.List;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
@@ -36,6 +37,8 @@ import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.network.play.server.SPacketSpawnPlayer;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
+import net.minecraft.server.management.PlayerChunkMap;
+import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumHand;
@@ -44,6 +47,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -83,11 +87,6 @@ public class VanillaBugFixes {
 		}
 	}
 	
-    public static void updateSkinPackets2(EntityPlayerMP p)
-    {
-    	updateSkinPackets(p);
-    }
-	
 	/**
 	 * force update skin render for you and all other players 
 	 * note skin has to be changed before calling this method
@@ -113,7 +112,7 @@ public class VanillaBugFixes {
 	      addInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.ADD_PLAYER,p);
 	      respawn = new SPacketRespawn(p.dimension, p.getServerWorld().getDifficulty(), p.getServerWorld().getWorldType(), p.getServer().getGameType());
 	      
-	     for (EntityPlayer pOnlines : p.mcServer.getPlayerList().getPlayers())
+	     for (EntityPlayer pOnlines : PlayerUtil.getWatchingPlayers(p, true))
 	     {
 	        EntityPlayerMP pOnline = (EntityPlayerMP)pOnlines;
 	        NetHandlerPlayServer con = pOnline.connection;
