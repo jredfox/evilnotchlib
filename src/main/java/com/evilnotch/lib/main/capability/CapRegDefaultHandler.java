@@ -9,17 +9,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
-public class CapRegDefaultHandler extends CapRegEntity{
+public class CapRegDefaultHandler extends CapRegEntity {
 
 	public static final ResourceLocation initSpawned = new ResourceLocation(MainJava.MODID, "initSpawned");
 	public static final ResourceLocation addedToWorld = new ResourceLocation(MainJava.MODID, "addedToWorld");
 	
 	@Override
-	public void register(Entity e, CapContainer c) 
+	public void register(Entity e, CapContainer c)
 	{
 		if(e instanceof EntityLiving)
 			c.registerCapability(initSpawned, new CapBoolean<Entity>(initSpawned.toString()));
-		c.registerCapability(addedToWorld, new CapBoolean<Entity>(addedToWorld.toString()));
+		c.registerCapability(addedToWorld, new CapBoolTransient<Entity>(addedToWorld.toString()));
 	}
 
 }

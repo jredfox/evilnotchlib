@@ -1,26 +1,21 @@
 package com.evilnotch.lib.main.eventhandler;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.main.world.ListenerSync;
 import com.evilnotch.lib.minecraft.capability.CapContainer;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.event.client.MessageEvent;
-import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -29,6 +24,17 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class LibEvents {
+	
+	@SubscribeEvent
+	public void load(WorldEvent.Load e)
+	{
+		World w = e.getWorld();
+		if(w == null)
+			return;
+		ListenerSync listener = new ListenerSync();
+		w.removeEventListener(listener);//prevent duplicates
+		w.addEventListener(listener);
+	}
 	
 	 @SubscribeEvent
 	 public void tickServer(ServerTickEvent e)
