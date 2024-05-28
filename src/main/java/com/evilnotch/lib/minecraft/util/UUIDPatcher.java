@@ -173,6 +173,22 @@ public class UUIDPatcher {
 			JSONObject json = JavaUtil.toJsonFrom64(payload);
 			json.put("profileId", profile.getId().toString().replace("-", ""));
 			json.put("profileName", profile.getName());
+			//internal SKIN caps redirect URL meaning
+			if(json.containsKey("textures"))
+			{
+				try
+				{
+					JSONObject skin = json.getJSONObject("textures").getJSONObject("SKIN");
+					if(skin.getString("URL").equals("http://textures.minecraft.net/texture/$null"))
+					{
+						skin.put("URL", "http://textures.minecraft.net/texture/" + (PlayerUtil.isAlex(profile.getId()) ? "$alex" : "$steve"));
+					}
+				}
+				catch(Exception e)
+				{
+					System.err.println("Invalid Textures Payload! Missing SKIN URL:" + payload);
+				}
+			}
 			return JavaUtil.toBase64(json.toString());
 		}
 		catch(Exception e)
@@ -181,7 +197,7 @@ public class UUIDPatcher {
 		}
 		return null;
 	}
-	
+
 	public static void setSkin(PropertyMap props, String skindata) 
 	{
 		if(skindata == null || skindata.trim().isEmpty())

@@ -169,7 +169,10 @@ public class VanillaBugFixes {
 	       p.getServerWorld().getEntityTracker().track(p);
 	    	
 	    }
-	    catch (Exception localException) {}
+	    catch (Exception e) 
+	    {
+	    	e.printStackTrace();
+	    }
     }
 	
 	/**

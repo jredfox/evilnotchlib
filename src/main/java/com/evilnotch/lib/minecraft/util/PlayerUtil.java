@@ -21,6 +21,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -241,5 +242,21 @@ public class PlayerUtil {
     	}
     	return players;
 	}
+
+    /** The default skin for the Steve model. */
+	public static final ResourceLocation STEVE = new ResourceLocation("textures/entity/steve.png");
+    /** The default skin for the Alex model. */
+	public static final ResourceLocation ALEX = new ResourceLocation("textures/entity/alex.png");
+    public static ResourceLocation getDefaultSkin(UUID uuid)
+    {
+    	return isAlex(uuid) ? ALEX : STEVE;
+    }
+    /**
+     * Checks if a players skin model is slim or the default. The Alex model is slime while the Steve model is default.
+     */
+    public static boolean isAlex(UUID playerUUID)
+    {
+        return (playerUUID.hashCode() & 1) == 1;
+    }
 
 }
