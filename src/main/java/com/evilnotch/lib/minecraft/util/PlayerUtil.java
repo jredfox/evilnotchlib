@@ -251,12 +251,13 @@ public class PlayerUtil {
     {
     	return isAlex(uuid) ? ALEX : STEVE;
     }
+    
     /**
      * Checks if a players skin model is slim or the default. The Alex model is slime while the Steve model is default.
      */
-    public static boolean isAlex(UUID playerUUID)
+    public static boolean isAlex(UUID uuid)
     {
-        return (playerUUID.hashCode() & 1) == 1;
+        return (uuid.hashCode() & 1) == 1;
     }
 
 }

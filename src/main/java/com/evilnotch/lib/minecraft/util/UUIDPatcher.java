@@ -179,13 +179,14 @@ public class UUIDPatcher {
 				try
 				{
 					JSONObject skin = json.getJSONObject("textures").getJSONObject("SKIN");
-					if(skin.getString("URL").equals("http://textures.minecraft.net/texture/$null"))
+					if(skin.getString("url").equals("http://textures.minecraft.net/texture/$null"))
 					{
-						skin.put("URL", "http://textures.minecraft.net/texture/" + (PlayerUtil.isAlex(profile.getId()) ? "$alex" : "$steve"));
+						skin.put("url", "http://textures.minecraft.net/texture/" + (PlayerUtil.isAlex(profile.getId()) ? "$alex" : "$steve"));
 					}
 				}
 				catch(Exception e)
 				{
+					e.printStackTrace();
 					System.err.println("Invalid Textures Payload! Missing SKIN URL:" + payload);
 				}
 			}
