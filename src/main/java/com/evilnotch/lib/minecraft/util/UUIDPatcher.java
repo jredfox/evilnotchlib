@@ -4,6 +4,8 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
@@ -19,6 +21,7 @@ import com.mojang.util.UUIDTypeAdapter;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.SaveHandler;
@@ -218,6 +221,14 @@ public class UUIDPatcher {
 			return null;
 		Property p = ((Property)JavaUtil.getFirst(map.get("textures")));
 		return p == null ? null : p.getValue();
+	}
+
+	private static final Logger LOGGER = LogManager.getLogger();
+	private static final ResourceLocation fileSteve = new ResourceLocation("minecraft:skins/$steve");
+	private static final ResourceLocation fileAlex = new ResourceLocation("minecraft:skins/$alex");
+	public static ResourceLocation patchSkinResource(ResourceLocation resource) 
+	{
+		return resource.equals(fileSteve) ? PlayerUtil.STEVE : resource.equals(fileAlex) ? PlayerUtil.ALEX : resource;
 	}
 	
 }

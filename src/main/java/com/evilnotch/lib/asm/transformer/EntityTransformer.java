@@ -42,7 +42,8 @@ public class EntityTransformer implements IClassTransformer{
     	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService",
     	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService$1",
     	"net.minecraft.client.network.NetworkPlayerInfo",//stopSteve
-    	"net.minecraft.network.login.client.CPacketLoginStart"//sends skin to server
+    	"net.minecraft.network.login.client.CPacketLoginStart",//sends skin to server
+    	"net.minecraft.client.resources.SkinManager"//redirect $steve and $alex to be localized resource location instead of always steve
     });
 
 	@Override
@@ -116,6 +117,10 @@ public class EntityTransformer implements IClassTransformer{
                 case 10:
                 	patchCPacketLoginStart(classNode);
                 break;
+                
+                case 11:
+                	transformSkinManager(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -133,6 +138,15 @@ public class EntityTransformer implements IClassTransformer{
         	t.printStackTrace();
         }
 		return classToTransform;
+	}
+
+	/**
+	 * redirect steve and alex to local resource locations
+	 */
+	public void transformSkinManager(ClassNode classNode)
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;");
+		m.instructions.insertBefore(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/ResourceLocation;", false));
 	}
 
 	public void patchCPacketLoginStart(ClassNode classNode)
