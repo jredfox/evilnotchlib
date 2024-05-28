@@ -51,7 +51,7 @@ public class Transformer implements IClassTransformer
     	"net.minecraft.client.renderer.entity.RenderManager",
     	"net.minecraft.client.gui.GuiNewChat",
     	"net.minecraft.client.gui.GuiIngame",
-    	"net.minecraft.client.renderer.ImageBufferDownload",
+    	"net.minecraft.client.renderer.ImageBufferDownload",//Allow Skin Transparency
     	"net.minecraft.server.network.NetHandlerLoginServer", //UUIDPatcher
     	"net.minecraftforge.fml.common.network.handshake.NetworkDispatcher", //UUIDPatcher
     	"net.minecraftforge.common.DimensionManager"//Unload Dimension Patch

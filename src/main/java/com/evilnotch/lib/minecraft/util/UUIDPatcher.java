@@ -170,7 +170,7 @@ public class UUIDPatcher {
 	{
 		//do not modify empty skins encoding
 		if(isSkinEmpty(payload))
-			return SkinEntry.EMPTY_SKIN_ENCODE;
+			return "";
 		
 		try
 		{
@@ -214,7 +214,7 @@ public class UUIDPatcher {
 	
 	private static boolean isSkinEmpty(String payload) 
 	{
-		return payload == null || payload.isEmpty() || SkinEntry.EMPTY_SKIN_ENCODE.equals(payload);
+		return payload == null || payload.isEmpty();
 	}
 
 	public static String getEncode(PropertyMap map) 

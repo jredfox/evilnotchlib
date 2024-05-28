@@ -37,7 +37,7 @@ public class StopSteve {
 			msJoined2 = System.currentTimeMillis();
 		
 		String encode = getEncode(info.getGameProfile().getProperties());
-		if(info.skinType == null && (System.currentTimeMillis() - msJoined2) < 2500 && !SkinEntry.EMPTY_SKIN_ENCODE.equals(encode))
+		if(info.skinType == null && (System.currentTimeMillis() - msJoined2) < 2500)
 		{
 			info.getLocationSkin();//make it download the skin
 			event.setCanceled(true);
@@ -73,7 +73,7 @@ public class StopSteve {
 			msJoined = System.currentTimeMillis();
 		
 		String encode = getEncode(info.getGameProfile().getProperties());
-		if(info.skinType == null && (System.currentTimeMillis() - msJoined) < 2500 && !SkinEntry.EMPTY_SKIN_ENCODE.equals(encode) )
+		if(info.skinType == null && (System.currentTimeMillis() - msJoined) < 2500)
 		{
 			info.getLocationSkin();//make it download the skin
 			event.setCanceled(true);
