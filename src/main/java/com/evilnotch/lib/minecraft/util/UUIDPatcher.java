@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ralleytn.simple.json.JSONObject;
 
+import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.skin.SkinCache.EvilProperty;
 import com.evilnotch.lib.main.skin.SkinEntry;
@@ -18,6 +19,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.util.UUIDTypeAdapter;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
@@ -228,7 +230,17 @@ public class UUIDPatcher {
 	private static final ResourceLocation fileAlex = new ResourceLocation("minecraft:skins/$alex");
 	public static ResourceLocation patchSkinResource(ResourceLocation resource) 
 	{
-		return resource.equals(fileSteve) ? PlayerUtil.STEVE : resource.equals(fileAlex) ? PlayerUtil.ALEX : resource;
+		if(resource.equals(fileSteve))
+		{
+			MainJava.proxy.bindTexture(PlayerUtil.STEVE);//enforce steve is loaded so SkinManager doesn't try and download the skin
+			return PlayerUtil.STEVE;
+		}
+		else if(resource.equals(fileAlex))
+		{
+			MainJava.proxy.bindTexture(PlayerUtil.ALEX);//enforce alex is loaded so SkinManager doesn't try and download the skin
+			return PlayerUtil.ALEX;
+		}
+		return resource;
 	}
 	
 }

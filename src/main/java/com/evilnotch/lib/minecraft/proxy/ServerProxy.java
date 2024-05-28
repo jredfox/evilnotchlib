@@ -5,6 +5,7 @@ import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 
 import net.minecraft.util.FoodStats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ServerProxy {
@@ -42,6 +43,8 @@ public class ServerProxy {
 	{
 		fs.foodSaturationLevel = saturationLevel;
 	}
+	
+	public void bindTexture(ResourceLocation steve) {}
 	
 
 	

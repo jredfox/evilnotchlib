@@ -19,7 +19,6 @@ import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.mojang.authlib.GameProfile;
@@ -31,6 +30,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerLoginClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.FoodStats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -49,6 +49,7 @@ public class ClientProxy extends ServerProxy{
 		super.preinit(e);
 		registerEvents();
 		this.cacheUUID();
+		//load the skin cache
 		SkinCache.init();
 	}
 	
@@ -56,6 +57,9 @@ public class ClientProxy extends ServerProxy{
 	public void initMod()
 	{
 		super.initMod();
+		//load default skins into vram so game doesn't lag on first launch
+		bindTexture(PlayerUtil.STEVE);
+		bindTexture(PlayerUtil.ALEX);
 	}
 	
 	@Override
@@ -186,6 +190,12 @@ public class ClientProxy extends ServerProxy{
 			ReflectionUtil.setObject(session, mc.profileProperties, Session.class, "properties");
 		else
 			session.setProperties(mc.profileProperties);
+	}
+	
+	@Override
+	public void bindTexture(ResourceLocation r)
+	{
+		Minecraft.getMinecraft().getTextureManager().bindTexture(r);
 	}
 
 }
