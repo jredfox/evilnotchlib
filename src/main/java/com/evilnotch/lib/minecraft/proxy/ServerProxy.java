@@ -1,8 +1,12 @@
 package com.evilnotch.lib.minecraft.proxy;
 
+import java.util.Map;
+
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
@@ -46,6 +50,7 @@ public class ServerProxy {
 	
 	public void bindTexture(ResourceLocation steve) {}
 	public void deleteTexture(ResourceLocation r) {}
+	public void noSkin(Map map, Object skinAvailableCallback) {}
 	
 
 	

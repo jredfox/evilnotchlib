@@ -26,6 +26,7 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -46,7 +47,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.network.NetworkPlayerInfo",//stopSteve
     	"net.minecraft.client.network.NetworkPlayerInfo$1",
     	"net.minecraft.network.login.client.CPacketLoginStart",//sends skin to server
-    	"net.minecraft.client.resources.SkinManager"//redirect $steve and $alex to be localized resource location instead of always steve
+    	"net.minecraft.client.resources.SkinManager",//redirect $steve and $alex to be localized resource location instead of always steve
+    	"net.minecraft.client.resources.SkinManager$3$1"//stopSteve add callback of skin failure
     });
 
 	@Override
@@ -128,6 +130,10 @@ public class EntityTransformer implements IClassTransformer{
                 case 12:
                 	transformSkinManager(classNode);
                 break;
+                
+                case 13:
+                	patchSkinManager3M1(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -148,6 +154,30 @@ public class EntityTransformer implements IClassTransformer{
 	}
 
 	
+	public void patchSkinManager3M1(ClassNode classNode)
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, "run", "()V");
+		//MainJava.proxy.noSkin(map, callback);
+		InsnList l = new InsnList();
+		l.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
+		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("val$map", "field_152803_a").toString(), "Ljava/util/Map;"));
+		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		//For some reason the synthetic classes in obfuscated forge are handled but not in deobf. so we have to physically inject different instructions
+		if(FMLCorePlugin.isObf)
+		{
+			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", "field_152804_b", "Lnet/minecraft/client/resources/SkinManager$3;"));
+			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", "field_152801_c", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
+		}
+		else
+		{
+			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", "val$skinAvailableCallback", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
+		}
+
+		l.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "noSkin", "(Ljava/util/Map;Ljava/lang/Object;)V", false));
+		m.instructions.insert(ASMHelper.getFirstInstruction(m), l);
+	}
+
 	public void patchStopSteve1(ClassNode classNode) throws IOException
 	{
 		//add IMPL of stopSteve
@@ -160,7 +190,7 @@ public class EntityTransformer implements IClassTransformer{
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("skinAvailable", "func_180521_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
 		InsnList l = new InsnList();
 		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/network/NetworkPlayerInfo$1", "this$0", "Lnet/minecraft/client/network/NetworkPlayerInfo;"));
+		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/network/NetworkPlayerInfo$1", new MCPSidedString("this$0", "field_177224_a").toString(), "Lnet/minecraft/client/network/NetworkPlayerInfo;"));
 		l.add(new InsnNode(Opcodes.ICONST_1));
 		l.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/network/NetworkPlayerInfo", "stopedSteve", "Z"));
 		m.instructions.insert(ASMHelper.getLastLabelNode(m, false), l);
@@ -171,6 +201,7 @@ public class EntityTransformer implements IClassTransformer{
 	 */
 	public void transformSkinManager(ClassNode classNode)
 	{
+		//UUIDPatcher#patchSkinResource
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;");
 		m.instructions.insertBefore(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/ResourceLocation;", false));
 	}

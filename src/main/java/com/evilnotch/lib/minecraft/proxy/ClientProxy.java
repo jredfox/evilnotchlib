@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.proxy;
 
+import java.util.Map;
 import java.util.UUID;
 
 import com.evilnotch.lib.api.ReflectionUtil;
@@ -10,6 +11,7 @@ import com.evilnotch.lib.main.eventhandler.ClientEvents;
 import com.evilnotch.lib.main.eventhandler.StopSteve;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.main.skin.IStopSteve;
 import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.client.Seeds;
@@ -22,6 +24,7 @@ import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.client.Minecraft;
@@ -205,6 +208,13 @@ public class ClientProxy extends ServerProxy{
         {
         	Minecraft.getMinecraft().getTextureManager().deleteTexture(r);
         });
+	}
+	
+	@Override
+	public void noSkin(Map map, Object callback)
+	{
+		if(!map.containsKey(Type.SKIN) && callback instanceof IStopSteve)
+			((IStopSteve)callback).skinUnAvailable(Type.SKIN, null, null);
 	}
 
 }

@@ -2,6 +2,7 @@ package com.evilnotch.lib.minecraft.util;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,16 +11,17 @@ import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.skin.IStopSteve;
 import com.evilnotch.lib.main.skin.SkinCache.EvilProperty;
-import com.evilnotch.lib.main.skin.SkinEntry;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.util.UUIDTypeAdapter;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
