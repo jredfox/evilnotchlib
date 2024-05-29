@@ -1,5 +1,6 @@
 package com.evilnotch.lib.asm.transformer;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.objectweb.asm.ClassReader;
@@ -15,6 +16,7 @@ import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -42,6 +44,7 @@ public class EntityTransformer implements IClassTransformer{
     	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService",
     	"com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService$1",
     	"net.minecraft.client.network.NetworkPlayerInfo",//stopSteve
+    	"net.minecraft.client.network.NetworkPlayerInfo$1",
     	"net.minecraft.network.login.client.CPacketLoginStart",//sends skin to server
     	"net.minecraft.client.resources.SkinManager"//redirect $steve and $alex to be localized resource location instead of always steve
     });
@@ -115,10 +118,14 @@ public class EntityTransformer implements IClassTransformer{
                 break;
                 
                 case 10:
-                	patchCPacketLoginStart(classNode);
+                	patchStopSteve1(classNode);
                 break;
                 
                 case 11:
+                	patchCPacketLoginStart(classNode);
+                break;
+                
+                case 12:
                 	transformSkinManager(classNode);
                 break;
             }
@@ -138,6 +145,25 @@ public class EntityTransformer implements IClassTransformer{
         	t.printStackTrace();
         }
 		return classToTransform;
+	}
+
+	
+	public void patchStopSteve1(ClassNode classNode) throws IOException
+	{
+		//add IMPL of stopSteve
+		String inputBase = "assets/evilnotchlib/asm/" + (FMLCorePlugin.isObf ? "srg/" : "deob/");
+		ASMHelper.addIfMethod(classNode, inputBase + "NetworkPlayerInfo$1", "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
+		//hack JVM supports multiple inner class interfaces but never made it for the compiler side
+		ASMHelper.addInterface(classNode, "com/evilnotch/lib/main/skin/IStopSteve");
+		
+		//NetWorkPlayerInfo.this.stopedSteve = true;
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("skinAvailable", "func_180521_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
+		InsnList l = new InsnList();
+		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/network/NetworkPlayerInfo$1", "this$0", "Lnet/minecraft/client/network/NetworkPlayerInfo;"));
+		l.add(new InsnNode(Opcodes.ICONST_1));
+		l.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/network/NetworkPlayerInfo", "stopedSteve", "Z"));
+		m.instructions.insert(ASMHelper.getLastLabelNode(m, false), l);
 	}
 
 	/**
@@ -197,13 +223,9 @@ public class EntityTransformer implements IClassTransformer{
 
 	public void patchStopSteve(ClassNode classNode) 
 	{
-		if(!ASMHelper.containsFieldNode(classNode, "stopSteve"))
+		if(!ASMHelper.containsFieldNode(classNode, "stopedSteve"))
 		{
-			classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "stopSteve", "Z", null, null));
-		}
-		else
-		{
-			System.err.println("Error stopSteve Already Exists");
+			classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "stopedSteve", "Z", null, null));
 		}
 	}
 

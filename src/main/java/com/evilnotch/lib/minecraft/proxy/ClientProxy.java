@@ -197,5 +197,14 @@ public class ClientProxy extends ServerProxy{
 	{
 		Minecraft.getMinecraft().getTextureManager().bindTexture(r);
 	}
+	
+	@Override
+	public void deleteTexture(ResourceLocation r) 
+	{
+        Minecraft.getMinecraft().addScheduledTask(()->
+        {
+        	Minecraft.getMinecraft().getTextureManager().deleteTexture(r);
+        });
+	}
 
 }

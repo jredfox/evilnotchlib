@@ -1,0 +1,27 @@
+					//add IStopSteve Interface and this method below
+					@Override
+					public void skinUnAvailable(Type typeIn, ResourceLocation location, MinecraftProfileTexture profileTexture) 
+					{
+						if(typeIn == Type.SKIN)
+						{
+							ResourceLocation def = DefaultPlayerSkin.getDefaultSkin(NetworkPlayerInfo.this.gameProfile.getId());
+                            NetworkPlayerInfo.this.playerTextures.put(Type.SKIN, def);
+                            //Let texture payload override default skin behavior
+                            if(location != null)
+                            {
+	                            NetworkPlayerInfo.this.skinType = profileTexture.getMetadata("model");
+	
+	                            if (NetworkPlayerInfo.this.skinType == null)
+	                            {
+	                                NetworkPlayerInfo.this.skinType = "default";
+	                            }
+	                            MainJava.proxy.deleteTexture(location);
+                            }
+                            //On Null or Empty Skin payload assume model based on skin type
+                            else
+                            {
+                            	NetworkPlayerInfo.this.skinType = def.equals(PlayerUtil.STEVE) ? "default" : "slim";
+                            }
+                            NetworkPlayerInfo.this.stopedSteve = true;
+						}
+					}

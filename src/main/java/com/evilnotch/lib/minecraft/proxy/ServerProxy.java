@@ -45,6 +45,7 @@ public class ServerProxy {
 	}
 	
 	public void bindTexture(ResourceLocation steve) {}
+	public void deleteTexture(ResourceLocation r) {}
 	
 
 	

@@ -30,13 +30,12 @@ public class StopSteve {
 			event.setCanceled(true);
 			return;
 		}
-		else if(info.stopSteve)//if we already stopped steve return
+		else if(info.stopedSteve)//if we already stopped steve return
 			return;
 		
 		if(msJoined2 == 0)
 			msJoined2 = System.currentTimeMillis();
 		
-		String encode = getEncode(info.getGameProfile().getProperties());
 		if(info.skinType == null && (System.currentTimeMillis() - msJoined2) < 2500)
 		{
 			info.getLocationSkin();//make it download the skin
@@ -44,7 +43,7 @@ public class StopSteve {
 		}
 		else
 		{
-			info.stopSteve = true;
+			info.stopedSteve = true;
 			msJoined2 = 0;
 		}
 	}
@@ -66,13 +65,12 @@ public class StopSteve {
 			event.setCanceled(true);
 			return;
 		}
-		else if(info.stopSteve)//if we already stopped steve return
+		else if(info.stopedSteve)//if we already stopped steve return
 			return;
 		
 		if(msJoined == 0)
 			msJoined = System.currentTimeMillis();
 		
-		String encode = getEncode(info.getGameProfile().getProperties());
 		if(info.skinType == null && (System.currentTimeMillis() - msJoined) < 2500)
 		{
 			info.getLocationSkin();//make it download the skin
@@ -80,17 +78,9 @@ public class StopSteve {
 		}
 		else
 		{
-			info.stopSteve = true;
+			info.stopedSteve = true;
 			msJoined = 0;
 		}
-	}
-	
-	public static String getEncode(PropertyMap map) 
-	{
-		if(map.isEmpty())
-			return null;
-		Property p = ((Property)JavaUtil.getFirst(map.get("textures")));
-		return p == null ? null : p.getValue();
 	}
 
 }
