@@ -1,9 +1,6 @@
 package com.evilnotch.lib.main.eventhandler;
 
-import com.evilnotch.lib.main.skin.SkinEntry;
-import com.evilnotch.lib.util.JavaUtil;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
+import com.evilnotch.lib.main.Config;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -31,12 +28,15 @@ public class StopSteve {
 			return;
 		}
 		else if(info.stopedSteve)//if we already stopped steve return
+		{
+			msJoined2 = 0;
 			return;
+		}
 		
 		if(msJoined2 == 0)
 			msJoined2 = System.currentTimeMillis();
 		
-		if(info.skinType == null && (System.currentTimeMillis() - msJoined2) < 2500)
+		if(info.skinType == null && (System.currentTimeMillis() - msJoined2) < Config.stopSteveMs)
 		{
 			info.getLocationSkin();//make it download the skin
 			event.setCanceled(true);
@@ -66,12 +66,15 @@ public class StopSteve {
 			return;
 		}
 		else if(info.stopedSteve)//if we already stopped steve return
+		{
+			msJoined = 0;
 			return;
+		}
 		
 		if(msJoined == 0)
 			msJoined = System.currentTimeMillis();
 		
-		if(info.skinType == null && (System.currentTimeMillis() - msJoined) < 2500)
+		if(info.skinType == null && (System.currentTimeMillis() - msJoined) < Config.stopSteveMs)
 		{
 			info.getLocationSkin();//make it download the skin
 			event.setCanceled(true);

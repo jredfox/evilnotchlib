@@ -241,7 +241,7 @@ public class SkinCache {
 						}
 					}
 					if(this.running)
-						JavaUtil.sleep(2500);
+						JavaUtil.sleep(Config.skinCacheMs);
 				}
 				this.refreshThread = null;
 			});
