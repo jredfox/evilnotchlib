@@ -163,16 +163,8 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("val$map", "field_152803_a").toString(), "Ljava/util/Map;"));
 		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		//For some reason the synthetic classes in obfuscated forge are handled but not in deobf. so we have to physically inject different instructions
-		if(FMLCorePlugin.isObf)
-		{
-			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", "field_152804_b", "Lnet/minecraft/client/resources/SkinManager$3;"));
-			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", "field_152801_c", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
-		}
-		else
-		{
-			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", "val$skinAvailableCallback", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
-		}
+		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("this$1", "field_152804_b").toString(), "Lnet/minecraft/client/resources/SkinManager$3;"));
+		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", new MCPSidedString("val$skinAvailableCallback", "field_152801_c").toString(), "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
 
 		l.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "noSkin", "(Ljava/util/Map;Ljava/lang/Object;)V", false));
 		m.instructions.insert(ASMHelper.getFirstInstruction(m), l);
@@ -204,6 +196,29 @@ public class EntityTransformer implements IClassTransformer{
 		//UUIDPatcher#patchSkinResource
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;");
 		m.instructions.insertBefore(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/ResourceLocation;", false));
+		
+		InsnList li = new InsnList();
+//	  	threaddownloadimagedata.skinCallBack = skinAvailableCallback;
+		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 3));
+		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinCallBack", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
+
+		//	  	threaddownloadimagedata.skinType = textureType;
+		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 2));
+		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinType", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;"));
+	
+//	  	threaddownloadimagedata.skinLoc = resourcelocation;
+		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 4));
+		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinLoc", "Lnet/minecraft/util/ResourceLocation;"));
+	
+//	  	threaddownloadimagedata.skinTexture = profileTexture;
+		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinTexture", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;"));
+		
+		m.instructions.insert(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 9)), li);
 	}
 
 	public void patchCPacketLoginStart(ClassNode classNode)
