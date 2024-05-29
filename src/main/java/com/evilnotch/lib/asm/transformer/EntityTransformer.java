@@ -1,6 +1,7 @@
 package com.evilnotch.lib.asm.transformer;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.objectweb.asm.ClassReader;
@@ -50,7 +51,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.resources.SkinManager",//redirect $steve and $alex to be localized resource location instead of always steve
     	"net.minecraft.client.resources.SkinManager$3$1",//stopSteve add callback of skin failure
     	"net.minecraft.client.renderer.ThreadDownloadImageData",
-    	"net.minecraft.client.renderer.ThreadDownloadImageData$1"//stopSteve add callback of skin failure
+    	"net.minecraft.client.renderer.ThreadDownloadImageData$1",//stopSteve add callback of skin failure
+    	"net.minecraft.client.resources.SkinManager$3" //transform all fields into public minus final
     });
 
 	@Override
@@ -144,6 +146,10 @@ public class EntityTransformer implements IClassTransformer{
                 case 15:
                 	patchSkinDL(classNode);
                 break;
+                
+                case 16:
+                	pubMinusFinal(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -164,6 +170,27 @@ public class EntityTransformer implements IClassTransformer{
 	}
 
 	
+	public void pubMinusFinal(ClassNode classNode)
+	{
+		for(FieldNode f : classNode.fields)
+		{
+		    // Get the current access flags
+		    int access = f.access;
+		    
+		    // Remove conflicting access modifiers
+		    access &= ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED);
+		    
+		    // Remove the final modifier
+		    access &= ~Opcodes.ACC_FINAL;
+		    
+		    // Set the public modifier
+		    access |= Opcodes.ACC_PUBLIC;
+		    
+		    // Update the field's access flags
+		    f.access = access;
+		}
+	}
+
 	public void transformSkinDL(ClassNode classNode) 
 	{
 		ASMHelper.addFeild(classNode, "skinCallBack", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;");
@@ -239,6 +266,24 @@ public class EntityTransformer implements IClassTransformer{
 		//add IMPL of stopSteve
 		String inputBase = "assets/evilnotchlib/asm/" + (FMLCorePlugin.isObf ? "srg/" : "deob/");
 		ASMHelper.addIfMethod(classNode, inputBase + "NetworkPlayerInfo$1", "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
+		//patch method for compiled as this$0 doesn't exist
+		if(FMLCorePlugin.isObf)
+		{
+			MethodNode topatch = ASMHelper.getMethodNode(classNode, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
+			Iterator<AbstractInsnNode> it = topatch.instructions.iterator();
+			while(it.hasNext())
+			{
+				AbstractInsnNode ab = it.next();
+				if(ab instanceof FieldInsnNode)
+				{
+					FieldInsnNode f = (FieldInsnNode) ab;
+					if(f.name.equals("this$0"))
+					{
+						f.name = "field_177224_a";
+					}
+				}
+			}
+		}
 		//hack JVM supports multiple inner class interfaces but never made it for the compiler side
 		ASMHelper.addInterface(classNode, "com/evilnotch/lib/main/skin/IStopSteve");
 		
@@ -365,6 +410,24 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/util/JavaUtil", "returnFalse", "()Z", false));
 		li.add(new JumpInsnNode(Opcodes.IFEQ, label));
 		m.instructions.insert(jump, li);
+		
+		//if(url == null || url.trim().isEmpty) return false;
+		MethodNode wlist = ASMHelper.getMethodNode(classNode, "isWhitelistedDomain", "(Ljava/lang/String;)Z");
+		InsnList list = new InsnList();
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		LabelNode l1 = new LabelNode();
+		list.add(new JumpInsnNode(Opcodes.IFNULL, l1));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "trim", "()Ljava/lang/String;", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "isEmpty", "()Z", false));
+		LabelNode l2 = new LabelNode();
+		list.add(new JumpInsnNode(Opcodes.IFEQ, l2));
+		list.add(l1);
+		list.add(new InsnNode(Opcodes.ICONST_0));
+		list.add(new InsnNode(Opcodes.IRETURN));
+		list.add(l2);
+		wlist.instructions.insert(ASMHelper.getFirstInstruction(wlist), list);
+		
 	}
 
 	public static void transformPlayerClient(ClassNode classNode)
