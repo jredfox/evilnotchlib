@@ -48,7 +48,9 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.network.NetworkPlayerInfo$1",
     	"net.minecraft.network.login.client.CPacketLoginStart",//sends skin to server
     	"net.minecraft.client.resources.SkinManager",//redirect $steve and $alex to be localized resource location instead of always steve
-    	"net.minecraft.client.resources.SkinManager$3$1"//stopSteve add callback of skin failure
+    	"net.minecraft.client.resources.SkinManager$3$1",//stopSteve add callback of skin failure
+    	"net.minecraft.client.renderer.ThreadDownloadImageData",
+    	"net.minecraft.client.renderer.ThreadDownloadImageData$1"//stopSteve add callback of skin failure
     });
 
 	@Override
@@ -134,6 +136,14 @@ public class EntityTransformer implements IClassTransformer{
                 case 13:
                 	patchSkinManager3M1(classNode);
                 break;
+                
+                case 14:
+                	transformSkinDL(classNode);
+                break;
+                
+                case 15:
+                	patchSkinDL(classNode);
+                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -154,6 +164,60 @@ public class EntityTransformer implements IClassTransformer{
 	}
 
 	
+	public void transformSkinDL(ClassNode classNode) 
+	{
+		ASMHelper.addFeild(classNode, "skinCallBack", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;");
+		ASMHelper.addFeild(classNode, "skinType", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;");
+		ASMHelper.addFeild(classNode, "skinLoc", "Lnet/minecraft/util/ResourceLocation;");
+		ASMHelper.addFeild(classNode, "skinTexture", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;");
+	}
+
+	public void patchSkinDL(ClassNode classNode) 
+	{
+		MethodNode run = ASMHelper.getMethodNode(classNode, "run", "()V");
+		String ref = new MCPSidedString("this$0", "field_110932_a").toString();
+		
+		InsnList list = new InsnList();
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/net/HttpURLConnection", "getResponseCode", "()I", false));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData$1", ref, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinCallBack", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData$1", ref, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinType", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;"));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData$1", ref, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinLoc", "Lnet/minecraft/util/ResourceLocation;"));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData$1", ref, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinTexture", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;"));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "noSkin", "(ILjava/lang/Object;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Ljava/lang/Object;)V", false));
+
+		run.instructions.insert(ASMHelper.getFirstMethodInsn(run, Opcodes.INVOKEVIRTUAL, "java/net/HttpURLConnection", "connect", "()V", false), list);
+		
+		//inject noSkin call into the exception
+		InsnList li = new InsnList();
+		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData$1", ref, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;"));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinCallBack", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData$1", ref, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;"));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinType", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;"));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData$1", ref, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;"));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinLoc", "Lnet/minecraft/util/ResourceLocation;"));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData$1", ref, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;"));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinTexture", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;"));
+		li.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "noSkin", "(Ljava/lang/Object;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Ljava/lang/Object;)V", false));
+	
+		run.instructions.insert(ASMHelper.getMethodInsnNode(run, Opcodes.INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "error", "(Ljava/lang/String;Ljava/lang/Throwable;)V", true), li);
+		
+	}
+
 	public void patchSkinManager3M1(ClassNode classNode)
 	{
 		MethodNode m = ASMHelper.getMethodNode(classNode, "run", "()V");

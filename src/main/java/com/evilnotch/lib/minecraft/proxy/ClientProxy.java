@@ -24,6 +24,7 @@ import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.PropertyMap;
 
@@ -31,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerLoginClient;
+import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
@@ -210,11 +212,33 @@ public class ClientProxy extends ServerProxy{
         });
 	}
 	
+	/**
+	 * before the Skin Downloader starts this fires and if the skin isn't in the map it's empty notifiy the NetworkPlayerInfo
+	 */
 	@Override
 	public void noSkin(Map map, Object callback)
 	{
 		if(!map.containsKey(Type.SKIN) && callback instanceof IStopSteve)
 			((IStopSteve)callback).skinUnAvailable(Type.SKIN, null, null);
+	}
+	
+	@Override
+	public void noSkin(Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture)
+	{
+		if(callback instanceof IStopSteve)
+		{
+			((IStopSteve)callback).skinUnAvailable(typeIn, skinLoc, (MinecraftProfileTexture)skinTexture);
+		}
+	}
+	
+	@Override
+	public void noSkin(int responseCode, Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture) 
+	{
+		//if not ok skin has failed copied from ThreadDownloadImageData$1.class itself
+		if(responseCode / 100 != 2)
+		{
+			this.noSkin(callback, typeIn, skinLoc, skinTexture);
+		}
 	}
 
 }
