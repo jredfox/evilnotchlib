@@ -654,7 +654,7 @@ public class ASMHelper
 	/**
 	 * Gets the previous LineNumberNode or LabelNode whichever comes first
 	 */
-	public static AbstractInsnNode PreviousLabel(FieldInsnNode f)
+	public static AbstractInsnNode previousLabel(AbstractInsnNode f)
 	{
 		AbstractInsnNode current = f;
 		while(current != null)
@@ -700,4 +700,5 @@ public class ASMHelper
 				return true;
 		return false;
 	}
+	
 }

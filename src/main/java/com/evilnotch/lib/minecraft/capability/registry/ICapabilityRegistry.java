@@ -13,5 +13,5 @@ public interface ICapabilityRegistry<T> {
 	 * return the object of the most generic class that you are apply the capability to. 
 	 * For example Entity.class for all entities or EntityCreeper.class for only creepers
 	 */
-	public Class getObjectClass();
+	public Class<T> getObjectClass();
 }

@@ -165,6 +165,15 @@ public class EntityTransformer implements IClassTransformer{
         catch(Throwable t)
         {
         	t.printStackTrace();
+            if(ConfigCore.dumpASM)
+            {
+            	try {
+					ASMHelper.dumpFile(name, classToTransform);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
         }
 		return classToTransform;
 	}
@@ -241,7 +250,25 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinTexture", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;"));
 		li.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "noSkin", "(Ljava/lang/Object;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Ljava/lang/Object;)V", false));
 	
-		run.instructions.insert(ASMHelper.getMethodInsnNode(run, Opcodes.INVOKEINTERFACE, "org/apache/logging/log4j/Logger", "error", "(Ljava/lang/String;Ljava/lang/Throwable;)V", true), li);
+		//find the logger.error line with inconsistencies of the message and even the overloaded call across forge versions
+		AbstractInsnNode ab = run.instructions.getLast();
+		while(ab != null)
+		{
+			if(ab instanceof LdcInsnNode)
+			{
+				LdcInsnNode ldc = (LdcInsnNode)ab;
+				if(ldc.cst instanceof String && ldc.cst.toString().toLowerCase().startsWith("couldn't download"))
+				{
+					ab = ldc;
+					break;
+				}
+			}
+			ab = ab.getPrevious();
+		}
+		AbstractInsnNode spot = ASMHelper.previousLabel(ab);
+		
+		spot.hashCode();
+		run.instructions.insert(spot, li);
 		
 	}
 
@@ -624,7 +651,7 @@ public class EntityTransformer implements IClassTransformer{
       	list.add(new VarInsnNode(Opcodes.ALOAD, 0));
       	list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/entity/player/EntityPlayerMP", new MCPSidedString("getGameProfile", "func_146103_bH").toString(), "()Lcom/mojang/authlib/GameProfile;", false));
       	list.add(new VarInsnNode(Opcodes.ASTORE, 3));
-      	AbstractInsnNode spot = ASMHelper.PreviousLabel(ASMHelper.getFieldNode(m, Opcodes.PUTFIELD, "net/minecraft/server/management/PlayerInteractionManager", new MCPSidedString("player", "field_73090_b").toString(), "Lnet/minecraft/entity/player/EntityPlayerMP;"));
+      	AbstractInsnNode spot = ASMHelper.previousLabel(ASMHelper.getFieldNode(m, Opcodes.PUTFIELD, "net/minecraft/server/management/PlayerInteractionManager", new MCPSidedString("player", "field_73090_b").toString(), "Lnet/minecraft/entity/player/EntityPlayerMP;"));
       	m.instructions.insert(spot, list);
       	
     }
