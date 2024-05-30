@@ -214,6 +214,7 @@ public class EntityTransformer implements IClassTransformer{
 		String ref = new MCPSidedString("this$0", "field_110932_a").toString();
 		
 		InsnList list = new InsnList();
+		//inject noskin call with url response after the connection is established
 		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
 		list.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/net/HttpURLConnection", "getResponseCode", "()I", false));
@@ -267,7 +268,7 @@ public class EntityTransformer implements IClassTransformer{
 		}
 		AbstractInsnNode spot = ASMHelper.previousLabel(ab);
 		
-		spot.hashCode();
+		spot.hashCode();//trigger null pointer exception if not found
 		run.instructions.insert(spot, li);
 		
 	}
