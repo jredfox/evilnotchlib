@@ -1,6 +1,8 @@
 package com.evilnotch.lib.asm;
 
+import java.awt.Graphics;
 import java.util.Map;
+import java.util.Properties;
 
 import net.minecraftforge.fml.crashy.Crashy;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -19,6 +21,15 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
 		try
 		{
 			ConfigCore.load();
+			//fix multi-mc blurryness right before main menu works only with forge's partial fix in 1.12.2 not in 1.7.10
+			if(ConfigCore.disable2dDPI)
+			{
+				System.out.println("removing dpiaware:" + System.getProperty("sun.java2d.dpiaware") + " uiscale:" + System.getProperty("sun.java2d.uiScale") + " prism.allowhidpi:" + System.getProperty("prism.allowhidpi"));
+				Properties p = System.getProperties();
+				p.remove("sun.java2d.dpiaware");
+				p.remove("sun.java2d.uiScale");
+				p.remove("prism.allowhidpi");
+			}
 		}
 		catch(Throwable t)
 		{
