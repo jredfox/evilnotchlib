@@ -1,6 +1,10 @@
 package com.evilnotch.lib.main.skin;
 
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class SkinEvent extends Event {
@@ -53,6 +57,51 @@ public class SkinEvent extends Event {
 			Capability cap = new Capability(s);
 			MinecraftForge.EVENT_BUS.post(cap);
 			return cap.skin;
+		}
+	}
+	
+	public static class Mouse extends SkinEvent
+	{
+		public boolean ears;
+		public EntityPlayer player;
+		
+		public Mouse(EntityPlayer p)
+		{
+			this.player = p;
+		}
+	}
+	
+	public static class Dinnerbone extends SkinEvent
+	{
+		public boolean dinnerbone;
+		public EntityPlayer player;
+		
+		public Dinnerbone(EntityPlayer p)
+		{
+			this.player = p;
+		}
+	}
+	
+	public static boolean fireMouse(EntityPlayer player)
+	{
+		SkinEvent.Mouse event = new SkinEvent.Mouse(player);
+		MinecraftForge.EVENT_BUS.post(event);
+		return event.ears;
+	}
+
+	public static boolean fireDinnerbone(EntityPlayer p)
+	{
+		SkinEvent.Dinnerbone event = new SkinEvent.Dinnerbone(p);
+		MinecraftForge.EVENT_BUS.post(event);
+		return event.dinnerbone;
+	}
+	
+	public static void useDinnerbone(EntityPlayer p)
+	{
+		if(fireDinnerbone(p))
+		{
+            GlStateManager.translate(0.0F, p.height + 0.1F, 0.0F);
+            GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 		}
 	}
 
