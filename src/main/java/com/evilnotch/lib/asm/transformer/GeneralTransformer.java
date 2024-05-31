@@ -76,7 +76,20 @@ public class GeneralTransformer {
     	//VanillaBugFixes.fixMcProperties();
     	MethodNode m = ASMHelper.getMethodNode(classNode, getprops, "()Lcom/mojang/authlib/properties/PropertyMap;");
     	m.instructions.insert(ASMHelper.getFirstInstruction(m), new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/VanillaBugFixes", "fixMcProfileProperties", "()V", false));
-	
+    	
+    	//append && !Config.skinCache if found
+    	try
+    	{
+	    	JumpInsnNode jump = ASMHelper.nextJumpInsnNode(ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/properties/PropertyMap", "isEmpty", "()Z", false));
+	    	InsnList plist = new InsnList();
+	    	plist.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/Config", "skinCache", "Z"));
+	    	plist.add(new JumpInsnNode(Opcodes.IFNE, jump.label));
+	    	m.instructions.insert(jump, plist);
+    	}
+    	catch (Exception e)
+    	{
+    		e.printStackTrace();
+    	}
 
     	MethodNode method = ASMHelper.getMethodNode(classNode, new MCPSidedString("launchIntegratedServer", "func_71371_a").toString(), "(Ljava/lang/String;Ljava/lang/String;Lnet/minecraft/world/WorldSettings;)V");
     	
@@ -103,7 +116,6 @@ public class GeneralTransformer {
     		System.err.println("Error Unable to append JavaUtil#returnFalse to prevent mojang 429 error for skins. Please report to EvilNotchLib's github");
     		t.printStackTrace();
     	}
-    	
 	}
 	
 	/**

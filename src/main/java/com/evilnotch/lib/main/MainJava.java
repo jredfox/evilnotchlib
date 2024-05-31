@@ -4,8 +4,6 @@ package com.evilnotch.lib.main;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 
-import net.minecraft.network.login.client.CPacketLoginStart;
-import net.minecraft.server.network.NetHandlerLoginServer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
