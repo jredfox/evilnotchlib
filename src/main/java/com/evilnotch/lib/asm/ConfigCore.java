@@ -19,7 +19,6 @@ public class ConfigCore {
 	public static boolean  reflect_pkg = true;
 	
 	public static boolean dumpASM = false;
-	public static boolean disable2dDPI = true;
 
 	
 	public static void load()
@@ -44,7 +43,6 @@ public class ConfigCore {
 		reflect_pkg = config.get("reflect","fix_pkg_manifest",true).getBoolean();
 		
 		dumpASM = config.get("debug","dumpASM",false).getBoolean();
-		disable2dDPI = config.get("debug","disable2dDPI", true).getBoolean();
 		config.save();
 	}
 
