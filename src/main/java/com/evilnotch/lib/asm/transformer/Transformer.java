@@ -188,12 +188,8 @@ public class Transformer implements IClassTransformer
                 	CapTransformer.transformAnvilChunkLoader(classNode, name, obfuscated);
                 break;
                 case 13:
-                	if(!ConfigCore.asm_middleClickEvent)
-                	{
-                		print(name);
-                		return classToTransform;
-                	}
                 	GeneralTransformer.transformMC(classNode);
+                	GeneralTransformer.patchFullScreen(classNode);
                 break;
                 case 14:
                 	GeneralTransformer.patchOpenToLan(classNode);

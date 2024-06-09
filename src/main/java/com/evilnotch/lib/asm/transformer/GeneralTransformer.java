@@ -42,21 +42,24 @@ public class GeneralTransformer {
 	 */
 	public static void transformMC(ClassNode classNode) 
 	{
-    	MethodNode mnode = ASMHelper.getMethodNode(classNode, new MCPSidedString("middleClickMouse","func_147112_ai").toString(), "()V");
-    	for(AbstractInsnNode node : mnode.instructions.toArray())
-    	{
-    		if(node.getOpcode() == Opcodes.INVOKESTATIC && node instanceof MethodInsnNode)
-    		{
-    			MethodInsnNode n = (MethodInsnNode)node;
-    			if(n.owner.equals("net/minecraftforge/common/ForgeHooks"))
-    			{
-    				n.name = "pickBlock";
-    				n.owner = "com/evilnotch/lib/main/eventhandler/PickBlock";
-    				System.out.println("patched Minecraft#middleClickMouse()");
-    				break;
-    			}
-    		}
-    	}
+		if(ConfigCore.asm_middleClickEvent)
+		{
+	    	MethodNode mnode = ASMHelper.getMethodNode(classNode, new MCPSidedString("middleClickMouse","func_147112_ai").toString(), "()V");
+	    	for(AbstractInsnNode node : mnode.instructions.toArray())
+	    	{
+	    		if(node.getOpcode() == Opcodes.INVOKESTATIC && node instanceof MethodInsnNode)
+	    		{
+	    			MethodInsnNode n = (MethodInsnNode)node;
+	    			if(n.owner.equals("net/minecraftforge/common/ForgeHooks"))
+	    			{
+	    				n.name = "pickBlock";
+	    				n.owner = "com/evilnotch/lib/main/eventhandler/PickBlock";
+	    				System.out.println("patched Minecraft#middleClickMouse()");
+	    				break;
+	    			}
+	    		}
+	    	}
+		}
     	
     	//make profileProperties public minus final
     	String props = new MCPSidedString("profileProperties", "field_181038_N").toString();
@@ -540,6 +543,35 @@ public class GeneralTransformer {
 		li.add(new InsnNode(Opcodes.IRETURN));
 		li.add(l1);
 		m.instructions.insert(ASMHelper.getFirstInstruction(m), li);
+	}
+
+	/**
+	 * patches fullscreen for versions of forge that hasn't patched in in 1.12.2
+	 */
+	public static void patchFullScreen(ClassNode classNode) 
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("toggleFullscreen", "func_71352_k").toString(), "()V");
+		InsnList li = new InsnList();
+		if(ASMHelper.getMethodInsnNode(m, INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false) != null)
+		{
+			System.err.println("Full Screen Already Patched!");
+			return;
+		}
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", new MCPSidedString("fullscreen", "field_71431_Q").toString(), "Z"));
+		LabelNode l26 = new LabelNode();
+		li.add(new JumpInsnNode(Opcodes.IFNE, l26));
+		LabelNode l27 = new LabelNode();
+		li.add(l27);
+		li.add(new InsnNode(Opcodes.ICONST_0));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
+		LabelNode l28 = new LabelNode();
+		li.add(l28);
+		li.add(new InsnNode(Opcodes.ICONST_1));
+		li.add(new MethodInsnNode(INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
+		li.add(l26);
+		
+		m.instructions.insert(ASMHelper.getMethodInsnNode(m, INVOKESTATIC, "org/lwjgl/opengl/Display", "setFullscreen", "(Z)V", false), li);
 	}
 	
 	

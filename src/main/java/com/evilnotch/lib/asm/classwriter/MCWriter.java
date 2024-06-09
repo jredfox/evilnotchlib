@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -203,7 +204,7 @@ public class MCWriter extends ClassWriter {
      * this is the non loaded cache file of byte[] of classes that is here temporary till toByteArray() gets called.
      * Also the interfaces here may or may not be adjusted depdending upon if the class is loaded or not
      */
-    public static Map<String,ClassReader> offMemoryCache = new HashMap<String,ClassReader>(50); 
+    public static Map<String,ClassReader> offMemoryCache = new ConcurrentHashMap<String,ClassReader>(50); 
     
     /**
      * Returns a ClassReader from the input class. It also deobfuscates it and fetches it when possible from
