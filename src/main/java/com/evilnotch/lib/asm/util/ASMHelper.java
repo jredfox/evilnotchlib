@@ -31,7 +31,7 @@ import com.evilnotch.lib.asm.FMLCorePlugin;
 
 public class ASMHelper 
 {	
-	public static HashMap<String,ClassNode> cacheNodes = new HashMap();
+	public static ThreadLocal<HashMap<String, ClassNode>> cacheNodes = ThreadLocal.withInitial(()-> new HashMap());
 	
 	/**
 	 * srg support doesn't patch local vars nor instructions
@@ -103,14 +103,14 @@ public class ASMHelper
 	 */
 	public static MethodNode getCachedMethodNode(String inputStream, String obMethod, String method_desc) throws IOException 
 	{
-		if(cacheNodes.containsKey(inputStream))
+		if(cacheNodes.get().containsKey(inputStream))
 		{
-			ClassNode node = cacheNodes.get(inputStream);
+			ClassNode node = cacheNodes.get().get(inputStream);
 			return getMethodNode(node,obMethod,method_desc);
 		}
 		InputStream stream = ASMHelper.class.getClassLoader().getResourceAsStream(inputStream);
 		ClassNode node = getClassNode(stream);
-		cacheNodes.put(inputStream, node);
+		cacheNodes.get().put(inputStream, node);
 		return getMethodNode(node,obMethod,method_desc);
 	}
 	
@@ -223,7 +223,7 @@ public class ASMHelper
 	 */
 	public static void clearCacheNodes() 
 	{
-		cacheNodes.clear();
+		cacheNodes.get().clear();
 	}
 
 	/**
