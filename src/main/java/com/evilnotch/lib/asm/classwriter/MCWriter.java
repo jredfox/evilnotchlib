@@ -50,6 +50,7 @@ import net.minecraftforge.fml.common.asm.transformers.deobf.FMLRemappingAdapter;
  * actually loading them with a ClassLoader.
  * 
  * @author Eric Bruneton
+ * @author jredfox (Port ClassWriter to Minecraft, Optimizations, and maybe some bug fixes)
  */
 public class MCWriter extends ClassWriter {
 	
