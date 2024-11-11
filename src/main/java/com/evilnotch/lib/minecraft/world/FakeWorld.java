@@ -47,29 +47,44 @@ import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class FakeWorld extends World{
+public class FakeWorld extends World {
 	
 	public static WorldInfo world_info = null;
 
 	public FakeWorld() 
 	{
 		super(new FakeSaveHandler(), getInfo(), new FakeWorldProvider(), getProfiler(), true);
-        this.worldInfo.setDifficulty(EnumDifficulty.NORMAL);
+		try
+		{
+			this.worldInfo.difficulty = EnumDifficulty.NORMAL;
+			this.worldInfo.setDifficulty(EnumDifficulty.NORMAL);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
         this.provider.setWorld(this);
         FakeWorldProvider pro = (FakeWorldProvider) this.provider;
         pro.init(this);
         this.chunkProvider = this.createChunkProvider();
         this.mapStorage = this.perWorldStorage;
-        this.villageCollection = new VillageCollection(this);
-        this.villageCollection.setWorldsForAll(this);
+    	this.villageCollection = new VillageCollection(this);
+        try
+        {
+        	this.villageCollection.setWorldsForAll(this);
+        }
+        catch(Throwable t)
+        {
+        	t.printStackTrace();
+        }
         this.initCapabilities();//forge capability support my caps are linked directly to the constructor
 	}
 
-	public static WorldInfo getInfo() {
+	public static WorldInfo getInfo()
+	{
 		if(world_info != null)
 			return world_info;
-		WorldInfo info = new WorldInfo(getSettings(),"fake_world");
-		world_info = info;
+		world_info = new WorldInfo(getSettings(), "fake_world");
 		return world_info;
 	}
 

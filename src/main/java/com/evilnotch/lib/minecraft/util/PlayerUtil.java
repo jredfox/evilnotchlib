@@ -238,7 +238,7 @@ public class PlayerUtil {
     	PlayerChunkMapEntry entry = playerChunkMap.getEntry(chunkPos.x, chunkPos.z);
     	if(entry != null)
     	{
-    		players.addAll(entry.getWatchingPlayers());
+    		players.addAll(entry.players);
     	}
     	return players;
 	}
