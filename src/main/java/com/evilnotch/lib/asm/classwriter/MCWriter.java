@@ -205,7 +205,7 @@ public class MCWriter extends ClassWriter {
      * this is the non loaded cache file of byte[] of classes that is here temporary till toByteArray() gets called.
      * Also the interfaces here may or may not be adjusted depdending upon if the class is loaded or not
      */
-    public Map<String, ClassReader> infoCache = new HashMap<String, ClassReader>(15);
+    public ThreadLocal<Map<String, ClassReader>> infoCache = ThreadLocal.withInitial(()-> new HashMap(15));
     
     /**
      * Returns a ClassReader from the input class. It also deobfuscates it and fetches it when possible from
@@ -214,9 +214,10 @@ public class MCWriter extends ClassWriter {
     private ClassReader typeInfo(final String t) throws Exception 
     {
     	String type = ObfHelper.toObfClassName(t);
-    	if(infoCache.containsKey(type))
+    	Map<String, ClassReader> info = infoCache.get();
+    	if(info.containsKey(type))
     	{
-    		return infoCache.get(type);
+    		return info.get(type);
     	}
     	
         InputStream is = l.getResourceAsStream(type + ".class");
@@ -227,7 +228,7 @@ public class MCWriter extends ClassWriter {
             if(FMLCorePlugin.isObf)
             	reader = patchClass(reader);
             
-            infoCache.put(type, reader);
+            info.put(type, reader);
             return reader;
         } 
         finally 
@@ -242,7 +243,7 @@ public class MCWriter extends ClassWriter {
     @Override
     public byte[] toByteArray()
     {
-    	infoCache.clear();
+    	infoCache.get().clear();
     	return super.toByteArray();
     }
 
