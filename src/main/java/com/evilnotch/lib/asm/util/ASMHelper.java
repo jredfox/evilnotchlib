@@ -1,8 +1,11 @@
 package com.evilnotch.lib.asm.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
@@ -28,6 +31,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.util.JavaUtil;
 
 public class ASMHelper 
 {	
@@ -699,6 +703,87 @@ public class ASMHelper
 			if(f.name.equals(name))
 				return true;
 		return false;
+	}
+	
+	public static void addFieldNodeIf(ClassNode classNode, FieldNode feild) 
+	{
+		for(FieldNode f : classNode.fields)
+			if(f.name.equals(feild.name))
+				return;
+		classNode.fields.add(feild);
+	}
+	
+	public static boolean hasFieldNode(ClassNode classNode, String name)
+	{
+		for(FieldNode f : classNode.fields)
+			if(f.name.equals(name))
+				return true;
+		return false;
+	}
+	
+	public static void toFile(byte[] data, File f)
+	{
+		f.getParentFile().mkdirs();
+		
+    	InputStream in = null;
+    	OutputStream out = null;
+    	try
+    	{
+    		in = new ByteArrayInputStream(data);
+    		out = new FileOutputStream(f);
+    		JavaUtil.copy(in, out, false);
+    	}
+    	catch(Throwable e)
+    	{
+    		e.printStackTrace();
+    	}
+    	finally
+    	{
+    		JavaUtil.closeQuietly(in);
+    		JavaUtil.closeQuietly(out);
+    	}
+	}
+
+	public static FieldInsnNode getFieldInsnNode(MethodNode node, int opcode, String owner, String name, String desc)
+	{
+		AbstractInsnNode[] arr = node.instructions.toArray();
+		FieldInsnNode compare = new FieldInsnNode(opcode, owner, name, desc);
+		for(AbstractInsnNode ab : arr)
+		{
+			if(ab instanceof FieldInsnNode && equals(compare, (FieldInsnNode)ab))
+			{
+				return (FieldInsnNode)ab;
+			}
+		}
+		return null;
+	}
+
+	public static ClassWriter getClassWriter(ClassNode classNode, int flags) 
+	{
+        ClassWriter classWriter = new ClassWriter(flags);
+        classNode.accept(classWriter);
+        return classWriter;
+	}
+	
+	public static byte[] toByteArray(ClassWriter classWriter, String transformedName) throws IOException 
+	{
+        byte[] bytes = classWriter.toByteArray();
+        if(Boolean.parseBoolean(System.getProperty("asm.dump", "false")))
+        	dumpFile(transformedName, bytes);
+        
+        return bytes;
+	}
+	
+	public static LineNumberNode prevLabelNode(AbstractInsnNode spot) 
+	{
+		AbstractInsnNode n = spot;
+		while(n != null)
+		{
+			n = n.getPrevious();
+			if(n instanceof LineNumberNode)
+				return (LineNumberNode) n;
+		}
+		return null;
 	}
 	
 }

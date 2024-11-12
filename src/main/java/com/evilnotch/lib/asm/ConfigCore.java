@@ -16,10 +16,8 @@ public class ConfigCore {
 	public static boolean asm_entityPatch = true;
 	public static boolean asm_enchantmentNameFix = true;
 	public static boolean asm_patchLanSkins = true;
-	public static boolean  reflect_pkg = true;
 	
 	public static boolean dumpASM = false;
-
 	
 	public static void load()
 	{
@@ -29,20 +27,18 @@ public class ConfigCore {
 		
 		Configuration config = new Configuration(filecfg);
 		config.load();
-		asm_playerlist = config.get("asm","uuidFixer",true).getBoolean();
-		asm_furnace = config.get("asm","furnaceFix",true).getBoolean();
-		asm_clientPlaceEvent = config.get("asm","clientBlockPlaceEvent",true).getBoolean();
-		asm_setTileNBTFix = config.get("asm","setTileNBTItemBlockFix",true).getBoolean();
-		asm_TranslationEvent = config.get("asm","dynamicTranslationEvent",true).getBoolean();
-		asm_middleClickEvent = config.get("asm","middleClickEvent",true).getBoolean();
-		asm_entityPatch = config.get("asm","asm_entityPatch",true).getBoolean();
-		asm_enchantmentNameFix = config.get("asm","asm_enchantmentNameFix",true).getBoolean();
-		asm_patchLanSkins = config.get("asm","asm_patchLanSkins",true).getBoolean();
+		asm_playerlist = config.get("asm","uuidFixer", true).getBoolean();
+		asm_furnace = config.get("asm","furnaceFix", true).getBoolean();
+		asm_clientPlaceEvent = config.get("asm","clientBlockPlaceEvent", true).getBoolean();
+		asm_setTileNBTFix = config.get("asm","setTileNBTItemBlockFix", true).getBoolean();
+		asm_TranslationEvent = config.get("asm","dynamicTranslationEvent", true).getBoolean();
+		asm_middleClickEvent = config.get("asm","middleClickEvent", true).getBoolean();
+		asm_entityPatch = config.get("asm","asm_entityPatch", true).getBoolean();
+		asm_enchantmentNameFix = config.get("asm","asm_enchantmentNameFix", true).getBoolean();
+		asm_patchLanSkins = config.get("asm","asm_patchLanSkins", true).getBoolean();
 		Crashy.GUI = config.get("asm","asm_gui_crash", true).getBoolean();
 		
-		reflect_pkg = config.get("reflect","fix_pkg_manifest",true).getBoolean();
-		
-		dumpASM = config.get("debug","dumpASM",false).getBoolean();
+		dumpASM = config.get("debug","dumpASM", false).getBoolean();
 		config.save();
 	}
 

@@ -1,6 +1,5 @@
 package com.evilnotch.lib.main;
 
-
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 
@@ -13,7 +12,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 
-@Mod(modid = MainJava.MODID, name = MainJava.NAME, version = MainJava.VERSION)
+@Mod(modid = MainJava.MODID, name = MainJava.NAME, version = MainJava.VERSION, dependencies = "before:foamfix")
 public class MainJava {
 	
 	public static final String MODID =  "evilnotchlib";
@@ -26,7 +25,7 @@ public class MainJava {
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
 	{	
-		LoaderMain.loadpreinit(e);
+		LoaderMain.loadpreinit(e, this.getClass().getClassLoader());
 	}
 	
 	@Mod.EventHandler

@@ -16,6 +16,7 @@ import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.DummyMap;
 
+import jredfox.clfix.LaunchClassLoaderFix;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -23,9 +24,9 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 public class Transformer implements IClassTransformer
 {
 	
-	static
+	public Transformer()
 	{
-		stopMemoryOverflow();
+		LaunchClassLoaderFix.stopMemoryOverflow(this.getClass().getClassLoader());
 	}
 	
     public static final List<String> clazzes = (List<String>)JavaUtil.<String>asArray(new Object[]
@@ -63,37 +64,6 @@ public class Transformer implements IClassTransformer
         int index = clazzes.indexOf(transformedName);
         return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
     }
-    
-    /**
-     * stop the memory overflowing and new objects from instantiating
-     */
-	public static void stopMemoryOverflow() 
-	{
-		try
-		{
-			System.out.println("Fixing RAM Leak LaunchClassLoader.resourceCache");
-			Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
-			init.clear();
-			ReflectionUtil.setObject(Launch.classLoader, new DummyMap<String,byte[]>(), LaunchClassLoader.class, "resourceCache");
-			System.out.println("Fixing RAM Leak LaunchClassLoader.cachedClasses");
-			Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");
-			transformedCache.clear();
-			ReflectionUtil.setObject(Launch.classLoader, new DummyMap<String,Class<?>>(), LaunchClassLoader.class, "cachedClasses");
-			
-			if(ConfigCore.reflect_pkg)
-			{
-				System.out.println("Fixing RAM Leak LaunchClassLoader.packageManifests");
-				Map<Package, Manifest> init_pkg = (Map<Package, Manifest>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "packageManifests");
-				init_pkg.clear();
-				ReflectionUtil.setObject(Launch.classLoader, new DummyMap<String,byte[]>(), LaunchClassLoader.class, "packageManifests");
-			}
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-			System.out.println("FATEL ERROR! REPORT TO EVIL NOTCH LIB. The fields of the class loader cannot be found and/or set");
-		}
-	}
 	
 	public static byte[] transform(int index, byte[] classToTransform, boolean obfuscated)
     {

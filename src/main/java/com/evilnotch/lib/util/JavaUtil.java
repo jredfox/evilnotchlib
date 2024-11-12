@@ -1589,4 +1589,17 @@ public class JavaUtil {
 		
 	}
 	
+	public static void closeQuietly(Closeable clos)
+	{
+		try 
+		{
+			if(clos != null)
+				clos.close();
+		}
+		catch (IOException e)
+		{
+			
+		}
+	}
+	
 }

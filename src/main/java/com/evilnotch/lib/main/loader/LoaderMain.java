@@ -38,8 +38,9 @@ import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.evilnotch.lib.minecraft.world.FakeWorld;
-import com.evilnotch.lib.util.simple.DummyMap;
 
+import jredfox.clfix.DummyMap;
+import jredfox.clfix.LaunchClassLoaderFix;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -77,9 +78,9 @@ public class LoaderMain {
 	public static LoadingStage currentLoadingStage = null;
 	public static Thread serverThread = null;
 	
-	public static void loadpreinit(FMLPreInitializationEvent e)
+	public static void loadpreinit(FMLPreInitializationEvent e, ClassLoader clforge)
 	{
-		loaderMainPreInit(e);
+		loaderMainPreInit(e, clforge);
 		LoaderItems.loadpreinit();
 		LoaderBlocks.loadpreinit();
 		LoaderCommands.load();
@@ -113,25 +114,10 @@ public class LoaderMain {
 
 	public static void launchClassLoaderCheck() 
 	{
-		Map<String,byte[]> init = (Map<String, byte[]>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "resourceCache");
-		Map<String,Class<?>> transformedCache = (Map<String, Class<?>>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "cachedClasses");
-		Map<Package, Manifest> init_pkg = (Map<Package, Manifest>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "packageManifests");
-		int sizeA = init == null ? -1 : init.size();
-		int sizeB = transformedCache == null ? -1 : transformedCache.size();
-		int sizeC = init_pkg == null ? -1 : init_pkg.size();
-		
-		if(init != null && !(init instanceof DummyMap))
-			System.err.println("LaunchClassLoader Failed to Replace resourceCache with DummyMap size:" + sizeA);
-		if(transformedCache != null && !(transformedCache instanceof DummyMap))
-			System.err.println("LaunchClassLoader Failed to Replace cachedClasses with DummyMap size:" + sizeB);
-		if(ConfigCore.reflect_pkg && init_pkg != null && !(init_pkg instanceof DummyMap))
-			System.err.println("LaunchClassLoader Failed to Replace packageManifests with DummyMap size:" + sizeC);
-		
-		if(sizeA == -1 || sizeB == -1 || sizeC == -1)
-			System.err.println("LaunchClassLoader ERROR Getting Fields: resourceCache ERRORED:" + (init == null) + " cachedClasses ERRORED:" + (transformedCache == null) + " packageManifests ERRORED:" + (init_pkg == null));
+		LaunchClassLoaderFix.verify();
 	}
 
-	private static void loaderMainPreInit(FMLPreInitializationEvent e) 
+	private static void loaderMainPreInit(FMLPreInitializationEvent e, ClassLoader clforge) 
 	{
 		currentLoadingStage = LoadingStage.PREINIT;
 		isDeObfuscated = !FMLCorePlugin.isObf;
@@ -148,7 +134,7 @@ public class LoaderMain {
 		GeneralRegistry.load();
 		GeneralRegistry.registerGameRule("PlayerLvlDAT", true);
 		loadEvents();
-		loadfoamFixFixer();
+		LaunchClassLoaderFix.stopMemoryOverflowFoamFix(clforge);
 		CapabilityRegistry.registerRegistry(new CapRegDefaultHandler());
 	}
 	
@@ -187,35 +173,6 @@ public class LoaderMain {
 					return false;
 				}
 			};
-		}
-	}
-
-	/**
-	 * stop foamfix fixer from being broken use mine instead
-	 */
-	private static void loadfoamFixFixer()
-	{
-		if(Loader.isModLoaded("foamfix"))
-		{
-			try
-			{
-				Class foamFixShared = ReflectionUtil.classForName("pl.asie.foamfix.shared.FoamFixShared");
-				Object instance = ReflectionUtil.getObject(null, foamFixShared, "config");
-				ReflectionUtil.setObject(instance, false, ReflectionUtil.classForName("pl.asie.foamfix.shared.FoamFixConfig"), "lwWeakenResourceCache");
-				System.out.println("Successfully Disabled Broken Foamfix's fix on LaunchClassLoader#resourceCache");
-				
-				if(ConfigCore.reflect_pkg)
-				{
-					ReflectionUtil.setObject(instance, false, ReflectionUtil.classForName("pl.asie.foamfix.shared.FoamFixConfig"), "lwRemovePackageManifestMap");
-					System.out.println("Successfully Disabled Foamfix's fix on LaunchClassLoader#packageManifests");
-				}
-			}
-			catch(Throwable t)
-			{
-				t.printStackTrace();
-			}
-			//If EvilNotchLib loads after foamfix it could have already replaced the mappings again
-			Transformer.stopMemoryOverflow();
 		}
 	}
 
