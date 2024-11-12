@@ -106,15 +106,10 @@ public class LoaderMain {
 	    MainJava.proxy.postinit();//generate lang,generate shadow sizes
 	}
 	
-	public static void loadComplete(FMLLoadCompleteEvent e)
+	public static void loadComplete(FMLLoadCompleteEvent e, ClassLoader clforge)
 	{
 		currentLoadingStage = LoadingStage.COMPLETE;
-		launchClassLoaderCheck();
-	}
-
-	public static void launchClassLoaderCheck() 
-	{
-		LaunchClassLoaderFix.verify();
+		LaunchClassLoaderFix.verify(clforge);
 	}
 
 	private static void loaderMainPreInit(FMLPreInitializationEvent e, ClassLoader clforge) 

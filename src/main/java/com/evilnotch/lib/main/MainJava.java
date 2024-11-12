@@ -43,7 +43,7 @@ public class MainJava {
 	@Mod.EventHandler
 	public void complete(FMLLoadCompleteEvent e)
 	{
-		LoaderMain.loadComplete(e);
+		LoaderMain.loadComplete(e, this.getClass().getClassLoader());
 	}
 	
 	/**
