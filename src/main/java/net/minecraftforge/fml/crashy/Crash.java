@@ -44,7 +44,7 @@ public class Crash {
 			} catch (Throwable e) {}
 			this.setTitle("Crash Report");
 	        this.setSize(900, 550);
-	        this.setPreferredSize(new Dimension(900, 550));
+	        this.setPreferredSize(new Dimension(950, 550));
 	        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        this.setLocationRelativeTo(null);
 	        this.add(new PanelCrashReport(msg));

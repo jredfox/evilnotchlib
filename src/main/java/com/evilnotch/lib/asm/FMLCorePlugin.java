@@ -19,7 +19,6 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
 		try
 		{
 			ConfigCore.load();
-//			throw new NullPointerException();
 		}
 		catch(Throwable t)
 		{
