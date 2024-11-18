@@ -19,6 +19,7 @@ import net.minecraftforge.fml.crashy.Crashy.ModEntry.MODSIDE;
 
 /**
  * Copy this package into your project so you can have a Crash Report with a GUI while not keeping the original Process Alive
+ * Doesn't Depend Upon Minecraft Specific Code So it should work for any Java Application. Refactor to your liking if you don't want net.minecraftforge.fml.crashy as the package
  */
 public class Crashy {
 	
