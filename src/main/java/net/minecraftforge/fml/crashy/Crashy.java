@@ -1,15 +1,19 @@
 package net.minecraftforge.fml.crashy;
 
 import java.awt.GraphicsEnvironment;
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import net.minecraft.crash.CrashReport;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.crashy.Crashy.ModEntry.MODSIDE;
 
@@ -20,35 +24,36 @@ public class Crashy {
 	
     public static void crash(String msg, Throwable t, boolean gui)
     {
-		CrashReport crashreport = CrashReport.makeCrashReport(t, msg);
-		crashreport.makeCategory(msg);
-		
-        File file1 = new File("crash-reports").getAbsoluteFile();
-        File file2 = new File(file1, "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + ".txt");
-        System.out.println(crashreport.getCompleteReport());
-
-        int retVal;
-        if (crashreport.getFile() != null)
+    	int retVal = -1;
+        File crashDir = new File("crash-reports").getAbsoluteFile();
+        File toFile = new File(crashDir, "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + ".txt");
+      
+        if (toFile.getParentFile() != null)
+            toFile.getParentFile().mkdirs();
+        
+        String reportMsg = getCompleteReport(msg, t);
+        Writer writer = null;
+        try
         {
-            System.out.println("#@!@# Game crashed! Crash report saved to: #@!@# " + crashreport.getFile());
-            retVal = -1;
+            writer = new OutputStreamWriter(new FileOutputStream(toFile), StandardCharsets.UTF_8);
+            writer.write(reportMsg);
         }
-        else if (crashreport.saveToFile(file2))
+        catch(Throwable p)
         {
-            System.out.println("#@!@# Game crashed! Crash report saved to: #@!@# " + file2.getAbsolutePath());
-            retVal = -1;
+        	p.printStackTrace();
+        	retVal = -2;
         }
-        else
+        finally
         {
-            System.out.println("#@?@# Game crashed! Crash report could not be saved. #@?@#");
-            retVal = -2;
+        	closeQuietly(writer);
         }
+        System.err.print(reportMsg);
         
         if(gui)
         {
         	try
         	{
-        		displayCrash(msg, t);
+        		displayCrash(msg + "\n", t);
         	}
         	catch(Throwable t2)
         	{
@@ -58,6 +63,38 @@ public class Crashy {
         }
         
         exit(retVal);
+    }
+    
+    public static String getCompleteReport(String msg, Throwable t) 
+    {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("---- Minecraft Crash Report ----\n");
+    	sb.append("// ");
+    	sb.append(getWittyComment());
+    	sb.append("\n\n");
+    	sb.append("Time: ");
+    	sb.append((new SimpleDateFormat()).format(new Date()));
+    	sb.append("\n");
+    	sb.append("Description: " + msg + "\n\n");
+    	sb.append(getStackTrace(t));
+    	return sb.toString();
+	}
+
+	/**
+     * Gets a random witty comment for inclusion in this CrashReport
+     */
+    private static String getWittyComment()
+    {
+        String[] astring = new String[] {"Who set us up the TNT?", "Everything's going to plan. No, really, that was supposed to happen.", "Uh... Did I do that?", "Oops.", "Why did you do that?", "I feel sad now :(", "My bad.", "I'm sorry, Dave.", "I let you down. Sorry :(", "On the bright side, I bought you a teddy bear!", "Daisy, daisy...", "Oh - I know what I did wrong!", "Hey, that tickles! Hehehe!", "I blame Dinnerbone.", "You should try our sister game, Minceraft!", "Don't be sad. I'll do better next time, I promise!", "Don't be sad, have a hug! <3", "I just don't know what went wrong :(", "Shall we play a game?", "Quite honestly, I wouldn't worry myself about that.", "I bet Cylons wouldn't have this problem.", "Sorry :(", "Surprise! Haha. Well, this is awkward.", "Would you like a cupcake?", "Hi. I'm Minecraft, and I'm a crashaholic.", "Ooh. Shiny.", "This doesn't make any sense!", "Why is it breaking :(", "Don't do that.", "Ouch. That hurt :(", "You're mean.", "This is a token for 1 free hug. Redeem at your nearest Mojangsta: [~~HUG~~]", "There are four lights!", "But it works on my machine."};
+
+        try
+        {
+            return astring[(int)(System.nanoTime() % (long)astring.length)];
+        }
+        catch (Throwable var2)
+        {
+            return "Witty comment unavailable :(";
+        }
     }
     
     public static String getStackTrace(Throwable t)
@@ -182,6 +219,15 @@ public class Crashy {
 			System.exit(i);
 		}
 	}
+    
+    public static void closeQuietly(final Closeable closeable) 
+    {
+        try 
+        {
+            if (closeable != null)
+                closeable.close();
+        } catch (final IOException ioe) {}
+    }
 	
 	/**
 	 * get a file from a class Does not support Eclipse's Jar In Jar Loader but does support javaw java and URLClassLoaders
