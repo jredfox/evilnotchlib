@@ -1,16 +1,11 @@
 package com.evilnotch.lib.main.loader;
 
 import java.io.File;
-import java.util.Map;
-import java.util.jar.Manifest;
 
 import org.apache.logging.log4j.Logger;
 
-import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPMappings;
-import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
-import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
@@ -18,7 +13,6 @@ import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickEventClient;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
-import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperty;
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
@@ -36,10 +30,8 @@ import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.proxy.ServerProxy;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
-import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.evilnotch.lib.minecraft.world.FakeWorld;
 
-import jredfox.clfix.DummyMap;
 import jredfox.clfix.LaunchClassLoaderFix;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -47,19 +39,15 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;

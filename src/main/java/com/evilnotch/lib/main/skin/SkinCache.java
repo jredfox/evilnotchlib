@@ -70,19 +70,35 @@ public class SkinCache {
 		
 		boolean isOnline = this.isMojangOnline();
 		JSONArray arr = skinCacheLoc.exists() ? JavaUtil.getJsonArray(skinCacheLoc) : new JSONArray();
+		//Sanity Check
+		if(arr == null)
+		{
+			skinCacheLoc.delete();
+			arr = new JSONArray();
+		}
+		
 		for(Object o : arr)
 		{
 			if(!(o instanceof JSONObject))
 				continue;
 			
 			JSONObject j = (JSONObject) o;
-			SkinEntry data = new SkinEntry(j);
-			if(isOnline && hasExpired(data))
+			try
 			{
-				System.out.println("removing expired skin from cache:" + data.user + " uuid:" + data.uuid);
-				continue;
+				SkinEntry data = new SkinEntry(j);
+				if(isOnline && hasExpired(data))
+				{
+					System.out.println("removing expired skin from cache:" + data.user + " uuid:" + data.uuid);
+					continue;
+				}
+				skins.put(data.user, data);
 			}
-			skins.put(data.user, data);
+			catch(Exception e)
+			{
+				System.err.println("Error Parsing SkinEntry:" + j);
+				if(Config.debug)
+					e.printStackTrace();
+			}
 		}
 	}
 	
