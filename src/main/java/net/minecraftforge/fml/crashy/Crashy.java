@@ -3,12 +3,12 @@ package net.minecraftforge.fml.crashy;
 import java.awt.GraphicsEnvironment;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.crashy.Crashy.ModEntry.MODSIDE;
 
 /**
- * Copy this class and GuiCrashReport.jar into your project to use
+ * Copy this package into your project so you can have a Crash Report with a GUI while not keeping the original Process Alive
  */
 public class Crashy {
 	
@@ -87,32 +87,23 @@ public class Crashy {
 			return;
 		}
 		
-    	File guicrashjar = new File("GuiCrashReport.jar").getAbsoluteFile();
-    	if(!guicrashjar.exists())
-    	{
-    		InputStream in = Crashy.class.getClassLoader().getResourceAsStream("GuiCrashReport.jar");
-    		if(in == null)
-    			throw new NullPointerException();
-    		OutputStream out = new FileOutputStream(guicrashjar);
-    		copy(in, out);
-    		closeQuietly(in);
-    		closeQuietly(out);
-    	}
-		String java = System.getProperty("java.home") + "/bin/java".replace("/", File.separator);
-		ProcessBuilder pb = new ProcessBuilder(java, "-jar", guicrashjar.getPath(), msg);
-		try 
+		try
 		{
+			String java = System.getProperty("java.home") + "/bin/java".replace("/", File.separator);
+			File jarFile = getFileFromClass(Crashy.class);
+			//If Deobf or Jar is a Derp Jar get the Jar as a Folder
+			if(jarFile.getPath().endsWith(".class"))
+				jarFile = getDerpJar(jarFile, Crashy.class);
+			ProcessBuilder pb = new ProcessBuilder(new String[]{java, "-cp", jarFile.getPath(), "net.minecraftforge.fml.crashy.Crash", msg});
 			pb.start();
-		} 
-		catch (Throwable e)
+		}
+		catch(Throwable t)
 		{
-			e.printStackTrace();
+			t.printStackTrace();
 		}
 		
 		if(exit)
-		{
 			exit(-1);
-		}
 	}
 	
     public static void displayMissingMods(ModEntry... mods)
@@ -175,35 +166,13 @@ public class Crashy {
 		}
 	}
 	
-	//_______________________________________________START IOUTILS METHODS REQUIRED______________________________\\
-	public static final int BUFFER_SIZE = 1048576/2;
+	//_______________________________________________START UTIL METHODS REQUIRED______________________________\\
 	public static final boolean IS_HEADLESS = GraphicsEnvironment.isHeadless();
 	/**
 	 * Gets set by ConfigCore#load
 	 */
 	public static boolean GUI = true;
-	/**
-	 * enforce thread safety with per thread local variables
-	 */
-	public static final ThreadLocal<byte[]> bufferes = new ThreadLocal<byte[]>()
-	{
-        @Override
-        protected byte[] initialValue() 
-        {
-			return new byte[BUFFER_SIZE];
-        }
-	};
 	
-	public static void copy(InputStream in, OutputStream out) throws IOException
-	{
-		byte[] buffer = bufferes.get();
-		int length;
-   	 	while ((length = in.read(buffer)) >= 0)
-		{
-			out.write(buffer, 0, length);
-		}
-	}
-
 	public static void exit(int i) 
 	{
 		FMLCommonHandler fml = FMLCommonHandler.instance();
@@ -217,17 +186,44 @@ public class Crashy {
 		}
 	}
 	
-	public static void closeQuietly(Closeable clos)
+	/**
+	 * get a file from a class Does not support Eclipse's Jar In Jar Loader but does support javaw java and URLClassLoaders
+	 * This assumes the file is contained in an archive file such as a zip or a jar. If it's a folder derp jar then it will return the physical path of the .class file
+	 */
+	public static File getFileFromClass(Class clazz)
+	{
+		URL jarURL = clazz.getProtectionDomain().getCodeSource().getLocation();//get the path of the currently running jar
+		return getFileFromURL(jarURL);
+	}
+	
+	private static File getFileFromURL(URL jarURL) 
+	{
+		String j = jarURL.toExternalForm().replace("jar:/", "").replace("jar:", "");
+		if(j.contains("!"))
+			j = j.substring(0, j.indexOf('!'));
+		return getFileFromURL(j);
+	}
+
+	public static File getFileFromURL(String url)
 	{
 		try 
 		{
-			if(clos != null)
-				clos.close();
+			return new File(new URL(url).toURI()).getAbsoluteFile();
 		}
-		catch (IOException e)
+		catch (Exception e) 
 		{
-			
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	/**
+	 * @return The Root Directory of the Jar when the Jar is a Folder
+	 */
+	public static File getDerpJar(File clazzFile, Class clazz)
+	{
+		String pjar = clazzFile.getPath().replace("\\", "/");
+		return new File(pjar.substring(0, pjar.lastIndexOf(clazz.getName().replace(".", "/") + ".class")));
 	}
 
 }
