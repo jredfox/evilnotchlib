@@ -1,8 +1,6 @@
 package com.evilnotch.lib.asm;
 
-import java.awt.Graphics;
 import java.util.Map;
-import java.util.Properties;
 
 import net.minecraftforge.fml.crashy.Crashy;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -21,7 +19,6 @@ public class FMLCorePlugin implements IFMLLoadingPlugin
 		try
 		{
 			ConfigCore.load();
-//			throw new NullPointerException();
 		}
 		catch(Throwable t)
 		{

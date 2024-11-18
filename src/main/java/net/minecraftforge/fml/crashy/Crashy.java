@@ -1,11 +1,8 @@
 package net.minecraftforge.fml.crashy;
 
 import java.awt.GraphicsEnvironment;
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
