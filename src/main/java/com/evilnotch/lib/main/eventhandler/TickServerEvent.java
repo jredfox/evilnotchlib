@@ -79,7 +79,7 @@ public class TickServerEvent implements ITick {
 		}
 	}
 
-	public static boolean canUnload(WorldServer w) 
+	public static boolean canUnload(WorldServer w)
 	{
 		int dim = w.provider.getDimension();
 		return  w.playerEntities.isEmpty() 

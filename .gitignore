@@ -1,3 +1,4 @@
 src/main/java/net/minecraft/*
 src/main/java/com/jredfox/SkinCaps/*
 src/main/java/purejava/Main.java
+src/main/java/net/minecraftforge/fml/crashy/CrashTest.java

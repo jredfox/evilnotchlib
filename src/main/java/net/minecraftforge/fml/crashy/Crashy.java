@@ -28,6 +28,8 @@ public class Crashy {
 	
     public static void crash(String msg, Throwable t, boolean gui)
     {
+    	if(msg == null)
+    		msg = "";
     	int retVal = -1;
         File crashDir = new File("crash-reports").getAbsoluteFile();
         File toFile = new File(crashDir, "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + ".txt");
@@ -57,7 +59,7 @@ public class Crashy {
         {
         	try
         	{
-        		displayCrash(msg + "\n", t);
+        		displayCrash(msg + nl(msg), t);
         	}
         	catch(Throwable t2)
         	{
@@ -103,6 +105,8 @@ public class Crashy {
     
     public static String getStackTrace(Throwable t)
     {
+    	if(t == null)
+    		return "";
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         t.printStackTrace(pw);
@@ -110,12 +114,14 @@ public class Crashy {
         return stacktrace;
     }
     
-    public static void displayCrash(String msg, Throwable t) throws IOException
+    public static void displayCrash(String msg, Throwable t)
     {
-        displayCrash(msg + (t == null ? "" : ("\n" + getStackTrace(t))), false);
+    	if(msg == null)
+    		msg = "";
+        displayCrash(msg + (t == null ? "" : (nl(msg) + getStackTrace(t)) ), false);
     }
     
-	public static void displayCrash(String msg, boolean exit) throws IOException
+	public static void displayCrash(String msg, boolean exit)
 	{
 		//don't display GUI on web servers
 		if(IS_HEADLESS || !GUI)
@@ -124,6 +130,9 @@ public class Crashy {
 				exit(-1);
 			return;
 		}
+		
+    	if(msg == null)
+    		msg = "";
 		
 		try
 		{
@@ -230,6 +239,14 @@ public class Crashy {
             if (closeable != null)
                 closeable.close();
         } catch (final IOException ioe) {}
+    }
+    
+    /**
+     * @return a new line feed if the msg isn't empty
+     */
+    public static String nl(String msg)
+    {
+		return !msg.isEmpty() ? "\n" : "";
     }
 	
 	/**
