@@ -56,17 +56,7 @@ public class Crashy {
         System.err.print(reportMsg);
         
         if(gui)
-        {
-        	try
-        	{
-        		displayCrash(msg + nl(msg), t);
-        	}
-        	catch(Throwable t2)
-        	{
-        		System.err.println("Unable to Crash Report GUI");
-        		t2.printStackTrace();
-        	}
-        }
+        	displayCrash(msg + nl(msg), t);
         
         exit(retVal);
     }
@@ -173,16 +163,7 @@ public class Crashy {
     		}
     	}
     	if(missing)
-    	{
-        	try 
-        	{
-    			displayCrash(s, true);
-    		} 
-        	catch (Throwable e)
-        	{
-    			e.printStackTrace();
-    		}
-    	}
+    		displayCrash(s, true);
     }
 	
     /**
