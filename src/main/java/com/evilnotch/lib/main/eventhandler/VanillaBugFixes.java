@@ -253,16 +253,6 @@ public class VanillaBugFixes {
   		PlayerUtil.rightClickBlockSucess(e, p);
   	}
 
-    /**
-     * Same as DimensionManager#canUnloadWorld but ignores the provider shouldLoadSpawn as we assume we always want to unload it whenever possible
-     */
-	public static boolean canUnload(WorldServer w, IntSet keepLoaded) 
-	{
-		return w.playerEntities.isEmpty() 
-				&& ForgeChunkManager.getPersistentChunksFor(w).isEmpty()
-				&& (Config.unloadDimOverride || !keepLoaded.contains(w.provider.getDimension()));
-	}
-
 	public static void fixMcProfileProperties() 
 	{
 		MainJava.proxy.fixMcProfileProperties();

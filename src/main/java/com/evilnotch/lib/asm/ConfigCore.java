@@ -38,8 +38,8 @@ public class ConfigCore {
 		asm_entityPatch = config.get("asm","asm_entityPatch", true).getBoolean();
 		asm_enchantmentNameFix = config.get("asm","asm_enchantmentNameFix", true).getBoolean();
 		asm_patchLanSkins = config.get("asm","asm_patchLanSkins", true).getBoolean();
-		Crashy.GUI = config.get("asm","asm_gui_crash", true).getBoolean();
 		asm_FSFix = config.get("asm","asm_FSFix", true).getBoolean();
+		Crashy.GUI = config.get("asm","asm_gui_crash", true).getBoolean();
 		
 		dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
 		dumpASM = config.get("debug","dumpASM", false).getBoolean() || dumpASMJVM;

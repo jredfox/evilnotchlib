@@ -1,6 +1,7 @@
 package com.evilnotch.lib.main.eventhandler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.Map;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.tick.ITick;
-import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.simple.PointId;
 
@@ -17,11 +17,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-public class TickServerEvent implements ITick{
+public class TickServerEvent implements ITick {
 
 	public static int mTick = 0;
 	public static final List<String> msgs = new ArrayList();
@@ -31,13 +32,61 @@ public class TickServerEvent implements ITick{
 	*/
 	public static HashMap<EntityPlayerMP,PointId> kicker = new HashMap();
 	
+	public static Collection keepLoaded;
+	public static Collection unloadQueue;
+	public static Map<Integer, WorldServer> worlds;
+	public static boolean init = false;
+	
+	public static void init()
+	{
+		try
+		{
+			keepLoaded = (Collection) ReflectionHelper.findField(DimensionManager.class, "keepLoaded").get(null);
+			unloadQueue = (Collection) ReflectionHelper.findField(DimensionManager.class, "unloadQueue").get(null);
+			worlds = (Map) ReflectionHelper.findField(DimensionManager.class, "worlds").get(null);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
+		init = true;
+	}
+
+	
 	@Override
 	public void tick() 
 	{
 		sendMsgs();
 		kickPlayers();
+		unloadDims();
 	}
 
+	public void unloadDims()
+	{
+		if(!Config.unloadDimensions)
+			return;
+		
+		if(!init)
+			init();
+		
+		for(WorldServer w : worlds.values())
+		{
+			if(canUnload(w))
+			{
+				System.out.println("Unloading Dim:" + w.provider.getDimension() );
+				unloadQueue.add(w.provider.getDimension());
+			}
+		}
+	}
+
+	public static boolean canUnload(WorldServer w) 
+	{
+		int dim = w.provider.getDimension();
+		return  w.playerEntities.isEmpty() 
+				&& ForgeChunkManager.getPersistentChunksFor(w).isEmpty()
+				&& dim != 0 && !unloadQueue.contains(dim)
+				&& (Config.unloadDimOverride || !keepLoaded.contains(dim));
+	}
 
 	private void kickPlayers() 
 	{
