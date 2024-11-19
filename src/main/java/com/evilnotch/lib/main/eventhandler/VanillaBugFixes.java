@@ -1,7 +1,6 @@
 package com.evilnotch.lib.main.eventhandler;
 
 import java.io.File;
-import java.util.List;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
@@ -16,14 +15,11 @@ import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.PropertyMap;
 
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
@@ -37,17 +33,13 @@ import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.network.play.server.SPacketSpawnPlayer;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
-import net.minecraft.server.management.PlayerChunkMap;
-import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Session;
 import net.minecraft.util.WeightedSpawnerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -57,7 +49,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 public class VanillaBugFixes {
 	

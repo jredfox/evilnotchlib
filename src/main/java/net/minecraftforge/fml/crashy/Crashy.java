@@ -19,7 +19,9 @@ import net.minecraftforge.fml.crashy.Crashy.ModEntry.MODSIDE;
 
 /**
  * Copy this package into your project so you can have a Crash Report with a GUI while not keeping the original Process Alive
- * Doesn't Depend Upon Minecraft Specific Code So it should work for any Java Application. Refactor to your liking if you don't want net.minecraftforge.fml.crashy as the package
+ * Doesn't Depend Upon Much Minecraft Specific Code So it should work for any Java Application.
+ * To Get it to work with any Java Application Change {@link ModEntry#CURRENT_SIDE} Unless you Don't Plan to Use the ModEntry System
+ * Refactor to your liking and also change "net.minecraftforge.fml.crashy.Crash" String to the new Refactored Package
  */
 public class Crashy {
 	
@@ -69,7 +71,7 @@ public class Crashy {
     public static String getCompleteReport(String msg, Throwable t) 
     {
     	StringBuilder sb = new StringBuilder();
-    	sb.append("---- Minecraft Crash Report ----\n");
+    	sb.append("---- Crash Report ----\n");
     	sb.append("// ");
     	sb.append(getWittyComment());
     	sb.append("\n\n");
@@ -173,14 +175,13 @@ public class Crashy {
     	}
     }
 	
+    /**
+     * ModEntry are Minecraft Specific Code Change CURRENT_SIDE boolean based on what your Application Is.
+     * @author jredfox
+     */
 	public static class ModEntry
 	{
-		public static MODSIDE CURRENT_SIDE = MODSIDE.SERVER;
-		static
-		{
-			ClassLoader cl = Crashy.class.getClassLoader();
-			CURRENT_SIDE = (cl.getResource("net/minecraft/client/renderer/RenderGlobal.class") != null || cl.getResource("buy.class") != null) ? MODSIDE.CLIENT : MODSIDE.SERVER;
-		}
+		public static MODSIDE CURRENT_SIDE = Crashy.class.getClassLoader().getSystemClassLoader().getResource("net/minecraft/client/main/Main.class") != null ? MODSIDE.CLIENT : MODSIDE.SERVER;
 		
 		public static enum MODSIDE
 		{
