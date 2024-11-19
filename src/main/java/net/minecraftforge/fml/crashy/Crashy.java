@@ -132,7 +132,7 @@ public class Crashy {
 			//If Deobf or Jar is a Derp Jar get the Jar as a Folder
 			if(jarFile.getPath().endsWith(".class"))
 				jarFile = getDerpJar(jarFile, Crashy.class);
-			ProcessBuilder pb = new ProcessBuilder(new String[]{java, "-cp", jarFile.getPath(), "net.minecraftforge.fml.crashy.Crash", msg});
+			ProcessBuilder pb = new ProcessBuilder(new String[]{java, "-Dcrashy.darkui=" + System.getProperty("crashy.darkui", "false"), "-cp", jarFile.getPath(), "net.minecraftforge.fml.crashy.Crash", msg});
 			pb.start();
 		}
 		catch(Throwable t)

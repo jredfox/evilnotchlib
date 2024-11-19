@@ -27,7 +27,8 @@ public class Crash {
 	
 	public static void main(String[] args)
 	{
-		final JFrame ui = new CrashFrame(args[0].replace("\\n", "\n"));
+		String msg = args[0].replace("\\n", "\n");
+		final JFrame ui = Boolean.parseBoolean(System.getProperty("crashy.darkui", "false")) ? new CrashReportDarkUI(msg) : new CrashFrame(msg);
 		ui.validate();
 		ui.pack();
 		ui.setVisible(true);//Makes it visible
@@ -120,9 +121,71 @@ public class Crash {
         t.printStackTrace(new PrintWriter(stringwriter));
         return stringwriter.toString();
     }
+    
+	/**
+	 * EvilNotchLib's Dark Crash Report UI
+	 */
+	public static class CrashReportDarkUI extends JFrame
+	{
+	    public CrashReportDarkUI(String crashReport) {
+			try 
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (Throwable e) {}
+	        this.setTitle("Crash Report");
+	        this.setSize(950, 550);
+	        this.setPreferredSize(new Dimension(950, 550));
+	        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        this.setLocationRelativeTo(null);
+	        
+	        JTextArea textArea = new JTextArea(crashReport);
+	        textArea.setEditable(false);
+	        textArea.setForeground(Color.WHITE); // Set text color to white
+	        textArea.setBackground(Color.BLACK);
+	        textArea.setFont(new Font("Arial", Font.PLAIN, 18));
+	        
+            JPopupMenu popupMenu = new JPopupMenu();
+            JMenuItem copyMenuItem = new JMenuItem("Copy");
+            JMenuItem copyAllMenuItem = new JMenuItem("Copy All");
+            
+            // Add action listener for "Copy"
+            copyMenuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String selectedText = textArea.getSelectedText();
+                    if (selectedText != null && !selectedText.isEmpty()) {
+                    	textArea.copy();
+                    }
+                }
+            });
+
+            // Add action listener for "Copy All"
+            copyAllMenuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                	textArea.selectAll();
+                	textArea.copy();
+                	textArea.select(0, 0);
+                }
+            });
+            
+            // Add menu items to the popup menu
+            popupMenu.add(copyMenuItem);
+            popupMenu.add(copyAllMenuItem);
+            textArea.setComponentPopupMenu(popupMenu);
+	        
+	        JScrollPane scrollPane = new JScrollPane(textArea);
+	        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+	        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	        
+	        this.getContentPane().setLayout(new BorderLayout());
+	        this.getContentPane().setBackground(Color.BLACK); // Set frame background to black
+	        this.getContentPane().add(scrollPane, BorderLayout.CENTER);
+	    }
+	}
 	
 	/**
-	 * EvilNotchLib's Old Crash Report's UI
+	 * EvilNotchLib's Original Crash Report's UI. Doesn't Have Copy / Copy All and has the Unnecessary Close Button
 	 */
 	public static class CrashReportUI extends JFrame
 	{	
