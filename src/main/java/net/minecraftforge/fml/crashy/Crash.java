@@ -28,7 +28,8 @@ public class Crash {
 	public static void main(String[] args)
 	{
 		String msg = args[0].replace("\\n", "\n");
-		final JFrame ui = Boolean.parseBoolean(System.getProperty("crashy.darkui", "false")) ? new CrashReportDarkUI(msg) : new CrashFrame(msg);
+		boolean dark = Boolean.parseBoolean(System.getProperty("crashy.darkui", "false"));
+		final JFrame ui = dark ? new CrashReportDarkUI(msg) : new CrashFrame(msg);
 		ui.validate();
 		ui.pack();
 		ui.setVisible(true);//Makes it visible
@@ -44,8 +45,10 @@ public class Crash {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} catch (Throwable e) {}
 			this.setTitle("Crash Report");
-	        this.setSize(900, 550);
-	        this.setPreferredSize(new Dimension(950, 550));
+			int width = 950;
+			int height = 550;
+	        this.setSize(width, height);
+	        this.setPreferredSize(new Dimension(width, height));
 	        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        this.setLocationRelativeTo(null);
 	        this.add(new PanelCrashReport(msg));
@@ -133,8 +136,10 @@ public class Crash {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			} catch (Throwable e) {}
 	        this.setTitle("Crash Report");
-	        this.setSize(950, 550);
-	        this.setPreferredSize(new Dimension(950, 550));
+	        int width = 950;
+	        int height = 550;
+	        this.setSize(width, height);
+	        this.setPreferredSize(new Dimension(width, height));
 	        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        this.setLocationRelativeTo(null);
 	        
