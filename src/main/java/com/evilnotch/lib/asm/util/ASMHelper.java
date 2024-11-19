@@ -18,6 +18,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InnerClassNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -784,6 +785,42 @@ public class ASMHelper
 				return (LineNumberNode) n;
 		}
 		return null;
+	}
+	
+	public static void pubMinusFinal(ClassNode classNode, boolean all)
+	{
+		//AT the fields
+		for(FieldNode f : classNode.fields)
+		    f.access = pubMinusFinal(f.access);
+		
+		if(all)
+		{
+			//AT the methods
+			for(MethodNode m : classNode.methods)
+				m.access = pubMinusFinal(m.access);
+			
+			//AT the class
+			classNode.access = pubMinusFinal(classNode.access);
+			
+			//AT the inner classes if non null
+			if(classNode.innerClasses != null)
+				for(InnerClassNode inner : classNode.innerClasses)
+					inner.access = pubMinusFinal(inner.access);
+		}
+	}
+	
+	public static int pubMinusFinal(int access) 
+	{
+	    // Remove conflicting access modifiers
+	    access &= ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED);
+	    
+	    // Remove the final modifier
+	    access &= ~Opcodes.ACC_FINAL;
+	    
+	    // Set the public modifier
+	    access |= Opcodes.ACC_PUBLIC;
+	    
+	    return access;
 	}
 	
 	/**

@@ -528,7 +528,8 @@ public class GeneralTransformer {
 
 	public static void patchUnloadDim(ClassNode classNode)
 	{
-		MethodNode m = ASMHelper.getMethodNode(classNode, "canUnloadWorld", "(Lnet/minecraft/world/WorldServer;)Z");
+		ASMHelper.pubMinusFinal(classNode, true);
+		/*MethodNode m = ASMHelper.getMethodNode(classNode, "canUnloadWorld", "(Lnet/minecraft/world/WorldServer;)Z");
 		
 		//if(Config.unloadDimensions) return VanillaBugFixes.canUnload(world, keepLoaded);
 		InsnList li = new InsnList();
@@ -542,7 +543,7 @@ public class GeneralTransformer {
 		li.add(new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/VanillaBugFixes", "canUnload", "(Lnet/minecraft/world/WorldServer;Lit/unimi/dsi/fastutil/ints/IntSet;)Z", false));
 		li.add(new InsnNode(Opcodes.IRETURN));
 		li.add(l1);
-		m.instructions.insert(ASMHelper.getFirstInstruction(m), li);
+		m.instructions.insert(ASMHelper.getFirstInstruction(m), li);*/
 	}
 
 	/**
