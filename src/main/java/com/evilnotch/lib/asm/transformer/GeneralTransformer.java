@@ -547,42 +547,66 @@ public class GeneralTransformer {
 
 	/**
 	 * patches fullscreen for versions of forge that hasn't patched in in 1.12.2
+	 * Doesn't Fix all FullScreen Issues Use DPI-Fix Mod for this purpose. This only Fixes the Critical Maximize Button After FullScreen
 	 */
 	public static void patchFullScreen(ClassNode classNode) 
 	{
-		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("toggleFullscreen", "func_71352_k").toString(), "()V");
-		InsnList li = new InsnList();
-		if(ASMHelper.getMethodInsnNode(m, INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false) != null)
+		if(!ConfigCore.asm_FSFix)
+			return;
+		else if(GeneralTransformer.class.getClassLoader().getResource("jredfox/DpiFix.class") != null)
 		{
-			System.err.println("Full Screen Already Patched!");
+			System.err.println("FullScreen Already Patched!");
 			return;
 		}
+		
+		/*
+		 * Fixes MC-68754
+		 * if(!this.fullscreen)
+		 * {
+		 * 		if(isWindows)
+		 * 			Display.setResizable(false);
+		 * 		Display.setResizable(true);
+		 * }
+		 */
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("toggleFullscreen", "func_71352_k").toString(), "()V");
+			
+		//Disable all instances of Forge's / Optifine's Fullscreen "Fix"
+		MethodInsnNode startResize = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false);
+		if(startResize != null)
+		{
+			System.err.println("Disabling Forge's \"FIX\" for Fullscreen!");
+			MethodInsnNode resizeInsn = new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false);
+			AbstractInsnNode ab = startResize;
+			while(ab != null)
+			{
+				if(ab instanceof MethodInsnNode && ASMHelper.equals(resizeInsn, (MethodInsnNode) ab))
+				{
+					MethodInsnNode minsn = (MethodInsnNode)ab;
+					minsn.owner = "com/evilnotch/lib/asm/util/ASMHelper";
+				}
+				ab = ab.getNext();
+			}
+		}
+			
+		InsnList li = new InsnList();
 		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", new MCPSidedString("fullscreen", "field_71431_Q").toString(), "Z"));
 		LabelNode l26 = new LabelNode();
 		li.add(new JumpInsnNode(Opcodes.IFNE, l26));
-		LabelNode l27 = new LabelNode();
-		li.add(l27);
-		li.add(new InsnNode(Opcodes.ICONST_0));
-		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
+		if(System.getProperty("os.name").toLowerCase().startsWith("windows"))
+		{
+			LabelNode l27 = new LabelNode();
+			li.add(l27);
+			li.add(new InsnNode(Opcodes.ICONST_0));
+			li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
+		}
 		LabelNode l28 = new LabelNode();
 		li.add(l28);
 		li.add(new InsnNode(Opcodes.ICONST_1));
-		li.add(new MethodInsnNode(INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setResizable", "(Z)V", false));
 		li.add(l26);
 		
-		m.instructions.insert(ASMHelper.getMethodInsnNode(m, INVOKESTATIC, "org/lwjgl/opengl/Display", "setFullscreen", "(Z)V", false), li);
+		m.instructions.insert(ASMHelper.getMethodInsnNode(m, Opcodes.INVOKESTATIC, "org/lwjgl/opengl/Display", "setFullscreen", "(Z)V", false), li);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }

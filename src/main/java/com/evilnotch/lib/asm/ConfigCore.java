@@ -16,8 +16,10 @@ public class ConfigCore {
 	public static boolean asm_entityPatch = true;
 	public static boolean asm_enchantmentNameFix = true;
 	public static boolean asm_patchLanSkins = true;
+	public static boolean asm_FSFix = true;
 	
-	public static boolean dumpASM = false;
+	public static boolean dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
+	public static boolean dumpASM = dumpASMJVM;
 	
 	public static void load()
 	{
@@ -37,8 +39,10 @@ public class ConfigCore {
 		asm_enchantmentNameFix = config.get("asm","asm_enchantmentNameFix", true).getBoolean();
 		asm_patchLanSkins = config.get("asm","asm_patchLanSkins", true).getBoolean();
 		Crashy.GUI = config.get("asm","asm_gui_crash", true).getBoolean();
+		asm_FSFix = config.get("asm","asm_FSFix", true).getBoolean();
 		
-		dumpASM = config.get("debug","dumpASM", false).getBoolean();
+		dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
+		dumpASM = config.get("debug","dumpASM", false).getBoolean() || dumpASMJVM;
 		config.save();
 	}
 

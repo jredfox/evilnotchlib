@@ -786,4 +786,9 @@ public class ASMHelper
 		return null;
 	}
 	
+	/**
+	 * Dummy Method to stop forge from breaking on macOS
+	 */
+	public static void setResizable(boolean resizeable) {}
+	
 }
