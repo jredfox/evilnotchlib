@@ -17,7 +17,6 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LineNumberNode;
-import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -26,14 +25,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
-import com.evilnotch.lib.minecraft.event.client.MessageEvent;
-import com.evilnotch.lib.minecraft.event.client.SkinTransparencyEvent;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
-import com.evilnotch.lib.minecraft.util.UUIDPatcher;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.MinecraftForge;
 
 public class GeneralTransformer {
 	
