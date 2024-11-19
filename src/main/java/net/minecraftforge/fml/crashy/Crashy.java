@@ -22,6 +22,7 @@ import net.minecraftforge.fml.crashy.Crashy.ModEntry.MODSIDE;
  * Doesn't Depend Upon Much Minecraft Specific Code So it should work for any Java Application.
  * To Get it to work with any Java Application Change {@link ModEntry#CURRENT_SIDE} Unless you Don't Plan to Use the ModEntry System
  * Refactor to your liking and also change "net.minecraftforge.fml.crashy.Crash" String to the new Refactored Package
+ * @author jredfox
  */
 public class Crashy {
 	
