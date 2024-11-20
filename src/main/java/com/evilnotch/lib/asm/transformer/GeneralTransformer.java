@@ -548,7 +548,7 @@ public class GeneralTransformer {
 			return;
 		else if(GeneralTransformer.class.getClassLoader().getResource("jredfox/DpiFix.class") != null)
 		{
-			System.err.println("FullScreen Already Patched!");
+			System.out.println("FullScreen Already Patched!");
 			return;
 		}
 		
