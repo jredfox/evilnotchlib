@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.proxy;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -153,7 +154,7 @@ public class ClientProxy extends ServerProxy{
 			if(mc.myNetworkManager != null && mc.myNetworkManager.getNetHandler() instanceof NetHandlerLoginClient)
 			{
 				NetHandlerLoginClient nc = (NetHandlerLoginClient) mc.myNetworkManager.getNetHandler();
-				nc.gameProfile = profile;
+				ReflectionUtil.setFinalObject(nc.gameProfile, uuid, GameProfile.class, "id");
 			}
 			
 			EntityPlayerSP player = mc.player;

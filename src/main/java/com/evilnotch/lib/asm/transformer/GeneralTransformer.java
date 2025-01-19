@@ -113,7 +113,7 @@ public class GeneralTransformer {
 	}
 	
 	/**
-	 * injects line EntityUtil.patchUUID(profile); into the classNode
+	 * injects line UUIDPatcher V2 into the classNode
 	 */
 	public static void injectUUIDPatcher(ClassNode classNode) 
 	{
