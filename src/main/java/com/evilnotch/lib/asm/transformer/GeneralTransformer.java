@@ -472,13 +472,14 @@ public class GeneralTransformer {
 		String loginGameProfile = new MCPSidedString("loginGameProfile", "field_147337_i").toString();
 		
 		InsnList list = new InsnList();
-		//UUIDPatcher.setSkin(this.loginGameProfile.getProperties(), this.skindata);
+		
+		//SkinCache.setSkin(this.loginGameProfile.getProperties(), this.skindata);
 		list.add(new VarInsnNode(ALOAD, 0));
 		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
 		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/GameProfile", "getProperties", "()Lcom/mojang/authlib/properties/PropertyMap;", false));
 		list.add(new VarInsnNode(ALOAD, 0));
 		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", "skindata", "Ljava/lang/String;"));
-		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "setSkin", "(Lcom/mojang/authlib/properties/PropertyMap;Ljava/lang/String;)V", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "setSkin", "(Lcom/mojang/authlib/properties/PropertyMap;Ljava/lang/String;)V", false));
 		
 		//this.loginGameProfile = UUIDPatcher.patch(gameprofile)
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));

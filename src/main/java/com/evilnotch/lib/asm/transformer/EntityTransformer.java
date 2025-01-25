@@ -330,9 +330,9 @@ public class EntityTransformer implements IClassTransformer{
 	 */
 	public void transformSkinManager(ClassNode classNode)
 	{
-		//UUIDPatcher#patchSkinResource
+		//SkinCache#patchSkinResource
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;");
-		m.instructions.insertBefore(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/ResourceLocation;", false));
+		m.instructions.insertBefore(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/ResourceLocation;", false));
 		
 		InsnList li = new InsnList();
 //	  	threaddownloadimagedata.skinCallBack = skinAvailableCallback;

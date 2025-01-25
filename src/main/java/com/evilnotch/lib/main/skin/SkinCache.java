@@ -521,6 +521,15 @@ public class SkinCache {
 		return p == null ? null : p.getValue();
 	}
 	
+	/**
+	 * Safe Method for Setting the SkinData in case the SkinData is null or empty
+	 */
+	public static void setSkin(PropertyMap props, String skindata) 
+	{
+		if(!SkinCache.isSkinEmpty(skindata))
+			setEncode(props, skindata);
+	}
+	
 	public static void setEncode(PropertyMap props, String skindata) 
 	{
 		props.removeAll("textures");
