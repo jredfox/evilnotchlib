@@ -214,7 +214,7 @@ public class SkinCache {
 			this.running = true;
 			this.refreshThread = new Thread(()-> 
 			{
-				while(running)
+				while(running && Minecraft.getMinecraft().running)
 				{
 					//copy the que because downloading while the que is locked will lag the main thread
 					Map<String, PairObj<SkinEntry, Boolean>> que = new HashMap();
@@ -225,11 +225,11 @@ public class SkinCache {
 						que.putAll(this.refreshque);
 					}
 					
-					if(this.isMojangOnline())
+					if(!que.isEmpty() && this.isMojangOnline())
 					{
 						for(Map.Entry<String, PairObj<SkinEntry, Boolean>> m : que.entrySet())
 						{
-							if(!this.running)
+							if(!this.running || !Minecraft.getMinecraft().running)
 								break;
 							String user = m.getKey();
 							PairObj<SkinEntry, Boolean> pair = m.getValue();
