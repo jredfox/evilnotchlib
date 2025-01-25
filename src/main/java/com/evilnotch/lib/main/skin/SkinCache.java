@@ -9,32 +9,35 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.net.UnknownServiceException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.ralleytn.simple.json.JSONArray;
 import org.ralleytn.simple.json.JSONObject;
 import org.ralleytn.simple.json.JSONParser;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
 import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkinChange;
-import com.evilnotch.lib.minecraft.util.UUIDPatcher;
+import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.evilnotch.lib.util.simple.PairObj;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 
 public class SkinCache {
@@ -508,6 +511,48 @@ public class SkinCache {
 		
 		//encode the skin into a usable payload
 		return s.encode();
+	}
+
+	public static String getEncode(PropertyMap map) 
+	{
+		if(map.isEmpty())
+			return null;
+		Property p = ((Property)JavaUtil.getFirst(map.get("textures")));
+		return p == null ? null : p.getValue();
+	}
+	
+	public static void setEncode(PropertyMap props, String skindata) 
+	{
+		props.removeAll("textures");
+		props.put("textures", new EvilProperty("textures", skindata));
+	}
+	
+	public static JSONObject decode(String encode)
+	{
+		return JavaUtil.toJsonFrom64(encode);
+	}
+	
+	public static boolean isSkinEmpty(String payload) 
+	{
+		return payload == null || payload.isEmpty();
+	}
+
+	private static final Logger LOGGER = LogManager.getLogger();
+	private static final ResourceLocation fileSteve = new ResourceLocation("minecraft:skins/$steve");
+	private static final ResourceLocation fileAlex = new ResourceLocation("minecraft:skins/$alex");
+	public static ResourceLocation patchSkinResource(ResourceLocation resource) 
+	{
+		if(resource.equals(fileSteve))
+		{
+			MainJava.proxy.bindTexture(PlayerUtil.STEVE);//enforce steve is loaded so SkinManager doesn't try and download the skin
+			return PlayerUtil.STEVE;
+		}
+		else if(resource.equals(fileAlex))
+		{
+			MainJava.proxy.bindTexture(PlayerUtil.ALEX);//enforce alex is loaded so SkinManager doesn't try and download the skin
+			return PlayerUtil.ALEX;
+		}
+		return resource;
 	}
 
 }

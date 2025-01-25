@@ -27,11 +27,11 @@ public class StopSteve {
 			event.setCanceled(true);
 			return;
 		}
-		else if(info.stopedSteve)//if we already stopped steve return
-		{
-			msJoined2 = 0;
-			return;
-		}
+//		else if(info.stopedSteve)//if we already stopped steve return
+//		{
+//			msJoined2 = 0;
+//			return;
+//		}
 		
 		if(msJoined2 == 0)
 			msJoined2 = System.currentTimeMillis();
@@ -43,7 +43,7 @@ public class StopSteve {
 		}
 		else
 		{
-			info.stopedSteve = true;
+//			info.stopedSteve = true;
 			msJoined2 = 0;
 		}
 	}
@@ -65,11 +65,11 @@ public class StopSteve {
 			event.setCanceled(true);
 			return;
 		}
-		else if(info.stopedSteve)//if we already stopped steve return
-		{
-			msJoined = 0;
-			return;
-		}
+//		else if(info.stopedSteve)//if we already stopped steve return
+//		{
+//			msJoined = 0;
+//			return;
+//		}
 		
 		if(msJoined == 0)
 			msJoined = System.currentTimeMillis();
@@ -81,7 +81,7 @@ public class StopSteve {
 		}
 		else
 		{
-			info.stopedSteve = true;
+//			info.stopedSteve = true;
 			msJoined = 0;
 		}
 	}

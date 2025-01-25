@@ -45,6 +45,9 @@ public class SkinEntry implements ICopy {
 	
 	public static SkinEntry fromPayload(String uuid, String user, String base64payload)
 	{
+		if(SkinCache.isSkinEmpty(base64payload))
+			return SkinEntry.emptySkin(uuid, user);
+		
 		try
 		{
 			JSONObject decoded = JavaUtil.toJsonFrom64(base64payload);
@@ -60,7 +63,12 @@ public class SkinEntry implements ICopy {
 		{
 			e.printStackTrace();
 		}
-		return SkinCache.EMPTY;
+		return SkinEntry.emptySkin(uuid, user);
+	}
+	
+	public static SkinEntry emptySkin(String uuid, String user)
+	{
+		return new SkinEntry(uuid, user, System.currentTimeMillis(), "", "", "");
 	}
 	
 	/**

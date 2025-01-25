@@ -2,33 +2,22 @@ package com.evilnotch.lib.minecraft.util;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.ralleytn.simple.json.JSONObject;
-
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
-import com.evilnotch.lib.main.skin.IStopSteve;
-import com.evilnotch.lib.main.skin.SkinCache.EvilProperty;
+import com.evilnotch.lib.main.skin.SkinEvent;
+import com.evilnotch.lib.main.skin.SkinEvent.GameProfileEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
-import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.util.UUIDTypeAdapter;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.SaveHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class UUIDPatcher {
@@ -159,90 +148,26 @@ public class UUIDPatcher {
 		return nbt;
 	}
 	
-	public static void patchSkin(GameProfile profile)
+	/**
+	 * Updates a Skin BaseCode64 Texture Payload into the GameProfile
+	 */
+	public static void patchSkin(GameProfile profile, String payload)
 	{
-		PropertyMap props = profile.getProperties();
-		String payload = getEncode(props);
-		if(isSkinEmpty(payload))
-			return;
-		setSkin(props, patchSkin(profile, payload));
-	}
-
-	public static String patchSkin(GameProfile profile, String payload) 
-	{
-		//do not modify empty skins encoding
-		if(isSkinEmpty(payload))
-			return "";
-		
-		try
-		{
-			System.out.println("payload:" + payload);
-			JSONObject json = JavaUtil.toJsonFrom64(payload);
-			json.put("profileId", profile.getId().toString().replace("-", ""));
-			json.put("profileName", profile.getName());
-			//internal SKIN caps redirect URL meaning
-			if(json.containsKey("textures"))
-			{
-				try
-				{
-					JSONObject skin = json.getJSONObject("textures").getJSONObject("SKIN");
-					if(skin.getString("url").equals("http://textures.minecraft.net/texture/$null"))
-					{
-						skin.put("url", "http://textures.minecraft.net/texture/" + (PlayerUtil.isAlex(profile.getId()) ? "$alex" : "$steve"));
-					}
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-					System.err.println("Invalid Textures Payload! Missing SKIN URL:" + payload);
-				}
-			}
-			return JavaUtil.toBase64(json.toString());
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static void setSkin(PropertyMap props, String skindata) 
-	{
-		if(skindata == null || skindata.trim().isEmpty())
-			return;
-		props.removeAll("textures");
-		props.put("textures", new EvilProperty("textures", skindata));
+		SkinEvent.GameProfileEvent e = new GameProfileEvent(profile, payload);
+		MinecraftForge.EVENT_BUS.post(e);
+		e.update();
 	}
 	
-	private static boolean isSkinEmpty(String payload) 
+	/**
+	 * Simply Posting the Event Patches the UUID and Username for the GameProfile's Properties in Textures
+	 * Then it Calls {@link GameProfileEvent#update()} to Sync any Texture Changes
+	 * Empty, Null Skins or http://textures.minecraft.net/texture/$null will result in the default skin based on your UUID
+	 */
+	public static void patchSkin(GameProfile profile)
 	{
-		return payload == null || payload.isEmpty();
-	}
-
-	public static String getEncode(PropertyMap map) 
-	{
-		if(map.isEmpty())
-			return null;
-		Property p = ((Property)JavaUtil.getFirst(map.get("textures")));
-		return p == null ? null : p.getValue();
-	}
-
-	private static final Logger LOGGER = LogManager.getLogger();
-	private static final ResourceLocation fileSteve = new ResourceLocation("minecraft:skins/$steve");
-	private static final ResourceLocation fileAlex = new ResourceLocation("minecraft:skins/$alex");
-	public static ResourceLocation patchSkinResource(ResourceLocation resource) 
-	{
-		if(resource.equals(fileSteve))
-		{
-			MainJava.proxy.bindTexture(PlayerUtil.STEVE);//enforce steve is loaded so SkinManager doesn't try and download the skin
-			return PlayerUtil.STEVE;
-		}
-		else if(resource.equals(fileAlex))
-		{
-			MainJava.proxy.bindTexture(PlayerUtil.ALEX);//enforce alex is loaded so SkinManager doesn't try and download the skin
-			return PlayerUtil.ALEX;
-		}
-		return resource;
+		SkinEvent.GameProfileEvent e = new GameProfileEvent(profile);
+		MinecraftForge.EVENT_BUS.post(e);
+		e.update();
 	}
 	
 }

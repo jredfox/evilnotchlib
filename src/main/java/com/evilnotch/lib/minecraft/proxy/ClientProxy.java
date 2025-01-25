@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.proxy;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 

@@ -1,13 +1,53 @@
 package com.evilnotch.lib.main.skin;
 
-import net.minecraft.client.entity.AbstractClientPlayer;
+import com.evilnotch.lib.minecraft.util.PlayerUtil;
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class SkinEvent extends Event {
+	
+	/**
+	 * Fires When a GameProfile Get's Patched from the UUIDPatcher V2 at login or when PacketSkinChange Fires
+	 * @author jredfox
+	 */
+	public static class GameProfileEvent extends Event
+	{
+		/**
+		 * Contains the UUID, Username and Textures. The {@link #profile} 's Properties will be out of sync with this SkinEntry
+		 */
+		public SkinEntry skin;
+		/**
+		 * The GameProfile's Properties may not even be the same payload as the SkinEntry has depending upon if the Skin Was Changed or if it's a login
+		 */
+		public GameProfile profile;
+		
+		public GameProfileEvent(GameProfile profile)
+		{
+			this(profile, SkinCache.getEncode(profile.getProperties()) );
+		}
+		
+		public GameProfileEvent(GameProfile profile, String payload)
+		{
+			this.profile = profile;
+			this.skin = SkinEntry.fromPayload(profile.getId().toString(), profile.getName(), payload);
+		}
+
+		/**
+		 * Syncs the SkinEntry with the actual GameProfile's base64 payload in the properties
+		 */
+		public void update()
+		{
+			//if skin is default or empty assign it
+			if(SkinCache.isSkinEmpty(this.skin.skin) || this.skin.skin.equals("http://textures.minecraft.net/texture/$null"))
+				skin.skin = "http://textures.minecraft.net/texture/" + (PlayerUtil.isAlex(profile.getId()) ? "$alex" : "$steve");
+			
+			SkinCache.setEncode(this.profile.getProperties(), this.skin.encode());
+		}
+	}
 	
 	/**
 	 * Fires on the Main thread before the selected skin is about to be refreshed
