@@ -507,16 +507,7 @@ public class SkinCache {
 
 	public static String getEncode(SkinEntry s)
 	{
-		if(s.isEmpty)
-			return s.encode();
-		
-		//sync skins with client
-		s = s.copy();
-		Session session = Minecraft.getMinecraft().getSession();
-		s.user = session.getUsername();
-		
-		//encode the skin into a usable payload
-		return s.encode();
+		return s.isEmpty ? "" : s.copy().encode();
 	}
 
 	public static String getEncode(PropertyMap map) 
