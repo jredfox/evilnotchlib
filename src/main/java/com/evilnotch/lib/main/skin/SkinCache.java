@@ -135,7 +135,21 @@ public class SkinCache {
 	 */
 	public SkinEntry refresh(String user, boolean select)
 	{
-		SkinEntry current = getSkinEntry(user);
+		SkinEntry current = this.getSkinEntry(user);
+		//Download the offline SkinEntry from the cache if applicable
+		if(select && !this.isMojangOnline())
+		{
+			String u = SkinEvent.User.fire(user);
+			SkinEntry dl = this.getSkinEntry(u);
+			SkinEntry dl2 = SkinEvent.Capability.fire(dl);
+			this.selected = dl2;
+			
+			Minecraft.getMinecraft().addScheduledTask(()->
+			{
+				this.refreshSelected(dl2);
+				this.save();
+			});
+		}
 		this.addQue(user, select);
 		return current;
 	}
@@ -272,11 +286,12 @@ public class SkinCache {
 			return skin;
 		
 		SkinEntry cached = this.getSkinEntry(user);
-		boolean shouldDL = cached.isEmpty || this.hasExpiredFast(cached);
+		boolean shouldDL = cached.isEmpty || this.isOnline && this.hasExpiredFast(cached);
 		if(shouldDL)
 		{
 			SkinEntry dl = this.downloadSkin(user, EMPTY);
-			this.skins.put(user, dl);
+			if(!dl.isEmpty)
+				this.skins.put(user, dl);
 			return dl;
 		}
 		return cached;
@@ -339,7 +354,7 @@ public class SkinCache {
 			JSONObject player = data.getJSONObject("player");
 			return player;
 		} 
-		catch (UnknownHostException e)
+		catch (UnknownHostException | java.net.NoRouteToHostException e)
 		{
 			playerdb = false;
 			System.err.println("playerdb is offline!");
@@ -366,7 +381,7 @@ public class SkinCache {
 			JSONObject json = (JSONObject) parser.parse(stream);
 			return json;
 		} 
-		catch (UnknownHostException e) {
+		catch (UnknownHostException | java.net.NoRouteToHostException e) {
 			this.isOnline = false;
 		}
 		catch (Exception e) {
@@ -399,7 +414,7 @@ public class SkinCache {
 			String id = json.getString("id").replace("-", "");
 			return id;
 		}
-		catch (UnknownHostException e) {
+		catch (UnknownHostException | java.net.NoRouteToHostException e) {
 			this.isOnline = false;
 		}
 		catch (IOException e)
