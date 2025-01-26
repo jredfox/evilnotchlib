@@ -536,11 +536,6 @@ public class SkinCache {
 		props.put("textures", new EvilProperty("textures", skindata));
 	}
 	
-	public static JSONObject decode(String encode)
-	{
-		return JavaUtil.toJsonFrom64(encode);
-	}
-	
 	public static boolean isSkinEmpty(String payload) 
 	{
 		return payload == null || payload.isEmpty();
