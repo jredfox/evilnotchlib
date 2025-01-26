@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.net.UnknownServiceException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,7 +37,6 @@ import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Session;
 
 public class SkinCache {
 	
@@ -44,6 +44,7 @@ public class SkinCache {
 	
 	public Map<String, SkinEntry> skins = new ConcurrentHashMap(25);
 	public Map<String, Boolean> refreshque = new HashMap<>();
+	public Map<String, Boolean> offlineRefreshQue = new ConcurrentHashMap(5);
 	public File skinCacheLoc = new File(System.getProperty("user.dir"), "skinCacher.json");
 	/**
 	 * The Currently Selected SkinEntry. This isn't thread safe and should be accessed only on SkinEvent.User or SkinEvent.Capability
@@ -138,18 +139,7 @@ public class SkinCache {
 		SkinEntry current = this.getSkinEntry(user);
 		//Download the offline SkinEntry from the cache if applicable
 		if(select && !this.isMojangOnline())
-		{
-			String u = SkinEvent.User.fire(user);
-			SkinEntry dl = this.getSkinEntry(u);
-			SkinEntry dl2 = SkinEvent.Capability.fire(dl);
-			this.selected = dl2;
-			
-			Minecraft.getMinecraft().addScheduledTask(()->
-			{
-				this.refreshSelected(dl2);
-				this.save();
-			});
-		}
+			this.offlineRefreshQue.put(user, false);
 		this.addQue(user, select);
 		return current;
 	}
@@ -234,34 +224,61 @@ public class SkinCache {
 						que.putAll(this.refreshque);
 					}
 					
-					if(!que.isEmpty() && this.isMojangOnline())
+					if(this.isMojangOnline())
 					{
-						for(Map.Entry<String, Boolean> m : que.entrySet())
+						if(!this.offlineRefreshQue.isEmpty())
+							this.offlineRefreshQue.clear();
+						
+						if(!que.isEmpty())
 						{
-							if(!this.running || !Minecraft.getMinecraft().running)
-								break;
-							
-							boolean selected = m.getValue();
-							String user_org = m.getKey();
-							this.lu = user_org;
-							String user = selected ? SkinEvent.User.fire(user_org) : user_org;
-							SkinEntry cached = this.getSkinEntry(user);
-
-							SkinEntry dl = this.downloadSkin(user, cached);
-							SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl.isEmpty ? cached : dl) : dl;
-							
-							if(!dl.isEmpty)
+							for(Map.Entry<String, Boolean> m : que.entrySet())
 							{
-								this.skins.put(user, dl);
-								this.removeQue(user_org);
+								if(!this.running || !Minecraft.getMinecraft().running)
+									break;
+								
+								boolean selected = m.getValue();
+								String user_org = m.getKey();
+								this.lu = user_org;
+								String user = selected ? SkinEvent.User.fire(user_org) : user_org;
+								SkinEntry cached = this.getSkinEntry(user);
+	
+								SkinEntry dl = this.downloadSkin(user, cached);
+								SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl.isEmpty ? cached : dl) : dl;
+								
+								if(!dl.isEmpty)
+								{
+									this.skins.put(user, dl);
+									this.removeQue(user_org);
+								}
+								
+								Minecraft.getMinecraft().addScheduledTask(()->
+								{
+									if(selected)
+										this.refreshSelected(dl2);
+									this.save();
+								});
 							}
+						}
+					}
+					//Since the offline cache will take a few MS compared to online it's safe to fully lock the offlineRefreshQue map till it completes it's cycle
+					else if(!this.offlineRefreshQue.isEmpty())
+					{
+						Iterator<String> i = this.offlineRefreshQue.keySet().iterator();
+						while(i.hasNext())
+						{
+							String user = i.next();
+							String u = SkinEvent.User.fire(user);
+							SkinEntry dl = this.getSkinEntry(u);
+							SkinEntry dl2 = SkinEvent.Capability.fire(dl);
+							this.selected = dl2;
 							
 							Minecraft.getMinecraft().addScheduledTask(()->
 							{
-								if(selected)
-									this.refreshSelected(dl2);
+								this.refreshSelected(dl2);
 								this.save();
 							});
+							
+							i.remove();
 						}
 					}
 					if(this.running)
