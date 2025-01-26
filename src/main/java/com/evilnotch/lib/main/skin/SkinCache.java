@@ -125,14 +125,6 @@ public class SkinCache {
 		user = user.toLowerCase();
 		return skins.containsKey(user) ? skins.get(user) : EMPTY;
 	}
-	
-	public void select(SkinEntry s)
-	{
-		synchronized (this.selected)
-		{
-			this.selected = s;
-		}
-	}
 
 	/**
 	 * returns cached skin if it exists and adds the skin to the refresh cache
@@ -245,14 +237,12 @@ public class SkinCache {
 								this.removeQue(user_org);
 							}
 							
-							if(selected)
+							Minecraft.getMinecraft().addScheduledTask(()->
 							{
-								Minecraft.getMinecraft().addScheduledTask(()->
-								{
+								if(selected)
 									this.refreshSelected(dl2);
-									this.save();
-								});
-							}
+								this.save();
+							});
 						}
 					}
 					if(this.running)
