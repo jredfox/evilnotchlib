@@ -59,6 +59,7 @@ public class SkinEvent extends Event {
 		
 		public User(String username)
 		{
+			username = username.toLowerCase();
 			this.org_username = username;
 			this.username = username;
 		}
@@ -67,7 +68,7 @@ public class SkinEvent extends Event {
 		{
 			User cap = new User(s);
 			MinecraftForge.EVENT_BUS.post(cap);
-			return cap.username;
+			return cap.username.toLowerCase();
 		}
 	}
 	
