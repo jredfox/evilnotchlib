@@ -30,8 +30,6 @@ import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkinChange;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.simple.PairObj;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
@@ -45,8 +43,11 @@ public class SkinCache {
 	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "", "");
 	
 	public Map<String, SkinEntry> skins = new ConcurrentHashMap(25);
-	public Map<String, PairObj<SkinEntry, Boolean>> refreshque = new HashMap<>();
+	public Map<String, Boolean> refreshque = new HashMap<>();
 	public File skinCacheLoc = new File(System.getProperty("user.dir"), "skinCacher.json");
+	/**
+	 * The Currently Selected SkinEntry. This isn't thread safe and should be accessed only on SkinEvent.User or SkinEvent.Capability
+	 */
 	public SkinEntry selected = EMPTY;
 	public volatile boolean isOnline = false;
 	
@@ -127,7 +128,10 @@ public class SkinCache {
 	
 	public void select(SkinEntry s)
 	{
-		this.selected = s;
+		synchronized (this.selected)
+		{
+			this.selected = s;
+		}
 	}
 
 	/**
@@ -135,20 +139,17 @@ public class SkinCache {
 	 */
 	public SkinEntry refresh(String user, boolean select)
 	{
-		user = select ? SkinEvent.User.fire(user.toLowerCase()) : user;
 		SkinEntry current = getSkinEntry(user);
-		if(select)
-			this.select(current);
-		this.addQue(user, new PairObj<SkinEntry, Boolean>(current, select));
+		this.addQue(user, select);
 		return current;
 	}
 	
-	public void refreshClientSkin() 
+	/**
+	 * returns cached skin if it exists and adds the skin to the refresh cache
+	 */
+	public SkinEntry refreshClientSkin() 
 	{
-		Minecraft mc = Minecraft.getMinecraft();
-		GameProfile profile = mc.getSession().getProfile();
-		String username = profile.getName();
-		SkinEntry skin = this.refresh(username, true);
+		return this.refresh(Minecraft.getMinecraft().getSession().getProfile().getName(), true);
 	}
 
 	/**
@@ -168,11 +169,11 @@ public class SkinCache {
 		}
 	}
 	
-	public void addQue(String user, PairObj<SkinEntry, Boolean> skin)
+	public void addQue(String user, boolean select)
 	{
 		synchronized (this.refreshque)
 		{
-			this.refreshque.put(user.toLowerCase(), skin);
+			this.refreshque.put(user.toLowerCase(), select);
 		}
 	}
 	
@@ -217,39 +218,34 @@ public class SkinCache {
 				while(running && Minecraft.getMinecraft().running)
 				{
 					//copy the que because downloading while the que is locked will lag the main thread
-					Map<String, PairObj<SkinEntry, Boolean>> que = new HashMap();
-					boolean flag = false;
+					Map<String, Boolean> que = new HashMap();
 					synchronized (this.refreshque)
 					{
-						flag = this.refreshque.isEmpty();
 						que.putAll(this.refreshque);
 					}
 					
 					if(!que.isEmpty() && this.isMojangOnline())
 					{
-						for(Map.Entry<String, PairObj<SkinEntry, Boolean>> m : que.entrySet())
+						for(Map.Entry<String, Boolean> m : que.entrySet())
 						{
 							if(!this.running || !Minecraft.getMinecraft().running)
 								break;
-							String user = m.getKey();
-							PairObj<SkinEntry, Boolean> pair = m.getValue();
-							SkinEntry current = pair.obj1;
-							boolean selected = pair.obj2;
 							
-							SkinEntry dl = this.downloadSkin(user, current);
-							SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl.isEmpty ? current : dl, user) : dl;
+							boolean selected = m.getValue();
+							String user_org = m.getKey();
+							String user = selected ? SkinEvent.User.fire(user_org) : user_org;
+							SkinEntry cached = this.getSkinEntry(user);
+
+							SkinEntry dl = this.downloadSkin(user, cached);
+							SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl.isEmpty ? cached : dl) : dl;
+							
 							if(!dl.isEmpty)
 							{
-								this.removeQue(user);
-								Minecraft.getMinecraft().addScheduledTask(()->
-								{
-									this.skins.put(user, dl);
-									if(selected)
-										this.refreshSelected(dl2);
-									this.save();
-								});
+								this.skins.put(user, dl);
+								this.removeQue(user_org);
 							}
-							else if(selected)
+							
+							if(selected)
 							{
 								Minecraft.getMinecraft().addScheduledTask(()->
 								{
@@ -295,7 +291,7 @@ public class SkinCache {
 	public SkinEntry downloadSkin(String user, SkinEntry current)
 	{
 		//is player db online
-		if(playerdb || JavaUtil.isOnline("playerdb.co"))
+		if(!playerdb && JavaUtil.isOnline("playerdb.co"))
 			playerdb = true;
 		
 		String uuid = current.isEmpty || this.hasExpired(current) ? getUUID(user) : current.uuid;//grab the cached uuid when possible

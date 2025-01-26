@@ -50,7 +50,7 @@ public class SkinEvent extends Event {
 	}
 	
 	/**
-	 * Fires on the Main thread before the selected skin is about to be refreshed
+	 * Fires on the SkinCache Downloading Thread right before the SkinCache Downloads a Skin That Gets Selected
 	 */
 	public static class User extends SkinEvent
 	{
@@ -72,7 +72,7 @@ public class SkinEvent extends Event {
 	}
 	
 	/**
-	 * Fires on the SkinCache Downloading thread and the Skin is the selected skin
+	 * Fires on the SkinCache Downloading Thread Right before the Skin Is Selected
 	 * Use this to update capes and skin urls and override the player model (slim or default). 
 	 * Call {@link SkinCache#INSTANCE#getOrDownload(String, boolean)} to get a SkinEntry during this event
 	 */
@@ -88,13 +88,9 @@ public class SkinEvent extends Event {
 			this.skin = s;
 		}
 
-		public static SkinEntry fire(SkinEntry s, String user) 
+		public static SkinEntry fire(SkinEntry s) 
 		{
-			//sync skin with username
-			s = s.copy();
-			s.user = user;
-			
-			Capability cap = new Capability(s);
+			Capability cap = new Capability(s.copy());
 			MinecraftForge.EVENT_BUS.post(cap);
 			return cap.skin;
 		}

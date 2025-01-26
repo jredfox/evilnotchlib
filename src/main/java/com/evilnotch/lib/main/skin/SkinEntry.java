@@ -121,7 +121,7 @@ public class SkinEntry implements ICopy {
 
 	public String encode()
 	{
-		return !this.isEmpty ? JavaUtil.toBase64(encodeJSON().toString()) : "";
+		return !this.isEmpty ? JavaUtil.toBase64(this.encodeJSON().toString()) : "";
 	}
 	
 }
