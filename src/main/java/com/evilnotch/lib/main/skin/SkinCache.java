@@ -49,6 +49,10 @@ public class SkinCache {
 	 * The Currently Selected SkinEntry. This isn't thread safe and should be accessed only on SkinEvent.User or SkinEvent.Capability
 	 */
 	public SkinEntry selected = EMPTY;
+	/**
+	 * Keep Track of the last original user's name to unque
+	 */
+	private String lu;
 	public volatile boolean isOnline = false;
 	
 	public boolean isMojangOnline()
@@ -225,6 +229,7 @@ public class SkinCache {
 							
 							boolean selected = m.getValue();
 							String user_org = m.getKey();
+							this.lu = user_org;
 							String user = selected ? SkinEvent.User.fire(user_org) : user_org;
 							SkinEntry cached = this.getSkinEntry(user);
 
@@ -411,7 +416,7 @@ public class SkinCache {
 				//           Not Found      Bad Request       Forbidden
 				else if(response == 404 || response == 400 || response == 403)
 				{
-					this.removeQue(username);
+					this.removeQue(this.lu);
 				}
 				else
 					System.err.println("Unexpected HTTPS Error Code:" + response);
