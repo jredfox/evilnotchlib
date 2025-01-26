@@ -44,14 +44,14 @@ public class SkinCache {
 	
 	public Map<String, SkinEntry> skins = new ConcurrentHashMap(25);
 	public Map<String, Boolean> refreshque = new HashMap<>();
-	public Map<String, Boolean> offlineRefreshQue = new ConcurrentHashMap(5);
+	public Map<String, Boolean> offlineRefreshQue = new ConcurrentHashMap(5);//Boolean is Unused
 	public File skinCacheLoc = new File(System.getProperty("user.dir"), "skinCacher.json");
 	/**
 	 * The Currently Selected SkinEntry. This isn't thread safe and should be accessed only on SkinEvent.User or SkinEvent.Capability
 	 */
 	public SkinEntry selected = EMPTY;
 	/**
-	 * Keep Track of the last original user's name to unque
+	 * Keep Track of the last original user's name
 	 */
 	private String lu;
 	public volatile boolean isOnline = false;
