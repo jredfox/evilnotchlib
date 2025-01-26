@@ -281,8 +281,8 @@ public class SkinCache {
 	public SkinEntry downloadSkin(String user, SkinEntry current)
 	{
 		//is player db online
-		if(!playerdb && JavaUtil.isOnline("playerdb.co"))
-			playerdb = true;
+		if(!playerdb)
+			playerdb = JavaUtil.isOnline("playerdb.co");
 		
 		String uuid = current.isEmpty || this.hasExpired(current) ? getUUID(user) : current.uuid;//grab the cached uuid when possible
 		
