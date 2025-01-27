@@ -9,7 +9,7 @@ import net.minecraft.util.Session;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-public class PacketSkinChange implements IMessage{
+public class PacketSkinChange implements IMessage {
 	
 	public PacketSkinChange() {}
 	

@@ -1002,9 +1002,17 @@ public class JavaUtil {
 	}
 	
 	/**
+	 * Legacy Support
+	 */
+	public static void saveFileLines(List<String> list, File f, boolean utf8)
+	{
+		saveFileLines( (Collection) list, f, utf8);
+	}
+	
+	/**
 	 * Overwrites entire file default behavior no per line modification removal/addition
 	 */
-	public static void saveFileLines(List<String> list,File f,boolean utf8)
+	public static void saveFileLines(Collection<String> list, File f, boolean utf8)
 	{
 		BufferedWriter writer = null;
 		try
