@@ -12,6 +12,7 @@ public class SkinEvent extends Event {
 	
 	/**
 	 * Fires When a GameProfile Get's Patched from the UUIDPatcher V2 at login or when PacketSkinChange Fires
+	 * Please Don't Download Any Skins Directly as it's on the Main Server Thread
 	 * @author jredfox
 	 */
 	public static class GameProfileEvent extends Event
@@ -44,7 +45,7 @@ public class SkinEvent extends Event {
 			//if skin is default or empty assign it to a default skin
 			if(SkinCache.isSkinEmpty(this.skin.skin) || this.skin.skin.equals("http://textures.minecraft.net/texture/$null"))
 			{
-				boolean isAlex = PlayerUtil.isAlex(profile.getId()) && (this.skin.model.isEmpty() || this.skin.model.equals("slim") );
+				boolean isAlex = this.skin.model.equals("slim") || this.skin.model.isEmpty() && PlayerUtil.isAlex(profile.getId());
 				this.skin.skin = "http://textures.minecraft.net/texture/" + (isAlex ? "$alex" : "$steve");
 				this.skin.model = isAlex ? "slim" : "";
 			}
