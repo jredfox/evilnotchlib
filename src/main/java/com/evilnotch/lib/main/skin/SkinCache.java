@@ -479,7 +479,7 @@ public class SkinCache {
 			{
 				return 415;//unsupported media
 			}
-			catch(UnknownHostException uh)
+			catch(UnknownHostException | java.net.NoRouteToHostException uh)
 			{
 				return 10001;//Custom Defined error code to specify unkown host exception
 			}
