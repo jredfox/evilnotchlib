@@ -97,7 +97,7 @@ public class SkinEvent extends Event {
 		{
 			Capability cap = new Capability(s.copy());
 			MinecraftForge.EVENT_BUS.post(cap);
-			return cap.skin.isEmpty ? cap.org_skin : cap.skin;
+			return cap.skin;
 		}
 	}
 	
