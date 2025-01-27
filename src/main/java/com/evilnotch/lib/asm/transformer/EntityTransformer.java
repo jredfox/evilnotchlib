@@ -148,7 +148,7 @@ public class EntityTransformer implements IClassTransformer{
                 break;
                 
                 case 16:
-                	pubMinusFinal(classNode);
+                	ASMHelper.pubMinusFinal(classNode, true);
                 break;
             }
             
@@ -176,28 +176,6 @@ public class EntityTransformer implements IClassTransformer{
             }
         }
 		return classToTransform;
-	}
-
-	
-	public void pubMinusFinal(ClassNode classNode)
-	{
-		for(FieldNode f : classNode.fields)
-		{
-		    // Get the current access flags
-		    int access = f.access;
-		    
-		    // Remove conflicting access modifiers
-		    access &= ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED);
-		    
-		    // Remove the final modifier
-		    access &= ~Opcodes.ACC_FINAL;
-		    
-		    // Set the public modifier
-		    access |= Opcodes.ACC_PUBLIC;
-		    
-		    // Update the field's access flags
-		    f.access = access;
-		}
 	}
 
 	public void transformSkinDL(ClassNode classNode) 
