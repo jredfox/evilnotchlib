@@ -243,7 +243,8 @@ public class SkinCache {
 								SkinEntry cached = this.getSkinEntry(user);
 	
 								SkinEntry dl = this.downloadSkin(user, cached);
-								SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl.isEmpty ? cached : dl) : dl;
+								dl = dl.isEmpty ? cached : dl;//if dl fails rely on the cache
+								SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl) : dl;
 								
 								if(!dl.isEmpty)
 								{
@@ -270,7 +271,6 @@ public class SkinCache {
 							String u = SkinEvent.User.fire(user);
 							SkinEntry dl = this.getSkinEntry(u);
 							SkinEntry dl2 = SkinEvent.Capability.fire(dl);
-							this.selected = dl2;
 							
 							Minecraft.getMinecraft().addScheduledTask(()->
 							{
@@ -308,8 +308,10 @@ public class SkinCache {
 		{
 			SkinEntry dl = this.downloadSkin(user, EMPTY);
 			if(!dl.isEmpty)
+			{
 				this.skins.put(user, dl);
-			return dl;
+				return dl;
+			}
 		}
 		return cached;
 	}
