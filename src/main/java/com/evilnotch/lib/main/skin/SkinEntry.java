@@ -12,7 +12,7 @@ public class SkinEntry implements ICopy {
 	public long cacheTime;
 	public String skin;
 	public String cape;
-	public String model;//1.12.2 and below seems to only support alex null or default
+	public String model;//1.12.2 and below seems to only support alex empty or default
 	public boolean isEmpty;
 	
 	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String model)
@@ -21,8 +21,8 @@ public class SkinEntry implements ICopy {
 		this.user = username.toLowerCase();
 		this.isEmpty = this.uuid.isEmpty() && this.user.isEmpty();
 		this.cacheTime = cacheTime;
-		this.skin = skin;
-		this.cape = JavaUtil.safeString(cape);
+		this.skin =  JavaUtil.safeString(skin);
+		this.cape =  JavaUtil.safeString(cape);
 		this.model = JavaUtil.safeString(model);
 	}
 	

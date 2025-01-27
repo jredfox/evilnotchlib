@@ -44,7 +44,7 @@ public class SkinEvent extends Event {
 			//if skin is default or empty assign it to a default skin
 			if(SkinCache.isSkinEmpty(this.skin.skin) || this.skin.skin.equals("http://textures.minecraft.net/texture/$null"))
 			{
-				boolean isAlex = PlayerUtil.isAlex(profile.getId());
+				boolean isAlex = PlayerUtil.isAlex(profile.getId()) && (this.skin.model.isEmpty() || this.skin.model.equals("slim") );
 				this.skin.skin = "http://textures.minecraft.net/texture/" + (isAlex ? "$alex" : "$steve");
 				this.skin.model = isAlex ? "slim" : "";
 			}

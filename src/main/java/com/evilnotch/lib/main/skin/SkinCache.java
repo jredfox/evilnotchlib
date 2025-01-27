@@ -526,7 +526,7 @@ public class SkinCache {
 
 	public static String getEncode(SkinEntry s)
 	{
-		return s.isEmpty ? "" : s.copy().encode();
+		return s.encode();
 	}
 
 	public static String getEncode(PropertyMap map) 
