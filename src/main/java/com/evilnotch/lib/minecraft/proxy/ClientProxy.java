@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
+import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.eventhandler.ClientEvents;
@@ -75,7 +76,7 @@ public class ClientProxy extends ServerProxy{
 	private void registerEvents() 
 	{
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
-		if(Config.stopSteve)
+		if(ConfigCore.asm_stopSteve)
 		{
 			MinecraftForge.EVENT_BUS.register(new StopSteve());
 		}

@@ -17,7 +17,6 @@ import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -27,7 +26,6 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -167,10 +165,12 @@ public class EntityTransformer implements IClassTransformer{
         	t.printStackTrace();
             if(ConfigCore.dumpASM)
             {
-            	try {
+            	try 
+            	{
 					ASMHelper.dumpFile(name, classToTransform);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
+				} 
+            	catch (IOException e) 
+            	{
 					e.printStackTrace();
 				}
             }
@@ -180,6 +180,9 @@ public class EntityTransformer implements IClassTransformer{
 
 	public void transformSkinDL(ClassNode classNode) 
 	{
+		if(!ConfigCore.asm_stopSteve)
+			return;
+		
 		ASMHelper.addFeild(classNode, "skinCallBack", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;");
 		ASMHelper.addFeild(classNode, "skinType", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;");
 		ASMHelper.addFeild(classNode, "skinLoc", "Lnet/minecraft/util/ResourceLocation;");
@@ -188,6 +191,9 @@ public class EntityTransformer implements IClassTransformer{
 
 	public void patchSkinDL(ClassNode classNode) 
 	{
+		if(!ConfigCore.asm_stopSteve)
+			return;
+		
 		MethodNode run = ASMHelper.getMethodNode(classNode, "run", "()V");
 		String ref = new MCPSidedString("this$0", "field_110932_a").toString();
 		
@@ -253,6 +259,9 @@ public class EntityTransformer implements IClassTransformer{
 
 	public void patchSkinManager3M1(ClassNode classNode)
 	{
+		if(!ConfigCore.asm_stopSteve)
+			return;
+		
 		MethodNode m = ASMHelper.getMethodNode(classNode, "run", "()V");
 		//MainJava.proxy.noSkin(map, callback);
 		InsnList l = new InsnList();
@@ -269,6 +278,9 @@ public class EntityTransformer implements IClassTransformer{
 
 	public void patchStopSteve1(ClassNode classNode) throws IOException
 	{
+		if(!ConfigCore.asm_stopSteve)
+			return;
+		
 		//add IMPL of stopSteve
 		String inputBase = "assets/evilnotchlib/asm/" + (FMLCorePlugin.isObf ? "srg/" : "deob/");
 		ASMHelper.addIfMethod(classNode, inputBase + "NetworkPlayerInfo$1", "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
@@ -312,13 +324,16 @@ public class EntityTransformer implements IClassTransformer{
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;");
 		m.instructions.insertBefore(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/ResourceLocation;", false));
 		
+		if(!ConfigCore.asm_stopSteve)
+			return;
+		
 		InsnList li = new InsnList();
 //	  	threaddownloadimagedata.skinCallBack = skinAvailableCallback;
 		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
 		li.add(new VarInsnNode(Opcodes.ALOAD, 3));
 		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinCallBack", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
 
-		//	  	threaddownloadimagedata.skinType = textureType;
+//		threaddownloadimagedata.skinType = textureType;
 		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
 		li.add(new VarInsnNode(Opcodes.ALOAD, 2));
 		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinType", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;"));
@@ -384,6 +399,7 @@ public class EntityTransformer implements IClassTransformer{
 
 	public void patchStopSteve(ClassNode classNode) 
 	{
+		//to prevent crashes always add the field even when ConfigCore#asm_stopSteve is disabled
 		if(!ASMHelper.containsFieldNode(classNode, "stopedSteve"))
 		{
 			classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "stopedSteve", "Z", null, null));
@@ -433,7 +449,6 @@ public class EntityTransformer implements IClassTransformer{
 		list.add(new InsnNode(Opcodes.IRETURN));
 		list.add(l2);
 		wlist.instructions.insert(ASMHelper.getFirstInstruction(wlist), list);
-		
 	}
 
 	public static void transformPlayerClient(ClassNode classNode)
@@ -618,8 +633,8 @@ public class EntityTransformer implements IClassTransformer{
       	
       	node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
       	
-      	MethodNode m = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/WorldServer;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/server/management/PlayerInteractionManager;)V");
       	//UUIDPatcher.patch(profile)
+      	MethodNode m = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/WorldServer;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/server/management/PlayerInteractionManager;)V");
       	InsnList l = new InsnList();
       	l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchCheck", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
       	m.instructions.insertBefore(ASMHelper.getFirstMethodInsn(m, Opcodes.INVOKESPECIAL, "net/minecraft/entity/player/EntityPlayer", "<init>", "(Lnet/minecraft/world/World;Lcom/mojang/authlib/GameProfile;)V", false), l);
