@@ -24,11 +24,12 @@ public class Config {
 	
 	//start skin fixes
 	public static boolean allowskintrans = true;
-	public static boolean stopSteve = true;
+	public static boolean skinCache = true;
 	public static int skinCacheHours = 48;
 	public static int skinCacheFast = 20;
 	public static long skinCacheMs = 1800;
-	public static boolean skinCache = true;
+	
+	public static boolean stopSteve = true;
 	public static long stopSteveMs = 4500;
 	
 	/**
@@ -61,10 +62,11 @@ public class Config {
 		skinCache = config.get("skins", "skinCache", skinCache).getBoolean();
 		skinCacheHours = config.get("skins", "skinCacheMax", skinCacheHours).getInt();
 		skinCacheFast = config.get("skins", "skinCacheFast", skinCacheFast).getInt();
-		stopSteve = config.get("skins", "stopSteveGlitch", stopSteve).getBoolean();
-		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");
-		stopSteveMs = config.get("skins", "stopSteveMs", (int)stopSteveMs).getInt();
 		skinCacheMs = config.get("skins", "skinCacheClockMs", (int)skinCacheMs).getInt();
+		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");
+				
+		stopSteve = config.get("skins", "stopSteveGlitch", stopSteve).getBoolean();
+		stopSteveMs = config.get("skins", "stopSteveMs", (int)stopSteveMs).getInt();
 		
 		//entity cache data for black list and allow certain entities to pass through
 		cacheEntDeny = JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));
