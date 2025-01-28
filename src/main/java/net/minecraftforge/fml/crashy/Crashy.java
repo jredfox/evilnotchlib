@@ -198,7 +198,7 @@ public class Crashy {
 	/**
 	 * Gets set by ConfigCore#load
 	 */
-	public static boolean GUI = true;
+	public static boolean GUI = true;//Boolean.parseBoolean(System.getProperty("crashy.gui", "true"));
 	
 	public static void exit(int i) 
 	{

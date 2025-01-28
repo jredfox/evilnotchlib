@@ -1,25 +1,19 @@
 package com.evilnotch.lib.asm.transformer;
 
 import java.util.List;
-import java.util.Map;
-import java.util.jar.Manifest;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
-import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
-import com.evilnotch.lib.util.simple.DummyMap;
 
 import jredfox.clfix.LaunchClassLoaderFix;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 
 public class Transformer implements IClassTransformer
 {

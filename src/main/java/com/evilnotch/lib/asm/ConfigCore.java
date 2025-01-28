@@ -33,14 +33,14 @@ public class ConfigCore {
 		config.load();
 		
 		//ASM-DEBUG Disable At your own Risk
-		asm_furnace = config.get("asm_debug","furnaceFix", true).getBoolean();
-		asm_clientPlaceEvent = config.get("asm_debug","clientBlockPlaceEvent", true).getBoolean();
-		asm_setTileNBTFix = config.get("asm_debug","setTileNBTItemBlockFix", true).getBoolean();
-		asm_middleClickEvent = config.get("asm_debug","middleClickEvent", true).getBoolean();
+		asm_furnace = config.get("asm_debug","asm_furnaceFix", true).getBoolean();
+		asm_clientPlaceEvent = config.get("asm_debug","asm_clientBlockPlaceEvent", true).getBoolean();
+		asm_setTileNBTFix = config.get("asm_debug","asm_setTileNBTItemBlockFix", true).getBoolean();
+		asm_middleClickEvent = config.get("asm_debug","asm_middleClickEvent", true).getBoolean();
 		asm_playermp = config.get("asm_debug","asm_playermp", true).getBoolean();
 		
 		//ASM Config That Can Safely Be Turned Off with few Issues
-		asm_TranslationEvent = config.get("asm_safe_cfg","dynamicTranslationEvent", true).getBoolean();
+		asm_TranslationEvent = config.get("asm_safe_cfg","asm_dynamicTranslationEvent", true).getBoolean();
 		asm_enchantmentNameFix = config.get("asm_safe_cfg","asm_enchantmentNameFix", true).getBoolean();
 		asm_FSFix = config.get("asm_safe_cfg","asm_FSFix", true).getBoolean();
 		asm_patchLanSkins = config.get("asm_safe_cfg","asm_patchLanSkins", true).getBoolean();
