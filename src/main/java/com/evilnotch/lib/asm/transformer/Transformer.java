@@ -78,11 +78,6 @@ public class Transformer implements IClassTransformer
             switch(index)
             {
                 case 0:
-                	if(!ConfigCore.asm_playerlist)
-                	{
-                		print(name);
-                		return classToTransform;
-                	}
                 	GeneralTransformer.injectUUIDPatcher(classNode);
                 break;
                 

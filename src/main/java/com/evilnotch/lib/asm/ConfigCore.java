@@ -7,16 +7,18 @@ import net.minecraftforge.fml.crashy.Crashy;
 
 public class ConfigCore {
 	
-	public static boolean asm_playerlist = true;
+	//asm_debug
 	public static boolean asm_furnace = true;
 	public static boolean asm_clientPlaceEvent = true;
 	public static boolean asm_setTileNBTFix = true;
-	public static boolean asm_TranslationEvent = true;
 	public static boolean asm_middleClickEvent = true;
-	public static boolean asm_entityPatch = true;
+	public static boolean asm_playermp = true;
+	
+	//asm_safe
+	public static boolean asm_TranslationEvent = true;
 	public static boolean asm_enchantmentNameFix = true;
-	public static boolean asm_patchLanSkins = true;
 	public static boolean asm_FSFix = true;
+	public static boolean asm_patchLanSkins = true;
 	public static boolean asm_stopSteve = true;
 	
 	public static boolean dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
@@ -26,22 +28,24 @@ public class ConfigCore {
 	{
 		File dir = new File(System.getProperty("user.dir"));
 		File filecfg = new File(dir,"config/evilnotchlib/asm.cfg");
-		System.out.println("Loading CoreMod Configurations for ASM:");
 		
 		Configuration config = new Configuration(filecfg);
 		config.load();
-		asm_playerlist = config.get("asm","uuidFixer", true).getBoolean();
-		asm_furnace = config.get("asm","furnaceFix", true).getBoolean();
-		asm_clientPlaceEvent = config.get("asm","clientBlockPlaceEvent", true).getBoolean();
-		asm_setTileNBTFix = config.get("asm","setTileNBTItemBlockFix", true).getBoolean();
-		asm_TranslationEvent = config.get("asm","dynamicTranslationEvent", true).getBoolean();
-		asm_middleClickEvent = config.get("asm","middleClickEvent", true).getBoolean();
-		asm_entityPatch = config.get("asm","asm_entityPatch", true).getBoolean();
-		asm_enchantmentNameFix = config.get("asm","asm_enchantmentNameFix", true).getBoolean();
-		asm_patchLanSkins = config.get("asm","asm_patchLanSkins", true).getBoolean();
-		asm_FSFix = config.get("asm","asm_FSFix", true).getBoolean();
-		Crashy.GUI = config.get("asm","asm_gui_crash", true).getBoolean();
-		asm_stopSteve = config.get("asm", "asm_stopSteve", true).getBoolean();
+		
+		//ASM-DEBUG Disable At your own Risk
+		asm_furnace = config.get("asm_debug","furnaceFix", true).getBoolean();
+		asm_clientPlaceEvent = config.get("asm_debug","clientBlockPlaceEvent", true).getBoolean();
+		asm_setTileNBTFix = config.get("asm_debug","setTileNBTItemBlockFix", true).getBoolean();
+		asm_middleClickEvent = config.get("asm_debug","middleClickEvent", true).getBoolean();
+		asm_playermp = config.get("asm_debug","asm_playermp", true).getBoolean();
+		
+		//ASM Config That Can Safely Be Turned Off with few Issues
+		asm_TranslationEvent = config.get("asm_safe_cfg","dynamicTranslationEvent", true).getBoolean();
+		asm_enchantmentNameFix = config.get("asm_safe_cfg","asm_enchantmentNameFix", true).getBoolean();
+		asm_FSFix = config.get("asm_safe_cfg","asm_FSFix", true).getBoolean();
+		asm_patchLanSkins = config.get("asm_safe_cfg","asm_patchLanSkins", true).getBoolean();
+		asm_stopSteve = config.get("asm_safe_cfg", "asm_stopSteve", true).getBoolean();
+		Crashy.GUI = config.get("asm_safe_cfg","asm_gui_crash", true).getBoolean();
 		
 		dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
 		dumpASM = config.get("debug","dumpASM", false).getBoolean() || dumpASMJVM;

@@ -63,11 +63,6 @@ public class EntityTransformer implements IClassTransformer{
 	private byte[] transform(int index, byte[] classToTransform, boolean isObf) 
 	{
 		String name = clazzes.get(index);
-		
-		if(!ConfigCore.asm_entityPatch && !name.equals("net.minecraft.entity.player.EntityPlayerMP"))
-		{
-			return classToTransform;
-		}
 
     	System.out.println("Transforming: " + name + " index:" + index);
     	
@@ -604,41 +599,43 @@ public class EntityTransformer implements IClassTransformer{
 	 */
 	public static void patchPlayer(ClassNode classNode)
     {    
-      	MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("canUseCommand","func_70003_b").toString(), "(ILjava/lang/String;)Z");
-      	
-      	//makes the seed check never happen
-      	LdcInsnNode strseed = ASMHelper.getLdcInsnNode(node, new LdcInsnNode("seed"));
-      	if(strseed != null)
-      		strseed.cst = "_mc.1.12.2";
-      	
-      	//add if(permLevel == 0 || commandName.equals("seed") && PlayerUtil.isPlayerOwner(this)) return true;
-      	InsnList li = new InsnList();
-      	LabelNode l0 = new LabelNode();
-      	li.add(l0);
-      	li.add(new VarInsnNode(Opcodes.ILOAD, 1));
-      	LabelNode l1 = new LabelNode();
-      	li.add(new JumpInsnNode(Opcodes.IFEQ, l1));
-      	li.add(new VarInsnNode(Opcodes.ALOAD, 2));
-      	li.add(new LdcInsnNode("seed"));
-      	li.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z", false));
-      	LabelNode l2 = new LabelNode();
-      	li.add(new JumpInsnNode(Opcodes.IFEQ, l2));
-      	li.add(new VarInsnNode(Opcodes.ALOAD, 0));
-      	li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "isPlayerOwner", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Z", false));
-      	li.add(new JumpInsnNode(Opcodes.IFEQ, l2));
-      	li.add(l1);
-      	li.add(new InsnNode(Opcodes.ICONST_1));
-      	li.add(new InsnNode(Opcodes.IRETURN));
-      	li.add(l2);
-      	
-      	node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
+		if(ConfigCore.asm_playermp)
+		{
+	      	MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("canUseCommand","func_70003_b").toString(), "(ILjava/lang/String;)Z");
+	      	
+	      	//makes the seed check never happen
+	      	LdcInsnNode strseed = ASMHelper.getLdcInsnNode(node, new LdcInsnNode("seed"));
+	      	if(strseed != null)
+	      		strseed.cst = "_mc.1.12.2";
+	      	
+	      	//add if(permLevel == 0 || commandName.equals("seed") && PlayerUtil.isPlayerOwner(this)) return true;
+	      	InsnList li = new InsnList();
+	      	LabelNode l0 = new LabelNode();
+	      	li.add(l0);
+	      	li.add(new VarInsnNode(Opcodes.ILOAD, 1));
+	      	LabelNode l1 = new LabelNode();
+	      	li.add(new JumpInsnNode(Opcodes.IFEQ, l1));
+	      	li.add(new VarInsnNode(Opcodes.ALOAD, 2));
+	      	li.add(new LdcInsnNode("seed"));
+	      	li.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z", false));
+	      	LabelNode l2 = new LabelNode();
+	      	li.add(new JumpInsnNode(Opcodes.IFEQ, l2));
+	      	li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+	      	li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/PlayerUtil", "isPlayerOwner", "(Lnet/minecraft/entity/player/EntityPlayerMP;)Z", false));
+	      	li.add(new JumpInsnNode(Opcodes.IFEQ, l2));
+	      	li.add(l1);
+	      	li.add(new InsnNode(Opcodes.ICONST_1));
+	      	li.add(new InsnNode(Opcodes.IRETURN));
+	      	li.add(l2);
+	      	
+	      	node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
+		}
       	
       	//UUIDPatcher.patch(profile)
       	MethodNode m = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/WorldServer;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/server/management/PlayerInteractionManager;)V");
       	InsnList l = new InsnList();
       	l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchCheck", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
       	m.instructions.insertBefore(ASMHelper.getFirstMethodInsn(m, Opcodes.INVOKESPECIAL, "net/minecraft/entity/player/EntityPlayer", "<init>", "(Lnet/minecraft/world/World;Lcom/mojang/authlib/GameProfile;)V", false), l);
-      	
       	
       	//profile = this.getGameProfile();
       	InsnList list = new InsnList();
@@ -647,7 +644,6 @@ public class EntityTransformer implements IClassTransformer{
       	list.add(new VarInsnNode(Opcodes.ASTORE, 3));
       	AbstractInsnNode spot = ASMHelper.previousLabel(ASMHelper.getFieldNode(m, Opcodes.PUTFIELD, "net/minecraft/server/management/PlayerInteractionManager", new MCPSidedString("player", "field_73090_b").toString(), "Lnet/minecraft/entity/player/EntityPlayerMP;"));
       	m.instructions.insert(spot, list);
-      	
     }
 
 }

@@ -505,7 +505,7 @@ public class GeneralTransformer {
 	}
 
 	public static void patchLoginNBT(ClassNode classNode) 
-	{
+	{	
 		MethodNode m = ASMHelper.getMethodNode(classNode, "serverInitiateHandshake", "()I");
 		
 		InsnList li = new InsnList();
