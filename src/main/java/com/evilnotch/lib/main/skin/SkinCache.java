@@ -496,15 +496,12 @@ public class SkinCache {
 	{
 		if(!Config.skinCache)
 			return;
-		System.out.println("Loading Skin Cache");
 		long ms = System.currentTimeMillis();
 		INSTANCE = new SkinCache();
 		INSTANCE.load();
 		INSTANCE.save();
 		INSTANCE.start();
-		long ms2 = System.currentTimeMillis();
 		INSTANCE.refreshClientSkin();
-		JavaUtil.printTime(ms2, "Skin Fetch From Cache took:");
 		JavaUtil.printTime(ms, "Skin Cache Took:");
 	}
 	

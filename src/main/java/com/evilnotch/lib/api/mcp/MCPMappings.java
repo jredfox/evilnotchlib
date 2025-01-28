@@ -133,7 +133,7 @@ public class MCPMappings {
 	
 	public static void cacheMCP()
 	{
-		if(!LoaderMain.isDeObfuscated)
+		if(!LoaderMain.isDeObfuscated || !Boolean.parseBoolean(System.getProperty("evilnotchlib.srg", "false")))
 			return;
 		isCached = true;
 		
