@@ -828,4 +828,25 @@ public class ASMHelper
 	 */
 	public static void setResizable(boolean resizeable) {}
 	
+	
+	/**
+	 * Export Methods from a Class to a File for ASM Later without Literally Copying the Entire Previous Class
+	 */
+    public static void exportMethods(ClassNode orgClassNode, String path, MethodNode... methodNode) throws IOException 
+    {
+        // Step 1: Create a new ClassNode with minimal structure
+        ClassNode classNode = new ClassNode();
+        classNode.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, orgClassNode.name, orgClassNode.signature, orgClassNode.superName, JavaUtil.toStaticStringArray(orgClassNode.interfaces));
+
+        // Step 2: Add the method to the class node
+        for(MethodNode m : methodNode)
+        	classNode.methods.add(m);
+
+        // Step 3: Use ClassWriter to write the class bytecode
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        classNode.accept(classWriter);
+
+        ASMHelper.dumpFile(path + (FMLCorePlugin.isObf ? "_srg" : ""), classWriter.toByteArray());
+    }
+	
 }

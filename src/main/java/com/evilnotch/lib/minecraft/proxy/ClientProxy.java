@@ -213,7 +213,7 @@ public class ClientProxy extends ServerProxy{
 	}
 	
 	/**
-	 * before the Skin Downloader starts this fires and if the skin isn't in the map it's empty notifiy the NetworkPlayerInfo
+	 * Fires If Skin Has No Download Notify the NetworkPlayerInfo
 	 */
 	@Override
 	public void noSkin(Map map, Object callback)

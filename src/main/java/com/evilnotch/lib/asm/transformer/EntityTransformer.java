@@ -1,5 +1,7 @@
 package com.evilnotch.lib.asm.transformer;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +29,7 @@ import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
+import com.sun.jna.platform.FileUtils;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
@@ -297,6 +300,7 @@ public class EntityTransformer implements IClassTransformer{
 				}
 			}
 		}
+		
 		//hack JVM supports multiple inner class interfaces but never made it for the compiler side
 		ASMHelper.addInterface(classNode, "com/evilnotch/lib/main/skin/IStopSteve");
 		
