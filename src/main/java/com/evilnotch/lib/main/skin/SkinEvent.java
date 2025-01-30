@@ -50,12 +50,6 @@ public class SkinEvent extends Event {
 				this.skin.model = isAlex ? "slim" : "";
 			}
 			
-			//Debug Test
-//			this.skin.skin = "";
-//			this.skin.skin = "http://textures.minecraft.net/texture/$null";
-//			this.skin.skin = "http://textures.minecraft.net/texture/$alex";
-//			this.skin.model = "slim";
-			
 			SkinCache.setEncode(this.profile.getProperties(), this.skin.encode());
 		}
 	}
