@@ -17,6 +17,6 @@
      						   MainJava.proxy.deleteTexture(location);
      					   }
      					   
-     					   NetworkPlayerInfo.this.stopedSteve = true;
+     					   NetworkPlayerInfo.this.canRender = true;
      				   }
                     }

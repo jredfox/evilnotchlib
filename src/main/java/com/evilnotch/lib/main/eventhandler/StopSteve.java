@@ -21,7 +21,7 @@ public class StopSteve {
 			return;
 		
 		NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
-		if(info == null || !info.stopedSteve)
+		if(info == null || !info.canRender)
 		{
 			if(info != null)
 			{
@@ -30,7 +30,7 @@ public class StopSteve {
 					m2 = System.currentTimeMillis();
 				}
 				else if((System.currentTimeMillis() - m2) >= Config.stopSteveMs) {
-					info.stopedSteve = true;
+					info.canRender = true;
 					m2 = 0;
 					System.err.println("StopSteve Lasted Max MS:" + Config.stopSteveMs + " This is probably a mod incompatibility!");
 				}
@@ -49,7 +49,7 @@ public class StopSteve {
 			return;
 		
 		NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
-		if(info == null || !info.stopedSteve)
+		if(info == null || !info.canRender)
 		{
 			if(info != null)
 			{
@@ -58,7 +58,7 @@ public class StopSteve {
 					m = System.currentTimeMillis();
 				}
 				else if((System.currentTimeMillis() - m) >= Config.stopSteveMs) {
-					info.stopedSteve = true;
+					info.canRender = true;
 					m = 0;
 					System.err.println("StopSteve Lasted Max MS:" + Config.stopSteveMs + " This is probably a mod incompatibility!");
 				}
@@ -71,7 +71,7 @@ public class StopSteve {
 	public static void stopSteve(NetworkPlayerInfo info, Type type)
 	{
 		if(type == Type.SKIN)
-			info.stopedSteve = true;
+			info.canRender = true;
 	}
 
 }
