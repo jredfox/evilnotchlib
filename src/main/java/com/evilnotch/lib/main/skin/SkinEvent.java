@@ -50,7 +50,6 @@ public class SkinEvent extends Event {
 				this.skin.model = isAlex ? "slim" : "";
 			}
 			
-			System.out.println("payload base64:" + this.skin.encode());
 			SkinCache.setEncode(this.profile.getProperties(), this.skin.encode());
 		}
 	}
