@@ -90,8 +90,8 @@ public class ClientProxy extends ServerProxy{
 	{
 		clearClientData();
 		MainJava.proxy.handleUUIDChange(new PacketUUID(ClientProxy.org.org));//Undo UUID Changes done from connecting to a server
-		StopSteve.msJoined =  0;
-		StopSteve.msJoined2 = 0;
+		StopSteve.m =  0;
+		StopSteve.m2 = 0;
 	}
 	
 	public static void clearClientData()

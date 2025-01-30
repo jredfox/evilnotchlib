@@ -304,13 +304,13 @@ public class EntityTransformer implements IClassTransformer{
 		//hack JVM supports multiple inner class interfaces but never made it for the compiler side
 		ASMHelper.addInterface(classNode, "com/evilnotch/lib/main/skin/IStopSteve");
 		
-		//NetWorkPlayerInfo.this.stopedSteve = true;
+		//StopSteve.stopSteve(NetWorkPlayerInfo.this, typeIn);
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("skinAvailable", "func_180521_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
 		InsnList l = new InsnList();
 		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/network/NetworkPlayerInfo$1", new MCPSidedString("this$0", "field_177224_a").toString(), "Lnet/minecraft/client/network/NetworkPlayerInfo;"));
-		l.add(new InsnNode(Opcodes.ICONST_1));
-		l.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/network/NetworkPlayerInfo", "stopedSteve", "Z"));
+		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/StopSteve", "stopSteve", "(Lnet/minecraft/client/network/NetworkPlayerInfo;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;)V", false));
 		m.instructions.insert(ASMHelper.getLastLabelNode(m, false), l);
 	}
 
