@@ -282,7 +282,7 @@ public class EntityTransformer implements IClassTransformer{
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("this$1", "field_152804_b").toString(), "Lnet/minecraft/client/resources/SkinManager$3;"));
 		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", new MCPSidedString("val$skinAvailableCallback", "field_152801_c").toString(), "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
-		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "skinElytra", "(Lnet/minecraft/client/resources/SkinManager;Ljava/util/Map;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)V", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "skinElytra", "(Ljava/lang/Object;Ljava/util/Map;Ljava/lang/Object;)V", false));
 		m.instructions.insert(ASMHelper.getFirstInstruction(m), list);
 		
 	}
