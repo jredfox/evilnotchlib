@@ -244,9 +244,9 @@ public class ClientProxy extends ServerProxy{
 	}
 
 	@Override
-	public void skinElytra(SkinManager s, Map<Type, MinecraftProfileTexture> map, SkinAvailableCallback callback)
+	public void skinElytra(Object s, Map map, Object callback)
 	{
 		if(map.containsKey(Type.ELYTRA))
-			s.loadSkin(map.get(Type.ELYTRA), Type.ELYTRA, callback);
+			((SkinManager)s).loadSkin( ((Map<Type, MinecraftProfileTexture>)map).get(Type.ELYTRA), Type.ELYTRA, (SkinAvailableCallback) callback);
 	}
 }

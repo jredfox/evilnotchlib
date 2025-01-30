@@ -5,11 +5,8 @@ import java.util.Map;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
-import net.minecraft.client.resources.SkinManager;
-import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -55,7 +52,7 @@ public class ServerProxy {
 	public void noSkin(Map map, Object skinAvailableCallback) {}
 	public void noSkin(Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture) {}
 	public void noSkin(int responseCode, Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture) {}
-	public void skinElytra(SkinManager skinManager, Map<Type, MinecraftProfileTexture> map, SkinAvailableCallback skinAvailableCallback) {}
+	public void skinElytra(Object skinManager, Map map, Object skinAvailableCallback) {}
 	
 	
 }
