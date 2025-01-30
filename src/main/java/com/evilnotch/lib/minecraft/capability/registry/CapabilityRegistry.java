@@ -9,7 +9,6 @@ import com.evilnotch.lib.minecraft.capability.ICapabilityProvider;
 import com.evilnotch.lib.minecraft.capability.ICapabilityTick;
 import com.evilnotch.lib.util.JavaUtil;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 public class CapabilityRegistry {

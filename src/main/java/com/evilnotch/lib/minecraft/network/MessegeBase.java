@@ -1,7 +1,5 @@
 package com.evilnotch.lib.minecraft.network;
 
-import com.evilnotch.lib.minecraft.proxy.ClientProxy;
-import com.evilnotch.lib.minecraft.util.EntityUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.entity.player.EntityPlayer;

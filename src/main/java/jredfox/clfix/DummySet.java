@@ -1,7 +1,6 @@
 package jredfox.clfix;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class DummySet<T> extends HashSet<T> {

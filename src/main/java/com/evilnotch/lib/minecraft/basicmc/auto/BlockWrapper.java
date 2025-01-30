@@ -1,7 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.auto;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 

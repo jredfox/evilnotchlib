@@ -1,7 +1,6 @@
 package com.evilnotch.lib.minecraft.event.tileentity;
 
 import com.evilnotch.lib.minecraft.util.NBTUtil;
-import com.evilnotch.lib.minecraft.util.TileEntityUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

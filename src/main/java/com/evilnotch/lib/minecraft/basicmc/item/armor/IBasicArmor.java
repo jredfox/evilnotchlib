@@ -2,7 +2,6 @@ package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorSet;
 
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 public interface IBasicArmor {

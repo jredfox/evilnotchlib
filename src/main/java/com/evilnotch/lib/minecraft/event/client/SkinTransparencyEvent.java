@@ -1,7 +1,6 @@
 package com.evilnotch.lib.minecraft.event.client;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class SkinTransparencyEvent extends Event {

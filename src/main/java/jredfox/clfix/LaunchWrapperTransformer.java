@@ -26,7 +26,6 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.asm.util.ASMHelper;
 
 public class LaunchWrapperTransformer implements ClassFileTransformer {

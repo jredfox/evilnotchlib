@@ -2,7 +2,6 @@ package com.evilnotch.lib.minecraft.network.packet.handler;
 
 import com.evilnotch.lib.main.eventhandler.PickBlock;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
-import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
 import com.evilnotch.lib.minecraft.network.packet.PacketPickBlock;
 
 import net.minecraft.entity.player.EntityPlayer;

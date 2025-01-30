@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
-import net.minecraft.item.ItemArmor;
 import net.minecraft.potion.PotionEffect;
 
 public interface IPotionArmor{

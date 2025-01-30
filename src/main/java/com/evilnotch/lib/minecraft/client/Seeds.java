@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketRequestSeed;
-import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;

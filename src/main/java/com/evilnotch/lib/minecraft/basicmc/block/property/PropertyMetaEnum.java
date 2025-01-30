@@ -1,8 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.block.property;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -10,7 +8,6 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.util.IStringSerializable;
 
 public class PropertyMetaEnum<T extends Enum<T> & IPropertyMeta> extends PropertyEnum implements IPropertyName{
 

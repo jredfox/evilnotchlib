@@ -9,7 +9,6 @@ import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 public class Config {
 

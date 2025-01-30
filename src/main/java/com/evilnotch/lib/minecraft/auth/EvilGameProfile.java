@@ -3,9 +3,7 @@ package com.evilnotch.lib.minecraft.auth;
 import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.PropertyMap;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class EvilGameProfile extends GameProfile {

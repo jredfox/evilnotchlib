@@ -1,8 +1,6 @@
 package com.evilnotch.lib.minecraft.command;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.minecraft.util.EnumChatFormatting;
-import com.evilnotch.lib.minecraft.util.MinecraftUtil;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.command.CommandBase;

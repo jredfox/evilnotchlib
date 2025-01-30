@@ -1,7 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.auto.json;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public interface IBasicItemJSON<T> {
 	

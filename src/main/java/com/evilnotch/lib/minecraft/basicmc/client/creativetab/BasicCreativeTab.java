@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.basicmc.client.creativetab;
 
-import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.basicmc.auto.IAutoItem;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
@@ -8,8 +7,6 @@ import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BasicCreativeTab extends CreativeTabs implements IAutoItem{
 	

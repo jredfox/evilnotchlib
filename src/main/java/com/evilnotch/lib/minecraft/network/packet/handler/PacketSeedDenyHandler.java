@@ -6,7 +6,6 @@ import com.evilnotch.lib.minecraft.network.packet.PacketSeedDeny;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 
 public class PacketSeedDenyHandler extends MessegeBase<PacketSeedDeny>{
 

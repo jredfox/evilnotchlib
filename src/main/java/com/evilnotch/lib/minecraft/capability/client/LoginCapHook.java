@@ -1,7 +1,5 @@
 package com.evilnotch.lib.minecraft.capability.client;
 
-import java.io.IOException;
-
 import com.evilnotch.lib.main.MainJava;
 
 import net.minecraft.nbt.NBTTagCompound;

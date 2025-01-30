@@ -1,10 +1,8 @@
 package com.evilnotch.lib.main.loader;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.basicmc.auto.creativetab.ItemCreativeTabs;
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorSet;
@@ -12,8 +10,6 @@ import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolSet;
 import com.evilnotch.lib.minecraft.basicmc.item.armor.IBasicArmor;
 import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
-import com.evilnotch.lib.util.line.config.ConfigBase;
-import com.evilnotch.lib.util.line.config.ConfigNonMeta;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

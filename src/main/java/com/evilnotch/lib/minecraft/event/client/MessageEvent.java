@@ -1,10 +1,5 @@
 package com.evilnotch.lib.minecraft.event.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.evilnotch.lib.util.simple.PairObj;
-
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;

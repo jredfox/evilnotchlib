@@ -1,12 +1,6 @@
 package com.evilnotch.lib.minecraft.event;
 
-import java.lang.reflect.Method;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class EventCanceler {

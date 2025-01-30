@@ -1,9 +1,7 @@
 package com.evilnotch.lib.minecraft.basicmc.auto.item;
 
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.loader.LoaderItems;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 

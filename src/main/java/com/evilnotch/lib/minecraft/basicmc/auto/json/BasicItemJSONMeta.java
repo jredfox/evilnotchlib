@@ -1,7 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.auto.json;
 
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 
 public class BasicItemJSONMeta extends BasicItemJSON implements IBasicItemMetaJSON<Item>{
 	

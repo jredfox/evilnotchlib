@@ -1,7 +1,6 @@
 package com.evilnotch.lib.minecraft.basicmc.item;
 
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JSONProxy;
-import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangRegistry;
 

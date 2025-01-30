@@ -1,11 +1,8 @@
 package com.evilnotch.lib.minecraft.basicmc.recipe;
 
-import com.evilnotch.lib.minecraft.nbt.NBTPathApi;
-
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 /**

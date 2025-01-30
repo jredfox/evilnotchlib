@@ -2,28 +2,11 @@ package com.evilnotch.lib.main.loader;
 
 import java.lang.reflect.Method;
 
-import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
-import com.mojang.authlib.GameProfile;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.command.CommandHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.server.management.PlayerList;
-import net.minecraft.tileentity.MobSpawnerBaseLogic;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldSettings;
-import net.minecraft.world.end.DragonFightManager;
-import net.minecraft.world.storage.SaveHandler;
 
 public class LoaderFields {
 

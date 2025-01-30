@@ -2,7 +2,6 @@ package com.evilnotch.lib.minecraft.command.client;
 
 import java.util.UUID;
 
-import com.evilnotch.lib.minecraft.util.EnumChatFormatting;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.client.Minecraft;

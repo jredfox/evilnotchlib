@@ -15,7 +15,6 @@ import com.evilnotch.lib.util.simple.IEnumContainer;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.fml.common.Loader;
 
 public class ToolMat implements IEnumContainer{
 	

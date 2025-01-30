@@ -1,13 +1,11 @@
 package com.evilnotch.lib.minecraft.network.packet.handler;
 
-import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketRequestSeed;
 import com.evilnotch.lib.minecraft.network.packet.PacketSeed;
 import com.evilnotch.lib.minecraft.network.packet.PacketSeedDeny;
 import com.evilnotch.lib.minecraft.util.MinecraftUtil;
-import com.evilnotch.lib.minecraft.util.PlayerUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

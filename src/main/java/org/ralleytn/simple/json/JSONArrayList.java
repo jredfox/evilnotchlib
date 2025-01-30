@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import org.ralleytn.simple.json.internal.Util;
-
 import com.evilnotch.lib.util.JavaUtil;
 
 public class JSONArrayList extends ArrayList<Object>{

@@ -2,12 +2,10 @@ package com.evilnotch.lib.minecraft.basicmc.item.armor;
 
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ArmorMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
-import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;

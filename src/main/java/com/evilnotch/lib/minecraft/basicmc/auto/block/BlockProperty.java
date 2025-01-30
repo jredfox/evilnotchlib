@@ -16,7 +16,6 @@ import com.evilnotch.lib.util.JavaUtil;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
 
 public class BlockProperty {
 	

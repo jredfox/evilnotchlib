@@ -31,7 +31,6 @@ import com.evilnotch.lib.minecraft.entity.EntityDefintions.EntityType;
 import com.evilnotch.lib.minecraft.registry.SpawnListEntryAdvanced;
 import com.evilnotch.lib.util.JavaUtil;
 
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityCreature;
@@ -70,7 +69,6 @@ import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.entity.projectile.EntityShulkerBullet;
 import net.minecraft.init.Biomes;

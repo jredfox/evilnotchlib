@@ -1,14 +1,10 @@
 package com.evilnotch.lib.main.loader;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.basicmc.auto.BlockWrapper;
 import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperty;
-import com.evilnotch.lib.util.line.config.ConfigBase;
-import com.evilnotch.lib.util.line.config.ConfigNonMeta;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
