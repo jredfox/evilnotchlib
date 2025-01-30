@@ -267,6 +267,9 @@ public class SkinCache {
 						Iterator<String> i = this.offlineRefreshQue.keySet().iterator();
 						while(i.hasNext())
 						{
+							if(!this.running || !Minecraft.getMinecraft().running)
+								break;
+							
 							String user = i.next();
 							String u = SkinEvent.User.fire(user);
 							SkinEntry dl = this.getSkinEntry(u);
