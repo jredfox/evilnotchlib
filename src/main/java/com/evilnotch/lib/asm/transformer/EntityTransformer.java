@@ -311,10 +311,6 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/StopSteve", "stopSteve", "(Lnet/minecraft/client/network/NetworkPlayerInfo;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;)V", false));
 		m.instructions.insert(ASMHelper.getLastLabelNode(m, false), l);
-		
-//		ASMHelper.exportMethods(classNode, "dump/dumped2", ASMHelper.getMethodNode(classNode, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V"));
-//		ClassNode clsrg = ASMHelper.getClassNode(new FileInputStream(new File("C:/Users/jredfox/Desktop/NetworkPlayerInfo$1.class")));
-//		ASMHelper.exportMethods(classNode, "dump/dumped2_srg", ASMHelper.getMethodNode(clsrg, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V"));
 	}
 
 	/**
