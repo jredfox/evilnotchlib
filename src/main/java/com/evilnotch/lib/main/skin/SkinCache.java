@@ -40,7 +40,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class SkinCache {
 	
-	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "", "");
+	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "", "", "");
 	
 	public Map<String, SkinEntry> skins = new ConcurrentHashMap(25);
 	public Map<String, Boolean> refreshque = new HashMap<>();

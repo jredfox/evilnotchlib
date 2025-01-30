@@ -12,6 +12,7 @@ public class SkinEvent extends Event {
 	
 	/**
 	 * Fires When a GameProfile Get's Patched from the UUIDPatcher V2 at login or when PacketSkinChange Fires
+	 * On The SERVER Side
 	 * Please Don't Download Any Skins Directly as it's on the Main Server Thread
 	 * @author jredfox
 	 */
@@ -50,6 +51,7 @@ public class SkinEvent extends Event {
 				this.skin.model = isAlex ? "slim" : "";
 			}
 			
+			System.out.println("payload base64:" + this.skin.encode());
 			SkinCache.setEncode(this.profile.getProperties(), this.skin.encode());
 		}
 	}

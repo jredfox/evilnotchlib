@@ -13,23 +13,24 @@ public class SkinEntry implements ICopy {
 	public String skin;
 	public String cape;
 	public String model;//1.12.2 and below seems to only support alex empty or default
-	public String elytra;
+	public String elytra;//elytra can have it's own texture separate from the cape texture
 	public boolean isEmpty;
 	
-	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String model)
+	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String model, String elytra)
 	{
 		this.uuid = uuid.replace("-", "");
 		this.user = username.toLowerCase();
 		this.isEmpty = this.uuid.isEmpty() && this.user.isEmpty();
 		this.cacheTime = cacheTime;
-		this.skin =  JavaUtil.safeString(skin);
-		this.cape =  JavaUtil.safeString(cape);
-		this.model = JavaUtil.safeString(model);
+		this.skin =   JavaUtil.safeString(skin);
+		this.cape =   JavaUtil.safeString(cape);
+		this.model =  JavaUtil.safeString(model);
+		this.elytra = JavaUtil.safeString(elytra);
 	}
 	
 	public SkinEntry(JSONObject json)
 	{
-		this(json.getString("uuid"), json.getString("user"), json.getLong("cacheTime"), json.getString("skin"),  json.getString("cape"), json.getString("model"));
+		this(json.getString("uuid"), json.getString("user"), json.getLong("cacheTime"), json.getString("skin"),  json.getString("cape"), json.getString("model"), json.getString("elytra"));
 	}
 	
 	public JSONObject serialize()
@@ -41,6 +42,7 @@ public class SkinEntry implements ICopy {
 		json.put("skin", this.skin);
 		json.put("cape", this.cape);
 		json.put("model", this.model);
+		json.put("elytra", this.elytra);
 		return json;
 	}
 	
@@ -57,7 +59,8 @@ public class SkinEntry implements ICopy {
 			String skin = jskin.getString("url");
 			String model = jskin.containsKey("metadata") ? jskin.getJSONObject("metadata").getString("model") : "";
 			String cape = textures.containsKey("CAPE") ? textures.getJSONObject("CAPE").getString("url") : "";
-			SkinEntry entry = new SkinEntry(uuid, user, System.currentTimeMillis(), skin, cape, model);
+			String elytra = textures.containsKey("ELYTRA") ? textures.getJSONObject("ELYTRA").getString("url") : "";
+			SkinEntry entry = new SkinEntry(uuid, user, System.currentTimeMillis(), skin, cape, model, elytra);
 			return entry;
 		}
 		catch(Exception e)
@@ -69,7 +72,7 @@ public class SkinEntry implements ICopy {
 	
 	public static SkinEntry emptySkin(String uuid, String user)
 	{
-		return new SkinEntry(uuid, user, System.currentTimeMillis(), "", "", "");
+		return new SkinEntry(uuid, user, System.currentTimeMillis(), "", "", "", "");
 	}
 	
 	/**
@@ -78,7 +81,7 @@ public class SkinEntry implements ICopy {
 	@Override
 	public SkinEntry copy()
 	{
-		SkinEntry s = new SkinEntry(this.uuid, this.user, this.cacheTime, this.skin, this.cape, this.model);
+		SkinEntry s = new SkinEntry(this.uuid, this.user, this.cacheTime, this.skin, this.cape, this.model, this.elytra);
 		s.isEmpty = this.isEmpty;
 		return s;
 	}
@@ -95,7 +98,7 @@ public class SkinEntry implements ICopy {
 		json.put("textures", textures);
 		
 		JSONObject jskin = new JSONObject();
-		//add the player model seems to only support alex
+		//add the player model seems to only support alex (slim)
 		if(this.hasModel())
 		{
 			JSONObject meta = new JSONObject();
@@ -112,7 +115,6 @@ public class SkinEntry implements ICopy {
 			textures.put("CAPE", jcape);
 		}
 		
-		this.elytra = "http://textures.minecraft.net/texture/cd9d82ab17fd92022dbd4a86cde4c382a7540e117fae7b9a2853658505a80625";
 		if(!this.elytra.isEmpty())
 		{
 			JSONObject jelytra = new JSONObject();
