@@ -139,7 +139,7 @@ public class SkinCache {
 		SkinEntry current = this.getSkinEntry(user);
 		//Download the offline SkinEntry from the cache if applicable
 		if(select && !this.isMojangOnline())
-			this.offlineRefreshQue.put(user, false);
+			this.offlineRefreshQue.put(user, true);
 		this.addQue(user, select);
 		return current;
 	}
