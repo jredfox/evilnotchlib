@@ -8,6 +8,7 @@ import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
+import net.minecraft.client.resources.SkinManager;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
@@ -54,7 +55,7 @@ public class ServerProxy {
 	public void noSkin(Map map, Object skinAvailableCallback) {}
 	public void noSkin(Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture) {}
 	public void noSkin(int responseCode, Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture) {}
+	public void skinElytra(SkinManager skinManager, Map<Type, MinecraftProfileTexture> map, SkinAvailableCallback skinAvailableCallback) {}
 	
-
 	
 }

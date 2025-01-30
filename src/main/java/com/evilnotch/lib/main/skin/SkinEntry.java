@@ -13,6 +13,7 @@ public class SkinEntry implements ICopy {
 	public String skin;
 	public String cape;
 	public String model;//1.12.2 and below seems to only support alex empty or default
+	public String elytra;
 	public boolean isEmpty;
 	
 	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String model)
@@ -109,6 +110,14 @@ public class SkinEntry implements ICopy {
 			JSONObject jcape = new JSONObject();
 			jcape.put("url", this.cape);
 			textures.put("CAPE", jcape);
+		}
+		
+		this.elytra = "http://textures.minecraft.net/texture/cd9d82ab17fd92022dbd4a86cde4c382a7540e117fae7b9a2853658505a80625";
+		if(!this.elytra.isEmpty())
+		{
+			JSONObject jelytra = new JSONObject();
+			jelytra.put("url", this.elytra);
+			textures.put("ELYTRA", jelytra);
 		}
 		
 		return json;

@@ -33,6 +33,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerLoginClient;
+import net.minecraft.client.resources.SkinManager;
+import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
@@ -241,4 +243,10 @@ public class ClientProxy extends ServerProxy{
 		}
 	}
 
+	@Override
+	public void skinElytra(SkinManager s, Map<Type, MinecraftProfileTexture> map, SkinAvailableCallback callback)
+	{
+		if(map.containsKey(Type.ELYTRA))
+			s.loadSkin(map.get(Type.ELYTRA), Type.ELYTRA, callback);
+	}
 }

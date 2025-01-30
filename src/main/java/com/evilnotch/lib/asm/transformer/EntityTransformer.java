@@ -254,21 +254,37 @@ public class EntityTransformer implements IClassTransformer{
 
 	public void patchSkinManager3M1(ClassNode classNode)
 	{
-		if(!ConfigCore.asm_stopSteve)
-			return;
-		
 		MethodNode m = ASMHelper.getMethodNode(classNode, "run", "()V");
-		//MainJava.proxy.noSkin(map, callback);
-		InsnList l = new InsnList();
-		l.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
-		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("val$map", "field_152803_a").toString(), "Ljava/util/Map;"));
-		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("this$1", "field_152804_b").toString(), "Lnet/minecraft/client/resources/SkinManager$3;"));
-		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", new MCPSidedString("val$skinAvailableCallback", "field_152801_c").toString(), "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
-
-		l.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "noSkin", "(Ljava/util/Map;Ljava/lang/Object;)V", false));
-		m.instructions.insert(ASMHelper.getFirstInstruction(m), l);
+		if(ConfigCore.asm_stopSteve)
+		{	
+			//MainJava.proxy.noSkin(map, callback);
+			InsnList l = new InsnList();
+			l.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
+			l.add(new VarInsnNode(Opcodes.ALOAD, 0));
+			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("val$map", "field_152803_a").toString(), "Ljava/util/Map;"));
+			l.add(new VarInsnNode(Opcodes.ALOAD, 0));
+			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("this$1", "field_152804_b").toString(), "Lnet/minecraft/client/resources/SkinManager$3;"));
+			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", new MCPSidedString("val$skinAvailableCallback", "field_152801_c").toString(), "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
+	
+			l.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "noSkin", "(Ljava/util/Map;Ljava/lang/Object;)V", false));
+			m.instructions.insert(ASMHelper.getFirstInstruction(m), l);
+		}
+		
+		//MainJava.proxy.skinElytra(SkinManager.this, map, skinAvailableCallback);
+		InsnList list = new InsnList();
+		list.add(new LabelNode());
+		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("this$1", "field_152804_b").toString(), "Lnet/minecraft/client/resources/SkinManager$3;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", new MCPSidedString("this$0", "field_152802_d").toString(), "Lnet/minecraft/client/resources/SkinManager;"));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("val$map", "field_152803_a").toString(), "Ljava/util/Map;"));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("this$1", "field_152804_b").toString(), "Lnet/minecraft/client/resources/SkinManager$3;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", new MCPSidedString("val$skinAvailableCallback", "field_152801_c").toString(), "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
+		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "skinElytra", "(Lnet/minecraft/client/resources/SkinManager;Ljava/util/Map;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)V", false));
+		m.instructions.insert(ASMHelper.getFirstInstruction(m), list);
+		
 	}
 
 	public void patchStopSteve1(ClassNode classNode) throws IOException
