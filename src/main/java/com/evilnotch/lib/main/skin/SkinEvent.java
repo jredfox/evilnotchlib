@@ -10,8 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 public class SkinEvent extends Event {
 	
 	/**
-	 * Fires When a GameProfile Get's Patched from the UUIDPatcher V2 at login or when PacketSkinChange Fires
-	 * On The SERVER Side
+	 * Fires On The Server When a GameProfile Get's Patched from the UUIDPatcher V2 at login or when PacketSkinChange Fires
 	 * Please Don't Download Any Skins Directly as it's on the Main Server Thread
 	 * @author jredfox
 	 */
