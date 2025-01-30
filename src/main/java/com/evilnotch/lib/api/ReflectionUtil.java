@@ -3,8 +3,6 @@ package com.evilnotch.lib.api;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ReflectionUtil {
@@ -54,7 +52,7 @@ public class ReflectionUtil {
 		}
 	}
 
-	public static void invokeMethod(Object instance, Class<? extends GuiScreen> clazz, String mName,Object[] parameterobjs,Class[] param) 
+	public static void invokeMethod(Object instance, Class clazz, String mName,Object[] parameterobjs,Class[] param) 
 	{
 		try
 		{

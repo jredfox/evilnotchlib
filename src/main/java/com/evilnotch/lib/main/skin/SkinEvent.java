@@ -3,7 +3,6 @@ package com.evilnotch.lib.main.skin;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -144,8 +143,8 @@ public class SkinEvent extends Event {
 	{
 		if(fireDinnerbone(p))
 		{
-            GlStateManager.translate(0.0F, p.height + 0.1F, 0.0F);
-            GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+//            GlStateManager.translate(0.0F, p.height + 0.1F, 0.0F);
+//            GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 		}
 	}
 
