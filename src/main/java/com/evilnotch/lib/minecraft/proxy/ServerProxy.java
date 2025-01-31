@@ -53,6 +53,9 @@ public class ServerProxy {
 	public void noSkin(Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture) {}
 	public void noSkin(int responseCode, Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture) {}
 	public void skinElytra(Object skinManager, Map map, Object skinAvailableCallback) {}
+	public void addScheduledTask(Runnable run) {
+		
+	}
 	
 	
 }

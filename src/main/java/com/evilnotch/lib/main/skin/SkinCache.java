@@ -122,6 +122,14 @@ public class SkinCache {
 		JavaUtil.saveJSONArray(arr, skinCacheLoc);
 	}
 	
+	public void saveSafely() 
+	{
+		Minecraft.getMinecraft().addScheduledTask(()->
+		{
+			this.save();
+		});
+	}
+	
 	/**
 	 * gets the current cached skin will be empty if skins doesn't contain the user
 	 */
@@ -256,9 +264,9 @@ public class SkinCache {
 								{
 									if(selected)
 										this.refreshSelected(dl2);
-									this.save();
 								});
 							}
+							this.saveSafely();
 						}
 					}
 					//Since the offline cache will take a few MS compared to online it's safe to fully lock the offlineRefreshQue map till it completes it's cycle
@@ -278,11 +286,11 @@ public class SkinCache {
 							Minecraft.getMinecraft().addScheduledTask(()->
 							{
 								this.refreshSelected(dl2);
-								this.save();
 							});
 							
 							i.remove();
 						}
+						this.saveSafely();
 					}
 					if(this.running)
 						JavaUtil.sleep(Config.skinCacheMs);
@@ -293,7 +301,7 @@ public class SkinCache {
 			this.refreshThread.start();
 		}
 	}
-	
+
 	/**
 	 * Call this when SkinEvent.Capability Fires
 	 */
