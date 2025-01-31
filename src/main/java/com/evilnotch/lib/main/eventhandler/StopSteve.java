@@ -38,6 +38,8 @@ public class StopSteve {
 			event.setCanceled(true);
 			return;
 		}
+		else
+			m2 = 0;
 	}
     
 	public static long m = 0;
@@ -66,6 +68,8 @@ public class StopSteve {
 			event.setCanceled(true);
 			return;
 		}
+		else
+			m = 0;
 	}
 	
 	public static void stopSteve(NetworkPlayerInfo info, Type type)

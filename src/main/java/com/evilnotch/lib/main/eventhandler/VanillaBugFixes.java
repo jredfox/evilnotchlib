@@ -88,11 +88,6 @@ public class VanillaBugFixes {
 	    SPacketRespawn respawn;
 	    try
 	    {
-	    	//hide player
-	        p.getServerWorld().getEntityTracker().removePlayerFromTrackers(p);
-	        p.getServerWorld().getEntityTracker().untrack(p);
-	        p.getServerWorld().getPlayerChunkMap().removePlayer(p);
-	        
 	      int entId = p.getEntityId();
 	      removeInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.REMOVE_PLAYER,p);
 	      removeEntity = new SPacketDestroyEntities(new int[] { entId });
@@ -152,10 +147,9 @@ public class VanillaBugFixes {
 	           con.sendPacket(addNamed);
 	         }
 	      }
-           //show player
-	       p.getServerWorld().getPlayerChunkMap().addPlayer(p);
-	       p.getServerWorld().getEntityTracker().track(p);
-	    	
+	     	//show player
+	     	PlayerUtil.hidePlayer(p);
+	     	PlayerUtil.showPlayer(p);
 	    }
 	    catch (Exception e) 
 	    {
