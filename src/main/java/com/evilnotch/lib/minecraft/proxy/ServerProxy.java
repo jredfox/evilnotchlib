@@ -9,6 +9,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ServerProxy {
@@ -47,15 +48,23 @@ public class ServerProxy {
 		fs.foodSaturationLevel = saturationLevel;
 	}
 	
+	public void addScheduledTask(Runnable run) 
+	{
+		FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(run);
+	}
+	
 	public void bindTexture(ResourceLocation steve) {}
 	public void deleteTexture(ResourceLocation r) {}
 	public void noSkin(Map map, Object skinAvailableCallback) {}
 	public void noSkin(Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture) {}
 	public void noSkin(int responseCode, Object callback, Type typeIn, ResourceLocation skinLoc, Object skinTexture) {}
 	public void skinElytra(Object skinManager, Map map, Object skinAvailableCallback) {}
-	public void addScheduledTask(Runnable run) {
-		
-	}
+	/**
+	 * @return Minecraft#running on Client and true on Dedicated Server
+	 */
+	public boolean running() {return true;}
+	public String getUsername() {return null;}
+	public boolean isClient() {return false;}
 	
 	
 }

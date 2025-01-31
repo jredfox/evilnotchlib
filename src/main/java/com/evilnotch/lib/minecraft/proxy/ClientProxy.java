@@ -185,6 +185,33 @@ public class ClientProxy extends ServerProxy{
 	}
 	
 	@Override
+	public void addScheduledTask(Runnable run) 
+	{
+		Minecraft.getMinecraft().addScheduledTask(run);
+	}
+	
+	/**
+	 * @return Minecraft#running on Client and true on Dedicated Server
+	 */
+	@Override
+	public boolean running()
+	{
+		return Minecraft.getMinecraft().running;
+	}
+	
+	@Override
+	public String getUsername()
+	{
+		return Minecraft.getMinecraft().getSession().getProfile().getName();
+	}
+	
+	@Override
+	public boolean isClient() 
+	{
+		return true;
+	}
+	
+	@Override
 	public void fixMcProfileProperties()
 	{
 		Minecraft mc = Minecraft.getMinecraft();

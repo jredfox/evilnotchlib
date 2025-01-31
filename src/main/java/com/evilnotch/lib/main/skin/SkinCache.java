@@ -35,9 +35,19 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+/**
+ * SkinCache Model is Client to the Server Base. However SkinEvent#GameProfileEvent fires on the SERVER Side 
+ * Which Allows Custom Server Only Logic Like Loading the SkinCache {@link SkinCache#getInstance()} and then Calling link SkinCache#getOrDownload(SkinEntry, String)}
+ * Followed by {@link SkinCache#save()} allowing for the servers to replace patch or modify the clients skin requests. 
+ * Just Note that it's a Strain on the server to Download skins and can lag the main server so please don't do this unless required.
+ * Skin Patching could be done Via MultiThreading and then Sync the changes when done but will be seconds out of sync and will flash between two skins
+ * MultiThreading Server Model isn't provided but could easily be done with an extension. 
+ * @author jredfox
+ */
 public class SkinCache {
 	
 	public static final SkinEntry EMPTY = new SkinEntry("", "", System.currentTimeMillis(), "", "", "", "");
@@ -65,12 +75,14 @@ public class SkinCache {
 	
 	public void load()
 	{
-		if(!skins.isEmpty())
+		if(!this.skins.isEmpty())
 		{
-			skins.clear();
+			this.selected = EMPTY;
+			this.skins.clear();
+			this.offlineRefreshQue.clear();
 			synchronized (this.refreshque)
 			{
-				refreshque.clear();
+				this.refreshque.clear();
 			}
 		}
 		
@@ -124,7 +136,7 @@ public class SkinCache {
 	
 	public void saveSafely() 
 	{
-		Minecraft.getMinecraft().addScheduledTask(()->
+		MainJava.proxy.addScheduledTask(()->
 		{
 			this.save();
 		});
@@ -153,24 +165,25 @@ public class SkinCache {
 	}
 	
 	/**
-	 * returns cached skin if it exists and adds the skin to the refresh cache
+	 * @return The Cached SkinEntry if it exists and then adds the client's main skin to the Refresh Que
 	 */
 	public SkinEntry refreshClientSkin() 
 	{
-		return this.refresh(Minecraft.getMinecraft().getSession().getProfile().getName(), true);
+		return MainJava.proxy.isClient() ? this.refresh(MainJava.proxy.getUsername(), true) : EMPTY;
 	}
 
 	/**
-	 * fired after a SkinEntry is downloaded successfully
+	 * Fired after a SkinEntry is downloaded successfully
 	 * syncs the selected user with skins#get(user) and updates skin packets if in game
 	 */
+	@SideOnly(Side.CLIENT)
 	public void refreshSelected(SkinEntry dl)
 	{
 		//update the encoding to send to the server
 		this.selected = dl;
 		
 		//if player is already in the world send a packet
-		Minecraft mc = Minecraft.getMinecraft();
+		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
 		if(mc.player != null && mc.player.connection != null && ((CapBoolean) CapabilityRegistry.getCapability(mc.player, CapRegDefaultHandler.addedToWorld)).value)
 		{
 			NetWorkHandler.INSTANCE.sendToServer(new PacketSkinChange(this.selected));
@@ -223,7 +236,7 @@ public class SkinCache {
 			this.running = true;
 			this.refreshThread = new Thread(()-> 
 			{
-				while(running && Minecraft.getMinecraft().running)
+				while(running && MainJava.proxy.running())
 				{
 					//copy the que because downloading while the que is locked will lag the main thread
 					Map<String, Boolean> que = new HashMap();
@@ -241,7 +254,7 @@ public class SkinCache {
 						{
 							for(Map.Entry<String, Boolean> m : que.entrySet())
 							{
-								if(!this.running || !Minecraft.getMinecraft().running)
+								if(!this.running || !MainJava.proxy.running())
 									break;
 								
 								boolean selected = m.getValue();
@@ -260,11 +273,14 @@ public class SkinCache {
 									this.removeQue(user_org);
 								}
 								
-								Minecraft.getMinecraft().addScheduledTask(()->
+								if(MainJava.proxy.isClient()) 
 								{
-									if(selected)
-										this.refreshSelected(dl2);
-								});
+									MainJava.proxy.addScheduledTask(()->
+									{
+										if(selected)
+											this.refreshSelected(dl2);
+									});
+								}
 							}
 							this.saveSafely();
 						}
@@ -275,7 +291,7 @@ public class SkinCache {
 						Iterator<String> i = this.offlineRefreshQue.keySet().iterator();
 						while(i.hasNext())
 						{
-							if(!this.running || !Minecraft.getMinecraft().running)
+							if(!this.running || !MainJava.proxy.running())
 								break;
 							
 							String user = i.next();
@@ -283,10 +299,13 @@ public class SkinCache {
 							SkinEntry dl = this.getSkinEntry(u);
 							SkinEntry dl2 = SkinEvent.Capability.fire(dl);
 							
-							Minecraft.getMinecraft().addScheduledTask(()->
+							if(MainJava.proxy.isClient()) 
 							{
-								this.refreshSelected(dl2);
-							});
+								MainJava.proxy.addScheduledTask(()->
+								{
+									this.refreshSelected(dl2);
+								});
+							}
 							
 							i.remove();
 						}
