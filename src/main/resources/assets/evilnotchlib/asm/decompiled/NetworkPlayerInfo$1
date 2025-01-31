@@ -19,4 +19,8 @@
      					   
      					   NetworkPlayerInfo.this.canRender = true;
      				   }
+     				   else if(location != null)
+     				   {
+     					  MainJava.proxy.deleteTexture(location);
+     				   }
                     }

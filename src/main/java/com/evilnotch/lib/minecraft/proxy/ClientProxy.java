@@ -247,8 +247,19 @@ public class ClientProxy extends ServerProxy{
 	@Override
 	public void noSkin(Map map, Object callback)
 	{
-		if(!map.containsKey(Type.SKIN) && callback instanceof IStopSteve)
+		if(!(callback instanceof IStopSteve))
+			return;
+		
+		//Notify IStopSteve of noSkin before the skin types can fire
+		if(!map.containsKey(Type.SKIN))
 			((IStopSteve)callback).skinUnAvailable(Type.SKIN, null, null);
+		
+		//Notify IStopSteve of noSkin for all other types
+		for(Type compare : Type.values())
+		{
+			if(compare != Type.SKIN && !map.containsKey(compare))
+				((IStopSteve)callback).skinUnAvailable(compare, null, null);
+		}
 	}
 	
 	@Override
