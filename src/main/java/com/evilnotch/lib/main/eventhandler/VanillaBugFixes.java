@@ -101,7 +101,7 @@ public class VanillaBugFixes {
 	        NetHandlerPlayServer con = pOnline.connection;
 	        if (pOnline.equals(p))
 	        {
-	           con.sendPacket(removeEntity);
+//	           con.sendPacket(removeEntity);
 		       con.sendPacket(removeInfo);
 		       con.sendPacket(respawn);
 		       con.sendPacket(addInfo);
