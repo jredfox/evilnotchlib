@@ -8,6 +8,7 @@ import com.evilnotch.lib.minecraft.network.packet.PacketPickEntity;
 import com.evilnotch.lib.minecraft.network.packet.PacketRequestSeed;
 import com.evilnotch.lib.minecraft.network.packet.PacketSeed;
 import com.evilnotch.lib.minecraft.network.packet.PacketSeedDeny;
+import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkinChange;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
@@ -21,6 +22,7 @@ import com.evilnotch.lib.minecraft.network.packet.handler.PacketRequestSeedHandl
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketSeedDenyHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketSeedHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketSkinChangeHandler;
+import com.evilnotch.lib.minecraft.network.packet.handler.PacketSkinHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketUUIDHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketYawHeadHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketYawOffsetHandler;
@@ -46,6 +48,7 @@ public class NetWorkHandler {
 		registerMessage(PacketYawPitchHandler.class, PacketYawPitch.class, Side.CLIENT);
 		registerMessage(PacketYawHeadHandler.class, PacketYawHead.class, Side.CLIENT);
 		registerMessage(PacketHandHandler.class, PacketHand.class, Side.CLIENT);
+		registerMessage(PacketSkinHandler.class, PacketSkin.class, Side.CLIENT);
 		
 		//to server
 		registerMessage(PacketRequestSeedHandler.class, PacketRequestSeed.class, Side.SERVER);

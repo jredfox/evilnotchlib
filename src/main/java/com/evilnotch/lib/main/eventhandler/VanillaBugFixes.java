@@ -9,6 +9,7 @@ import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
@@ -34,6 +35,7 @@ import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedSpawnerEntity;
@@ -73,6 +75,12 @@ public class VanillaBugFixes {
 				NetWorkHandler.INSTANCE.sendTo(new PacketUUID(e.player.getUniqueID()), (EntityPlayerMP)e.player);
 			}
 		}
+	}
+	
+	public static void syncSkin(EntityPlayerMP player)
+	{
+		System.out.println("Server:" + player.getDisplayName());
+		NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PacketSkin(player), player);
 	}
 	
 	/**
