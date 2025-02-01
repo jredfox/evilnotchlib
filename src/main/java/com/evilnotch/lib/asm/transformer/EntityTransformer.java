@@ -419,6 +419,7 @@ public class EntityTransformer implements IClassTransformer{
 		{
 			classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "canRender", "Z", null, null));
 		}
+		ASMHelper.pubMinusFinal(classNode, true);
 	}
 
 	private void patchLanSkinsCache(ClassNode classNode) 
