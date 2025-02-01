@@ -35,7 +35,6 @@ import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedSpawnerEntity;
@@ -77,9 +76,12 @@ public class VanillaBugFixes {
 		}
 	}
 	
+	/**
+	 * Sync your player skin with yourself and all players tracking you.
+	 * Uses an dedicated custom mod packet to do so unlike {@link #updateSkinPackets(EntityPlayerMP)}
+	 */
 	public static void syncSkin(EntityPlayerMP player)
 	{
-		System.out.println("Server:" + player.getDisplayName());
 		NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PacketSkin(player), player);
 	}
 	
@@ -109,7 +111,7 @@ public class VanillaBugFixes {
 	        NetHandlerPlayServer con = pOnline.connection;
 	        if (pOnline.equals(p))
 	        {
-//	           con.sendPacket(removeEntity);
+	           con.sendPacket(removeEntity);
 		       con.sendPacket(removeInfo);
 		       con.sendPacket(respawn);
 		       con.sendPacket(addInfo);

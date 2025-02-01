@@ -1,12 +1,7 @@
 package com.evilnotch.lib.minecraft.network.packet;
 
-import java.util.Properties;
-import java.util.UUID;
-
 import com.evilnotch.lib.minecraft.network.NetWorkWrapper;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;

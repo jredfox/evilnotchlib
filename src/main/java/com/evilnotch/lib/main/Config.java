@@ -28,6 +28,7 @@ public class Config {
 	public static int skinCacheFast = 20;
 	public static long skinCacheMs = 1800;
 	public static long stopSteveMs = 4500;
+	public static boolean skinVanillaPackets = false;
 	
 	/**
 	 * list of domains that are not acceptable
@@ -62,6 +63,7 @@ public class Config {
 		skinCacheMs = config.get("skins", "skinCacheClockMs", (int)skinCacheMs).getInt();
 		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");
 		stopSteveMs = config.get("skins", "stopSteveMs", (int)stopSteveMs).getInt();
+		skinVanillaPackets = config.get("skins", "skinCacheVanillaPackets", skinVanillaPackets).getBoolean();
 		
 		//entity cache data for black list and allow certain entities to pass through
 		cacheEntDeny = JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));

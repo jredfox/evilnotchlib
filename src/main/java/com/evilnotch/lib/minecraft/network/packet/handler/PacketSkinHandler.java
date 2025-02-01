@@ -40,7 +40,8 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 			EntityPlayer other = mc.world.getPlayerEntityByUUID(uuid);
 			if(other instanceof AbstractClientPlayer)
 			{
-				((AbstractClientPlayer)other).playerInfo = null;
+				AbstractClientPlayer client = (AbstractClientPlayer) other;
+				client.playerInfo = null;
 				//TODO: make SPacketPlayerListItem#newAddPlayerData
 			}
 		});

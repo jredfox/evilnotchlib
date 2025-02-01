@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.network.packet.handler;
 
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
@@ -23,7 +24,10 @@ public class PacketSkinChangeHandler extends MessegeBase<PacketSkinChange> {
 			if(!SkinCache.isSkinEmpty(message.payload))
 			{
 				UUIDPatcher.patchSkin(p.getGameProfile(), message.payload);
-				VanillaBugFixes.syncSkin((EntityPlayerMP) player);
+				if(!Config.skinVanillaPackets)
+					VanillaBugFixes.syncSkin((EntityPlayerMP) player);
+				else
+					VanillaBugFixes.updateSkinPackets((EntityPlayerMP) player);
 			}
 		});
 	}
