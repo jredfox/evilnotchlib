@@ -1,0 +1,4 @@
+    public AddPlayerData newAddPlayerData(GameProfile profileIn, int latencyIn, GameType gameModeIn, ITextComponent displayNameIn)
+    {
+    	return new AddPlayerData(profileIn, latencyIn, gameModeIn, displayNameIn);
+    }
