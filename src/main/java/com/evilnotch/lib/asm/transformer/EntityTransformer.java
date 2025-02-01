@@ -1,7 +1,5 @@
 package com.evilnotch.lib.asm.transformer;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
