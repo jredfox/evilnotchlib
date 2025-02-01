@@ -20,10 +20,9 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 		Minecraft.getMinecraft().addScheduledTask(()->
 		{
 			Minecraft mc = Minecraft.getMinecraft();
-			EntityPlayerSP thePlayer = mc.player;
 			UUID uuid = message.profile.getId();
 			NetworkPlayerInfo info = new NetworkPlayerInfo(new SPacketPlayerListItem().newAddPlayerData(message.profile, message.ping, message.gameType, message.name));
-			NetworkPlayerInfo prev = thePlayer.connection.playerInfoMap.put(uuid, info);
+			NetworkPlayerInfo prev = mc.player.connection.playerInfoMap.put(uuid, info);
 			if(prev != null)
 			{
 				//nicknames are broken and won't re-sync keep the old one
@@ -39,9 +38,7 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 			}
 			EntityPlayer other = mc.world.getPlayerEntityByUUID(uuid);
 			if(other instanceof AbstractClientPlayer)
-			{
 				((AbstractClientPlayer) other).playerInfo = null;
-			}
 		});
 	}
 
