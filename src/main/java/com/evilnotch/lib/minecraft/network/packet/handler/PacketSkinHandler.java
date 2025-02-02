@@ -20,7 +20,7 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 		{
 			Minecraft mc = Minecraft.getMinecraft();
 			UUID uuid = message.profile.getId();
-			NetworkPlayerInfo info = new NetworkPlayerInfo(new SPacketPlayerListItem().newAddPlayerData(message.profile, message.ping, message.gameType, message.name));
+			NetworkPlayerInfo info = new NetworkPlayerInfo(new SPacketPlayerListItem().new AddPlayerData(message.profile, message.ping, message.gameType, message.name));
 			NetworkPlayerInfo prev = mc.player.connection.playerInfoMap.put(uuid, info);
 			if(prev != null)
 			{

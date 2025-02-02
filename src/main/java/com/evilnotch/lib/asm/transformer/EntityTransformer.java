@@ -50,8 +50,7 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.resources.SkinManager$3$1",//stopSteve add callback of skin failure
     	"net.minecraft.client.renderer.ThreadDownloadImageData",
     	"net.minecraft.client.renderer.ThreadDownloadImageData$1",//stopSteve add callback of skin failure
-    	"net.minecraft.client.resources.SkinManager$3", //transform all fields into public minus final
-    	"net.minecraft.network.play.server.SPacketPlayerListItem" //PacketSkin
+    	"net.minecraft.client.resources.SkinManager$3" //transform all fields into public minus final
     });
 
 	@Override
@@ -145,9 +144,6 @@ public class EntityTransformer implements IClassTransformer{
                 	ASMHelper.pubMinusFinal(classNode, true);
                 break;
                 
-                case 17:
-                	patchSPacketPlayerListItem(classNode);
-                break;
             }
             
             ClassWriter classWriter = new MCWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -176,12 +172,6 @@ public class EntityTransformer implements IClassTransformer{
             }
         }
 		return classToTransform;
-	}
-
-	public void patchSPacketPlayerListItem(ClassNode classNode) throws IOException 
-	{
-		String inputBase = "assets/evilnotchlib/asm/" + (FMLCorePlugin.isObf ? "srg/" : "deob/");
-		ASMHelper.addIfMethod(classNode, inputBase + "SPacketPlayerListItem", "newAddPlayerData", "(Lcom/mojang/authlib/GameProfile;ILnet/minecraft/world/GameType;Lnet/minecraft/util/text/ITextComponent;)Lnet/minecraft/network/play/server/SPacketPlayerListItem$AddPlayerData;");
 	}
 
 	public void transformSkinDL(ClassNode classNode) 
