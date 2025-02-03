@@ -43,9 +43,6 @@ public class ClientCapHooks {
 	 */
 	public static Map<UUID, Map<ResourceLocation, IClientCap>> others = new HashMap();
 	
-	public static final ResourceLocation ID_EARS = new ResourceLocation("skincaps", "ears");
-	public static final ResourceLocation ID_DINNERBONE = new ResourceLocation("skincaps", "dinnerbone");
-	
 	static
 	{
 		load();
