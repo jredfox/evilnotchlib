@@ -87,6 +87,16 @@ public class ClientCapHooks {
 			cap.read(nbt);
 	}
 	
+	public static IClientCap get(ResourceLocation loc)
+	{
+		return clientCaps.get(loc);
+	}
+	
+	public static IClientCap get(UUID uuid, ResourceLocation loc)
+	{
+		return others.containsKey(uuid) ? others.get(uuid).get(loc) : null;
+	}
+	
 	/**
 	 * Uploads all IClientCaps to the server
 	 */

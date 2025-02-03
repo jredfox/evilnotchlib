@@ -4,6 +4,8 @@ import java.io.File;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
+import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
+import com.evilnotch.lib.minecraft.capability.client.IClientCap;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
@@ -75,6 +77,14 @@ public class VanillaBugFixes {
 				NetWorkHandler.INSTANCE.sendTo(new PacketUUID(e.player.getUniqueID()), (EntityPlayerMP)e.player);
 			}
 		}
+	}
+	
+	@SubscribeEvent
+	public void debu_test(PickEvent.Block e)
+	{
+		IClientCap cap = ClientCapHooks.get(new ResourceLocation("skincaptest", "ears"));
+		cap.set(!((Boolean) cap.get()));
+		ClientCapHooks.upload();//TODO: REMOVE
 	}
 	
 	/**
