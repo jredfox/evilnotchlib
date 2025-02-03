@@ -82,16 +82,16 @@ public class VanillaBugFixes {
 	}
 	
 	//TODO: REMOVE
-	public static int i = 0;
-	@SubscribeEvent
-	public void debu_test(PickEvent.Block e)
-	{
-//		String id = ClientCapHooks.ID_EARS.toString().replace(":", "_");
-//		EntityPlayerMP mp = (EntityPlayerMP) e.player;
-//		NBTTagCompound nbt = ClientCapHooks.getLoginCap(mp).getClientCaps();
-//		nbt.setBoolean(id, !nbt.getBoolean(id));
-//		NetWorkHandler.INSTANCE.sendToTracking(new PCCapDLUpdate(mp, ClientCapHooks.ID_EARS), mp);
-	}
+//	public static int i = 0;
+//	@SubscribeEvent
+//	public void debu_test(PickEvent.Block e)
+//	{
+////		String id = ClientCapHooks.ID_EARS.toString().replace(":", "_");
+////		EntityPlayerMP mp = (EntityPlayerMP) e.player;
+////		NBTTagCompound nbt = ClientCapHooks.getLoginCap(mp).getClientCaps();
+////		nbt.setBoolean(id, !nbt.getBoolean(id));
+////		NetWorkHandler.INSTANCE.sendToTracking(new PCCapDLUpdate(mp, ClientCapHooks.ID_EARS), mp);
+//	}
 	
 	/**
 	 * Sync your player skin with yourself and all players tracking you.

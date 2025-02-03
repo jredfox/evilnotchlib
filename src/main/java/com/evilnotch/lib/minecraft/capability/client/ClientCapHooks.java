@@ -45,6 +45,7 @@ public class ClientCapHooks {
 	public static Map<UUID, Map<ResourceLocation, IClientCap>> others = new HashMap();
 	
 	public static final ResourceLocation ID_EARS = new ResourceLocation("skincaptest", "ears");
+	public static final ResourceLocation ID_DINNERBONE = new ResourceLocation("skincaptest", "dinnerbone");
 	
 	static
 	{
@@ -65,7 +66,7 @@ public class ClientCapHooks {
 	{
 		register(new LoginHookClient());
 		register(new ClientCap(ID_EARS, true));
-		register(new ClientCap(new ResourceLocation("skincaptest", "dinnerbone"), false));
+		register(new ClientCap(ID_DINNERBONE, false));
 	}
 	
 	public static NBTTagCompound login()
@@ -114,6 +115,22 @@ public class ClientCapHooks {
 	public static IClientCap get(UUID uuid, ResourceLocation loc)
 	{
 		return others.containsKey(uuid) ? others.get(uuid).get(loc) : null;
+	}
+	
+	/**
+	 * Sets IClientCap of any Player
+	 */
+	public static void set(EntityPlayer p, ResourceLocation loc, Object o)
+	{
+		get(p, loc).set(o);
+	}
+	
+	/**
+	 * Sets the IClientCap of your Player
+	 */
+	public static void set(ResourceLocation loc, Object o)
+	{
+		get(loc).set(o);
 	}
 	
 	/**
