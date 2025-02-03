@@ -221,7 +221,7 @@ public class VanillaBugFixes {
 	 * fix heads being on backwards when you start tracking a player
 	 */
 	 @SubscribeEvent(priority=EventPriority.HIGH)
-	public void headFix(PlayerEvent.StartTracking e)
+	public void track(PlayerEvent.StartTracking e)
 	{
 		if(!(e.getTarget() instanceof EntityPlayerMP))
 			return;
