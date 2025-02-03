@@ -13,12 +13,17 @@ public class LoginCap implements ICapability<EntityPlayerMP> {
 	public NBTTagCompound nbt;
 	public LoginCap(NBTTagCompound nbt)
 	{
-		this.nbt = nbt;
+		this.nbt = nbt != null ? nbt : new NBTTagCompound();
 	}
 	
 	public NBTTagCompound get(ResourceLocation id)
 	{
-		return this.nbt.getCompoundTag(id.toString().replace(":", "_"));
+		String strId = id.toString().replace(":", "_");
+		//Prevent Dis-Attatched NBTTagCompound Editing
+		if(!this.nbt.hasKey(strId, 10))
+			this.nbt.setTag(strId, new NBTTagCompound());
+		
+		return this.nbt.getCompoundTag(strId);
 	}
 	
 	public NBTTagCompound getClientCaps()

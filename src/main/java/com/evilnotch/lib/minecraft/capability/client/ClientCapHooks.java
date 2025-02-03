@@ -38,7 +38,7 @@ public class ClientCapHooks {
 	 */
 	public static Map<ResourceLocation, IClientCap> clientCaps = new LinkedHashMap<>();
 	/**
-	 * Player to Client Capabilities for yourself and others
+	 * Player to Client Capabilities for other players
 	 */
 	public static Map<UUID, Map<ResourceLocation, IClientCap>> others = new HashMap();
 	

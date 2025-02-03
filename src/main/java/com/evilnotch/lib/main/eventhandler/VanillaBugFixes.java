@@ -79,6 +79,7 @@ public class VanillaBugFixes {
 		}
 	}
 	
+	//TODO: REMOVE
 	public static int i = 0;
 	@SubscribeEvent
 	public void debu_test(PickEvent.Block e)
