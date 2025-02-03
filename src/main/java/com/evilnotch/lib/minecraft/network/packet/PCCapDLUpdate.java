@@ -11,20 +11,28 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-public class PCCapDownload implements IMessage {
+public class PCCapDLUpdate implements IMessage {
 	
 	public UUID uuid;
 	public NBTTagCompound nbt;
 	
-	public PCCapDownload(){}
+	public PCCapDLUpdate(){}
 	
-	public PCCapDownload(EntityPlayerMP p)
+	public PCCapDLUpdate(EntityPlayerMP p, ResourceLocation... ids)
 	{
 		this.uuid = p.getGameProfile().getId();
 		LoginCap login = ClientCapHooks.getLoginCap(p);
-		this.nbt = login.getClientCaps();
+		NBTTagCompound loginNBT = login.getClientCaps();
+		this.nbt = new NBTTagCompound();
+		for(ResourceLocation id : ids)
+		{
+			String key = id.toString().replace(":", "_");
+			if(loginNBT.hasKey(key))
+				this.nbt.setTag(key, loginNBT.getTag(key));
+		}
 	}
 	
 	@Override

@@ -123,6 +123,9 @@ public class ClientCapHooks {
 		others.put(uuid, caps);
 	}
 	
+	/**
+	 * Downloads specified IClientCaps without wiping previous data
+	 */
 	public static void downloadUpdate(UUID uuid, NBTTagCompound nbt)
 	{
 		Map<ResourceLocation, IClientCap> caps = others.get(uuid);

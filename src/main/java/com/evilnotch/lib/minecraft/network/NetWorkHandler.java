@@ -3,6 +3,7 @@ package com.evilnotch.lib.minecraft.network;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.network.packet.PCCapDownload;
 import com.evilnotch.lib.minecraft.network.packet.PCCapUpload;
+import com.evilnotch.lib.minecraft.network.packet.PCCapDLUpdate;
 import com.evilnotch.lib.minecraft.network.packet.PacketClipBoard;
 import com.evilnotch.lib.minecraft.network.packet.PacketHand;
 import com.evilnotch.lib.minecraft.network.packet.PacketPickBlock;
@@ -16,6 +17,7 @@ import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawOffset;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawPitch;
+import com.evilnotch.lib.minecraft.network.packet.handler.PCCapDLUpdateHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PCCapDownloadHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PCCapUploadHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketClipBoardHandler;
@@ -54,6 +56,7 @@ public class NetWorkHandler {
 		registerMessage(PacketHandHandler.class, PacketHand.class, Side.CLIENT);
 		registerMessage(PacketSkinHandler.class, PacketSkin.class, Side.CLIENT);
 		registerMessage(PCCapDownloadHandler.class, PCCapDownload.class, Side.CLIENT);
+		registerMessage(PCCapDLUpdateHandler.class, PCCapDLUpdate.class, Side.CLIENT);
 		
 		//to server
 		registerMessage(PacketRequestSeedHandler.class, PacketRequestSeed.class, Side.SERVER);

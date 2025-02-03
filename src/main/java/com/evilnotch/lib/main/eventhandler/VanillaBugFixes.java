@@ -12,6 +12,7 @@ import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PCCapDownload;
+import com.evilnotch.lib.minecraft.network.packet.PCCapDLUpdate;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
@@ -82,9 +83,8 @@ public class VanillaBugFixes {
 	@SubscribeEvent
 	public void debu_test(PickEvent.Block e)
 	{
-		IClientCap cap = ClientCapHooks.get(new ResourceLocation("skincaptest", "ears"));
-		cap.set(!((Boolean) cap.get()));
-		ClientCapHooks.upload();//TODO: REMOVE
+		ResourceLocation id = new ResourceLocation("skincaptest", "ears");
+		NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PCCapDLUpdate((EntityPlayerMP) e.player, id), (EntityPlayerMP) e.player);
 	}
 	
 	/**
