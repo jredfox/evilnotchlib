@@ -158,8 +158,10 @@ public class SkinCache {
 	{
 		SkinEntry current = this.getSkinEntry(user);
 		//Download the offline SkinEntry from the cache if applicable
-		if(select && !this.isMojangOnline())
+		if(select && !this.isMojangOnline()) {
 			this.offlineRefreshQue.put(user, true);
+			this.paused = false;
+		}
 		this.addQue(user, select);
 		return current;
 	}
@@ -195,6 +197,7 @@ public class SkinCache {
 		synchronized (this.refreshque)
 		{
 			this.refreshque.put(user.toLowerCase(), select);
+			this.paused = false;
 		}
 	}
 	
@@ -229,6 +232,7 @@ public class SkinCache {
 	
 	public Thread refreshThread = null;
 	public volatile boolean running;
+	public volatile boolean paused;
 	public void start()
 	{
 		if(this.refreshThread == null)
@@ -312,7 +316,17 @@ public class SkinCache {
 						this.saveSafely();
 					}
 					if(this.running)
-						JavaUtil.sleep(Config.skinCacheMs);
+					{
+						this.paused = true;
+						long ms = Config.skinCacheMs;
+						while(this.paused && ms > 0L)
+						{
+							long z = Math.min(ms, 250L);
+							ms -= z;
+							JavaUtil.sleep(z);
+						}
+						this.paused = false;
+					}
 				}
 				this.refreshThread = null;
 			});

@@ -27,7 +27,7 @@ public class Config {
 	public static int skinCacheHours = 48;
 	public static int skinCacheFast = 20;
 	public static long skinCacheMs = 1800;
-	public static long stopSteveMs = 4500;
+	public static long stopSteveMs = 2800;
 	public static boolean skinVanillaPackets = false;
 	
 	/**
