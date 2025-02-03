@@ -15,6 +15,7 @@ import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.main.skin.IStopSteve;
 import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
+import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.command.client.ClientUUID;
 import com.evilnotch.lib.minecraft.event.client.UUIDChangeEvent;
@@ -92,8 +93,6 @@ public class ClientProxy extends ServerProxy{
 	{
 		clearClientData();
 		MainJava.proxy.handleUUIDChange(new PacketUUID(ClientProxy.org.org));//Undo UUID Changes done from connecting to a server
-		StopSteve.m =  0;
-		StopSteve.m2 = 0;
 	}
 	
 	public static void clearClientData()
@@ -101,6 +100,9 @@ public class ClientProxy extends ServerProxy{
 		TickRegistry.garbageCollectClient();
 		Seeds.clearSeeds();
 		IgnoreTilePacket.ignoreTiles.clear();
+		StopSteve.m =  0;
+		StopSteve.m2 = 0;
+		ClientCapHooks.others.clear();
 		System.out.println("disconnecting..........................");
 	}
 

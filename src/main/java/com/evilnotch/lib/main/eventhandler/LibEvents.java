@@ -12,6 +12,7 @@ import com.evilnotch.lib.minecraft.event.client.MessageEvent;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -42,7 +43,7 @@ public class LibEvents {
 		 TickRegistry.tickServer(e.phase);
 	 }
 	 
-	 @SubscribeEvent
+	 @SubscribeEvent(priority = EventPriority.HIGH)
 	 public void syncCaps(PlayerEvent.Clone event)
 	 {
 		 EntityPlayer original = event.getOriginal();

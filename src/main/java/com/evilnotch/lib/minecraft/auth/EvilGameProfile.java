@@ -13,9 +13,13 @@ public class EvilGameProfile extends GameProfile {
 	 */
 	public UUID org;
 	/**
-	 * The NBTTagCompound of the player during login it's cached so it doesn't get parsed multiple times
+	 * The TEMP NBTTagCompound of the player during login it's cached so it doesn't get parsed multiple times
 	 */
 	public NBTTagCompound login;
+	/**
+	 * The TEMP NBTTagCompound of login hooks and client capabilities
+	 */
+	public NBTTagCompound clientCaps;
 
 	public EvilGameProfile(UUID id, String name) 
 	{
@@ -27,6 +31,14 @@ public class EvilGameProfile extends GameProfile {
 	{
 		super(id, old.getName());
 		this.getProperties().putAll(old.getProperties());
-		this.org = old instanceof EvilGameProfile ? ((EvilGameProfile)old).org : old.getId();
+		if(old instanceof EvilGameProfile)
+		{
+			EvilGameProfile ep = (EvilGameProfile) old;
+			this.org =        ep.org;
+			this.login =  	  ep.login;
+			this.clientCaps = ep.clientCaps;
+		}
+		else
+			this.org = old.getId();
 	}
 }

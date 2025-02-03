@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.main.skin.SkinEvent.GameProfileEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
@@ -26,7 +27,7 @@ public class UUIDPatcher {
 
 	public static GameProfile patch(GameProfile old) 
 	{
-		String user = old.getName();
+		String user = old.getName().toLowerCase();
 		UUID id = getUUID(old);
 		UUID cached = getCachedUUID(id, user);
 		if(cached != null && !id.equals(cached))
@@ -168,6 +169,15 @@ public class UUIDPatcher {
 		SkinEvent.GameProfileEvent e = new GameProfileEvent(profile);
 		MinecraftForge.EVENT_BUS.post(e);
 		e.update();
+	}
+	
+	/**
+	 * Sets the TMP LoginHook's NBT to the GameProfile
+	 */
+	public static void setLoginHooks(GameProfile profile, NBTTagCompound nbt)
+	{
+		if(profile instanceof EvilGameProfile)
+			((EvilGameProfile)profile).clientCaps = nbt;
 	}
 	
 }

@@ -3,12 +3,16 @@ package com.evilnotch.lib.main.eventhandler;
 import java.io.File;
 
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.capability.LoginCap;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
+import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
+import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packet.PacketClientHooks;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
@@ -67,6 +71,7 @@ public class VanillaBugFixes {
 		if(prof instanceof EvilGameProfile)
 		{
 			EvilGameProfile profile = (EvilGameProfile)prof;
+			System.out.println("login fired of:" + prof.getName());
 			profile.login = null;//clear the login cache NBT as we are now fully logged in
 			if(!profile.org.equals(profile.getId()))
 			{
@@ -211,8 +216,10 @@ public class VanillaBugFixes {
 	{
 		if(!(e.getTarget() instanceof EntityPlayerMP))
 			return;
+		System.out.println("tracking fired of targ:" + e.getTarget().getName() + " I am:" + e.getEntityPlayer().getName());
 		EntityPlayerMP targ = (EntityPlayerMP) e.getTarget();
 		NetWorkHandler.INSTANCE.sendTo(new PacketYawHead(targ.getRotationYawHead(),targ.getEntityId()), (EntityPlayerMP)e.getEntityPlayer());
+		NetWorkHandler.INSTANCE.sendTo(new PacketClientHooks(targ), (EntityPlayerMP) e.getEntityPlayer());
 	}
 	
 	/**
