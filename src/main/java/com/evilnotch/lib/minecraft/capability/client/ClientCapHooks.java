@@ -178,6 +178,48 @@ public class ClientCapHooks {
 		}
 	}
 	
+	public static boolean getBoolean(EntityPlayer p, ResourceLocation loc) 
+	{
+		IClientCap<Boolean> c = get(p, loc);
+		return c != null && c.get();
+	}
+	
+	public static String getString(EntityPlayer p, ResourceLocation loc) 
+	{
+		IClientCap<String> c = get(p, loc);
+		return c != null ? c.get() : "";
+	}
+	
+	public static long getLong(EntityPlayer p, ResourceLocation loc) 
+	{
+		IClientCap<Long> c = get(p, loc);
+		return c != null ? c.get() : 0L;
+	}
+	
+	public static int getInt(EntityPlayer p, ResourceLocation loc) 
+	{
+		IClientCap<Integer> c = get(p, loc);
+		return c != null ? c.get() : 0;
+	}
+	
+	public static short getShort(EntityPlayer p, ResourceLocation loc) 
+	{
+		IClientCap<Short> c = get(p, loc);
+		return c != null ? c.get() : 0;
+	}
+	
+	public static double getDouble(EntityPlayer p, ResourceLocation loc) 
+	{
+		IClientCap<Double> c = get(p, loc);
+		return c != null ? c.get() : 0D;
+	}
+	
+	public static float getFloat(EntityPlayer p, ResourceLocation loc) 
+	{
+		IClientCap<Float> c = get(p, loc);
+		return c != null ? c.get() : 0F;
+	}
+	
 	public static LoginCap getLoginCap(EntityPlayerMP p)
 	{
 		return (LoginCap) CapabilityRegistry.getCapability(p, ID_LOGIN);
