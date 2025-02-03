@@ -4,17 +4,20 @@ import java.io.File;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
+import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packet.PCCapDLUpdate;
 import com.evilnotch.lib.minecraft.network.packet.PCCapDownload;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
+import com.jredfox.skincaps.SkinCaps;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
@@ -78,16 +81,16 @@ public class VanillaBugFixes {
 	}
 	
 	//TODO: REMOVE
-//	public static int i = 0;
-//	@SubscribeEvent
-//	public void debu_test(PickEvent.Block e)
-//	{
-////		String id = ClientCapHooks.ID_EARS.toString().replace(":", "_");
-////		EntityPlayerMP mp = (EntityPlayerMP) e.player;
-////		NBTTagCompound nbt = ClientCapHooks.getLoginCap(mp).getClientCaps();
-////		nbt.setBoolean(id, !nbt.getBoolean(id));
-////		NetWorkHandler.INSTANCE.sendToTracking(new PCCapDLUpdate(mp, ClientCapHooks.ID_EARS), mp);
-//	}
+	public static int i = 0;
+	@SubscribeEvent
+	public void debu_test(PickEvent.Block e)
+	{
+		String id = ClientCapHooks.convertID(SkinCaps.ID_EARS);
+		EntityPlayerMP mp = (EntityPlayerMP) e.player;
+		NBTTagCompound nbt = ClientCapHooks.getLoginCap(mp).getClientCaps();
+		nbt.setBoolean(id, !nbt.getBoolean(id));
+		NetWorkHandler.INSTANCE.sendToTracking(new PCCapDLUpdate(mp, SkinCaps.ID_EARS), mp);
+	}
 	
 	/**
 	 * Sync your player skin with yourself and all players tracking you.

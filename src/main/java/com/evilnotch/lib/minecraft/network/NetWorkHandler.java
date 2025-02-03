@@ -21,7 +21,7 @@ import com.evilnotch.lib.minecraft.network.packet.PacketYawPitch;
 import com.evilnotch.lib.minecraft.network.packet.handler.PCCapDLUpdateHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PCCapDownloadHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PCCapUploadHandler;
-import com.evilnotch.lib.minecraft.network.packet.handler.PCCapUploadUpdateHanlder;
+import com.evilnotch.lib.minecraft.network.packet.handler.PCCapUploadUpdateHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketClipBoardHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketHandHandler;
 import com.evilnotch.lib.minecraft.network.packet.handler.PacketPickBlockHandler;
@@ -66,7 +66,7 @@ public class NetWorkHandler {
 		registerMessage(PacketPickEntityHandler.class, PacketPickEntity.class, Side.SERVER);
 		registerMessage(PacketSkinChangeHandler.class, PacketSkinChange.class, Side.SERVER);
 		registerMessage(PCCapUploadHandler.class, PCCapUpload.class, Side.SERVER);
-		registerMessage(PCCapUploadUpdateHanlder.class, PCCapUploadUpdate.class, Side.SERVER);
+		registerMessage(PCCapUploadUpdateHandler.class, PCCapUploadUpdate.class, Side.SERVER);
 	}
 	
 	public static void registerMessage(Class handler, Class packet, Side side)

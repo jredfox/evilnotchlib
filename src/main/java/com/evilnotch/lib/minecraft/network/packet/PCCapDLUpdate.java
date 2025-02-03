@@ -36,7 +36,7 @@ public class PCCapDLUpdate implements IMessage {
 		{
 			if(id == null) 
 				continue;
-			String key = id.toString().replace(":", "_");
+			String key = ClientCapHooks.convertID(id);
 			if(loginNBT.hasKey(key))
 				this.nbt.setTag(key, loginNBT.getTag(key));
 		}

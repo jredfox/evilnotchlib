@@ -10,7 +10,7 @@ import com.evilnotch.lib.minecraft.network.packet.PCCapUploadUpdate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class PCCapUploadUpdateHanlder extends MessegeBase<PCCapUploadUpdate> {
+public class PCCapUploadUpdateHandler extends MessegeBase<PCCapUploadUpdate> {
 
 	@Override
 	public void handleServerSide(PCCapUploadUpdate message, EntityPlayer player) 

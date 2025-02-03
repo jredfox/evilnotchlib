@@ -106,7 +106,7 @@ public class ClientCap<T> implements IClientCap<T> {
 	@Override
 	public void write(NBTTagCompound nbt) 
 	{
-		String id = this.getId().toString().replace(":", "_");
+		String id = ClientCapHooks.convertID(this.getId());
 		switch(this.type)
 		{
 			case STRING:
@@ -142,7 +142,7 @@ public class ClientCap<T> implements IClientCap<T> {
 	@Override
 	public void read(NBTTagCompound nbt)
 	{
-		String id = this.getId().toString().replace(":", "_");
+		String id = ClientCapHooks.convertID(this.getId());
 		switch(this.type)
 		{
 			case STRING:
@@ -178,7 +178,7 @@ public class ClientCap<T> implements IClientCap<T> {
 	@Override
 	public IClientCap<T> clone(NBTTagCompound nbt) 
 	{
-		String idKey = this.getId().toString().replace(":", "_");
+		String idKey = ClientCapHooks.convertID(this.getId());
 		switch(this.type)
 		{
 			case STRING:

@@ -18,7 +18,7 @@ public class LoginCap implements ICapability<EntityPlayerMP> {
 	
 	public NBTTagCompound get(ResourceLocation id)
 	{
-		String strId = id.toString().replace(":", "_");
+		String strId = ClientCapHooks.convertID(id);
 		//Prevent Dis-Attatched NBTTagCompound Editing
 		if(!this.nbt.hasKey(strId, 10))
 			this.nbt.setTag(strId, new NBTTagCompound());
@@ -33,7 +33,7 @@ public class LoginCap implements ICapability<EntityPlayerMP> {
 	
 	public void set(ResourceLocation id, NBTTagCompound nbt) 
 	{
-		this.nbt.setTag(id.toString().replace(":", "_"), nbt);
+		this.nbt.setTag(ClientCapHooks.convertID(id).replace(":", "_"), nbt);
 	}
 	
 	public void setClientCaps(NBTTagCompound nbt)

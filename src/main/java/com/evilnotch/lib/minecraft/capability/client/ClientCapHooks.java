@@ -70,7 +70,7 @@ public class ClientCapHooks {
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
 			h.write(nbt);
-			root.setTag(h.getId().toString().replace(":", "_"), nbt);
+			root.setTag(convertID(h.getId()), nbt);
 		}
 		return root;
 	}
@@ -171,13 +171,12 @@ public class ClientCapHooks {
 	{
 		for(String k : nbt.getKeySet())
 		{
-			String[] arr = k.split("_", 2);
-			if(arr.length < 2)
+			ResourceLocation id = convertID(k);
+			if(k == null)
 			{
 				System.err.println("Client Recieved Maulformed Update IClientCap Tag:" + k);
 				continue;
 			}
-			ResourceLocation id = new ResourceLocation(arr[0], arr[1]);
 			IClientCap cap = clientCaps.get(id);
 			if(cap != null)
 				caps.put(id, cap.clone(nbt));
@@ -240,6 +239,17 @@ public class ClientCapHooks {
 	{
 		if(profile instanceof EvilGameProfile)
 			CapabilityRegistry.getCapContainer(player).registerCapability(ID_LOGIN, new LoginCap(((EvilGameProfile)profile).clientCaps));
+	}
+	
+	public static ResourceLocation convertID(String key)
+	{
+		String[] arr = key.split("_", 2);
+		return arr.length >= 2 ? new ResourceLocation(arr[0], arr[1]) : null;
+	}
+	
+	public static String convertID(ResourceLocation id)
+	{
+		return id.toString().replace(":", "_");
 	}
 	
 	public static NBTTagCompound readNBT(PacketBuffer buf)
