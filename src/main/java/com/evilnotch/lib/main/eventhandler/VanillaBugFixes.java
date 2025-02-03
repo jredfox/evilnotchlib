@@ -6,11 +6,13 @@ import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.capability.client.ClientCap;
 import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
+import com.evilnotch.lib.minecraft.capability.client.IClientCap;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packet.PCCapDLUpdate;
 import com.evilnotch.lib.minecraft.network.packet.PCCapDownload;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
@@ -84,10 +86,11 @@ public class VanillaBugFixes {
 	@SubscribeEvent
 	public void debu_test(PickEvent.Block e)
 	{
-		ResourceLocation id = new ResourceLocation("skincaptest", "ears_" + i++);
-		ClientCapHooks.register(new ClientCap(id, true));
-		ClientCapHooks.uploadUpdate(id);
-//		NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PCCapDLUpdate((EntityPlayerMP) e.player, id), (EntityPlayerMP) e.player);
+//		String id = ClientCapHooks.ID_EARS.toString().replace(":", "_");
+//		EntityPlayerMP mp = (EntityPlayerMP) e.player;
+//		NBTTagCompound nbt = ClientCapHooks.getLoginCap(mp).getClientCaps();
+//		nbt.setBoolean(id, !nbt.getBoolean(id));
+//		NetWorkHandler.INSTANCE.sendToTracking(new PCCapDLUpdate(mp, ClientCapHooks.ID_EARS), mp);
 	}
 	
 	/**

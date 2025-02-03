@@ -44,6 +44,8 @@ public class ClientCapHooks {
 	 */
 	public static Map<UUID, Map<ResourceLocation, IClientCap>> others = new HashMap();
 	
+	public static final ResourceLocation ID_EARS = new ResourceLocation("skincaptest", "ears");
+	
 	static
 	{
 		load();
@@ -62,7 +64,7 @@ public class ClientCapHooks {
 	public static void load()
 	{
 		register(new LoginHookClient());
-		register(new ClientCap(new ResourceLocation("skincaptest", "ears"), true));
+		register(new ClientCap(ID_EARS, true));
 		register(new ClientCap(new ResourceLocation("skincaptest", "dinnerbone"), false));
 	}
 	
