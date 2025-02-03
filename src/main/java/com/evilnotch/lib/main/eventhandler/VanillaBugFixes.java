@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
+import com.evilnotch.lib.minecraft.capability.client.ClientCap;
 import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.capability.client.IClientCap;
 import com.evilnotch.lib.minecraft.event.PickEvent;
@@ -80,11 +81,14 @@ public class VanillaBugFixes {
 		}
 	}
 	
+	public static int i = 0;
 	@SubscribeEvent
 	public void debu_test(PickEvent.Block e)
 	{
-		ResourceLocation id = new ResourceLocation("skincaptest", "ears");
-		NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PCCapDLUpdate((EntityPlayerMP) e.player, id), (EntityPlayerMP) e.player);
+		ResourceLocation id = new ResourceLocation("skincaptest", "ears_" + i++);
+		ClientCapHooks.register(new ClientCap(id, true));
+		ClientCapHooks.uploadUpdate(id);
+//		NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PCCapDLUpdate((EntityPlayerMP) e.player, id), (EntityPlayerMP) e.player);
 	}
 	
 	/**

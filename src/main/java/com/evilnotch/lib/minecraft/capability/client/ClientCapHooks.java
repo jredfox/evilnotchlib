@@ -12,6 +12,7 @@ import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PCCapUpload;
+import com.evilnotch.lib.minecraft.network.packet.PCCapUploadUpdate;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -108,9 +109,9 @@ public class ClientCapHooks {
 	/**
 	 * Uploads only specified IClientCaps to the server
 	 */
-	public static void upload(ResourceLocation... ids)
+	public static void uploadUpdate(ResourceLocation... ids)
 	{
-		//TODO:
+		NetWorkHandler.INSTANCE.sendToServer(new PCCapUploadUpdate(ids));
 	}
 	
 	/**
