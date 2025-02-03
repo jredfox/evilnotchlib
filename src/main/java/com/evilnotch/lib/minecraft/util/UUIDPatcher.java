@@ -26,7 +26,7 @@ public class UUIDPatcher {
 
 	public static GameProfile patch(GameProfile old) 
 	{
-		String user = old.getName().toLowerCase();
+		String user = old.getName();
 		UUID id = getUUID(old);
 		UUID cached = getCachedUUID(id, user);
 		if(cached != null && !id.equals(cached))
@@ -50,7 +50,7 @@ public class UUIDPatcher {
 	 */
     public static UUID getCachedUUID(UUID id, String user)
     {
-		File u = new File(VanillaBugFixes.playerDataNames, user + ".dat");
+		File u = new File(VanillaBugFixes.playerDataNames, user.toLowerCase() + ".dat");
 		if(!u.exists())
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
