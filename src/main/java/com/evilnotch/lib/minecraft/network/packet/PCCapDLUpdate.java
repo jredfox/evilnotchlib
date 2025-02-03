@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import com.evilnotch.lib.main.capability.LoginCap;
 import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
-import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
