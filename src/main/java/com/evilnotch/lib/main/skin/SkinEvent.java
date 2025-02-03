@@ -81,7 +81,7 @@ public class SkinEvent extends Event {
 	/**
 	 * Fires on the SkinCache Downloading Thread Right before the Skin Is Selected
 	 * Use this to update capes and skin urls and override the player model (slim or default). 
-	 * Call {@link SkinCache#INSTANCE#getOrDownload(String, boolean)} to get a SkinEntry during this event
+	 * Call {@link SkinCache#INSTANCE#getOrDownload(String)} to get a SkinEntry during this event
 	 */
 	public static class Capability extends SkinEvent
 	{

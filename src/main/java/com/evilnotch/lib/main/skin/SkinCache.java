@@ -41,7 +41,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * SkinCache Model is Client to the Server Base. However SkinEvent#GameProfileEvent fires on the SERVER Side 
- * Which Allows Custom Server Only Logic Like Loading the SkinCache {@link SkinCache#getInstance()} and then Calling link SkinCache#getOrDownload(SkinEntry, String)}
+ * Which Allows Custom Server Only Logic Like Loading the SkinCache {@link SkinCache#getInstance()} and then Calling link SkinCache#getOrDownload(String)}
  * Followed by {@link SkinCache#save()} allowing for the servers to replace patch or modify the clients skin requests. 
  * Just Note that it's a Strain on the server to Download skins and can lag the main server so please don't do this unless required.
  * Skin Patching could be done Via MultiThreading and then Sync the changes when done but will be seconds out of sync and will flash between two skins
@@ -338,13 +338,13 @@ public class SkinCache {
 	/**
 	 * Call this when SkinEvent.Capability Fires
 	 */
-	public SkinEntry getOrDownload(SkinEntry skin, String user)
+	public SkinEntry getOrDownload(String user)
 	{
 		user = user.toLowerCase();
 		
 		//Sanity Check
 		if(user.trim().isEmpty())
-			return skin;
+			return EMPTY;
 		
 		SkinEntry cached = this.getSkinEntry(user);
 		boolean shouldDL = cached.isEmpty || this.isOnline && this.hasExpiredFast(cached);
