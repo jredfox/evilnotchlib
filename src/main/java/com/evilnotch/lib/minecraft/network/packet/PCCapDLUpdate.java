@@ -20,6 +20,12 @@ public class PCCapDLUpdate implements IMessage {
 	
 	public PCCapDLUpdate(){}
 	
+	public PCCapDLUpdate(EntityPlayerMP p, NBTTagCompound toUpdate)
+	{
+		this.uuid = p.getUniqueID();
+		this.nbt = toUpdate != null ? toUpdate : new NBTTagCompound();
+	}
+	
 	public PCCapDLUpdate(EntityPlayerMP p, ResourceLocation... ids)
 	{
 		this.uuid = p.getGameProfile().getId();
@@ -28,6 +34,8 @@ public class PCCapDLUpdate implements IMessage {
 		this.nbt = new NBTTagCompound();
 		for(ResourceLocation id : ids)
 		{
+			if(id == null) 
+				continue;
 			String key = id.toString().replace(":", "_");
 			if(loginNBT.hasKey(key))
 				this.nbt.setTag(key, loginNBT.getTag(key));

@@ -22,6 +22,8 @@ public class PCCapUploadUpdate implements IMessage {
 		NBTTagCompound n = new NBTTagCompound();
 		for(ResourceLocation id : ids)
 		{
+			if(id == null)
+				continue;
 			IClientCap cap = ClientCapHooks.get(id);
 			if(cap != null)
 				cap.write(n);

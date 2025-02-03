@@ -15,6 +15,8 @@ import com.evilnotch.lib.minecraft.network.packet.PCCapUpload;
 import com.evilnotch.lib.minecraft.network.packet.PCCapUploadUpdate;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -88,11 +90,25 @@ public class ClientCapHooks {
 			cap.read(nbt);
 	}
 	
+	/**
+	 * Get Automatically IClientCap of Player regardless of self or other
+	 */
+	public static IClientCap get(EntityPlayer p, ResourceLocation loc)
+	{
+		return p == Minecraft.getMinecraft().player ? get(loc) : get(p.getUniqueID(), loc);//TODO: proxify this
+	}
+	
+	/**
+	 * Get IClientCap of your current Player
+	 */
 	public static IClientCap get(ResourceLocation loc)
 	{
 		return clientCaps.get(loc);
 	}
 	
+	/**
+	 * Get IClientCap of EntityOtherPlayerMP
+	 */
 	public static IClientCap get(UUID uuid, ResourceLocation loc)
 	{
 		return others.containsKey(uuid) ? others.get(uuid).get(loc) : null;
@@ -143,6 +159,11 @@ public class ClientCapHooks {
 		for(String k : nbt.getKeySet())
 		{
 			String[] arr = k.split("_", 2);
+			if(arr.length < 2)
+			{
+				System.err.println("Client Recieved Maulformed Update IClientCap Tag:" + k);
+				continue;
+			}
 			ResourceLocation id = new ResourceLocation(arr[0], arr[1]);
 			IClientCap cap = clientCaps.get(id);
 			if(cap != null)
