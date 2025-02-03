@@ -67,6 +67,7 @@ public class ServerProxy {
 	public String getUsername() {return null;}
 	public boolean isClient() {return false;}
 	public boolean isClient(EntityPlayer p) { return false; }
+	public void d(float height) {}
 	
 	
 }

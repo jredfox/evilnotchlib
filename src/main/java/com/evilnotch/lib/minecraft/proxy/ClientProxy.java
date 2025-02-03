@@ -34,6 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerLoginClient;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.entity.player.EntityPlayer;
@@ -216,6 +217,13 @@ public class ClientProxy extends ServerProxy{
 	public boolean isClient(EntityPlayer p)
 	{
 		return p == Minecraft.getMinecraft().player;
+	}
+	
+	@Override
+	public void d(float height)
+	{
+        GlStateManager.translate(0.0F, height + 0.1F, 0.0F);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 	}
 	
 	@Override
