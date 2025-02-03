@@ -264,7 +264,7 @@ public class SkinCache {
 								boolean selected = m.getValue();
 								String user_org = m.getKey();
 								this.lu = user_org;
-								String user = selected ? SkinEvent.User.fire(user_org) : user_org;
+								String user = selected ? SkinEvent.User.fire(user_org) : user_org.toLowerCase();
 								SkinEntry cached = this.getSkinEntry(user);
 	
 								SkinEntry dl = this.downloadSkin(user, cached);
@@ -342,8 +342,8 @@ public class SkinCache {
 	{
 		user = user.toLowerCase();
 		
-		//Don't redownload or fetched outdated cached skin if we know that the downloaded skin is the skin we are trying to use
-		if(user.isEmpty() || skin.user.equals(user) )
+		//Sanity Check
+		if(user.trim().isEmpty())
 			return skin;
 		
 		SkinEntry cached = this.getSkinEntry(user);
