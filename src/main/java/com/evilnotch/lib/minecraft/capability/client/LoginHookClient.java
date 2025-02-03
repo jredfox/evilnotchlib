@@ -3,8 +3,6 @@ package com.evilnotch.lib.minecraft.capability.client;
 import com.evilnotch.lib.main.MainJava;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.login.client.CPacketLoginStart;
 import net.minecraft.util.ResourceLocation;
 
 public class LoginHookClient implements ILoginHook {

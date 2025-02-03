@@ -16,14 +16,24 @@ public class LoginCap implements ICapability<EntityPlayerMP> {
 		this.nbt = nbt;
 	}
 	
+	public NBTTagCompound get(ResourceLocation id)
+	{
+		return this.nbt.getCompoundTag(id.toString().replace(":", "_"));
+	}
+	
 	public NBTTagCompound getClientCaps()
 	{
 		return this.get(ClientCapHooks.ID_CLIENTCAPS);
 	}
 	
-	public NBTTagCompound get(ResourceLocation id)
+	public void set(ResourceLocation id, NBTTagCompound nbt) 
 	{
-		return this.nbt.getCompoundTag(id.toString().replace(":", "_"));
+		this.nbt.setTag(id.toString().replace(":", "_"), nbt);
+	}
+	
+	public void setClientCaps(NBTTagCompound nbt)
+	{
+		this.set(ClientCapHooks.ID_CLIENTCAPS, nbt);
 	}
 
 	@Override

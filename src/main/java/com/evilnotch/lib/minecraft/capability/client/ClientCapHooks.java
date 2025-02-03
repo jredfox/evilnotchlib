@@ -10,6 +10,8 @@ import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.LoginCap;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
+import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packet.PCCapUpload;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -54,7 +56,7 @@ public class ClientCapHooks {
 		clientCaps.put(cap.getId(), cap);
 	}
 	
-	public static void load() 
+	public static void load()
 	{
 		register(new LoginHookClient());
 		register(new ClientCap(new ResourceLocation("skincaptest", "ears"), true));
@@ -85,9 +87,45 @@ public class ClientCapHooks {
 			cap.read(nbt);
 	}
 	
-	public static void registerPlayer(UUID uuid, NBTTagCompound nbt) 
+	/**
+	 * Uploads all IClientCaps to the server
+	 */
+	public static void upload()
+	{
+		NetWorkHandler.INSTANCE.sendToServer(new PCCapUpload(null));
+	}
+	
+	/**
+	 * Uploads only specified IClientCaps to the server
+	 */
+	public static void upload(ResourceLocation... ids)
+	{
+		//TODO:
+	}
+	
+	/**
+	 * Downloads all IClientCaps wiping previous data of the other user
+	 */
+	public static void download(UUID uuid, NBTTagCompound nbt)
 	{
 		Map<ResourceLocation, IClientCap> caps = new HashMap();
+		dlup(caps, nbt);
+		others.put(uuid, caps);
+	}
+	
+	public static void downloadUpdate(UUID uuid, NBTTagCompound nbt)
+	{
+		Map<ResourceLocation, IClientCap> caps = others.get(uuid);
+		if(caps == null) {
+			System.err.println("Error Invalid Update IClientCaps UUID:" + uuid);
+			caps = new HashMap();
+			others.put(uuid, caps);
+		}
+		dlup(caps, nbt);
+	}
+	
+	private static void dlup(Map<ResourceLocation, IClientCap> caps, NBTTagCompound nbt) 
+	{
 		for(String k : nbt.getKeySet())
 		{
 			String[] arr = k.split("_", 2);
@@ -101,10 +139,11 @@ public class ClientCapHooks {
 				caps.put(id, new ClientCap(id, nbt.getTag(k)) );
 			}
 		}
-		others.put(uuid, caps);
-		NBTTagCompound test = new NBTTagCompound();
-		write(test, caps.values());
-		System.out.println("Client Recieved:" + uuid + " caps:" + test);
+	}
+	
+	public static LoginCap getLoginCap(EntityPlayerMP p)
+	{
+		return (LoginCap) CapabilityRegistry.getCapability(p, ID_LOGIN);
 	}
 
 	public static void registerServerCap(EntityPlayerMP player, GameProfile profile) 

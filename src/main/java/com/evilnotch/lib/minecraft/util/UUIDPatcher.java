@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
-import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.main.skin.SkinEvent.GameProfileEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
