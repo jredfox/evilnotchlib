@@ -33,7 +33,7 @@ public class LoginCap implements ICapability<EntityPlayerMP> {
 	
 	public void set(ResourceLocation id, NBTTagCompound nbt) 
 	{
-		this.nbt.setTag(ClientCapHooks.convertID(id).replace(":", "_"), nbt);
+		this.nbt.setTag(ClientCapHooks.convertID(id), nbt);
 	}
 	
 	public void setClientCaps(NBTTagCompound nbt)
