@@ -7,6 +7,7 @@ import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -65,6 +66,7 @@ public class ServerProxy {
 	public boolean running() {return true;}
 	public String getUsername() {return null;}
 	public boolean isClient() {return false;}
+	public boolean isClient(EntityPlayer p) { return false; }
 	
 	
 }

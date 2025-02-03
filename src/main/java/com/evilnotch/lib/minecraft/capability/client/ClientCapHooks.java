@@ -15,7 +15,6 @@ import com.evilnotch.lib.minecraft.network.packet.PCCapUpload;
 import com.evilnotch.lib.minecraft.network.packet.PCCapUploadUpdate;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -98,7 +97,7 @@ public class ClientCapHooks {
 	 */
 	public static IClientCap get(EntityPlayer p, ResourceLocation loc)
 	{
-		return p == Minecraft.getMinecraft().player ? get(loc) : get(p.getUniqueID(), loc);//TODO: proxify this
+		return MainJava.proxy.isClient(p) ? get(loc) : get(p.getUniqueID(), loc);
 	}
 	
 	/**

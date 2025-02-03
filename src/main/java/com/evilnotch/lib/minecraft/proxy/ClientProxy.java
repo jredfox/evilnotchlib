@@ -213,6 +213,11 @@ public class ClientProxy extends ServerProxy{
 		return true;
 	}
 	
+	public boolean isClient(EntityPlayer p)
+	{
+		return p == Minecraft.getMinecraft().player;
+	}
+	
 	@Override
 	public void fixMcProfileProperties()
 	{

@@ -4,15 +4,11 @@ import java.io.File;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
-import com.evilnotch.lib.minecraft.capability.client.ClientCap;
-import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
-import com.evilnotch.lib.minecraft.capability.client.IClientCap;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
-import com.evilnotch.lib.minecraft.network.packet.PCCapDLUpdate;
 import com.evilnotch.lib.minecraft.network.packet.PCCapDownload;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
