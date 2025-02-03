@@ -43,8 +43,8 @@ public class ClientCapHooks {
 	 */
 	public static Map<UUID, Map<ResourceLocation, IClientCap>> others = new HashMap();
 	
-	public static final ResourceLocation ID_EARS = new ResourceLocation("skincaptest", "ears");
-	public static final ResourceLocation ID_DINNERBONE = new ResourceLocation("skincaptest", "dinnerbone");
+	public static final ResourceLocation ID_EARS = new ResourceLocation("skincaps", "ears");
+	public static final ResourceLocation ID_DINNERBONE = new ResourceLocation("skincaps", "dinnerbone");
 	
 	static
 	{
@@ -64,8 +64,6 @@ public class ClientCapHooks {
 	public static void load()
 	{
 		register(new LoginHookClient());
-		register(new ClientCap(ID_EARS, true));
-		register(new ClientCap(ID_DINNERBONE, false));
 	}
 	
 	public static NBTTagCompound login()
