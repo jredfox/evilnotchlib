@@ -25,6 +25,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -495,6 +496,14 @@ public class GeneralTransformer {
 		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patch", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
 		list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
 	
+		//UUIDPatcher.setLoginHooks(this.loginGameProfile, this.evlNBT);
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
+		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "setLoginHooks", "(Lcom/mojang/authlib/GameProfile;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+		
+		
 		AbstractInsnNode spot = ASMHelper.getTypeInsnNode(m, new TypeInsnNode(Opcodes.NEW, "net/minecraft/network/login/server/SPacketLoginSuccess")).getPrevious().getPrevious();
 		m.instructions.insertBefore(spot, list);
 		
@@ -513,8 +522,6 @@ public class GeneralTransformer {
 		l.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
 		
 		login.instructions.insert(ASMHelper.getFieldNode(login, Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"), l);
-		
-	
 	}
 
 	public static void patchLoginNBT(ClassNode classNode) 
