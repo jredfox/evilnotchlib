@@ -1,16 +1,11 @@
 package com.evilnotch.lib.minecraft.network.packet;
 
-import java.io.IOException;
 import java.util.UUID;
 
-import com.evilnotch.lib.main.capability.LoginCap;
-import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.network.NetWorkWrapper;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PCCapRem implements IMessage {

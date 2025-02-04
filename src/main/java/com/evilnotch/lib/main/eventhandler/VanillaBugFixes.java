@@ -50,7 +50,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerDisconnectionFromClientEvent;
 
 public class VanillaBugFixes {
 	
@@ -88,88 +87,6 @@ public class VanillaBugFixes {
 	{
 		NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PacketSkin(player), player);
 	}
-	
-	/**
-	 * force update skin render for you and all other players 
-	 * note skin has to be changed before calling this method
-	 */
-    public static void updateSkinPackets(EntityPlayerMP p)
-    {
-		SPacketPlayerListItem removeInfo;
-		SPacketDestroyEntities removeEntity;
-		SPacketSpawnPlayer addNamed;
-	    SPacketPlayerListItem addInfo;
-	    SPacketRespawn respawn;
-	    try
-	    {
-	      int entId = p.getEntityId();
-	      removeInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.REMOVE_PLAYER,p);
-	      removeEntity = new SPacketDestroyEntities(new int[] { entId });
-	      addNamed = new SPacketSpawnPlayer(p);
-	      addInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.ADD_PLAYER,p);
-	      respawn = new SPacketRespawn(p.dimension, p.getServerWorld().getDifficulty(), p.getServerWorld().getWorldType(), p.getServer().getGameType());
-	      
-	     for (EntityPlayer pOnlines : PlayerUtil.getWatchingPlayers(p, true))
-	     {
-	        EntityPlayerMP pOnline = (EntityPlayerMP)pOnlines;
-	        NetHandlerPlayServer con = pOnline.connection;
-	        if (pOnline.equals(p))
-	        {
-	           con.sendPacket(removeEntity);
-		       con.sendPacket(removeInfo);
-		       con.sendPacket(respawn);
-		       con.sendPacket(addInfo);
-			       
-	      	  //gamemode packet
-	      	   PlayerUtil.setGameTypeSafley(p,p.interactionManager.getGameType());
-	      	   p.mcServer.getPlayerList().updatePermissionLevel(p);
-	      	   p.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(p, (WorldServer) p.world);
-	      	   p.world.updateAllPlayersSleepingFlag();
-	      	  
-	           //prevent the moved too quickly message
-	      	   p.setRotationYawHead(p.rotationYawHead);
-	           p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, p.rotationYaw, p.rotationPitch);
-	           p.setPositionAndRotation(p.posX, p.posY, p.posZ, p.rotationYaw, p.rotationPitch);
-	           con.sendPacket(new SPacketSpawnPosition(p.getServerWorld().getSpawnPoint()));
-	           //trigger update exp
-	           p.connection.sendPacket(new SPacketSetExperience(p.experience, p.experienceTotal, p.experienceLevel));
-
-	           //send the current inventory - otherwise player would have an empty inventory
-	           p.sendContainerToPlayer(p.inventoryContainer);
-	           p.setPlayerHealthUpdated();
-	           p.setHeldItem(EnumHand.MAIN_HAND, p.getHeldItemMainhand());
-	           p.setHeldItem(EnumHand.OFF_HAND, p.getHeldItemOffhand());
-	           p.setPrimaryHand(p.getPrimaryHand());
-	           p.connection.sendPacket(new SPacketHeldItemChange(p.inventory.currentItem));
-
-	           //health && food
-	           p.setHealth(p.getHealth());
-	           FoodStats fs = p.getFoodStats();
-	           fs.setFoodLevel(fs.getFoodLevel());
-	           MainJava.proxy.setFoodSaturationLevel(fs, fs.getSaturationLevel());
-	           p.interactionManager.setWorld(p.getServerWorld()); 
-	           
-	           boolean end = true;
-	           p.copyFrom(p, end);
-	           net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerRespawnEvent(p, end);
-	         }
-	         else 
-	         {
-	           con.sendPacket(removeEntity);
-	           con.sendPacket(removeInfo);
-	           con.sendPacket(addInfo);
-	           con.sendPacket(addNamed);
-	         }
-	      }
-	     	//show player
-	     	PlayerUtil.hidePlayer(p);
-	     	PlayerUtil.showPlayer(p);
-	    }
-	    catch (Exception e) 
-	    {
-	    	e.printStackTrace();
-	    }
-    }
 	
 	/**
 	 * data fixers
@@ -280,5 +197,87 @@ public class VanillaBugFixes {
 	{
 		MainJava.proxy.fixMcProfileProperties();
 	}
+	
+	/**
+	 * force update skin render for you and all other players 
+	 * note skin has to be changed before calling this method
+	 */
+    public static void updateSkinPackets(EntityPlayerMP p)
+    {
+		SPacketPlayerListItem removeInfo;
+		SPacketDestroyEntities removeEntity;
+		SPacketSpawnPlayer addNamed;
+	    SPacketPlayerListItem addInfo;
+	    SPacketRespawn respawn;
+	    try
+	    {
+	      int entId = p.getEntityId();
+	      removeInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.REMOVE_PLAYER,p);
+	      removeEntity = new SPacketDestroyEntities(new int[] { entId });
+	      addNamed = new SPacketSpawnPlayer(p);
+	      addInfo = new SPacketPlayerListItem(SPacketPlayerListItem.Action.ADD_PLAYER,p);
+	      respawn = new SPacketRespawn(p.dimension, p.getServerWorld().getDifficulty(), p.getServerWorld().getWorldType(), p.getServer().getGameType());
+	      
+	     for (EntityPlayer pOnlines : PlayerUtil.getWatchingPlayers(p, true))
+	     {
+	        EntityPlayerMP pOnline = (EntityPlayerMP)pOnlines;
+	        NetHandlerPlayServer con = pOnline.connection;
+	        if (pOnline.equals(p))
+	        {
+	           con.sendPacket(removeEntity);
+		       con.sendPacket(removeInfo);
+		       con.sendPacket(respawn);
+		       con.sendPacket(addInfo);
+			       
+	      	  //gamemode packet
+	      	   PlayerUtil.setGameTypeSafley(p,p.interactionManager.getGameType());
+	      	   p.mcServer.getPlayerList().updatePermissionLevel(p);
+	      	   p.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(p, (WorldServer) p.world);
+	      	   p.world.updateAllPlayersSleepingFlag();
+	      	  
+	           //prevent the moved too quickly message
+	      	   p.setRotationYawHead(p.rotationYawHead);
+	           p.connection.setPlayerLocation(p.posX, p.posY, p.posZ, p.rotationYaw, p.rotationPitch);
+	           p.setPositionAndRotation(p.posX, p.posY, p.posZ, p.rotationYaw, p.rotationPitch);
+	           con.sendPacket(new SPacketSpawnPosition(p.getServerWorld().getSpawnPoint()));
+	           //trigger update exp
+	           p.connection.sendPacket(new SPacketSetExperience(p.experience, p.experienceTotal, p.experienceLevel));
+
+	           //send the current inventory - otherwise player would have an empty inventory
+	           p.sendContainerToPlayer(p.inventoryContainer);
+	           p.setPlayerHealthUpdated();
+	           p.setHeldItem(EnumHand.MAIN_HAND, p.getHeldItemMainhand());
+	           p.setHeldItem(EnumHand.OFF_HAND, p.getHeldItemOffhand());
+	           p.setPrimaryHand(p.getPrimaryHand());
+	           p.connection.sendPacket(new SPacketHeldItemChange(p.inventory.currentItem));
+
+	           //health && food
+	           p.setHealth(p.getHealth());
+	           FoodStats fs = p.getFoodStats();
+	           fs.setFoodLevel(fs.getFoodLevel());
+	           MainJava.proxy.setFoodSaturationLevel(fs, fs.getSaturationLevel());
+	           p.interactionManager.setWorld(p.getServerWorld()); 
+	           
+	           boolean end = true;
+	           p.copyFrom(p, end);
+	           net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerRespawnEvent(p, end);
+	         }
+	         else 
+	         {
+	           con.sendPacket(removeEntity);
+	           con.sendPacket(removeInfo);
+	           con.sendPacket(addInfo);
+	           con.sendPacket(addNamed);
+	         }
+	      }
+	     	//show player
+	     	PlayerUtil.hidePlayer(p);
+	     	PlayerUtil.showPlayer(p);
+	    }
+	    catch (Exception e) 
+	    {
+	    	e.printStackTrace();
+	    }
+    }
 
 }
