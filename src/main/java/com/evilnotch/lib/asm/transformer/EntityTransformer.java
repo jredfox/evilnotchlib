@@ -391,7 +391,6 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new LdcInsnNode(""));
 		li.add(l4);
 		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "skindata", "Ljava/lang/String;"));
-		
 		//this.evlNBT = ClientCapHooks.login();
 		li.add(new LabelNode());
 		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -407,7 +406,6 @@ public class EntityTransformer implements IClassTransformer{
 		rlist.add(new IntInsnNode(Opcodes.SIPUSH, 32767));
 		rlist.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", new MCPSidedString("readString", "func_150789_c").toString(), "(I)Ljava/lang/String;", false));
 		rlist.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "skindata", "Ljava/lang/String;"));
-
 		//this.evlNBT = ClientCapHooks.readNBT(buf);
 		rlist.add(new LabelNode());
 		rlist.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -425,7 +423,6 @@ public class EntityTransformer implements IClassTransformer{
 		wlist.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "skindata", "Ljava/lang/String;"));
 		wlist.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", writestring, "(Ljava/lang/String;)Lnet/minecraft/network/PacketBuffer;", false));
 		wlist.add(new InsnNode(Opcodes.POP));
-		
 		//buf.writeCompoundTag(this.evlNBT);
 		wlist.add(new LabelNode());
 		wlist.add(new VarInsnNode(Opcodes.ALOAD, 1));
