@@ -414,7 +414,7 @@ public class EntityTransformer implements IClassTransformer{
 		rlist.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		rlist.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/capability/client/ClientCapHooks", "readNBT", "(Lnet/minecraft/network/PacketBuffer;)Lnet/minecraft/nbt/NBTTagCompound;", false));
 		rlist.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
-		read.instructions.insert(ASMHelper.getFieldNode(read, Opcodes.PUTFIELD, "net/minecraft/network/login/client/CPacketLoginStart", new MCPSidedString("profile", "field_149305_a").toString(), "Lcom/mojang/authlib/GameProfile;"), rlist);
+		read.instructions.insert(ASMHelper.getLastLabelNode(read, false), rlist);
 	
 		//buf.writeString(this.skindata);
 		MethodNode write = ASMHelper.getMethodNode(classNode, new MCPSidedString("writePacketData", "func_148840_b").toString(), "(Lnet/minecraft/network/PacketBuffer;)V");
@@ -434,8 +434,7 @@ public class EntityTransformer implements IClassTransformer{
 		wlist.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", new MCPSidedString("writeCompoundTag", "func_150786_a").toString(), "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/network/PacketBuffer;", false));
 		wlist.add(new InsnNode(Opcodes.POP));
 		
-		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(write, Opcodes.INVOKEVIRTUAL, "net/minecraft/network/PacketBuffer", writestring, "(Ljava/lang/String;)Lnet/minecraft/network/PacketBuffer;", false).getNext();
-		write.instructions.insert(spot, wlist);
+		write.instructions.insert(ASMHelper.getLastLabelNode(write, false), wlist);
 	}
 
 	public void patchStopSteve(ClassNode classNode) 
