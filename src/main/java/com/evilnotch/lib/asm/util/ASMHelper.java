@@ -672,6 +672,23 @@ public class ASMHelper
 		}
 		return null;
 	}
+	
+	/**
+	 * Gets the previous LineNumberNode or LabelNode whichever comes first
+	 */
+	public static LabelNode prevLabelR(AbstractInsnNode f)
+	{
+		AbstractInsnNode current = f;
+		while(current != null)
+		{
+			current = current.getPrevious();
+			if(current instanceof LabelNode)
+			{
+				return (LabelNode) current;
+			}
+		}
+		return null;
+	}
 
 	public static VarInsnNode getVarInsnNode(MethodNode node, VarInsnNode compare) 
 	{

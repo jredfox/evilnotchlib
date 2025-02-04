@@ -125,8 +125,14 @@ public class SkinEvent extends Event {
 		}
 	}
 	
+	/**
+	 * Fires the Mouse Ears and Respects the Player's Invisibility
+	 */
 	public static boolean fireMouse(EntityPlayer player)
 	{
+		if(player.isInvisible())
+			return false;
+		
 		SkinEvent.Mouse event = new SkinEvent.Mouse(player);
 		MinecraftForge.EVENT_BUS.post(event);
 		return event.ears;

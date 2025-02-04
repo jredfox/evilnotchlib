@@ -26,7 +26,6 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -51,7 +50,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.resources.SkinManager$3$1",//stopSteve add callback of skin failure
     	"net.minecraft.client.renderer.ThreadDownloadImageData",
     	"net.minecraft.client.renderer.ThreadDownloadImageData$1",//stopSteve add callback of skin failure
-    	"net.minecraft.client.resources.SkinManager$3" //transform all fields into public minus final
+    	"net.minecraft.client.resources.SkinManager$3", //transform all fields into public minus final
+    	"net.minecraft.client.renderer.entity.layers.LayerDeadmau5Head" //SkinEvent#Mouse
     });
 
 	@Override
@@ -143,6 +143,10 @@ public class EntityTransformer implements IClassTransformer{
                 
                 case 16:
                 	ASMHelper.pubMinusFinal(classNode, true);
+                break;
+                
+                case 17:
+                	transformMouse(classNode);
                 break;
                 
             }
@@ -694,5 +698,20 @@ public class EntityTransformer implements IClassTransformer{
       	last.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/capability/client/ClientCapHooks", "registerServerCap", "(Lnet/minecraft/entity/player/EntityPlayerMP;)V", false));
       	m.instructions.insert(ASMHelper.getLastLabelNode(m, false), last);
     }
+	
+	public void transformMouse(ClassNode classNode) 
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString(), "(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V");
+		MethodInsnNode inif = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/entity/RenderPlayer", new MCPSidedString("bindTexture", "func_110776_a").toString(), "(Lnet/minecraft/util/ResourceLocation;)V", false);
+		LabelNode label = ASMHelper.prevLabelR(inif);
+		
+		//prepend if(SkinEvent.fireMouse ||
+		InsnList l = new InsnList();
+		l.add(new LabelNode());
+		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireMouse", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", false));
+		l.add(new JumpInsnNode(Opcodes.IFNE, label));
+		m.instructions.insert(l);	
+	}
 
 }

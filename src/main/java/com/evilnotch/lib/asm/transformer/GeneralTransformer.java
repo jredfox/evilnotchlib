@@ -25,9 +25,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.minecraft.util.UUIDPatcher;
-
-import net.minecraft.nbt.NBTTagCompound;
 
 public class GeneralTransformer {
 	
