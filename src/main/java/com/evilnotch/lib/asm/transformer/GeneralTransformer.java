@@ -26,6 +26,8 @@ import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.util.ASMHelper;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 public class GeneralTransformer {
 	
 	/**
@@ -468,6 +470,11 @@ public class GeneralTransformer {
 
 	public static void patchUUID(ClassNode classNode)
 	{
+		//public NBTTagCompound evlNBT;
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;", null, null));
+		//public String skindata;
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "skindata", "Ljava/lang/String;", null, null));
+		
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("tryAcceptPlayer", "func_147326_c").toString(), "()V");
 		String loginGameProfile = new MCPSidedString("loginGameProfile", "field_147337_i").toString();
 		
@@ -491,17 +498,23 @@ public class GeneralTransformer {
 		AbstractInsnNode spot = ASMHelper.getTypeInsnNode(m, new TypeInsnNode(Opcodes.NEW, "net/minecraft/network/login/server/SPacketLoginSuccess")).getPrevious().getPrevious();
 		m.instructions.insertBefore(spot, list);
 		
-		//public String skindata;
-		classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "skindata", "Ljava/lang/String;", null, null));
-		
 		//this.skindata = packetIn.skindata;
 		MethodNode login = ASMHelper.getMethodNode(classNode, new MCPSidedString("processLoginStart", "func_147316_a").toString(), "(Lnet/minecraft/network/login/client/CPacketLoginStart;)V");
 		InsnList l = new InsnList();
+		l.add(new LabelNode());
 		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "skindata", "Ljava/lang/String;"));
 		l.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", "skindata", "Ljava/lang/String;"));
+		//this.evlNBT = packetIn.evlNBT;
+		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
+		l.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
+		
 		login.instructions.insert(ASMHelper.getFieldNode(login, Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"), l);
+		
+	
 	}
 
 	public static void patchLoginNBT(ClassNode classNode) 
