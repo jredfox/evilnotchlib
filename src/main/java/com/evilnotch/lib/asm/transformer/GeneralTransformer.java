@@ -471,10 +471,10 @@ public class GeneralTransformer {
 
 	public static void patchUUID(ClassNode classNode)
 	{
-		//public NBTTagCompound evlNBT;
-		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;", null, null));
 		//public String skindata;
 		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "skindata", "Ljava/lang/String;", null, null));
+		//public NBTTagCompound evlNBT;
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;", null, null));
 		
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("tryAcceptPlayer", "func_147326_c").toString(), "()V");
 		String loginGameProfile = new MCPSidedString("loginGameProfile", "field_147337_i").toString();
@@ -502,8 +502,7 @@ public class GeneralTransformer {
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
 		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "setLoginHooks", "(Lcom/mojang/authlib/GameProfile;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
-		
-		
+				
 		AbstractInsnNode spot = ASMHelper.getTypeInsnNode(m, new TypeInsnNode(Opcodes.NEW, "net/minecraft/network/login/server/SPacketLoginSuccess")).getPrevious().getPrevious();
 		m.instructions.insertBefore(spot, list);
 		
@@ -515,6 +514,7 @@ public class GeneralTransformer {
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "skindata", "Ljava/lang/String;"));
 		l.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", "skindata", "Ljava/lang/String;"));
+		
 		//this.evlNBT = packetIn.evlNBT;
 		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
