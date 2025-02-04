@@ -17,9 +17,9 @@ public class EvilGameProfile extends GameProfile {
 	 */
 	public NBTTagCompound login;
 	/**
-	 * The TEMP NBTTagCompound of login hooks and client capabilities
+	 * The TEMP NBTTagCompound of login hooks let's the client give the server data during login packet
 	 */
-	public NBTTagCompound clientCaps;
+	public NBTTagCompound iloginhooks;
 
 	public EvilGameProfile(UUID id, String name) 
 	{
@@ -36,7 +36,7 @@ public class EvilGameProfile extends GameProfile {
 			EvilGameProfile ep = (EvilGameProfile) old;
 			this.org =        ep.org;
 			this.login =  	  ep.login;
-			this.clientCaps = ep.clientCaps;
+			this.iloginhooks = ep.iloginhooks;
 		}
 		else
 			this.org = old.getId();

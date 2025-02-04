@@ -81,7 +81,7 @@ public class VanillaBugFixes {
 	
 	/**
 	 * Sync your player skin with yourself and all players tracking you.
-	 * Uses an dedicated custom mod packet to do so unlike {@link #updateSkinPackets(EntityPlayerMP)}
+	 * Uses an dedicated custom mod packet to do so unlike {@link VanillaBugFixes#updateSkinPackets(EntityPlayerMP)}
 	 */
 	public static void syncSkin(EntityPlayerMP player)
 	{

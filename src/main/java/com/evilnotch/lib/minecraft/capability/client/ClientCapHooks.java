@@ -48,6 +48,10 @@ public class ClientCapHooks {
 		load();
 	}
 	
+	/**
+	 * Register a ILoginHook that allows the client to send data to the server inside of the login packet
+	 * It can be retrieved imediatly after EntityPlayerMP creation
+	 */
 	public static void register(ILoginHook hook)
 	{
 		loginHooks.put(hook.getId(), hook);
@@ -237,8 +241,7 @@ public class ClientCapHooks {
 
 	public static void registerServerCap(EntityPlayerMP player, GameProfile profile) 
 	{
-		if(profile instanceof EvilGameProfile)
-			CapabilityRegistry.getCapContainer(player).registerCapability(ID_LOGIN, new LoginCap(((EvilGameProfile)profile).clientCaps));
+		CapabilityRegistry.getCapContainer(player).registerCapability(ID_LOGIN, new LoginCap(profile instanceof EvilGameProfile ? ((EvilGameProfile)profile).iloginhooks : null));
 	}
 	
 	public static ResourceLocation convertID(String key)

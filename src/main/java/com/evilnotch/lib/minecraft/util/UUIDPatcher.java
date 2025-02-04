@@ -176,7 +176,7 @@ public class UUIDPatcher {
 	public static void setLoginHooks(GameProfile profile, NBTTagCompound nbt)
 	{
 		if(profile instanceof EvilGameProfile)
-			((EvilGameProfile)profile).clientCaps = nbt;
+			((EvilGameProfile)profile).iloginhooks = nbt;
 	}
 	
 }
