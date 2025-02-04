@@ -4,20 +4,18 @@ import java.io.File;
 
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
-import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
 import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
-import com.evilnotch.lib.minecraft.network.packet.PCCapDLUpdate;
 import com.evilnotch.lib.minecraft.network.packet.PCCapDownload;
+import com.evilnotch.lib.minecraft.network.packet.PCCapRem;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
-import com.jredfox.skincaps.SkinCaps;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
@@ -51,6 +49,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerDisconnectionFromClientEvent;
 
 public class VanillaBugFixes {
 	
@@ -78,18 +78,6 @@ public class VanillaBugFixes {
 				NetWorkHandler.INSTANCE.sendTo(new PacketUUID(e.player.getUniqueID()), (EntityPlayerMP)e.player);
 			}
 		}
-	}
-	
-	//TODO: REMOVE
-	public static int i = 0;
-	@SubscribeEvent
-	public void debu_test(PickEvent.Block e)
-	{
-		String id = ClientCapHooks.convertID(SkinCaps.ID_EARS);
-		EntityPlayerMP mp = (EntityPlayerMP) e.player;
-		NBTTagCompound nbt = ClientCapHooks.getLoginCap(mp).getClientCaps();
-		nbt.setBoolean(id, !nbt.getBoolean(id));
-		NetWorkHandler.INSTANCE.sendToTracking(new PCCapDLUpdate(mp, SkinCaps.ID_EARS), mp);
 	}
 	
 	/**
@@ -227,12 +215,28 @@ public class VanillaBugFixes {
 	{
 		if(!(e.getTarget() instanceof EntityPlayerMP))
 			return;
-		System.out.println("tracking fired of targ:" + e.getTarget().getName() + " I am:" + e.getEntityPlayer().getName());
 		EntityPlayerMP targ = (EntityPlayerMP) e.getTarget();
 		NetWorkHandler.INSTANCE.sendTo(new PacketYawHead(targ.getRotationYawHead(),targ.getEntityId()), (EntityPlayerMP)e.getEntityPlayer());
 		NetWorkHandler.INSTANCE.sendTo(new PCCapDownload(targ), (EntityPlayerMP) e.getEntityPlayer());
 	}
+	 
+	@SubscribeEvent(priority=EventPriority.HIGH)
+	public void untrack(PlayerEvent.StopTracking e)
+	{
+		if(!(e.getTarget() instanceof EntityPlayerMP))
+			return;
+		EntityPlayerMP targ = (EntityPlayerMP) e.getTarget();
+		NetWorkHandler.INSTANCE.sendTo(new PCCapRem(targ), (EntityPlayerMP) e.getEntityPlayer());
+	}
 	
+	@SubscribeEvent(priority=EventPriority.HIGH)
+	public void logout(PlayerLoggedOutEvent e)
+	{
+		if(!(e.player instanceof EntityPlayerMP))
+			return;
+		NetWorkHandler.INSTANCE.sendToTracking(new PCCapRem((EntityPlayerMP) e.player), (EntityPlayerMP) e.player);
+	}
+	 
 	/**
 	 * use to occur up till integrated server then easter egg stopped working
 	 */
