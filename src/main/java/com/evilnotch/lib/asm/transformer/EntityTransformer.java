@@ -674,7 +674,7 @@ public class EntityTransformer implements IClassTransformer{
 	      	node.instructions.insert(ASMHelper.getFirstInstruction(node), li);
 		}
       	
-      	//UUIDPatcher.patch(profile)
+      	//UUIDPatcher.patchCheck(profile)
       	MethodNode m = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/WorldServer;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/server/management/PlayerInteractionManager;)V");
       	InsnList l = new InsnList();
       	l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchCheck", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
@@ -687,6 +687,12 @@ public class EntityTransformer implements IClassTransformer{
       	list.add(new VarInsnNode(Opcodes.ASTORE, 3));
       	AbstractInsnNode spot = ASMHelper.previousLabel(ASMHelper.getFieldNode(m, Opcodes.PUTFIELD, "net/minecraft/server/management/PlayerInteractionManager", new MCPSidedString("player", "field_73090_b").toString(), "Lnet/minecraft/entity/player/EntityPlayerMP;"));
       	m.instructions.insert(spot, list);
+      	
+      	//ClientCapHooks.registerServerCap(this);
+      	InsnList last = new InsnList();
+      	last.add(new VarInsnNode(Opcodes.ALOAD, 0));
+      	last.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/capability/client/ClientCapHooks", "registerServerCap", "(Lnet/minecraft/entity/player/EntityPlayerMP;)V", false));
+      	m.instructions.insert(ASMHelper.getLastLabelNode(m, false), last);
     }
 
 }

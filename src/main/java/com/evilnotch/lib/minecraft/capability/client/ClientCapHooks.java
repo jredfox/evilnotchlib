@@ -239,8 +239,9 @@ public class ClientCapHooks {
 		return (LoginCap) CapabilityRegistry.getCapability(p, ID_LOGIN);
 	}
 
-	public static void registerServerCap(EntityPlayerMP player, GameProfile profile) 
+	public static void registerServerCap(EntityPlayerMP player) 
 	{
+		GameProfile profile = player.getGameProfile();
 		CapabilityRegistry.getCapContainer(player).registerCapability(ID_LOGIN, new LoginCap(profile instanceof EvilGameProfile ? ((EvilGameProfile)profile).iloginhooks : null));
 	}
 	
