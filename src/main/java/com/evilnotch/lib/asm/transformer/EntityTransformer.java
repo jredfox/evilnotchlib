@@ -738,7 +738,6 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireDinnerbone", "(Lnet/minecraft/entity/Entity;)Z", false));
 		l.add(new JumpInsnNode(Opcodes.IFNE, label));
 		l.add(new LabelNode());
-		
 		m.instructions.insert(ASMHelper.prevLineNumberNode(db), l);
 	}
 
