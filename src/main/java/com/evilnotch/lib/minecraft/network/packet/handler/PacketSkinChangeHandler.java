@@ -18,6 +18,8 @@ public class PacketSkinChangeHandler extends MessegeBase<PacketSkinChange> {
 	@Override
 	public void handleServerSide(PacketSkinChange message, EntityPlayer player)
 	{
+		if(!Config.skinCache)
+			return;//allow server disabling the skin cache to stop changing the skins
 		EntityPlayerMP p = (EntityPlayerMP) player;
 		p.getServerWorld().addScheduledTask(() ->
 		{
