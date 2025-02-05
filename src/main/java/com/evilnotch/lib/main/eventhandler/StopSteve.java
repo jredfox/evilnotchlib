@@ -16,7 +16,7 @@ public class StopSteve {
 	public static boolean smooth;
 	public StopSteve()
 	{
-		smooth = Config.skinPacketSmooth && !Config.skinVanillaPackets;
+		smooth = Config.skinPacketSmooth && !Config.skinPacketVanilla;
 	}
 	
     public static long m2 = 0;
