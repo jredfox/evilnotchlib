@@ -2,6 +2,7 @@ package com.evilnotch.lib.minecraft.network.packet.handler;
 
 import java.util.UUID;
 
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 
@@ -20,6 +21,17 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 		{
 			Minecraft mc = Minecraft.getMinecraft();
 			UUID uuid = message.profile.getId();
+			//Smoothest possible way to change skin but may be incompatible with some skin mods
+			if(Config.skinPacketSmooth)
+			{
+				NetworkPlayerInfo prev = mc.player.connection.playerInfoMap.get(uuid);
+				if(prev != null) 
+				{
+					prev.gameProfile = message.profile;
+					prev.playerTexturesLoaded = false;
+					return;
+				}
+			}
 			NetworkPlayerInfo info = new NetworkPlayerInfo(new SPacketPlayerListItem().new AddPlayerData(message.profile, message.ping, message.gameType, message.name));
 			NetworkPlayerInfo prev = mc.player.connection.playerInfoMap.put(uuid, info);
 			if(prev != null)
