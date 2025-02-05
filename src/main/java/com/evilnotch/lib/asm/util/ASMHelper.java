@@ -890,4 +890,16 @@ public class ASMHelper
 		}
 		return null;
 	}
+	
+	public static LineNumberNode prevLineNumberNode(AbstractInsnNode spot) 
+	{
+		AbstractInsnNode n = spot;
+		while(n != null)
+		{
+			n = n.getPrevious();
+			if(n instanceof LineNumberNode)
+				return (LineNumberNode) n;
+		}
+		return null;
+	}
 }

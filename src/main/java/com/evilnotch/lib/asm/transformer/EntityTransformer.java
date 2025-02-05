@@ -739,9 +739,7 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new JumpInsnNode(Opcodes.IFNE, label));
 		l.add(new LabelNode());
 		
-		//Find the injection point
-		LabelNode spot = ASMHelper.nextLabelR(ASMHelper.getLastMethodInsn(m, Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", new MCPSidedString("getTextWithoutFormattingCodes", "func_110646_a").toString(), "(Ljava/lang/String;)Ljava/lang/String;", false));
-		m.instructions.insert(spot, l);
+		m.instructions.insert(ASMHelper.prevLineNumberNode(db), l);
 	}
 
 }
