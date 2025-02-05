@@ -17,7 +17,7 @@ public class StopSteve {
 	public void stopSteve(RenderPlayerEvent.Pre event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		if(mc.getRenderViewEntity() != mc.player || mc.world == null || mc.player == null)
+		if(event.getEntityPlayer() != mc.player || mc.world == null || mc.player == null)
 			return;
 		
 		NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
