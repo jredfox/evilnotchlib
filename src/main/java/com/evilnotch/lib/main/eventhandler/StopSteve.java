@@ -13,12 +13,18 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class StopSteve {
 	
+	public static boolean smooth;
+	public StopSteve()
+	{
+		smooth = Config.skinPacketSmooth && !Config.skinVanillaPackets;
+	}
+	
     public static long m2 = 0;
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderPlayerEvent.Pre event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
-		if(event.getEntityPlayer() != mc.player || mc.world == null || mc.player == null)
+		if(smooth ? (event.getEntityPlayer() != mc.player) : (mc.getRenderViewEntity() != mc.player) || mc.world == null || mc.player == null)
 			return;
 		
 		NetworkPlayerInfo info = ((AbstractClientPlayer)event.getEntityPlayer()).playerInfo;//mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
