@@ -708,6 +708,7 @@ public class EntityTransformer implements IClassTransformer{
 	{
 		if(!ConfigCore.asm_mouse_ears)
 			return;
+		
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString(), "(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V");
 		MethodInsnNode inif = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/entity/RenderPlayer", new MCPSidedString("bindTexture", "func_110776_a").toString(), "(Lnet/minecraft/util/ResourceLocation;)V", false);
 		LabelNode label = ASMHelper.prevLabelR(inif);

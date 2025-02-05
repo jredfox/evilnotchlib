@@ -1,6 +1,5 @@
 package com.evilnotch.lib.main.skin;
 
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.mojang.authlib.GameProfile;
 
