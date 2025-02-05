@@ -720,6 +720,9 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireMouse", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", false));
 		l.add(new JumpInsnNode(Opcodes.IFNE, label));
 		m.instructions.insert(l);
+		
+		//fix mouse ears being darker when an item is held in the hand
+		m.instructions.insert(ASMHelper.getMethodInsnNode(m, Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", new MCPSidedString("pushMatrix", "func_179094_E").toString(), "()V", false), new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", new MCPSidedString("enableNormalize", "func_179108_z").toString(), "()V", false));
 	}
 	
 	public void transformDinnerbone(ClassNode classNode) 
