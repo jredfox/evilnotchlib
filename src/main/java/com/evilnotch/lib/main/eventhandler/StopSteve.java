@@ -4,6 +4,7 @@ import com.evilnotch.lib.main.Config;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -20,7 +21,7 @@ public class StopSteve {
 		if(event.getEntityPlayer() != mc.player || mc.world == null || mc.player == null)
 			return;
 		
-		NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
+		NetworkPlayerInfo info = ((AbstractClientPlayer)event.getEntityPlayer()).playerInfo;//mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
 		if(info == null || !info.canRender)
 		{
 			if(info != null)
@@ -49,7 +50,7 @@ public class StopSteve {
 		if(mc.getRenderViewEntity() != mc.player || mc.world == null || mc.player == null)
 			return;
 		
-		NetworkPlayerInfo info = mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
+		NetworkPlayerInfo info = ((AbstractClientPlayer)mc.player).playerInfo;//mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
 		if(info == null || !info.canRender)
 		{
 			if(info != null)
