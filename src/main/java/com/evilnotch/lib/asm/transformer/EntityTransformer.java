@@ -51,7 +51,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.renderer.ThreadDownloadImageData",
     	"net.minecraft.client.renderer.ThreadDownloadImageData$1",//stopSteve add callback of skin failure
     	"net.minecraft.client.resources.SkinManager$3", //transform all fields into public minus final
-    	"net.minecraft.client.renderer.entity.layers.LayerDeadmau5Head" //SkinEvent#Mouse
+    	"net.minecraft.client.renderer.entity.layers.LayerDeadmau5Head", //SkinEvent#Mouse
+    	"net.minecraft.client.renderer.entity.RenderLivingBase" //SkinEvent#Dinnerbone
     });
 
 	@Override
@@ -147,6 +148,10 @@ public class EntityTransformer implements IClassTransformer{
                 
                 case 17:
                 	transformMouse(classNode);
+                break;
+                
+                case 18:
+                	transformDinnerbone(classNode);
                 break;
                 
             }
@@ -701,6 +706,8 @@ public class EntityTransformer implements IClassTransformer{
 	
 	public void transformMouse(ClassNode classNode) 
 	{
+		if(!ConfigCore.asm_mouse_ears)
+			return;
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString(), "(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V");
 		MethodInsnNode inif = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/entity/RenderPlayer", new MCPSidedString("bindTexture", "func_110776_a").toString(), "(Lnet/minecraft/util/ResourceLocation;)V", false);
 		LabelNode label = ASMHelper.prevLabelR(inif);
@@ -711,7 +718,30 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireMouse", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", false));
 		l.add(new JumpInsnNode(Opcodes.IFNE, label));
-		m.instructions.insert(l);	
+		m.instructions.insert(l);
+	}
+	
+	public void transformDinnerbone(ClassNode classNode) 
+	{
+		if(!ConfigCore.asm_dinnerbone)
+			return;
+		
+		//Get Label inside the if statement
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("applyRotations", "func_77043_a").toString(), "(Lnet/minecraft/entity/EntityLivingBase;FFF)V");
+		AbstractInsnNode db = ASMHelper.getLdcInsnNode(m, new LdcInsnNode("Dinnerbone"));
+		AbstractInsnNode inif = ASMHelper.nextMethodInsnNode(db, Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", new MCPSidedString("translate", "func_179137_b").toString(), "(FFF)V", false);
+		LabelNode label = ASMHelper.prevLabelR(inif);
+		
+		//prepend if(SkinEvent#fireDinnerbone(entityliving) ||
+		InsnList l = new InsnList();
+		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireDinnerbone", "(Lnet/minecraft/entity/Entity;)Z", false));
+		l.add(new JumpInsnNode(Opcodes.IFNE, label));
+		l.add(new LabelNode());
+		
+		//Find the injection point
+		LabelNode spot = ASMHelper.nextLabelR(ASMHelper.getLastMethodInsn(m, Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", new MCPSidedString("getTextWithoutFormattingCodes", "func_110646_a").toString(), "(Ljava/lang/String;)Ljava/lang/String;", false));
+		m.instructions.insert(spot, l);
 	}
 
 }

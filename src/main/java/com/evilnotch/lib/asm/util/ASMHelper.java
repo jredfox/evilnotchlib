@@ -866,4 +866,28 @@ public class ASMHelper
         ASMHelper.dumpFile(path + (FMLCorePlugin.isObf ? "_srg" : ""), classWriter.toByteArray());
     }
 	
+	public static MethodInsnNode nextMethodInsnNode(AbstractInsnNode pretarg, int opcode, String owner, String name, String desc, boolean itf) 
+	{
+		MethodInsnNode look = new MethodInsnNode(opcode, owner, name, desc, itf);
+		AbstractInsnNode ab = pretarg;
+		while(ab != null)
+		{
+			ab = ab.getNext();
+			if(ab instanceof MethodInsnNode && equals(look, (MethodInsnNode) ab))
+				return (MethodInsnNode) ab;
+		}
+		return null;
+	}
+	
+	public static LabelNode nextLabelR(AbstractInsnNode spot) 
+	{
+		AbstractInsnNode n = spot;
+		while(n != null)
+		{
+			n = n.getNext();
+			if(n instanceof LabelNode)
+				return (LabelNode) n;
+		}
+		return null;
+	}
 }

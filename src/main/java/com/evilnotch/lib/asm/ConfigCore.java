@@ -20,6 +20,8 @@ public class ConfigCore {
 	public static boolean asm_FSFix = true;
 	public static boolean asm_patchLanSkins = true;
 	public static boolean asm_stopSteve = true;
+	public static boolean asm_mouse_ears = true;
+	public static boolean asm_dinnerbone = true;
 	
 	public static boolean dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
 	public static boolean dumpASM = dumpASMJVM;
@@ -45,6 +47,8 @@ public class ConfigCore {
 		asm_FSFix = config.get("asm_safe_cfg","asm_FSFix", true).getBoolean();
 		asm_patchLanSkins = config.get("asm_safe_cfg","asm_patchLanSkins", true).getBoolean();
 		asm_stopSteve = config.get("asm_safe_cfg", "asm_stopSteve", true).getBoolean();
+		asm_mouse_ears = config.get("asm_safe_cfg", "asm_mouse_ears", true).getBoolean();
+		asm_dinnerbone = config.get("asm_safe_cfg", "asm_dinnerbone", true).getBoolean();
 		Crashy.GUI = config.get("asm_safe_cfg","asm_gui_crash", true).getBoolean();
 		
 		dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));

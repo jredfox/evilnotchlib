@@ -138,17 +138,14 @@ public class SkinEvent extends Event {
 		return event.ears;
 	}
 
-	public static boolean fireDinnerbone(EntityPlayer p)
+	public static boolean fireDinnerbone(Entity e)
 	{
-		SkinEvent.Dinnerbone event = new SkinEvent.Dinnerbone(p);
+		if(!(e instanceof EntityPlayer))
+			return false;
+		
+		SkinEvent.Dinnerbone event = new SkinEvent.Dinnerbone((EntityPlayer) e);
 		MinecraftForge.EVENT_BUS.post(event);
 		return event.dinnerbone;
-	}
-	
-	public static void useDinnerbone(Entity p)
-	{
-		if(p instanceof EntityPlayer && fireDinnerbone((EntityPlayer) p))
-			MainJava.proxy.d(p.height);
 	}
 
 }
