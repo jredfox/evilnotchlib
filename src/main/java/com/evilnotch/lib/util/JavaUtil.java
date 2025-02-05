@@ -1092,7 +1092,7 @@ public class JavaUtil {
 		} 
 		catch (JSONParseException e) 
 		{
-			System.err.println(str);
+			System.err.println("Error Parsing JSON:" + str);
 			e.printStackTrace();
 		}
 		return null;

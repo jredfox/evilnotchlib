@@ -86,7 +86,6 @@ public class SkinEvent extends Event {
 	{
 		public final SkinEntry org_skin;
 		public SkinEntry skin;
-		public boolean selected;
 		
 		public Capability(SkinEntry s)
 		{
