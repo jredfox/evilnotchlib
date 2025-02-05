@@ -25,10 +25,16 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 			if(Config.skinPacketSmooth)
 			{
 				NetworkPlayerInfo prev = mc.player.connection.playerInfoMap.get(uuid);
-				if(prev != null) 
+				if(prev != null)
 				{
 					prev.gameProfile = message.profile;
 					prev.playerTexturesLoaded = false;
+					
+					//Ensure the other player's info is synced with the live map
+					EntityPlayer other = mc.world.getPlayerEntityByUUID(uuid);
+					if(other instanceof AbstractClientPlayer)
+						((AbstractClientPlayer) other).playerInfo = prev;
+					
 					return;
 				}
 			}
