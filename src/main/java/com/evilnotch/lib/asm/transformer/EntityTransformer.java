@@ -730,7 +730,7 @@ public class EntityTransformer implements IClassTransformer{
 		//Get Label inside the if statement
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("applyRotations", "func_77043_a").toString(), "(Lnet/minecraft/entity/EntityLivingBase;FFF)V");
 		AbstractInsnNode db = ASMHelper.getLdcInsnNode(m, new LdcInsnNode("Dinnerbone"));
-		AbstractInsnNode inif = ASMHelper.nextMethodInsnNode(db, Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", new MCPSidedString("translate", "func_179137_b").toString(), "(FFF)V", false);
+		AbstractInsnNode inif = ASMHelper.nextMethodInsnNode(db, Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", new MCPSidedString("translate", "func_179109_b").toString(), "(FFF)V", false);
 		LabelNode label = ASMHelper.prevLabelR(inif);
 		
 		//prepend if(SkinEvent#fireDinnerbone(entityliving) ||
