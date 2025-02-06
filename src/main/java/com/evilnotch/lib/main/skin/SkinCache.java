@@ -428,7 +428,7 @@ public class SkinCache {
 			return null;
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 			return null;
 		} finally {
 			IOUtils.closeQuietly(stream);
