@@ -19,8 +19,10 @@
      					   
      					   NetworkPlayerInfo.this.canRender = true;
      				   }
-     				   else if(location != null)
+     				   else
      				   {
-     					  MainJava.proxy.deleteTexture(location);
+     					   NetworkPlayerInfo.this.playerTextures.remove(typeIn);//Support Smooth Skin Packets
+         				   if(location != null)
+         					  MainJava.proxy.deleteTexture(location);
      				   }
                     }
