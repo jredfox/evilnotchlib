@@ -89,7 +89,7 @@ public class FakeWorld extends World {
 	}
 
 	public static WorldSettings getSettings() {
-		return new WorldSettings(0, GameType.SURVIVAL, true, false, WorldType.DEFAULT);
+		return new WorldSettings(42, GameType.SURVIVAL, true, false, WorldType.DEFAULT);
 	}
 
 	public static Profiler getProfiler() 
@@ -415,12 +415,12 @@ public class FakeWorld extends World {
 	@Override
     public boolean canSeeSky(BlockPos pos)
     {
-		 return pos.getY() > 62;
+		 return pos.getY() > 63;
     }
 	@Override
     public boolean canBlockSeeSky(BlockPos pos)
     {
-    	return pos.getY() > 62;
+    	return pos.getY() > 63;
     }
 	@Override
     public boolean isBlockTickPending(BlockPos pos, Block blockType)
@@ -522,7 +522,7 @@ public class FakeWorld extends World {
 	@Override
     public int getSeaLevel()
     {
-    	return 2;
+    	return 63;
     }
 	@Override
     public RayTraceResult rayTraceBlocks(Vec3d start, Vec3d end)
@@ -786,9 +786,7 @@ public class FakeWorld extends World {
    @Override
    public boolean isSideSolid(BlockPos pos, EnumFacing side)
    {
-	   if(pos.getY() > 63)
-		   return false;
-	   return true;
+	   return pos.getY() < 64;
    }
    @Override
    public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default)
@@ -803,9 +801,7 @@ public class FakeWorld extends World {
    @Override
    public IBlockState getBlockState(BlockPos pos)
    {
-	   if(pos.getY() <= 63)
-		   return Blocks.GRASS.getDefaultState();
-	   return Blocks.AIR.getDefaultState();
+	   return pos.getY() < 64 ? Blocks.GRASS.getDefaultState() : Blocks.AIR.getDefaultState();
    }
 	/**
 	 * this is commentded out when porting bpkrscore but, no particles?????

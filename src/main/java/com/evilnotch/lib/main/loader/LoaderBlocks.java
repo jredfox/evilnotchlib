@@ -23,7 +23,7 @@ public class LoaderBlocks {
 	{
 		for(BlockWrapper basic : LoaderBlocks.blocks)
 		{
-			Block b = (Block) basic.b;
+			Block b = basic.b;
 			ItemBlock itemblock = basic.itemblock;
 			ForgeRegistries.BLOCKS.register(b);
 			if(itemblock != null)

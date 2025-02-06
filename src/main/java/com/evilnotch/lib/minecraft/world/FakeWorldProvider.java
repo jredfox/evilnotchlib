@@ -118,7 +118,7 @@ public class FakeWorldProvider extends WorldProvider{
      }
      @Override
      public long getSeed() {
-        return 0L;
+        return 42L;
      }
      @Override
      public long getWorldTime() {

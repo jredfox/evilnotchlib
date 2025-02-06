@@ -2,6 +2,8 @@ package com.evilnotch.lib.minecraft.world;
 
 import java.io.File;
 
+import com.evilnotch.lib.util.JavaUtil;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldProvider;
@@ -62,21 +64,43 @@ public class FakeSaveHandler implements ISaveHandler{
 	public void flush() {
 	}
 
+	public static File fakeDir;
+	/**
+	 * World Dir Cannot be NULL
+	 */
 	@Override
-	public File getWorldDirectory() {
-		return null;
+	public File getWorldDirectory() 
+	{
+		if(fakeDir == null)
+		{
+			fakeDir = new File("config/evilnotchlib/auto/FakeWorld");
+			try 
+			{
+				JavaUtil.createFileSafley(fakeDir);
+			} 
+			catch (Throwable e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		return fakeDir;
 	}
 
-	@Override
-	public File getMapFileFromName(String mapName) {
-		return null;
-	}
 	/**
 	 * null is allowed here
 	 */
 	@Override
-	public TemplateManager getStructureTemplateManager() {
+	public File getMapFileFromName(String mapName) {
 		return null;
+	}
+	
+	public static FakeTemplateManager template;
+	@Override
+	public TemplateManager getStructureTemplateManager() 
+	{
+		if(template == null)
+			template = new FakeTemplateManager();
+		return template;
 	}
 
 }

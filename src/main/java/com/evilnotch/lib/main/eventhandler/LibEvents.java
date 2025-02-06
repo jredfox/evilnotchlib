@@ -63,7 +63,7 @@ public class LibEvents {
 		 
 		 Side side = FMLCommonHandler.instance().getEffectiveSide();
 		 
-		 if(side == side.CLIENT)
+		 if(side == Side.CLIENT)
 		 {
 			 Iterator<EventCanceler> it = cancelerClient.iterator();
 			 while(it.hasNext())

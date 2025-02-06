@@ -53,7 +53,7 @@ public class LangRegistry {
 		if(langlistClient == null)
 		{
 			LanguageManager manager = Minecraft.getMinecraft().getLanguageManager();
-			Locale l = manager.CURRENT_LOCALE;
+			Locale l = LanguageManager.CURRENT_LOCALE;
 			Map<String, String> map = l.properties;
 			langlistClient = map;
 		}

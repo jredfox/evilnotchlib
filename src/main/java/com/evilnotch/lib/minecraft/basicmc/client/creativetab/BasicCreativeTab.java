@@ -33,7 +33,8 @@ public class BasicCreativeTab extends CreativeTabs implements IAutoItem{
 			LangRegistry.registerLang(this, langlist);
 	}
 	
-    public ItemStack getTabIconItem()
+    @Override
+	public ItemStack getTabIconItem()
 	{
         return display;
     }

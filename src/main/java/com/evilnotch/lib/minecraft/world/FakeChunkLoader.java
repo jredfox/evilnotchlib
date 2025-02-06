@@ -18,7 +18,6 @@ public class FakeChunkLoader implements IChunkLoader{
 	public static Chunk getChunk(World world) {
 		if(chunk == null)
 			chunk = new Chunk(world,0,0);
-		System.out.println(chunk);
 		return chunk;
 	}
 
