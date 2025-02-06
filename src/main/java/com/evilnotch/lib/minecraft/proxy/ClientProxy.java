@@ -122,6 +122,18 @@ public class ClientProxy extends ServerProxy{
 		return Minecraft.getMinecraft().isCallingFromMinecraftThread();
 	}
 	
+	public static int perm;
+	public static void cachePlayerPermission() 
+	{
+		perm = Minecraft.getMinecraft().player.getPermissionLevel();
+	}
+	
+	public static void fixPermissionLevel(boolean allowCheats) 
+	{
+		if(!allowCheats)
+			Minecraft.getMinecraft().player.setPermissionLevel(perm);
+	}
+	
 	/**
 	 * stores the original UUID and name of the client
 	 */

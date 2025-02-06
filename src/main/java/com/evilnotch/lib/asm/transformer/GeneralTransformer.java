@@ -25,6 +25,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 
 public class GeneralTransformer {
 	
@@ -195,31 +196,24 @@ public class GeneralTransformer {
      */
 	public static void patchOpenToLan(ClassNode classNode) 
 	{
-		MethodNode method = ASMHelper.getMethodNode(classNode, new MCPSidedString("shareToLAN","func_71206_a").toString(), "(Lnet/minecraft/world/GameType;Z)Ljava/lang/String;");
-		AbstractInsnNode spot = null;
-		AbstractInsnNode[] arr = method.instructions.toArray();
-		for(int i=arr.length-1;i>=0;i--)
-		{
-			AbstractInsnNode ab = arr[i];
-			if(ab.getOpcode() == Opcodes.ICONST_0 && ab.getPrevious() instanceof FrameNode)
-			{
-				List<Object> objs = ((FrameNode)ab.getPrevious()).stack;
-				if(objs != null && objs.contains("net/minecraft/client/entity/EntityPlayerSP"))
-				{
-					spot = ab;
-					break;
-				}
-			}
-		}
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("shareToLAN", "func_71206_a").toString(), "(Lnet/minecraft/world/GameType;Z)Ljava/lang/String;");
+		AbstractInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/entity/EntityPlayerSP", new MCPSidedString("setPermissionLevel", "func_184839_n").toString(), "(I)V", false);
 		
-		InsnList toInsert = new InsnList();
-	    toInsert.add(new VarInsnNode(ALOAD, 0));
-	   	toInsert.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/integrated/IntegratedServer", new MCPSidedString("mc","field_71349_l").toString(), "Lnet/minecraft/client/Minecraft;"));
-	   	toInsert.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/Minecraft", new MCPSidedString("player","field_71439_g").toString(), "Lnet/minecraft/client/entity/EntityPlayerSP;"));
-	   	toInsert.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/entity/EntityPlayerSP", new MCPSidedString("getPermissionLevel","func_184840_I").toString(), "()I", false));
-	   	method.instructions.insert(spot, toInsert);
-	   
-	   	method.instructions.remove(spot);
+		//If target line doesn't exist inject it before the first return
+		if(targ == null)
+			targ = ASMHelper.prevLabelNode(ASMHelper.getFirstInstruction(m, Opcodes.ARETURN));
+		
+		//ClientProxy.cachePlayerPermission();
+		InsnList l = new InsnList();
+		l.add(new LabelNode());
+		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/proxy/ClientProxy", "cachePlayerPermission", "()V", false));
+		m.instructions.insert(l);
+		
+		//ClientProxy.fixPermissionLevel(allowCheats);
+		InsnList li = new InsnList();
+		li.add(new VarInsnNode(Opcodes.ILOAD, 2));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/proxy/ClientProxy", "fixPermissionLevel", "(Z)V", false));
+		m.instructions.insert(targ, li);
 	}
 	
 	/**
