@@ -188,7 +188,8 @@ public class SkinCache {
 		
 		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
 		//sync selected SkinEntry with the client's profileProperties for mods like bpkrscore that render the player on the GuiMainMenu
-		SkinCache.setEncode(mc.getProfileProperties(), dl.encode());
+		if(!dl.isEmpty)
+			SkinCache.setEncode(mc.getProfileProperties(), dl.encode());
 		
 		//if player is already in the world send a packet
 		if(mc.player != null && mc.player.connection != null && ((CapBoolean) CapabilityRegistry.getCapability(mc.player, CapRegDefaultHandler.addedToWorld)).value)
