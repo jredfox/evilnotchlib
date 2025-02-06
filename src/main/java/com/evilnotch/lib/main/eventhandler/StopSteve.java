@@ -14,19 +14,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class StopSteve {
 	
-	public static boolean smooth;
-	public StopSteve()
-	{
-		smooth = Config.skinPacketSmooth && !Config.skinPacketVanilla;
-	}
-	
     public static long m2 = 0;
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderPlayerEvent.Pre event)
 	{
 		GlStateManager.enableNormalize();//Fixes Player's Layers from becoming darker when holding an item if a slime is rendering
 		Minecraft mc = Minecraft.getMinecraft();
-		if(smooth ? (event.getEntityPlayer() != mc.player) : (mc.getRenderViewEntity() != mc.player) || mc.world == null || mc.player == null)
+		if(Config.skinPacketSmooth ? (event.getEntityPlayer() != mc.player) : (mc.getRenderViewEntity() != mc.player) || mc.world == null || mc.player == null)
 			return;
 		
 		NetworkPlayerInfo info = ((AbstractClientPlayer)event.getEntityPlayer()).playerInfo;//mc.player.connection.getPlayerInfo(mc.player.getUniqueID());

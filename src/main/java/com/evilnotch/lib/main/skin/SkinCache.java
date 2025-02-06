@@ -25,6 +25,7 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
+import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
@@ -35,6 +36,7 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -184,8 +186,11 @@ public class SkinCache {
 		//update the encoding to send to the server
 		this.selected = dl;
 		
-		//if player is already in the world send a packet
 		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
+		//sync selected SkinEntry with the client's profileProperties for mods like bpkrscore that render the player on the GuiMainMenu
+		SkinCache.setEncode(mc.getProfileProperties(), dl.encode());
+		
+		//if player is already in the world send a packet
 		if(mc.player != null && mc.player.connection != null && ((CapBoolean) CapabilityRegistry.getCapability(mc.player, CapRegDefaultHandler.addedToWorld)).value)
 		{
 			NetWorkHandler.INSTANCE.sendToServer(new PacketSkinChange(this.selected));

@@ -228,20 +228,20 @@ public class PlayerUtil {
 		return ClientProxy.getPlayer();
 	}
 
-	public static List<EntityPlayerMP> getWatchingPlayers(EntityPlayerMP p, boolean addSelf) 
-	{
-		List<EntityPlayerMP> players = new ArrayList<>();
-		if(addSelf)
-			players.add(p);
-    	PlayerChunkMap playerChunkMap = p.getServerWorld().getPlayerChunkMap();
-    	ChunkPos chunkPos = new ChunkPos(p.chunkCoordX, p.chunkCoordZ);
-    	PlayerChunkMapEntry entry = playerChunkMap.getEntry(chunkPos.x, chunkPos.z);
-    	if(entry != null)
-    	{
-    		players.addAll(entry.players);
-    	}
-    	return players;
-	}
+//	public static List<EntityPlayerMP> getWatchingPlayers(EntityPlayerMP p, boolean addSelf) 
+//	{
+//		List<EntityPlayerMP> players = new ArrayList<>();
+//		if(addSelf)
+//			players.add(p);
+//    	PlayerChunkMap playerChunkMap = p.getServerWorld().getPlayerChunkMap();
+//    	ChunkPos chunkPos = new ChunkPos(p.chunkCoordX, p.chunkCoordZ);
+//    	PlayerChunkMapEntry entry = playerChunkMap.getEntry(chunkPos.x, chunkPos.z);
+//    	if(entry != null)
+//    	{
+//    		players.addAll(entry.players);
+//    	}
+//    	return players;
+//	}
 
     /** The default skin for the Steve model. */
 	public static final ResourceLocation STEVE = new ResourceLocation("textures/entity/steve.png");
