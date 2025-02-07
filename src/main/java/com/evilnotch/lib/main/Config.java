@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.util.ResourceLocation;
@@ -68,6 +69,8 @@ public class Config {
 		stopSteveMs = config.get("skins", "stopSteveMs", (int)stopSteveMs).getInt();
 		stopSteveOtherMs = config.get("skins", "stopSteveOtherMs", (int)stopSteveOtherMs).getInt();
 		skinPacketSmooth = config.get("skins", "skinCachePacketSmooth", skinPacketSmooth).getBoolean();
+		if(!ConfigCore.asm_stopSteve && skinPacketSmooth)
+			throw new RuntimeException("IStopSteve#skinUnAvailable ASM Hook is Needed for Config#skinPacketSmooth to Work Properly!");
 		
 		//entity cache data for black list and allow certain entities to pass through
 		cacheEntDeny = JavaUtil.<String>staticToArray(config.getStringList("domainEntityDeny", "cache_entity", new String[]{"customnpcs"}, "blacklist domain of entities that are bad"));
