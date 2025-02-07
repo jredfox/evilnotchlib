@@ -38,6 +38,7 @@ public class StopSteve {
 					info.canRender = true;
 					info.ssms = 0;
 					System.err.println("StopSteve Lasted Max MS:" + (mc.player == p ? Config.stopSteveMs : Config.stopSteveOtherMs) + " This is probably a mod incompatibility!");
+					return;
 				}
 			}
 			event.setCanceled(true);
@@ -68,6 +69,7 @@ public class StopSteve {
 					info.canRender = true;
 					m = 0;
 					System.err.println("StopSteve Lasted Max MS:" + Config.stopSteveMs + " This is probably a mod incompatibility!");
+					return;
 				}
 			}
 			event.setCanceled(true);
