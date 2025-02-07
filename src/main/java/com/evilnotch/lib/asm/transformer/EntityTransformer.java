@@ -446,10 +446,8 @@ public class EntityTransformer implements IClassTransformer{
 	public void patchStopSteve(ClassNode classNode) 
 	{
 		//to prevent crashes always add the field even when ConfigCore#asm_stopSteve is disabled
-		if(!ASMHelper.containsFieldNode(classNode, "canRender"))
-		{
-			classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "canRender", "Z", null, null));
-		}
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "canRender", "Z", null, null));
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "ssms", "J", null, null));
 		ASMHelper.pubMinusFinal(classNode, true);
 	}
 

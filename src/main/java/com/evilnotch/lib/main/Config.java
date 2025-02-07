@@ -28,6 +28,7 @@ public class Config {
 	public static int skinCacheFast = 20;
 	public static long skinCacheMs = 1800;
 	public static long stopSteveMs = 2800;
+	public static long stopSteveOtherMs = 280;
 	public static boolean skinPacketSmooth = true;
 	
 	/**
@@ -63,6 +64,7 @@ public class Config {
 		skinCacheMs = config.get("skins", "skinCacheClockMs", (int)skinCacheMs).getInt();
 		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");
 		stopSteveMs = config.get("skins", "stopSteveMs", (int)stopSteveMs).getInt();
+		stopSteveOtherMs = config.get("skins", "stopSteveOtherMs", (int)stopSteveOtherMs).getInt();
 		skinPacketSmooth = config.get("skins", "skinCachePacketSmooth", skinPacketSmooth).getBoolean();
 		
 		//entity cache data for black list and allow certain entities to pass through

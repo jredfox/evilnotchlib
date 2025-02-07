@@ -101,8 +101,7 @@ public class ClientProxy extends ServerProxy{
 		TickRegistry.garbageCollectClient();
 		Seeds.clearSeeds();
 		IgnoreTilePacket.ignoreTiles.clear();
-		StopSteve.m =  0;
-		StopSteve.m2 = 0;
+		StopSteve.m = 0L;
 		ClientCapHooks.others.clear();
 		System.out.println("disconnecting..........................");
 	}

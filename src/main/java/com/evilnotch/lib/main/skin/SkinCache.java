@@ -325,7 +325,7 @@ public class SkinCache {
 						long ms = Config.skinCacheMs;
 						while(this.paused && ms > 0L)
 						{
-							long z = Math.min(ms, 250L);
+							long z = Math.min(ms, 200L);
 							ms -= z;
 							JavaUtil.sleep(z);
 						}
