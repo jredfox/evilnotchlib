@@ -80,7 +80,7 @@ public class ClientProxy extends ServerProxy{
 	private void registerEvents() 
 	{
 		MinecraftForge.EVENT_BUS.register(new ClientEvents());
-		if(ConfigCore.asm_stopSteve)
+		if(ConfigCore.asm_stopSteve && Config.stopSteve)
 		{
 			MinecraftForge.EVENT_BUS.register(new StopSteve());
 		}
