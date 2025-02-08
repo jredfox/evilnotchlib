@@ -42,7 +42,7 @@ public class LibEvents {
 		 TickRegistry.tickServer(e.phase);
 	 }
 	 
-	 @SubscribeEvent(priority = EventPriority.HIGH)
+	 @SubscribeEvent(priority = EventPriority.HIGHEST)
 	 public void syncCaps(PlayerEvent.Clone event)
 	 {
 		 EntityPlayer original = event.getOriginal();
