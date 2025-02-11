@@ -273,6 +273,12 @@ public class EntityTransformer implements IClassTransformer{
 		String thiszero = null;
 		String valmap = null;
 		String valSkinCall = null;
+		
+		boolean thisoneSRG = false;
+		boolean thiszeroSRG = false;
+		boolean valmapSRG = false;
+		boolean valSkinCallSRG = false;
+		
 		AbstractInsnNode ab = targ;
 		while(ab != null)
 		{
@@ -280,20 +286,35 @@ public class EntityTransformer implements IClassTransformer{
 			if(ab instanceof FieldInsnNode && ab.getOpcode() == Opcodes.GETFIELD)
 			{
 				FieldInsnNode f = (FieldInsnNode) ab;
-				if(f.desc.equals("Lnet/minecraft/client/resources/SkinManager$3;"))
+				if(!thisoneSRG && f.desc.equals("Lnet/minecraft/client/resources/SkinManager$3;"))
+				{
+					thisoneSRG = f.name.equals("field_152804_b");
 					thisone = f.name;
-				else if(f.desc.equals("Lnet/minecraft/client/resources/SkinManager;"))
+				}
+				else if(!thiszeroSRG && f.desc.equals("Lnet/minecraft/client/resources/SkinManager;"))
+				{
+					thiszeroSRG = f.name.equals("field_152802_d");
 					thiszero = f.name;
-				else if(f.desc.equals("Ljava/util/Map;"))
+				}
+				else if(!valmapSRG && f.desc.equals("Ljava/util/Map;"))
+				{
+					valmapSRG = f.name.equals("field_152803_a");
 					valmap = f.name;
-				else if(f.desc.equals("Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"))
+				}
+				else if(!valSkinCallSRG && f.desc.equals("Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"))
+				{
+					valSkinCallSRG = f.name.equals("field_152801_c");
 					valSkinCall = f.name;
+				}
 			}
 			else if(ab instanceof LabelNode)
 				break;
 		}
 		if(ConfigCore.dumpASM)
+		{
 			System.out.println("SkinManager$3$1:" + thisone + " " + thiszero + " " + valmap + " " + valSkinCall);
+			System.out.println("SRG:" + thisoneSRG + " " + thiszeroSRG + " " + valmapSRG + " " + valSkinCallSRG);
+		}
 		
 		//MainJava.proxy.skinElytra(SkinManager.this, map, skinAvailableCallback);
 		InsnList list = new InsnList();
