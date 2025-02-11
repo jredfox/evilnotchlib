@@ -52,7 +52,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.renderer.ThreadDownloadImageData$1",//stopSteve add callback of skin failure
     	"net.minecraft.client.resources.SkinManager$3", //transform all fields into public minus final
     	"net.minecraft.client.renderer.entity.layers.LayerDeadmau5Head", //SkinEvent#Mouse
-    	"net.minecraft.client.renderer.entity.RenderLivingBase" //SkinEvent#Dinnerbone
+    	"net.minecraft.client.renderer.entity.RenderLivingBase", //SkinEvent#Dinnerbone
+    	"net.minecraftforge.common.util.FakePlayer"//UUIDPatcher V2 FakePlayer Detection
     });
 
 	@Override
@@ -152,6 +153,10 @@ public class EntityTransformer implements IClassTransformer{
                 
                 case 18:
                 	transformDinnerbone(classNode);
+                break;
+                
+                case 19:
+                	patchFakePlayer(classNode);
                 break;
                 
             }
@@ -785,6 +790,13 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new JumpInsnNode(Opcodes.IFNE, label));
 		l.add(new LabelNode());
 		m.instructions.insert(ASMHelper.prevLineNumberNode(db), l);
+	}
+	
+	public void patchFakePlayer(ClassNode classNode) 
+	{
+		MethodNode ctr = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/WorldServer;Lcom/mojang/authlib/GameProfile;)V");
+		AbstractInsnNode spot = ASMHelper.getVarInsnNode(ctr, new VarInsnNode(Opcodes.ALOAD, 2));
+		ctr.instructions.insert(spot, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchFake", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
 	}
 
 }
