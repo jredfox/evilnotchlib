@@ -26,11 +26,9 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.crashy.Crashy;
 
 public class EntityTransformer implements IClassTransformer{
 	
@@ -297,7 +295,6 @@ public class EntityTransformer implements IClassTransformer{
 		if(ConfigCore.dumpASM)
 			System.out.println("SkinManager$3$1:" + thisone + " " + thiszero + " " + valmap + " " + valSkinCall);
 		
-		
 		//MainJava.proxy.skinElytra(SkinManager.this, map, skinAvailableCallback);
 		InsnList list = new InsnList();
 		list.add(new LabelNode());
@@ -338,22 +335,19 @@ public class EntityTransformer implements IClassTransformer{
 		ASMHelper.addIfMethod(classNode, inputBase + "NetworkPlayerInfo$1", "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
 		String thiszero = ASMHelper.getThisParentField(classNode, "Lnet/minecraft/client/network/NetworkPlayerInfo;", "field_177224_a");
 		//patch method for compiled as this$0 doesn't exist
-		if(FMLCorePlugin.isObf)
+		if(!thiszero.equals("this$0"))
 		{
-			if(!thiszero.equals("this$0"))
+			MethodNode topatch = ASMHelper.getMethodNode(classNode, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
+			Iterator<AbstractInsnNode> it = topatch.instructions.iterator();
+			while(it.hasNext())
 			{
-				MethodNode topatch = ASMHelper.getMethodNode(classNode, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
-				Iterator<AbstractInsnNode> it = topatch.instructions.iterator();
-				while(it.hasNext())
+				AbstractInsnNode ab = it.next();
+				if(ab instanceof FieldInsnNode)
 				{
-					AbstractInsnNode ab = it.next();
-					if(ab instanceof FieldInsnNode)
+					FieldInsnNode f = (FieldInsnNode) ab;
+					if(f.name.equals("this$0"))
 					{
-						FieldInsnNode f = (FieldInsnNode) ab;
-						if(f.name.equals("this$0"))
-						{
-							f.name = thiszero;
-						}
+						f.name = thiszero;
 					}
 				}
 			}
