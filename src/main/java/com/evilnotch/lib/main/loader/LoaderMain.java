@@ -184,7 +184,7 @@ public class LoaderMain {
 		
 		//directories instantiate
 		MinecraftServer server = e.getServer();
-		VanillaBugFixes.worlDir = server.worlds[0].getSaveHandler().getWorldDirectory();
+		VanillaBugFixes.worlDir = server.worlds[0].getSaveHandler().getWorldDirectory().getAbsoluteFile();
 		VanillaBugFixes.playerDataDir = new File(VanillaBugFixes.worlDir, "playerdata");
 		VanillaBugFixes.playerDataNames = new File(VanillaBugFixes.worlDir, "playerdata/names");
 	}

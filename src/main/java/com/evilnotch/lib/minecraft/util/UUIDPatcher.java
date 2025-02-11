@@ -26,6 +26,12 @@ public class UUIDPatcher {
 
 	public static GameProfile patch(GameProfile old) 
 	{
+    	if(VanillaBugFixes.playerDataNames == null)
+    	{
+    		System.err.println("WorldDir is NULL! Cannot Patch UUID:" + old.getId() + " for User:" + old.getName());
+    		return old;
+    	}
+    	
 		String user = old.getName();
 		UUID id = getUUID(old);
 		UUID cached = getCachedUUID(id, user);
@@ -49,7 +55,7 @@ public class UUIDPatcher {
 	 * Get the Player's Cached UUID from previous logins by providing current uuid and username
 	 */
     public static UUID getCachedUUID(UUID id, String user)
-    {
+    {	
 		File u = new File(VanillaBugFixes.playerDataNames, user.toLowerCase() + ".dat");
 		if(!u.exists())
 		{
