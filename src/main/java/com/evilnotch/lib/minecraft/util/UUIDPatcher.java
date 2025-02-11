@@ -9,6 +9,7 @@ import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.main.skin.SkinEvent.GameProfileEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
+import com.evilnotch.lib.minecraft.auth.FakeGameProfile;
 import com.mojang.authlib.GameProfile;
 import com.mojang.util.UUIDTypeAdapter;
 
@@ -27,6 +28,10 @@ public class UUIDPatcher {
 
 	public static GameProfile patch(GameProfile old) 
 	{
+		//Handle FakePlayer
+		if(old instanceof FakeGameProfile || old.getName() != null && old.getName().startsWith("["))
+			return old;
+		
     	if(VanillaBugFixes.playerDataNames == null)
     	{
     		String err = "WorldDir is NULL! Cannot Patch UUID:" + old.getId() + " for User:" + old.getName();
@@ -34,6 +39,7 @@ public class UUIDPatcher {
     			throw new RuntimeException(err);
     		else
     			System.err.println(err);
+    		return old;
     	}
     	
 		String user = old.getName();
