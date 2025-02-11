@@ -914,7 +914,6 @@ public class ASMHelper
 		
 		for(FieldNode f : classNode.fields) 
 		{
-			System.out.println("name:" + f.name + " " + f.desc);
 			if(f.desc.equals(parentThis))
 			{
 				//Check for exact field name

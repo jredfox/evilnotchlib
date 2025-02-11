@@ -26,6 +26,7 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -132,7 +133,7 @@ public class EntityTransformer implements IClassTransformer{
                 break;
                 
                 case 13:
-                	patchSkinManager3M1(classNode);//TODO:
+                	patchSkinManager3M1(classNode);
                 break;
                 
                 case 14:
@@ -268,18 +269,47 @@ public class EntityTransformer implements IClassTransformer{
 	{
 		MethodNode m = ASMHelper.getMethodNode(classNode, "run", "()V");
 		
+		//Dynamically get this$1 and this$1.this$0 val$map and val$skinAvailableCallback as mods can change the internal field names
+		MethodInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/resources/SkinManager", new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;", false);
+		String thisone = null;
+		String thiszero = null;
+		String valmap = null;
+		String valSkinCall = null;
+		AbstractInsnNode ab = targ;
+		while(ab != null)
+		{
+			ab = ab.getPrevious();
+			if(ab instanceof FieldInsnNode && ab.getOpcode() == Opcodes.GETFIELD)
+			{
+				FieldInsnNode f = (FieldInsnNode) ab;
+				if(f.desc.equals("Lnet/minecraft/client/resources/SkinManager$3;"))
+					thisone = f.name;
+				else if(f.desc.equals("Lnet/minecraft/client/resources/SkinManager;"))
+					thiszero = f.name;
+				else if(f.desc.equals("Ljava/util/Map;"))
+					valmap = f.name;
+				else if(f.desc.equals("Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"))
+					valSkinCall = f.name;
+			}
+			else if(ab instanceof LabelNode)
+				break;
+		}
+		if(ConfigCore.dumpASM)
+			System.out.println("SkinManager$3$1:" + thisone + " " + thiszero + " " + valmap + " " + valSkinCall);
+		
+		
 		//MainJava.proxy.skinElytra(SkinManager.this, map, skinAvailableCallback);
 		InsnList list = new InsnList();
 		list.add(new LabelNode());
 		list.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("this$1", "field_152804_b").toString(), "Lnet/minecraft/client/resources/SkinManager$3;"));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", new MCPSidedString("this$0", "field_152802_d").toString(), "Lnet/minecraft/client/resources/SkinManager;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", thisone, "Lnet/minecraft/client/resources/SkinManager$3;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", thiszero, "Lnet/minecraft/client/resources/SkinManager;"));
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("val$map", "field_152803_a").toString(), "Ljava/util/Map;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", valmap, "Ljava/util/Map;"));
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("this$1", "field_152804_b").toString(), "Lnet/minecraft/client/resources/SkinManager$3;"));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", new MCPSidedString("val$skinAvailableCallback", "field_152801_c").toString(), "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", thisone, "Lnet/minecraft/client/resources/SkinManager$3;"));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", valSkinCall, "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
 		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "skinElytra", "(Ljava/lang/Object;Ljava/util/Map;Ljava/lang/Object;)V", false));
 		m.instructions.insert(ASMHelper.getLastLabelNode(m, false), list);
 		
@@ -289,10 +319,10 @@ public class EntityTransformer implements IClassTransformer{
 			InsnList l = new InsnList();
 			l.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
 			l.add(new VarInsnNode(Opcodes.ALOAD, 0));
-			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("val$map", "field_152803_a").toString(), "Ljava/util/Map;"));
+			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", valmap, "Ljava/util/Map;"));
 			l.add(new VarInsnNode(Opcodes.ALOAD, 0));
-			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", new MCPSidedString("this$1", "field_152804_b").toString(), "Lnet/minecraft/client/resources/SkinManager$3;"));
-			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", new MCPSidedString("val$skinAvailableCallback", "field_152801_c").toString(), "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
+			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3$1", thisone, "Lnet/minecraft/client/resources/SkinManager$3;"));
+			l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/resources/SkinManager$3", valSkinCall, "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
 			l.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "noSkin", "(Ljava/util/Map;Ljava/lang/Object;)V", false));
 			m.instructions.insert(ASMHelper.getFirstInstruction(m), l);
 		}
@@ -306,10 +336,10 @@ public class EntityTransformer implements IClassTransformer{
 		//add IMPL of stopSteve
 		String inputBase = "assets/evilnotchlib/asm/" + (FMLCorePlugin.isObf ? "srg/" : "deob/");
 		ASMHelper.addIfMethod(classNode, inputBase + "NetworkPlayerInfo$1", "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
+		String thiszero = ASMHelper.getThisParentField(classNode, "Lnet/minecraft/client/network/NetworkPlayerInfo;", "field_177224_a");
 		//patch method for compiled as this$0 doesn't exist
 		if(FMLCorePlugin.isObf)
 		{
-			String thiszero = ASMHelper.getThisParentField(classNode, "Lnet/minecraft/client/network/NetworkPlayerInfo;", "field_177224_a");
 			if(!thiszero.equals("this$0"))
 			{
 				MethodNode topatch = ASMHelper.getMethodNode(classNode, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
@@ -336,7 +366,7 @@ public class EntityTransformer implements IClassTransformer{
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("skinAvailable", "func_180521_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
 		InsnList l = new InsnList();
 		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/network/NetworkPlayerInfo$1", new MCPSidedString("this$0", "field_177224_a").toString(), "Lnet/minecraft/client/network/NetworkPlayerInfo;"));
+		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/network/NetworkPlayerInfo$1", thiszero, "Lnet/minecraft/client/network/NetworkPlayerInfo;"));
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/StopSteve", "stopSteve", "(Lnet/minecraft/client/network/NetworkPlayerInfo;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;)V", false));
 		m.instructions.insert(ASMHelper.getLastLabelNode(m, false), l);
