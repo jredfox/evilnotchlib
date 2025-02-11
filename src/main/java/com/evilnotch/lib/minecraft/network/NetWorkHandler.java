@@ -47,7 +47,7 @@ public class NetWorkHandler {
 	
 	public static void init()
 	{
-		INSTANCE = new NetWorkWrapper(MainJava.MODID);
+		INSTANCE = new NetWorkRegistry(MainJava.MODID);
 		
 		//to client
 		registerMessage(PacketUUIDHandler.class, PacketUUID.class, Side.CLIENT);
@@ -74,6 +74,6 @@ public class NetWorkHandler {
 	
 	public static void registerMessage(Class handler, Class packet, Side side)
 	{
-		INSTANCE.registerMessage(handler, packet, networkid++, side);
+		INSTANCE.registerMessage(handler, packet, 0, side);
 	}
 }

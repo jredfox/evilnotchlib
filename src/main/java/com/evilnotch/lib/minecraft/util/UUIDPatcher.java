@@ -10,7 +10,6 @@ import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.main.skin.SkinEvent.GameProfileEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.auth.FakeGameProfile;
-import com.evilnotch.lib.minecraft.world.FakeWorld;
 import com.mojang.authlib.GameProfile;
 import com.mojang.util.UUIDTypeAdapter;
 
@@ -21,7 +20,6 @@ import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class UUIDPatcher {
