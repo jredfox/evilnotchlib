@@ -21,6 +21,7 @@ public class Config {
 	public static boolean seedDisplay = true;
 	public static boolean unloadDimensions = false;
 	public static boolean unloadDimOverride = true;
+	public static boolean UUIDCrashOnFailure = true;
 	
 	//start skin fixes
 	public static boolean allowskintrans = true;
@@ -58,6 +59,7 @@ public class Config {
 		seedDisplay = config.get("general", "seedF3", true).getBoolean();
 		unloadDimensions = config.get("general", "unloadDimensions", unloadDimensions).getBoolean();
 		unloadDimOverride = config.get("general", "unloadDimensionsOverride", unloadDimOverride, "This Requires unloadDimensions to be true! Overrides DimensionManager#keepLoaded. Disable this if Issues Occur").getBoolean();
+		UUIDCrashOnFailure = config.get("general", "UUIDPatcherCrashOnFailure", UUIDCrashOnFailure, "Disable This if there are more then Forge's FakePlayer in your Modpack").getBoolean();
 		
 		allowskintrans = config.get("skins", "allowSkinTransparency", allowskintrans).getBoolean();
 		skinCache = config.get("skins", "skinCache", skinCache).getBoolean();

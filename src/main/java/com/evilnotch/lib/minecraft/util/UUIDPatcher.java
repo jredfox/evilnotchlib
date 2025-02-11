@@ -4,6 +4,8 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import com.evilnotch.lib.asm.ConfigCore;
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.main.skin.SkinEvent.GameProfileEvent;
@@ -28,8 +30,11 @@ public class UUIDPatcher {
 	{
     	if(VanillaBugFixes.playerDataNames == null)
     	{
-    		System.err.println("WorldDir is NULL! Cannot Patch UUID:" + old.getId() + " for User:" + old.getName());
-    		return old;
+    		String err = "WorldDir is NULL! Cannot Patch UUID:" + old.getId() + " for User:" + old.getName();
+    		if(Config.UUIDCrashOnFailure)
+    			throw new RuntimeException(err);
+    		else
+    			System.err.println(err);
     	}
     	
 		String user = old.getName();
