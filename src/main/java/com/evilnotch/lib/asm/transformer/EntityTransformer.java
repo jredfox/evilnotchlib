@@ -29,6 +29,7 @@ import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.crashy.Crashy;
 
 public class EntityTransformer implements IClassTransformer{
 	
@@ -131,7 +132,7 @@ public class EntityTransformer implements IClassTransformer{
                 break;
                 
                 case 13:
-                	patchSkinManager3M1(classNode);
+                	patchSkinManager3M1(classNode);//TODO:
                 break;
                 
                 case 14:
@@ -201,7 +202,7 @@ public class EntityTransformer implements IClassTransformer{
 			return;
 		
 		MethodNode run = ASMHelper.getMethodNode(classNode, "run", "()V");
-		String ref = new MCPSidedString("this$0", "field_110932_a").toString();
+		String ref = ASMHelper.getThisParentField(classNode, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;", "field_110932_a");
 		
 		InsnList list = new InsnList();
 		//inject noskin call with url response after the connection is established
@@ -308,17 +309,21 @@ public class EntityTransformer implements IClassTransformer{
 		//patch method for compiled as this$0 doesn't exist
 		if(FMLCorePlugin.isObf)
 		{
-			MethodNode topatch = ASMHelper.getMethodNode(classNode, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
-			Iterator<AbstractInsnNode> it = topatch.instructions.iterator();
-			while(it.hasNext())
+			String thiszero = ASMHelper.getThisParentField(classNode, "Lnet/minecraft/client/network/NetworkPlayerInfo;", "field_177224_a");
+			if(!thiszero.equals("this$0"))
 			{
-				AbstractInsnNode ab = it.next();
-				if(ab instanceof FieldInsnNode)
+				MethodNode topatch = ASMHelper.getMethodNode(classNode, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
+				Iterator<AbstractInsnNode> it = topatch.instructions.iterator();
+				while(it.hasNext())
 				{
-					FieldInsnNode f = (FieldInsnNode) ab;
-					if(f.name.equals("this$0"))
+					AbstractInsnNode ab = it.next();
+					if(ab instanceof FieldInsnNode)
 					{
-						f.name = "field_177224_a";
+						FieldInsnNode f = (FieldInsnNode) ab;
+						if(f.name.equals("this$0"))
+						{
+							f.name = thiszero;
+						}
 					}
 				}
 			}
@@ -336,9 +341,6 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/StopSteve", "stopSteve", "(Lnet/minecraft/client/network/NetworkPlayerInfo;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;)V", false));
 		m.instructions.insert(ASMHelper.getLastLabelNode(m, false), l);
 		
-//		ASMHelper.exportMethods(classNode, "dump/dumped2", ASMHelper.getMethodNode(classNode, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V"));
-//		ClassNode clsrg = ASMHelper.getClassNode(new FileInputStream(new File("C:/Users/jredfox/Desktop/NetworkPlayerInfo$1.class")));
-//		ASMHelper.exportMethods(classNode, "dump/dumped2_srg", ASMHelper.getMethodNode(clsrg, "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V"));
 	}
 
 	/**

@@ -902,5 +902,35 @@ public class ASMHelper
 		}
 		return null;
 	}
+
+	/**
+	 * Dynamically get this$1 or this$0 provided you know the SRG for this$ you are looking for
+	 */
+	public static String getThisParentField(ClassNode classNode, String parentThis, String... srgs) 
+	{
+		String thisgen = null;
+		String synth = null;
+		String dynamic = null;
+		
+		for(FieldNode f : classNode.fields) 
+		{
+			System.out.println("name:" + f.name + " " + f.desc);
+			if(f.desc.equals(parentThis))
+			{
+				//Check for exact field name
+				for(String srg : srgs)
+					if(f.name.equals(srg))
+						return f.name;
+				
+				if(thisgen == null && f.name.startsWith("this$"))
+					thisgen = f.name;
+				else if(synth == null && f.name.contains("$"))
+					synth = f.name;
+				else if(dynamic == null)
+					dynamic = f.name;
+			}
+		}
+		return thisgen != null ? thisgen : (synth != null ? synth : dynamic);
+	}
 	
 }
