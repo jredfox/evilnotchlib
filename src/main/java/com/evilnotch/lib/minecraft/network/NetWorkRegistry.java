@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.Packet;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -39,6 +40,12 @@ public class NetWorkRegistry extends NetWorkWrapper {
 		regGet.put(requestMessageType, nw);
 		
 		nw.registerMessage(messageHandler, requestMessageType, (side == Side.CLIENT ? nw.idClient++ : nw.idServer++), side);
+    }
+	
+	@Override
+    public Packet<?> getPacketFrom(IMessage message)
+    {
+		return regGet.get(message.getClass()).getPacketFrom(message);
     }
 	
 	@Override
