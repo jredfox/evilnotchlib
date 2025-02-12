@@ -29,6 +29,7 @@ import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.util.text.TextFormatting;
 
 public class EntityTransformer implements IClassTransformer{
 	
@@ -53,7 +54,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.resources.SkinManager$3", //transform all fields into public minus final
     	"net.minecraft.client.renderer.entity.layers.LayerDeadmau5Head", //SkinEvent#Mouse
     	"net.minecraft.client.renderer.entity.RenderLivingBase", //SkinEvent#Dinnerbone
-    	"net.minecraftforge.common.util.FakePlayer"//UUIDPatcher V2 FakePlayer Detection
+    	"net.minecraftforge.common.util.FakePlayer",//UUIDPatcher V2 FakePlayer Detection
+    	"net.minecraft.scoreboard.ScorePlayerTeam"//Fix Team Colors for nicknames on LanEssentials
     });
 
 	@Override
@@ -157,6 +159,10 @@ public class EntityTransformer implements IClassTransformer{
                 
                 case 19:
                 	patchFakePlayer(classNode);
+                break;
+                
+                case 20:
+                	patchScorePlayerTeam(classNode);
                 break;
                 
             }
@@ -797,6 +803,25 @@ public class EntityTransformer implements IClassTransformer{
 		MethodNode ctr = ASMHelper.getConstructionNode(classNode, "(Lnet/minecraft/world/WorldServer;Lcom/mojang/authlib/GameProfile;)V");
 		AbstractInsnNode spot = ASMHelper.getVarInsnNode(ctr, new VarInsnNode(Opcodes.ALOAD, 2));
 		ctr.instructions.insert(spot, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patchFake", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
+	}
+	
+	public void patchScorePlayerTeam(ClassNode classNode) 
+	{
+		if(!ConfigCore.asm_teams)
+			return;
+
+		//transform string --> TextFormatting.getTextWithoutFormattingCodes(string) 
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("formatPlayerName", "func_96667_a").toString(), "(Lnet/minecraft/scoreboard/Team;Ljava/lang/String;)Ljava/lang/String;");
+		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/scoreboard/Team", new MCPSidedString("formatString", "func_142053_d").toString(), "(Ljava/lang/String;)Ljava/lang/String;", false).getPrevious();
+		m.instructions.insert(spot, new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", new MCPSidedString("getTextWithoutFormattingCodes", "func_110646_a").toString(), "(Ljava/lang/String;)Ljava/lang/String;", false));
+		
+		if(!ConfigCore.asm_teams_full)
+			return;
+		
+		//transform string --> TextFormatting.getTextWithoutFormattingCodes(string) 
+		MethodNode m2 = ASMHelper.getMethodNode(classNode, new MCPSidedString("formatString", "func_142053_d").toString(), "(Ljava/lang/String;)Ljava/lang/String;");
+		AbstractInsnNode spot2 = ASMHelper.getVarInsnNode(m2, new VarInsnNode(Opcodes.ALOAD, 1));
+		m2.instructions.insert(spot2, new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", new MCPSidedString("getTextWithoutFormattingCodes", "func_110646_a").toString(), "(Ljava/lang/String;)Ljava/lang/String;", false));
 	}
 
 }

@@ -7,6 +7,7 @@ import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.event.client.ClientDisconnectEvent;
+import com.evilnotch.lib.minecraft.event.client.GuiTabOverlayEvent;
 import com.evilnotch.lib.minecraft.event.client.SkinTransparencyEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
@@ -122,6 +123,13 @@ public class ClientEvents {
 	{
 		if(event.getRenderer().getRenderManager().renderViewEntity == null)
 			event.setCanceled(true);
+	}
+	
+	@SubscribeEvent
+	public void tab(GuiTabOverlayEvent event)
+	{
+		Minecraft mc = Minecraft.getMinecraft();
+		event.canDisplay = event.keyDown && (!event.isIntegratedRunning || mc.getIntegratedServer().lanServerPing != null || event.scoreboard != null);
 	}
 	
 }
