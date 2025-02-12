@@ -2,6 +2,7 @@ package com.evilnotch.lib.main.eventhandler;
 
 import java.io.File;
 
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.event.PickEvent;
@@ -73,7 +74,10 @@ public class VanillaBugFixes {
 	 */
 	public static void syncSkin(EntityPlayerMP player)
 	{
-		NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PacketSkin(player), player);
+		if(Config.skinLowBandwidth)
+			NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PacketSkin(player), player);
+		else
+			NetWorkHandler.INSTANCE.sendToAll(new PacketSkin(player));
 	}
 	
 	/**
@@ -123,6 +127,8 @@ public class VanillaBugFixes {
 		EntityPlayerMP targ = (EntityPlayerMP) e.getTarget();
 		NetWorkHandler.INSTANCE.sendTo(new PacketYawHead(targ.getRotationYawHead(),targ.getEntityId()), (EntityPlayerMP)e.getEntityPlayer());
 		NetWorkHandler.INSTANCE.sendTo(new PCCapDownload(targ), (EntityPlayerMP) e.getEntityPlayer());
+		if(Config.skinLowBandwidth)
+			NetWorkHandler.INSTANCE.sendTo(new PacketSkin(targ), (EntityPlayerMP) e.getEntityPlayer());
 	}
 	 
 	@SubscribeEvent(priority=EventPriority.HIGH)
@@ -139,7 +145,7 @@ public class VanillaBugFixes {
 	{
 		if(!(e.player instanceof EntityPlayerMP))
 			return;
-		NetWorkHandler.INSTANCE.sendToTracking(new PCCapRem((EntityPlayerMP) e.player), (EntityPlayerMP) e.player);
+		NetWorkHandler.INSTANCE.sendToAll(new PCCapRem((EntityPlayerMP) e.player));//TODO: handle IClientCap now that we know how NetworkPlayerInfo works
 	}
 	 
 	/**
