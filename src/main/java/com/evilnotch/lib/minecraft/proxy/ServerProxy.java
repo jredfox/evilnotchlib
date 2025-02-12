@@ -8,6 +8,7 @@ import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -52,6 +53,11 @@ public class ServerProxy {
 	public void addScheduledTask(Runnable run) 
 	{
 		FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(run);
+	}
+	
+	public int getServerPort(MinecraftServer server	)
+	{
+		return server.getServerPort();
 	}
 	
 	public void bindTexture(ResourceLocation steve) {}

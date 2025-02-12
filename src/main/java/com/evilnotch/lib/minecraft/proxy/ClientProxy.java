@@ -38,6 +38,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
@@ -265,6 +267,26 @@ public class ClientProxy extends ServerProxy{
         {
         	Minecraft.getMinecraft().getTextureManager().deleteTexture(r);
         });
+	}
+	
+	@Override
+	public int getServerPort(MinecraftServer server)
+	{
+		try
+		{
+			IntegratedServer is = (IntegratedServer) server;
+			if(is.lanServerPing == null)
+				return 0;
+			String address = is.lanServerPing.address;
+			int index = address.lastIndexOf(':');
+			String port = index != -1 ? address.substring(index + 1) : address;
+			return Integer.parseInt(port);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
+		return 0;
 	}
 	
 	/**
