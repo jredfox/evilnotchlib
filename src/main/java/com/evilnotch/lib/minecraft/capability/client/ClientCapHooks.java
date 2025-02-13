@@ -21,6 +21,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClientCapHooks {
 	/**
@@ -103,6 +105,7 @@ public class ClientCapHooks {
 	/**
 	 * Get Automatically IClientCap of Player regardless of self or other
 	 */
+	@SideOnly(Side.CLIENT)
 	public static IClientCap get(NetworkPlayerInfo info, ResourceLocation loc)
 	{
 		UUID id = info.getGameProfile().getId();
@@ -244,42 +247,49 @@ public class ClientCapHooks {
 		return c != null ? c.get() : 0F;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static boolean getBoolean(NetworkPlayerInfo i, ResourceLocation loc) 
 	{
 		IClientCap<Boolean> c = get(i, loc);
 		return c != null && c.get();
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static String getString(NetworkPlayerInfo i, ResourceLocation loc) 
 	{
 		IClientCap<String> c = get(i, loc);
 		return c != null ? c.get() : "";
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static long getLong(NetworkPlayerInfo i, ResourceLocation loc) 
 	{
 		IClientCap<Long> c = get(i, loc);
 		return c != null ? c.get() : 0L;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static int getInt(NetworkPlayerInfo i, ResourceLocation loc) 
 	{
 		IClientCap<Integer> c = get(i, loc);
 		return c != null ? c.get() : 0;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static short getShort(NetworkPlayerInfo i, ResourceLocation loc) 
 	{
 		IClientCap<Short> c = get(i, loc);
 		return c != null ? c.get() : 0;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static double getDouble(NetworkPlayerInfo i, ResourceLocation loc) 
 	{
 		IClientCap<Double> c = get(i, loc);
 		return c != null ? c.get() : 0D;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static float getFloat(NetworkPlayerInfo i, ResourceLocation loc) 
 	{
 		IClientCap<Float> c = get(i, loc);
