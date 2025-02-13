@@ -3,8 +3,9 @@ package com.evilnotch.lib.minecraft.event.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class GuiTabOverlayEvent extends net.minecraftforge.fml.common.eventhandler.Event {
+public class GuiTabOverlayEvent extends Event {
 	
 	public boolean canDisplay;
 	public boolean keyDown;

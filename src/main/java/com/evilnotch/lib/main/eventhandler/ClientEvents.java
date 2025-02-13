@@ -125,11 +125,4 @@ public class ClientEvents {
 			event.setCanceled(true);
 	}
 	
-	@SubscribeEvent
-	public void tab(GuiTabOverlayEvent event)
-	{
-		Minecraft mc = Minecraft.getMinecraft();
-		event.canDisplay = event.keyDown && (!event.isIntegratedRunning || mc.getIntegratedServer().lanServerPing != null || event.scoreboard != null);
-	}
-	
 }
