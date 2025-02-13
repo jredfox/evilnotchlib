@@ -232,6 +232,11 @@ public class ClientProxy extends ServerProxy{
 		return p == Minecraft.getMinecraft().player;
 	}
 	
+	public boolean isClient(UUID id) 
+	{
+		return Minecraft.getMinecraft().player.getUniqueID().equals(id);
+	}
+	
 	@Override
 	public void d(float height)
 	{

@@ -1,6 +1,7 @@
 package com.evilnotch.lib.minecraft.proxy;
 
 import java.util.Map;
+import java.util.UUID;
 
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
@@ -74,6 +75,7 @@ public class ServerProxy {
 	public boolean isClient() {return false;}
 	public boolean isClient(EntityPlayer p) { return false; }
 	public void d(float height) {}
+	public boolean isClient(UUID id) {return false;}
 	
 	
 }

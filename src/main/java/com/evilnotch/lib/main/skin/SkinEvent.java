@@ -1,8 +1,11 @@
 package com.evilnotch.lib.main.skin;
 
+import javax.annotation.Nullable;
+
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -123,6 +126,20 @@ public class SkinEvent extends Event {
 		}
 	}
 	
+	public static class DinnerboneTab extends SkinEvent
+	{
+		public boolean dinnerbone;
+		@Nullable
+		public EntityPlayer player;
+		public NetworkPlayerInfo info;
+		
+		public DinnerboneTab(EntityPlayer p, NetworkPlayerInfo info)
+		{
+			this.player = p;
+			this.info = info;
+		}
+	}
+	
 	/**
 	 * Fires the Mouse Ears and Respects the Player's Invisibility
 	 */
@@ -142,6 +159,13 @@ public class SkinEvent extends Event {
 			return false;
 		
 		SkinEvent.Dinnerbone event = new SkinEvent.Dinnerbone((EntityPlayer) e);
+		MinecraftForge.EVENT_BUS.post(event);
+		return event.dinnerbone;
+	}
+
+	public static boolean fireDinnerbone(@Nullable EntityPlayer p, NetworkPlayerInfo info) 
+	{
+		SkinEvent.DinnerboneTab event = new SkinEvent.DinnerboneTab(p, info);
 		MinecraftForge.EVENT_BUS.post(event);
 		return event.dinnerbone;
 	}

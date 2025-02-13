@@ -4,7 +4,9 @@ import java.io.File;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
+import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
@@ -67,6 +69,8 @@ public class VanillaBugFixes {
 				NetWorkHandler.INSTANCE.sendTo(new PacketUUID(e.player.getUniqueID()), (EntityPlayerMP)e.player);
 			}
 		}
+		
+		NetWorkHandler.INSTANCE.sendToAll(new PCCapDownload((EntityPlayerMP) e.player));
 	}
 	
 	/**
@@ -130,22 +134,13 @@ public class VanillaBugFixes {
 		if(Config.skinLowBandwidth)
 			NetWorkHandler.INSTANCE.sendTo(new PacketSkin(targ), (EntityPlayerMP) e.getEntityPlayer());
 	}
-	 
-	@SubscribeEvent(priority=EventPriority.HIGH)
-	public void untrack(PlayerEvent.StopTracking e)
-	{
-		if(!(e.getTarget() instanceof EntityPlayerMP))
-			return;
-		EntityPlayerMP targ = (EntityPlayerMP) e.getTarget();
-		NetWorkHandler.INSTANCE.sendTo(new PCCapRem(targ), (EntityPlayerMP) e.getEntityPlayer());
-	}
 	
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void logout(PlayerLoggedOutEvent e)
 	{
 		if(!(e.player instanceof EntityPlayerMP))
 			return;
-		NetWorkHandler.INSTANCE.sendToAll(new PCCapRem((EntityPlayerMP) e.player));//TODO: handle IClientCap now that we know how NetworkPlayerInfo works
+		NetWorkHandler.INSTANCE.sendToAll(new PCCapRem((EntityPlayerMP) e.player));
 	}
 	 
 	/**
@@ -191,5 +186,11 @@ public class VanillaBugFixes {
 	{
 		MainJava.proxy.fixMcProfileProperties();
 	}
+	
+    @SubscribeEvent
+    public void render(SkinEvent.DinnerboneTab event)
+    {
+    	event.dinnerbone = ClientCapHooks.getBoolean(event.info, new ResourceLocation("skincaps", "dinnerbone"));//TODO: remove
+    }
 
 }

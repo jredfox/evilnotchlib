@@ -14,6 +14,8 @@ public class PCCapDLUpdateHandler extends MessegeBase<PCCapDLUpdate> {
 	{
 		Minecraft.getMinecraft().addScheduledTask(()->
 		{
+			System.out.println("DL UPDATE:" + message.uuid + " nbt:" + message.nbt);
+			System.out.println(Minecraft.getMinecraft().player.getGameProfile().getId());
 			ClientCapHooks.downloadUpdate(message.uuid, message.nbt);
 		});
 	}

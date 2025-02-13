@@ -20,7 +20,7 @@ public class PCCapUploadHandler extends MessegeBase<PCCapUpload> {
 		{
 			LoginCap login = ClientCapHooks.getLoginCap(p);
 			login.setClientCaps(message.nbt);//update the IClientCap's NBT
-			NetWorkHandler.INSTANCE.sendToTracking(new PCCapDownload(p), p);//Update all Players Tracking the IClientCaps
+			NetWorkHandler.INSTANCE.sendToAll(new PCCapDownload(p));//Update all Players Tracking the IClientCaps
 		});
 	}
 	

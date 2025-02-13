@@ -29,7 +29,6 @@ import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.util.text.TextFormatting;
 
 public class EntityTransformer implements IClassTransformer{
 	

@@ -15,6 +15,7 @@ import com.evilnotch.lib.minecraft.network.packet.PCCapUpload;
 import com.evilnotch.lib.minecraft.network.packet.PCCapUploadUpdate;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -97,6 +98,15 @@ public class ClientCapHooks {
 	public static IClientCap get(EntityPlayer p, ResourceLocation loc)
 	{
 		return MainJava.proxy.isClient(p) ? get(loc) : get(p.getUniqueID(), loc);
+	}
+	
+	/**
+	 * Get Automatically IClientCap of Player regardless of self or other
+	 */
+	public static IClientCap get(NetworkPlayerInfo info, ResourceLocation loc)
+	{
+		UUID id = info.getGameProfile().getId();
+		return MainJava.proxy.isClient(id) ? get(loc) : get(id, loc);
 	}
 	
 	/**
@@ -231,6 +241,48 @@ public class ClientCapHooks {
 	public static float getFloat(EntityPlayer p, ResourceLocation loc) 
 	{
 		IClientCap<Float> c = get(p, loc);
+		return c != null ? c.get() : 0F;
+	}
+	
+	public static boolean getBoolean(NetworkPlayerInfo i, ResourceLocation loc) 
+	{
+		IClientCap<Boolean> c = get(i, loc);
+		return c != null && c.get();
+	}
+	
+	public static String getString(NetworkPlayerInfo i, ResourceLocation loc) 
+	{
+		IClientCap<String> c = get(i, loc);
+		return c != null ? c.get() : "";
+	}
+	
+	public static long getLong(NetworkPlayerInfo i, ResourceLocation loc) 
+	{
+		IClientCap<Long> c = get(i, loc);
+		return c != null ? c.get() : 0L;
+	}
+	
+	public static int getInt(NetworkPlayerInfo i, ResourceLocation loc) 
+	{
+		IClientCap<Integer> c = get(i, loc);
+		return c != null ? c.get() : 0;
+	}
+	
+	public static short getShort(NetworkPlayerInfo i, ResourceLocation loc) 
+	{
+		IClientCap<Short> c = get(i, loc);
+		return c != null ? c.get() : 0;
+	}
+	
+	public static double getDouble(NetworkPlayerInfo i, ResourceLocation loc) 
+	{
+		IClientCap<Double> c = get(i, loc);
+		return c != null ? c.get() : 0D;
+	}
+	
+	public static float getFloat(NetworkPlayerInfo i, ResourceLocation loc) 
+	{
+		IClientCap<Float> c = get(i, loc);
 		return c != null ? c.get() : 0F;
 	}
 	
