@@ -10,6 +10,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class SkinEvent extends Event {
 	
@@ -126,6 +128,7 @@ public class SkinEvent extends Event {
 		}
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public static class DinnerboneTab extends SkinEvent
 	{
 		public boolean dinnerbone;
@@ -163,6 +166,7 @@ public class SkinEvent extends Event {
 		return event.dinnerbone;
 	}
 
+	@SideOnly(Side.CLIENT)
 	public static boolean fireDinnerbone(@Nullable EntityPlayer p, NetworkPlayerInfo info) 
 	{
 		SkinEvent.DinnerboneTab event = new SkinEvent.DinnerboneTab(p, info);
