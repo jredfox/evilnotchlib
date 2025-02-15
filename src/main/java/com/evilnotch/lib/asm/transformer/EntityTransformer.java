@@ -841,7 +841,7 @@ public class EntityTransformer implements IClassTransformer{
 	
 	public void patchGuiIngameForge(ClassNode classNode) 
 	{
-		if(!ConfigCore.asm_guitaboverlay)
+		if(!ConfigCore.asm_guiTabOverlay)
 			return;
 		
 		MethodNode m = ASMHelper.getMethodNode(classNode, "renderPlayerList", "(II)V");

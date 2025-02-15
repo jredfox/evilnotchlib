@@ -24,7 +24,7 @@ public class ConfigCore {
 	public static boolean asm_dinnerbone = true;
 	public static boolean asm_teams = true;
 	public static boolean asm_teams_full = true;
-	public static boolean asm_guitaboverlay = true;
+	public static boolean asm_guiTabOverlay = true;
 	
 	public static boolean dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
 	public static boolean dumpASM = dumpASMJVM;
@@ -54,7 +54,7 @@ public class ConfigCore {
 		asm_dinnerbone = config.get("asm_safe_cfg", "asm_dinnerbone", true).getBoolean();
 		asm_teams = config.get("asm_safe_cfg", "asm_teams", true).getBoolean();
 		asm_teams_full = config.get("asm_safe_cfg", "asm_teams_full", true).getBoolean();
-		asm_guitaboverlay = config.get("asm_safe_cfg", "asm_guitaboverlay", true).getBoolean();
+		asm_guiTabOverlay = config.get("asm_safe_cfg", "asm_guiTabOverlay", true).getBoolean();
 		
 		Crashy.GUI = config.get("asm_safe_cfg","asm_gui_crash", true).getBoolean();
 		
