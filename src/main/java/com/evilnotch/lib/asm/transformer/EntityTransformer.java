@@ -809,18 +809,23 @@ public class EntityTransformer implements IClassTransformer{
 		if(!ConfigCore.asm_teams)
 			return;
 
+		String getText = new MCPSidedString("getTextWithoutFormattingCodes", "func_110646_a").toString();
+		
 		//transform string --> TextFormatting.getTextWithoutFormattingCodes(string) 
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("formatPlayerName", "func_96667_a").toString(), "(Lnet/minecraft/scoreboard/Team;Ljava/lang/String;)Ljava/lang/String;");
 		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/scoreboard/Team", new MCPSidedString("formatString", "func_142053_d").toString(), "(Ljava/lang/String;)Ljava/lang/String;", false).getPrevious();
-		m.instructions.insert(spot, new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", new MCPSidedString("getTextWithoutFormattingCodes", "func_110646_a").toString(), "(Ljava/lang/String;)Ljava/lang/String;", false));
+		m.instructions.insert(spot, new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", getText, "(Ljava/lang/String;)Ljava/lang/String;", false));
 		
 		if(!ConfigCore.asm_teams_full)
 			return;
 		
-		//transform string --> TextFormatting.getTextWithoutFormattingCodes(string) 
+		//input = TextFormatting.getTextWithoutFormattingCodes(input);
 		MethodNode m2 = ASMHelper.getMethodNode(classNode, new MCPSidedString("formatString", "func_142053_d").toString(), "(Ljava/lang/String;)Ljava/lang/String;");
-		AbstractInsnNode spot2 = ASMHelper.getVarInsnNode(m2, new VarInsnNode(Opcodes.ALOAD, 1));
-		m2.instructions.insert(spot2, new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", new MCPSidedString("getTextWithoutFormattingCodes", "func_110646_a").toString(), "(Ljava/lang/String;)Ljava/lang/String;", false));
+		InsnList l2 = new InsnList();
+		l2.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		l2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", getText, "(Ljava/lang/String;)Ljava/lang/String;", false));
+		l2.add(new VarInsnNode(Opcodes.ASTORE, 1));
+		m2.instructions.insert(ASMHelper.getFirstInstruction(m2), l2);
 	}
 
 }
