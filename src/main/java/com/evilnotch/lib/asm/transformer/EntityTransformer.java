@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -54,7 +55,9 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.renderer.entity.layers.LayerDeadmau5Head", //SkinEvent#Mouse
     	"net.minecraft.client.renderer.entity.RenderLivingBase", //SkinEvent#Dinnerbone
     	"net.minecraftforge.common.util.FakePlayer",//UUIDPatcher V2 FakePlayer Detection
-    	"net.minecraft.scoreboard.ScorePlayerTeam"//Fix Team Colors for nicknames on LanEssentials
+    	"net.minecraft.scoreboard.ScorePlayerTeam",//Fix Team Colors for nicknames on LanEssentials
+    	"net.minecraftforge.client.GuiIngameForge",//Override when GuiTabOverlay can be rendered
+    	"net.minecraft.client.gui.GuiPlayerTabOverlay"//SkinEvent#fireDinnerbone(player, info);
     });
 
 	@Override
@@ -162,6 +165,14 @@ public class EntityTransformer implements IClassTransformer{
                 
                 case 20:
                 	patchScorePlayerTeam(classNode);
+                break;
+                
+                case 21:
+                	ASMHelper.pubMinusFinal(classNode, true);
+                break;
+                
+                case 22:
+                	transformGuiPlayerTabOverlay(classNode);
                 break;
                 
             }
@@ -826,6 +837,23 @@ public class EntityTransformer implements IClassTransformer{
 		l2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", getText, "(Ljava/lang/String;)Ljava/lang/String;", false));
 		l2.add(new VarInsnNode(Opcodes.ASTORE, 1));
 		m2.instructions.insert(ASMHelper.getFirstInstruction(m2), l2);
+	}
+	
+	public void transformGuiPlayerTabOverlay(ClassNode classNode) 
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("renderPlayerlist", "func_175249_a").toString(), "(ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreObjective;)V");
+		AbstractInsnNode ab = ASMHelper.getLdcInsnNode(m, new LdcInsnNode("Dinnerbone"));
+		VarInsnNode targ = (VarInsnNode) ASMHelper.nextInsn(ab, Opcodes.ISTORE);
+		int indexPlayer = ASMHelper.prevLocalVarIndex(m, ab, Opcodes.ASTORE, "Lnet/minecraft/entity/player/EntityPlayer;");
+		int indexInfo =   ASMHelper.prevLocalVarIndex(m, ab, Opcodes.ASTORE, "Lnet/minecraft/client/network/NetworkPlayerInfo;");
+		
+		InsnList li = new InsnList();
+		li.add(new VarInsnNode(Opcodes.ALOAD, indexPlayer));
+		li.add(new VarInsnNode(Opcodes.ALOAD, indexInfo));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireDinnerbone", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/client/network/NetworkPlayerInfo;)Z", false));
+		li.add(new VarInsnNode(Opcodes.ISTORE, targ.var));
+		li.add(new LabelNode());
+		m.instructions.insert(ASMHelper.nextLabelR(targ), li);
 	}
 
 }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
@@ -930,6 +931,42 @@ public class ASMHelper
 			}
 		}
 		return thisgen != null ? thisgen : (synth != null ? synth : dynamic);
+	}
+
+	public static AbstractInsnNode nextInsn(AbstractInsnNode spot, int opcode) 
+	{
+		AbstractInsnNode n = spot;
+		while(n != null)
+		{
+			n = n.getNext();
+			if(n.getOpcode() == opcode)
+				return n;
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the previous LocalVariableNode's Index Who's Descriptor matches the target
+	 */
+	public static int prevLocalVarIndex(MethodNode m, AbstractInsnNode start, int opcode, String desc) 
+	{
+		AbstractInsnNode ab = start;
+		while(ab != null)
+		{
+			ab = ab.getPrevious();
+			if(ab instanceof VarInsnNode && ab.getOpcode() == opcode)
+			{
+				int index = ((VarInsnNode)ab).var;
+				for(LocalVariableNode v : m.localVariables)
+				{
+					if(index == v.index && desc.equals(v.desc))
+					{
+						return index;
+					}
+				}
+			}
+		}
+		return -1;
 	}
 	
 }
