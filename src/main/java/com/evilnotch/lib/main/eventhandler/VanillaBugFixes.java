@@ -71,7 +71,12 @@ public class VanillaBugFixes {
 			}
 		}
 		
+		//Download You to Others
 		NetWorkHandler.INSTANCE.sendToAll(new PCCapDownload((EntityPlayerMP) e.player));
+		
+		//Download Other players to you
+		for(EntityPlayerMP o : e.player.getServer().getPlayerList().getPlayers())
+			NetWorkHandler.INSTANCE.sendTo(new PCCapDownload(o), (EntityPlayerMP) e.player);
 	}
 	
 	/**
