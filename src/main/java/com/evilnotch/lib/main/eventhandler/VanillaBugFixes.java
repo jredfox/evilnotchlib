@@ -63,6 +63,7 @@ public class VanillaBugFixes {
 		{
 			EvilGameProfile profile = (EvilGameProfile)prof;
 			profile.login = null;//clear the login cache NBT as we are now fully logged in
+			profile.iloginhooks = null;//clear iloginhooks as player has logged in now
 			if(!profile.org.equals(profile.getId()))
 			{
 				System.out.println("Sending UUID Change to Client:" + e.player.getName());

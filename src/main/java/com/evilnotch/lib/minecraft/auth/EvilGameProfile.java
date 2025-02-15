@@ -34,8 +34,8 @@ public class EvilGameProfile extends GameProfile {
 		if(old instanceof EvilGameProfile)
 		{
 			EvilGameProfile ep = (EvilGameProfile) old;
-			this.org =        ep.org;
-			this.login =  	  ep.login;
+			this.org =         ep.org;
+			this.login =  	   ep.login;
 			this.iloginhooks = ep.iloginhooks;
 		}
 		else
