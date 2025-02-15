@@ -841,6 +841,9 @@ public class EntityTransformer implements IClassTransformer{
 	
 	public void patchGuiIngameForge(ClassNode classNode) 
 	{
+		if(!ConfigCore.asm_guitaboverlay)
+			return;
+		
 		MethodNode m = ASMHelper.getMethodNode(classNode, "renderPlayerList", "(II)V");
 		AbstractInsnNode inif = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiPlayerTabOverlay", new MCPSidedString("updatePlayerList", "func_175246_a").toString(), "(Z)V", false);
 		AbstractInsnNode spot = ASMHelper.prevLineNumberNode(ASMHelper.prevJumpInsnNode(inif));
