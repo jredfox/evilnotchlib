@@ -709,7 +709,19 @@ public class ASMHelper
 		AbstractInsnNode ab = pretarg;
 		while(ab != null)
 		{
-			ab = pretarg.getNext();
+			ab = ab.getNext();
+			if(ab instanceof JumpInsnNode)
+				return (JumpInsnNode) ab;
+		}
+		return null;
+	}
+	
+	public static JumpInsnNode prevJumpInsnNode(AbstractInsnNode pretarg) 
+	{
+		AbstractInsnNode ab = pretarg;
+		while(ab != null)
+		{
+			ab = ab.getPrevious();
 			if(ab instanceof JumpInsnNode)
 				return (JumpInsnNode) ab;
 		}

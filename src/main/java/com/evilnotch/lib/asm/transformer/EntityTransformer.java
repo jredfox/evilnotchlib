@@ -168,7 +168,7 @@ public class EntityTransformer implements IClassTransformer{
                 break;
                 
                 case 21:
-                	ASMHelper.pubMinusFinal(classNode, true);
+                	patchGuiIngameForge(classNode);
                 break;
                 
                 case 22:
@@ -837,6 +837,21 @@ public class EntityTransformer implements IClassTransformer{
 		l2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", getText, "(Ljava/lang/String;)Ljava/lang/String;", false));
 		l2.add(new VarInsnNode(Opcodes.ASTORE, 1));
 		m2.instructions.insert(ASMHelper.getFirstInstruction(m2), l2);
+	}
+	
+	public void patchGuiIngameForge(ClassNode classNode) 
+	{
+		MethodNode m = ASMHelper.getMethodNode(classNode, "renderPlayerList", "(II)V");
+		AbstractInsnNode inif = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/gui/GuiPlayerTabOverlay", new MCPSidedString("updatePlayerList", "func_175246_a").toString(), "(Z)V", false);
+		AbstractInsnNode spot = ASMHelper.prevLineNumberNode(ASMHelper.prevJumpInsnNode(inif));
+		
+		//prepend GuiTabOverlayEvent.fire() || false &&
+		InsnList l = new InsnList();
+		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/event/client/GuiTabOverlayEvent", "fire", "()Z", false));
+		l.add(new JumpInsnNode(Opcodes.IFNE, ASMHelper.prevLabelR(inif)));
+		l.add(new InsnNode(Opcodes.ICONST_0));
+		l.add(new JumpInsnNode(Opcodes.IFEQ, ASMHelper.nextJumpInsnNode(spot).label));
+		m.instructions.insert(spot, l);
 	}
 	
 	public void transformGuiPlayerTabOverlay(ClassNode classNode) 
