@@ -859,6 +859,9 @@ public class EntityTransformer implements IClassTransformer{
 	
 	public void transformGuiPlayerTabOverlay(ClassNode classNode) 
 	{
+		if(!ConfigCore.asm_dinnerbone)
+			return;
+		
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("renderPlayerlist", "func_175249_a").toString(), "(ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreObjective;)V");
 		AbstractInsnNode ab = ASMHelper.getLdcInsnNode(m, new LdcInsnNode("Dinnerbone"));
 		VarInsnNode targ = (VarInsnNode) ASMHelper.nextInsn(ab, Opcodes.ISTORE);
