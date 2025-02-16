@@ -868,12 +868,17 @@ public class EntityTransformer implements IClassTransformer{
 		int indexPlayer = ASMHelper.prevLocalVarIndex(m, ab, Opcodes.ASTORE, "Lnet/minecraft/entity/player/EntityPlayer;");
 		int indexInfo =   ASMHelper.prevLocalVarIndex(m, ab, Opcodes.ASTORE, "Lnet/minecraft/client/network/NetworkPlayerInfo;");
 		
+		//if(!dinnerbone) dinnerbone = SkinEvent.fireDinnerbone(player, info);
 		InsnList li = new InsnList();
+		LabelNode l1 = new LabelNode();
+		li.add(new VarInsnNode(Opcodes.ILOAD, targ.var));
+		li.add(new JumpInsnNode(Opcodes.IFNE, l1));
+		li.add(new LabelNode());
 		li.add(new VarInsnNode(Opcodes.ALOAD, indexPlayer));
 		li.add(new VarInsnNode(Opcodes.ALOAD, indexInfo));
 		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireDinnerbone", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/client/network/NetworkPlayerInfo;)Z", false));
 		li.add(new VarInsnNode(Opcodes.ISTORE, targ.var));
-		li.add(new LabelNode());
+		li.add(l1);
 		m.instructions.insert(ASMHelper.nextLabelR(targ), li);
 	}
 
