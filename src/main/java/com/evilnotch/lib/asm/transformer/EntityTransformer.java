@@ -561,6 +561,16 @@ public class EntityTransformer implements IClassTransformer{
 		list.add(new InsnNode(Opcodes.IRETURN));
 		list.add(l2);
 		wlist.instructions.insert(ASMHelper.getFirstInstruction(wlist), list);
+		
+		//Prevents Mojang 429 Error as not requireSecure is disabled the error doesn't seem to happen. Imported fix from LanEssentials 2018
+		if(ConfigCore.asm_patchLanSkinsInsecure)
+		{
+			MethodNode fill = ASMHelper.getMethodNode(classNode, "fillGameProfile", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;");
+			InsnList listFill = new InsnList();
+			listFill.add(new InsnNode(Opcodes.ICONST_0));
+			listFill.add(new VarInsnNode(Opcodes.ISTORE, 2));
+			fill.instructions.insert(ASMHelper.getFirstInstruction(fill), listFill);
+		}
 	}
 
 	public static void transformPlayerClient(ClassNode classNode)

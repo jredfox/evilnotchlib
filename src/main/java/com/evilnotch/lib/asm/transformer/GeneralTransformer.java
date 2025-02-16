@@ -65,7 +65,7 @@ public class GeneralTransformer {
     	if(!ConfigCore.asm_patchLanSkins)
     		return;
     	
-    	//VanillaBugFixes.fixMcProperties();
+    	//VanillaBugFixes.fixMcProfileProperties();
     	MethodNode m = ASMHelper.getMethodNode(classNode, getprops, "()Lcom/mojang/authlib/properties/PropertyMap;");
     	m.instructions.insert(ASMHelper.getFirstInstruction(m), new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/VanillaBugFixes", "fixMcProfileProperties", "()V", false));
     	

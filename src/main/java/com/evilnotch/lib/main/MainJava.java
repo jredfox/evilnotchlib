@@ -24,7 +24,7 @@ public class MainJava {
 	
 	@Mod.EventHandler
 	public void preinit(FMLPreInitializationEvent e)
-	{	
+	{
 		LoaderMain.loadpreinit(e, this.getClass().getClassLoader());
 	}
 	
