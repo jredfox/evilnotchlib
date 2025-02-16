@@ -204,7 +204,7 @@ public class EntityUtil {
 		catch(Throwable t)
 		{
 			ent_blacklist_commandsender.add(getEntityResourceLocation(entity));
-			LoaderMain.logger.error("Entity Has Thrown an Error when entity.getName() Report to mod author:" + EntityList.getEntityString(entity));
+			LoaderMain.logger.error("Entity Has Thrown an Error when entity.getName() Report to mod author: " + EntityList.getEntityString(entity));
 		}
 		return null;
 	}
@@ -777,14 +777,14 @@ public class EntityUtil {
 			if(Config.cacheEntDeny.contains(loc.getResourceDomain()) || Config.cacheEntNamesDeny.contains(loc))
 			{
 				ent_blacklist.add(loc);
-				LoaderMain.logger.log(Level.INFO,"Skipping blacklisted entity:" + loc);
+				LoaderMain.logger.log(Level.INFO,"Skipping blacklisted entity: " + loc);
 				continue;
 			}
 			Class clazz = EntityList.getClass(loc);
 			if(clazz == null)
 			{
 				ent_blacklist.add(loc);
-				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Class Found Report to mod author:" + loc);
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Class Found Report to mod author: " + loc);
 				continue;
 			}
 			boolean isAbstract = Modifier.isAbstract(clazz.getModifiers());
@@ -799,14 +799,14 @@ public class EntityUtil {
 			catch (Throwable t)
 			{
 				ent_blacklist.add(loc);
-				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod author:" + loc);
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity No Default World Constructor Report to mod author: " + loc);
 				continue;
 			}
 			Entity e = EntityUtil.createEntityByNameQuietly(loc, world,true);
 			if(e == null)
 			{
 				ent_blacklist.add(loc);//Entity failed cache it's string id for debugging
-				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity Creation Failed Report to mod author:" + loc);
+				LoaderMain.logger.log(Level.ERROR,"Skipping Broken Entity Creation Failed Report to mod author: " + loc);
 				continue;
 			}
 			
@@ -814,7 +814,7 @@ public class EntityUtil {
 			if(translation == null)
 			{
 				ent_blacklist.add(loc);//Entity failed cache it's string id for debugging
-				LoaderMain.logger.log(Level.ERROR,"Translation of Entity Failed Skipping:" + loc);
+				LoaderMain.logger.log(Level.ERROR,"Translation of Entity Failed Skipping: " + loc);
 				continue;
 			}
 			
@@ -840,7 +840,7 @@ public class EntityUtil {
 				catch(Throwable t)
 				{
 					ent_blacklist.add(loc);
-					LoaderMain.logger.log(Level.ERROR,"Skipping broken Entity Failed to read onInitialSpawn() aka onSpawnWithEgg() Report to mod author:" + loc);
+					LoaderMain.logger.log(Level.ERROR,"Skipping broken Entity Failed to read onInitialSpawn() aka onSpawnWithEgg() Report to mod author: " + loc);
 				}
 			}
 			if(!ent_blacklist.contains(loc) && !ent_blacklist_nbt.contains(loc))
@@ -948,7 +948,7 @@ public class EntityUtil {
 		if(tag == null)
 		{
 			ent_blacklist_nbt.add(loc);
-			LoaderMain.logger.log(Level.ERROR,"Entity Broke Writing NBT it returned null" + loc);
+			LoaderMain.logger.log(Level.ERROR,"Entity Broke Writing NBT it returned null: " + loc);
 			return;
 		}
 		try
@@ -959,7 +959,7 @@ public class EntityUtil {
 		catch(Throwable t)
 		{
 			ent_blacklist_nbt.add(loc);
-			LoaderMain.logger.log(Level.ERROR,"Entity Serialization Has Been Broken When Reading It's Own NBT Report to mod autoher:" + loc);
+			LoaderMain.logger.log(Level.ERROR,"Entity Serialization Has Been Broken When Reading It's Own NBT Report to mod autoher: " + loc);
 			if(Config.debug)
 				t.printStackTrace();
 		}
