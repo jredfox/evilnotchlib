@@ -820,17 +820,18 @@ public class EntityTransformer implements IClassTransformer{
 			return;
 
 		String getText = new MCPSidedString("getTextWithoutFormattingCodes", "func_110646_a").toString();
+		String formatString = new MCPSidedString("formatString", "func_142053_d").toString();
 		
 		//transform string --> TextFormatting.getTextWithoutFormattingCodes(string) 
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("formatPlayerName", "func_96667_a").toString(), "(Lnet/minecraft/scoreboard/Team;Ljava/lang/String;)Ljava/lang/String;");
-		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/scoreboard/Team", new MCPSidedString("formatString", "func_142053_d").toString(), "(Ljava/lang/String;)Ljava/lang/String;", false).getPrevious();
+		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/scoreboard/Team", formatString, "(Ljava/lang/String;)Ljava/lang/String;", false).getPrevious();
 		m.instructions.insert(spot, new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", getText, "(Ljava/lang/String;)Ljava/lang/String;", false));
 		
 		if(!ConfigCore.asm_teams_full)
 			return;
 		
 		//input = TextFormatting.getTextWithoutFormattingCodes(input);
-		MethodNode m2 = ASMHelper.getMethodNode(classNode, new MCPSidedString("formatString", "func_142053_d").toString(), "(Ljava/lang/String;)Ljava/lang/String;");
+		MethodNode m2 = ASMHelper.getMethodNode(classNode, formatString, "(Ljava/lang/String;)Ljava/lang/String;");
 		InsnList l2 = new InsnList();
 		l2.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		l2.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/util/text/TextFormatting", getText, "(Ljava/lang/String;)Ljava/lang/String;", false));
