@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
