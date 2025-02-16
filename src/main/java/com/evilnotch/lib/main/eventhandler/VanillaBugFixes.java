@@ -4,9 +4,7 @@ import java.io.File;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
-import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
-import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
@@ -192,11 +190,5 @@ public class VanillaBugFixes {
 	{
 		MainJava.proxy.fixMcProfileProperties();
 	}
-	
-    @SubscribeEvent
-    public void render(SkinEvent.DinnerboneTab event)
-    {
-    	event.dinnerbone = ClientCapHooks.getBoolean(event.info, new ResourceLocation("skincaps", "dinnerbone"));//TODO: remove
-    }
 
 }
