@@ -19,7 +19,7 @@ public class ConfigCore {
 	public static boolean asm_enchantmentNameFix = true;
 	public static boolean asm_FSFix = true;
 	public static boolean asm_patchLanSkins = true;
-	public static boolean asm_patchLanSkinsInsecure;
+	public static boolean asm_patchLanSkinsInsecure = true;
 	public static boolean asm_stopSteve = true;
 	public static boolean asm_mouse_ears = true;
 	public static boolean asm_dinnerbone = true;
