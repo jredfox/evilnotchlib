@@ -84,20 +84,23 @@ public class GeneralTransformer {
     	}
     	
     	//change fillProfileProperties(profile, false) to fillProfileProperties(profile, true);
-    	AbstractInsnNode a = m.instructions.getFirst();
-    	MethodInsnNode insn = new MethodInsnNode(Opcodes.INVOKEINTERFACE, "com/mojang/authlib/minecraft/MinecraftSessionService", "fillProfileProperties", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;", true);
-    	while(a != null)
+    	if(ConfigCore.asm_patchLanSkinsInsecure)
     	{
-    		if(a instanceof MethodInsnNode && ASMHelper.equals(insn, (MethodInsnNode) a) && a.getPrevious() instanceof InsnNode)
-    		{
-    			InsnNode prev = (InsnNode) a.getPrevious();
-    			if(prev.getOpcode() == Opcodes.ICONST_0)
-    			{
-    				m.instructions.insert(prev, new InsnNode(Opcodes.ICONST_1));
-    				m.instructions.remove(prev);
-    			}
-    		}
-    		a = a.getNext();
+	    	AbstractInsnNode a = m.instructions.getFirst();
+	    	MethodInsnNode insn = new MethodInsnNode(Opcodes.INVOKEINTERFACE, "com/mojang/authlib/minecraft/MinecraftSessionService", "fillProfileProperties", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;", true);
+	    	while(a != null)
+	    	{
+	    		if(a instanceof MethodInsnNode && ASMHelper.equals(insn, (MethodInsnNode) a) && a.getPrevious() instanceof InsnNode)
+	    		{
+	    			InsnNode prev = (InsnNode) a.getPrevious();
+	    			if(prev.getOpcode() == Opcodes.ICONST_0)
+	    			{
+	    				m.instructions.insert(prev, new InsnNode(Opcodes.ICONST_1));
+	    				m.instructions.remove(prev);
+	    			}
+	    		}
+	    		a = a.getNext();
+	    	}
     	}
 
     	MethodNode method = ASMHelper.getMethodNode(classNode, new MCPSidedString("launchIntegratedServer", "func_71371_a").toString(), "(Ljava/lang/String;Ljava/lang/String;Lnet/minecraft/world/WorldSettings;)V");
