@@ -564,7 +564,7 @@ public class EntityTransformer implements IClassTransformer{
 		
 		//Prevents Mojang 429 Error as not requireSecure is disabled the error doesn't seem to happen. Imported fix from LanEssentials 2018
 		//NOTE: uses hack confirmed Java 8 and lower where final method parameters and possibly local variables being final are not enforced at runtime
-		if(ConfigCore.asm_patchLanSkinsInsecure)
+		if(ConfigCore.asm_patchLanSkins429)
 		{
 			MethodNode fill = ASMHelper.getMethodNode(classNode, "fillGameProfile", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;");
 			InsnList listFill = new InsnList();
