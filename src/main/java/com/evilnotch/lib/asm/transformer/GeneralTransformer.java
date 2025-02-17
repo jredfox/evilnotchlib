@@ -70,13 +70,14 @@ public class GeneralTransformer {
     	m.instructions.insert(ASMHelper.getFirstInstruction(m), new MethodInsnNode(INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/VanillaBugFixes", "fixMcProfileProperties", "()V", false));
     	
     	//append && !Config.skinCache if found
+    	JumpInsnNode jumpP = null;
     	try
     	{
-	    	JumpInsnNode jump = ASMHelper.nextJumpInsnNode(ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/properties/PropertyMap", "isEmpty", "()Z", false));
+    		jumpP = ASMHelper.nextJumpInsnNode(ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/properties/PropertyMap", "isEmpty", "()Z", false));
 	    	InsnList plist = new InsnList();
 	    	plist.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/Config", "skinCache", "Z"));
-	    	plist.add(new JumpInsnNode(Opcodes.IFNE, jump.label));
-	    	m.instructions.insert(jump, plist);
+	    	plist.add(new JumpInsnNode(Opcodes.IFNE, jumpP.label));
+	    	m.instructions.insert(jumpP, plist);
     	}
     	catch (Exception e)
     	{
@@ -86,7 +87,7 @@ public class GeneralTransformer {
     	//change fillProfileProperties(profile, false) to fillProfileProperties(profile, true);
     	if(ConfigCore.asm_patchLanSkinsInsecure)
     	{
-	    	AbstractInsnNode a = m.instructions.getFirst();
+	    	AbstractInsnNode a = jumpP != null ? jumpP : m.instructions.getFirst();
 	    	MethodInsnNode insn = new MethodInsnNode(Opcodes.INVOKEINTERFACE, "com/mojang/authlib/minecraft/MinecraftSessionService", "fillProfileProperties", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;", true);
 	    	while(a != null)
 	    	{
@@ -97,6 +98,7 @@ public class GeneralTransformer {
 	    			{
 	    				m.instructions.insert(prev, new InsnNode(Opcodes.ICONST_1));
 	    				m.instructions.remove(prev);
+	    				break;
 	    			}
 	    		}
 	    		a = a.getNext();
