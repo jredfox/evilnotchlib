@@ -200,7 +200,6 @@ public class VanillaBugFixes {
 	public static GameProfile getCachedProfile(GameProfile profile, LoadingCache<GameProfile, GameProfile> insecureProfiles) 
 	{
 		GameProfile cached = insecureProfiles.getUnchecked(profile);
-		long ms = System.currentTimeMillis();
 		if (cached.getProperties().isEmpty() && !badProfiles.containsKey(profile.getId()) && JavaUtil.isOnline("sessionserver.mojang.com")) 
 		{
 			insecureProfiles.invalidate(profile);
