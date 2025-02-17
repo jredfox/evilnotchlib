@@ -520,17 +520,10 @@ public class EntityTransformer implements IClassTransformer{
 
 	private void patchLanSkinsCache(ClassNode classNode) 
 	{
+		//fillGameProfile(profile, true); --> fillGameProfile(profile, ASMHelper.rfalse(true));
 		MethodNode m = ASMHelper.getMethodNode(classNode, "load", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;");
-		AbstractInsnNode ab = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService", "fillGameProfile", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;", false);
-		AbstractInsnNode is = ab.getPrevious();
-		
-		//changes fillGameProfile(gameProfile, false) to fillGameProfile(gameProfile, true) 
-		if(is.getOpcode() == Opcodes.ICONST_0)
-		{
-			InsnNode spot = (InsnNode) is;
-			m.instructions.insert(spot, new InsnNode(Opcodes.ICONST_1));
-			m.instructions.remove(spot);
-		}
+		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService", "fillGameProfile", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;", false);
+		m.instructions.insertBefore(spot, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/asm/util/ASMHelper", "rfalse", "(Z)Z", false));
 	}
 
 	public static void patchLanSkins(ClassNode classNode)

@@ -979,5 +979,9 @@ public class ASMHelper
 		}
 		return -1;
 	}
+
+	public static boolean rfalse(boolean b) {return false;}
+	
+	public static boolean rtrue(boolean b) {return true;}
 	
 }
