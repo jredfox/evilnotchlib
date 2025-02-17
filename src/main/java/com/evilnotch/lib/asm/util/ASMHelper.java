@@ -702,6 +702,20 @@ public class ASMHelper
 		}
 		return null;
 	}
+	
+	public static VarInsnNode getVarLastInsnNode(MethodNode node, VarInsnNode compare) 
+	{
+		AbstractInsnNode[] arr = node.instructions.toArray();
+		for(int i=arr.length-1;i>=0;i--)
+		{
+			AbstractInsnNode ab = arr[i];
+			if(ab instanceof VarInsnNode && ASMHelper.equals(compare, (VarInsnNode)ab))
+			{
+				return (VarInsnNode)ab;
+			}
+		}
+		return null;
+	}
 
 	public static JumpInsnNode nextJumpInsnNode(AbstractInsnNode pretarg) 
 	{

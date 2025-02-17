@@ -565,6 +565,19 @@ public class EntityTransformer implements IClassTransformer{
 			listFill.add(new VarInsnNode(Opcodes.ISTORE, 2));
 			fill.instructions.insert(ASMHelper.getFirstInstruction(fill), listFill);
 		}
+		
+		//Wraps return profile; --> return VanillaBugFixes#getCachedProfile(profile, this.insecureProfiles);
+		MethodNode fillProps = ASMHelper.getMethodNode(classNode, "fillProfileProperties", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;");
+		InsnList lfill = new InsnList();
+		lfill.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		lfill.add(new FieldInsnNode(Opcodes.GETFIELD, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService", "insecureProfiles", "Lcom/google/common/cache/LoadingCache;"));
+		lfill.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/eventhandler/VanillaBugFixes", "getCachedProfile", "(Lcom/mojang/authlib/GameProfile;Lcom/google/common/cache/LoadingCache;)Lcom/mojang/authlib/GameProfile;", false));
+		
+		AbstractInsnNode finsn = ASMHelper.getMethodInsnNode(fillProps, Opcodes.INVOKEINTERFACE, "com/google/common/cache/LoadingCache", "getUnchecked", "(Ljava/lang/Object;)Ljava/lang/Object;", true);
+		if(finsn == null)
+			finsn = ASMHelper.getVarLastInsnNode(fillProps, new VarInsnNode(Opcodes.ILOAD, 2));
+		AbstractInsnNode fspot = ASMHelper.nextInsn(finsn, Opcodes.ARETURN).getPrevious();
+		fillProps.instructions.insert(fspot, lfill);
 	}
 
 	public static void transformPlayerClient(ClassNode classNode)
