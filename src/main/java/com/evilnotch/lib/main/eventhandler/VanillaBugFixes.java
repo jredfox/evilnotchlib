@@ -1,6 +1,8 @@
 package com.evilnotch.lib.main.eventhandler;
 
 import java.io.File;
+import java.util.UUID;
+import java.util.WeakHashMap;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
@@ -17,6 +19,8 @@ import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.minecraft.util.TileEntityUtil;
+import com.evilnotch.lib.util.JavaUtil;
+import com.google.common.cache.LoadingCache;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
@@ -189,6 +193,25 @@ public class VanillaBugFixes {
 	public static void fixMcProfileProperties() 
 	{
 		MainJava.proxy.fixMcProfileProperties();
+	}
+
+	public static WeakHashMap<UUID, GameProfile> badProfiles = new WeakHashMap();
+
+	public static GameProfile getCachedProfile(GameProfile profile, LoadingCache<GameProfile, GameProfile> insecureProfiles) 
+	{
+		GameProfile cached = insecureProfiles.getUnchecked(profile);
+		long ms = System.currentTimeMillis();
+		if (cached.getProperties().isEmpty() && !badProfiles.containsKey(profile.getId()) && JavaUtil.isOnline("sessionserver.mojang.com")) 
+		{
+			insecureProfiles.invalidate(profile);
+			cached = insecureProfiles.getUnchecked(profile);
+			if (cached.getProperties().isEmpty())
+			{
+				System.err.println("Bad Profile UUID:" + profile.getId() + " Name:" + profile.getName());
+				badProfiles.put(profile.getId(), profile);
+			}
+		}
+		return cached;
 	}
 
 }
