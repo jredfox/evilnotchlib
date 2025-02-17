@@ -204,7 +204,8 @@ public class VanillaBugFixes {
 		{
 			insecureProfiles.invalidate(profile);
 			cached = insecureProfiles.getUnchecked(profile);
-			if (cached.getProperties().isEmpty())
+			//Unavoidable second ping to sessionserver.mojang.com to avoid race condition bugs
+			if (cached.getProperties().isEmpty() && JavaUtil.isOnline("sessionserver.mojang.com"))
 			{
 				System.err.println("Bad Profile UUID:" + profile.getId() + " Name:" + profile.getName());
 				badProfiles.put(profile.getId(), profile);
