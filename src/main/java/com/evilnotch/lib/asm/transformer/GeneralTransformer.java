@@ -85,9 +85,9 @@ public class GeneralTransformer {
     	}
     	
     	//change fillProfileProperties(profile, false) to fillProfileProperties(profile, true);
-    	if(ConfigCore.asm_patchLanSkinsInsecure)
+    	if(ConfigCore.asm_patchLanSkinsInsecure && jumpP != null)
     	{
-	    	AbstractInsnNode a = jumpP != null ? jumpP : m.instructions.getFirst();
+	    	AbstractInsnNode a = jumpP;
 	    	MethodInsnNode insn = new MethodInsnNode(Opcodes.INVOKEINTERFACE, "com/mojang/authlib/minecraft/MinecraftSessionService", "fillProfileProperties", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;", true);
 	    	while(a != null)
 	    	{
