@@ -25,6 +25,7 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
@@ -567,6 +568,20 @@ public class SkinCache {
 			SkinCache.init();
 		
 		return SkinCache.INSTANCE;
+	}
+	
+	/**
+	 * Gets the Encode for the Login Packet. If {@link Config#skinCacheCompat} it uses Minecraft#getProfileProperties else it uses {@link SkinCache#selected}
+	 */
+	public static String getEncodeLogin()
+	{
+		if(!Config.skinCache || !LoaderMain.isClient)
+			return "";
+		
+		//TODO: avoid race condition bug make sure that SkinCache has finished downloading all selected SkinEntry before continueing
+		//TODO: sync refresh when skinCacheCompat is enabled during Minecraft's loading
+		String encode = Config.skinCacheCompat ? SkinCache.getEncode(MainJava.proxy.getProperties()) : SkinCache.INSTANCE.selected.encode();
+		return encode != null ? encode : "";
 	}
 
 	public static String getEncode(SkinEntry s)

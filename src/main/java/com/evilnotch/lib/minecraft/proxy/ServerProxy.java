@@ -7,6 +7,7 @@ import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.authlib.properties.PropertyMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -76,6 +77,7 @@ public class ServerProxy {
 	public boolean isClient(EntityPlayer p) { return false; }
 	public void d(float height) {}
 	public boolean isClient(UUID id) {return false;}
+	public PropertyMap getProperties() {return new PropertyMap();}
 	
 	
 }

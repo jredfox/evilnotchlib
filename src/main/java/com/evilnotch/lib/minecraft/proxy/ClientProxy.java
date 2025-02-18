@@ -295,6 +295,11 @@ public class ClientProxy extends ServerProxy{
 		return 0;
 	}
 	
+	public PropertyMap getProperties()
+	{
+		return Minecraft.getMinecraft().getProfileProperties();
+	}
+	
 	/**
 	 * Fires If Skin Has No Download Notify the NetworkPlayerInfo
 	 */

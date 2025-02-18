@@ -447,25 +447,15 @@ public class EntityTransformer implements IClassTransformer{
 	public void patchCPacketLoginStart(ClassNode classNode)
 	{
 		//public String skindata;
-		classNode.fields.add(new FieldNode(Opcodes.ACC_PUBLIC, "skindata", "Ljava/lang/String;", null, null));
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "skindata", "Ljava/lang/String;", null, null));
 		//public NBTTagCompound evlNBT;
 		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;", null, null));
 		
-		//this.skindata = Config.skinCache ? SkinCache.getEncode(SkinCache.INSTANCE.selected) : "";
+		//this.skindata = SkinCache.getEncodeLogin();
 		MethodNode ctr = ASMHelper.getConstructionNode(classNode, "(Lcom/mojang/authlib/GameProfile;)V");
 		InsnList li = new InsnList();
 		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/Config", "skinCache", "Z"));
-		LabelNode l3 = new LabelNode();
-		li.add(new JumpInsnNode(Opcodes.IFEQ, l3));
-		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/skin/SkinCache", "INSTANCE", "Lcom/evilnotch/lib/main/skin/SkinCache;"));
-		li.add(new FieldInsnNode(Opcodes.GETFIELD, "com/evilnotch/lib/main/skin/SkinCache", "selected", "Lcom/evilnotch/lib/main/skin/SkinEntry;"));
-		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "getEncode", "(Lcom/evilnotch/lib/main/skin/SkinEntry;)Ljava/lang/String;", false));
-		LabelNode l4 = new LabelNode();
-		li.add(new JumpInsnNode(Opcodes.GOTO, l4));
-		li.add(l3);
-		li.add(new LdcInsnNode(""));
-		li.add(l4);
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "getEncodeLogin", "()Ljava/lang/String;", false));
 		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/network/login/client/CPacketLoginStart", "skindata", "Ljava/lang/String;"));
 		//this.evlNBT = ClientCapHooks.login();
 		li.add(new LabelNode());
