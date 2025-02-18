@@ -105,6 +105,7 @@ public class ClientProxy extends ServerProxy{
 		IgnoreTilePacket.ignoreTiles.clear();
 		StopSteve.m = 0L;
 		ClientCapHooks.others.clear();
+		VanillaBugFixes.badProfiles.clear();
 		System.out.println("disconnecting..........................");
 	}
 

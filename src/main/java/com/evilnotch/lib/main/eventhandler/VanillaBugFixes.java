@@ -205,6 +205,8 @@ public class VanillaBugFixes {
 			insecureProfiles.invalidate(profile);
 			cached = insecureProfiles.getUnchecked(profile);
 			//Unavoidable second ping to sessionserver.mojang.com to avoid race condition bugs
+			//In the very rare case where wifi goes down during the download then instantly back up for the ping over 1 mil chance you can dc from the world and go back in
+			//If mojang services are down no need to reboot for the skin simply disconnect and reconnect to the world
 			if (cached.getProperties().isEmpty() && JavaUtil.isOnline("sessionserver.mojang.com"))
 			{
 				System.err.println("Bad Profile UUID:" + profile.getId() + " Name:" + profile.getName());
