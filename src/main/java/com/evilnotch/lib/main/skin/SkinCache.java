@@ -579,7 +579,7 @@ public class SkinCache {
 			return "";
 		
 		//TODO: avoid race condition bug make sure that SkinCache has finished downloading all selected SkinEntry before continueing
-		//TODO: sync refresh when skinCacheCompat is enabled during Minecraft's loading
+		//TODO: sync refresh when skinCacheCompat is enabled during Minecraft's loading to avoid overriding other skin mods
 		String encode = Config.skinCacheCompat ? SkinCache.getEncode(MainJava.proxy.getProperties()) : SkinCache.INSTANCE.selected.encode();
 		return encode != null ? encode : "";
 	}
