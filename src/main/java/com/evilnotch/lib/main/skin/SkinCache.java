@@ -26,7 +26,6 @@ import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
 import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.main.loader.LoadingStage;
 import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
@@ -204,7 +203,6 @@ public class SkinCache {
 		{
 			this.refreshque.put(user.toLowerCase(), select);
 			this.paused = false;
-			this.busy = true;
 		}
 	}
 	
@@ -240,8 +238,6 @@ public class SkinCache {
 	public Thread refreshThread = null;
 	public volatile boolean running;
 	public volatile boolean paused;
-	public volatile boolean canPause = true;
-	public volatile boolean busy;
 	public void start()
 	{
 		if(this.refreshThread == null)
@@ -250,7 +246,7 @@ public class SkinCache {
 			this.refreshThread = new Thread(()-> 
 			{
 				while(running && MainJava.proxy.running())
-				{	
+				{
 					//copy the que because downloading while the que is locked will lag the main thread
 					Map<String, Boolean> que = new HashMap();
 					synchronized (this.refreshque)
@@ -258,11 +254,7 @@ public class SkinCache {
 						que.putAll(this.refreshque);
 					}
 					
-					boolean complete = LoaderMain.getLoadingStage() == LoadingStage.COMPLETE;
-					boolean online = this.isMojangOnline();
-					this.busy = online ? this.isQueBusy(que) : !this.offlineRefreshQue.isEmpty();
-					
-					if(online)
+					if(this.isMojangOnline())
 					{
 						if(!this.offlineRefreshQue.isEmpty())
 							this.offlineRefreshQue.clear();
@@ -278,13 +270,11 @@ public class SkinCache {
 								String user_org = m.getKey();
 								this.lu = user_org;
 								String user = selected ? SkinEvent.User.fire(user_org) : user_org.toLowerCase();
-								long dltime = System.currentTimeMillis();
 								SkinEntry cached = this.getSkinEntry(user);
 	
 								SkinEntry dl = this.downloadSkin(user, cached);
 								dl = dl.isEmpty ? cached : dl;//if dl fails rely on the cache
 								SkinEntry dl2 = selected ? SkinEvent.Capability.fire(dl) : dl;
-								JavaUtil.printTime(dltime, "Skin Actual Download Took:");
 								
 								if(!dl.isEmpty)
 								{
@@ -292,19 +282,13 @@ public class SkinCache {
 									this.removeQue(user_org);
 								}
 								
-								if(MainJava.proxy.isClient() && selected) 
+								if(MainJava.proxy.isClient()) 
 								{
-									if(complete)
+									MainJava.proxy.addScheduledTask(()->
 									{
-										MainJava.proxy.addScheduledTask(()->
-										{
+										if(selected)
 											this.refreshSelected(dl2);
-										});
-									}
-									else
-									{
-										this.refreshSelected(dl2);
-									}
+									});
 								}
 							}
 							this.saveSafely();
@@ -326,15 +310,10 @@ public class SkinCache {
 							
 							if(MainJava.proxy.isClient()) 
 							{
-								if(complete)
+								MainJava.proxy.addScheduledTask(()->
 								{
-									MainJava.proxy.addScheduledTask(()->
-									{
-										this.refreshSelected(dl2);
-									});
-								}
-								else
 									this.refreshSelected(dl2);
+								});
 							}
 							
 							i.remove();
@@ -345,9 +324,9 @@ public class SkinCache {
 					{
 						this.paused = true;
 						long ms = Config.skinCacheMs;
-						while(this.paused && this.canPause && ms > 0L)
+						while(this.paused && ms > 0L)
 						{
-							long z = Math.min(ms, complete ? 100L : 25L);
+							long z = Math.min(ms, 200L);
 							ms -= z;
 							JavaUtil.sleep(z);
 						}
@@ -359,16 +338,6 @@ public class SkinCache {
 			this.refreshThread.setPriority(4);//set's it below normal thread priority so it doesn't interfere with the game
 			this.refreshThread.start();
 		}
-	}
-
-	protected boolean isQueBusy(Map<String, Boolean> que)
-	{
-		if(que.isEmpty())
-			return false;
-		for(Boolean sel : que.values())
-			if(sel)
-				return true;
-		return false;
 	}
 
 	/**
@@ -609,21 +578,10 @@ public class SkinCache {
 		if(!Config.skinCache || !LoaderMain.isClient)
 			return "";
 		
-		SkinCache.INSTANCE.syncWait();
+		//TODO: avoid race condition bug make sure that SkinCache has finished downloading all selected SkinEntry before continueing
+		//TODO: avoid race condition when the SkinCache isn't down downloading by the end of pre-init if mod compat is done
 		String encode = Config.skinCacheCompat ? SkinCache.getEncode(MainJava.proxy.getProperties()) : SkinCache.INSTANCE.selected.encode();
 		return encode != null ? encode : "";
-	}
-	
-	public void syncWait()
-	{
-		this.paused = false;
-		this.canPause = false;
-		this.busy = true;//ensure at least one tick from the cache occurs
-		while(this.busy)
-		{
-			JavaUtil.sleep(1L);
-		}
-		this.canPause = true;
 	}
 
 	public static String getEncode(SkinEntry s)
