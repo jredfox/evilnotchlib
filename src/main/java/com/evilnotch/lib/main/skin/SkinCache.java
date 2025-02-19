@@ -263,7 +263,7 @@ public class SkinCache {
 						{
 							for(Map.Entry<String, Boolean> m : que.entrySet())
 							{
-								if(!this.running || !MainJava.proxy.running())
+								if(!this.running || !this.isOnline || !MainJava.proxy.running())
 									break;
 								
 								boolean selected = m.getValue();
