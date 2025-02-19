@@ -297,7 +297,10 @@ public class ClientProxy extends ServerProxy{
 	
 	public PropertyMap getProperties()
 	{
-		return Minecraft.getMinecraft().getProfileProperties();
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.profileProperties == null)
+			mc.profileProperties = new PropertyMap();
+		return mc.profileProperties;
 	}
 	
 	/**

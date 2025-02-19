@@ -13,6 +13,7 @@ import com.evilnotch.lib.main.eventhandler.LibEvents;
 import com.evilnotch.lib.main.eventhandler.TickEventClient;
 import com.evilnotch.lib.main.eventhandler.TickServerEvent;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.basicmc.auto.block.BlockProperty;
 import com.evilnotch.lib.minecraft.basicmc.auto.item.ToolMat;
 import com.evilnotch.lib.minecraft.basicmc.auto.lang.LangEntry;
@@ -98,6 +99,7 @@ public class LoaderMain {
 	{
 		currentLoadingStage = LoadingStage.COMPLETE;
 		LaunchClassLoaderFix.verify(clforge);
+		SkinCache.offlineInit();
 	}
 
 	private static void loaderMainPreInit(FMLPreInitializationEvent e, ClassLoader clforge) 

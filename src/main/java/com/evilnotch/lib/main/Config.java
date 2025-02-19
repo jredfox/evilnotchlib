@@ -26,7 +26,7 @@ public class Config {
 	//start skin fixes
 	public static boolean allowskintrans = true;
 	public static boolean skinCache = true;
-	public static boolean skinCacheCompat = true;
+	public static boolean skinCacheOfflineFix = true;
 	public static int skinCacheHours = 48;
 	public static int skinCacheFast = 20;
 	public static long skinCacheMs = 1800;
@@ -65,7 +65,7 @@ public class Config {
 		
 		allowskintrans = config.get("skins", "allowSkinTransparency", allowskintrans).getBoolean();
 		skinCache = config.get("skins", "skinCache", skinCache).getBoolean();
-		skinCacheCompat = config.get("skins", "skinCacheCompat", skinCacheCompat).getBoolean();
+		skinCacheOfflineFix = config.get("skins", "skinCacheOfflineFix", skinCacheOfflineFix).getBoolean();
 		skinCacheHours = config.get("skins", "skinCacheMaxHours", skinCacheHours).getInt();
 		skinCacheFast = config.get("skins", "skinCacheFastMinutes", skinCacheFast).getInt();
 		skinCacheMs = config.get("skins", "skinCacheClockMs", (int)skinCacheMs).getInt();

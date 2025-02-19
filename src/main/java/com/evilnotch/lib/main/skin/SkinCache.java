@@ -37,6 +37,7 @@ import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.crashy.Crashy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -339,11 +340,19 @@ public class SkinCache {
 			this.refreshThread.start();
 		}
 	}
-
+	
 	/**
 	 * Call this when SkinEvent.Capability Fires
 	 */
 	public SkinEntry getOrDownload(String user)
+	{
+		return this.getOrDownload(user, false);
+	}
+
+	/**
+	 * Call this when SkinEvent.Capability Fires
+	 */
+	public SkinEntry getOrDownload(String user, boolean forceOnline)
 	{
 		user = user.toLowerCase();
 		
@@ -352,10 +361,10 @@ public class SkinCache {
 			return EMPTY;
 		
 		SkinEntry cached = this.getSkinEntry(user);
-		boolean shouldDL = cached.isEmpty || this.isOnline && this.hasExpiredFast(cached);
+		boolean shouldDL = cached.isEmpty || this.isOnline && (forceOnline || this.hasExpiredFast(cached));
 		if(shouldDL)
 		{
-			SkinEntry dl = this.downloadSkin(user, EMPTY);
+			SkinEntry dl = this.downloadSkin(user, cached);
 			if(!dl.isEmpty)
 			{
 				this.skins.put(user, dl);
@@ -372,7 +381,7 @@ public class SkinCache {
 		if(!playerdb)
 			playerdb = JavaUtil.isOnline("playerdb.co");
 		
-		String uuid = current.isEmpty || this.hasExpired(current) ? getUUID(user) : current.uuid;//grab the cached uuid when possible
+		String uuid = (current.isEmpty || this.hasExpired(current)) ? getUUID(user) : current.uuid;//grab the cached uuid when possible
 		
 		//Error occured fetching the UUID
 		if(uuid == null)
@@ -554,6 +563,27 @@ public class SkinCache {
 		JavaUtil.printTime(ms, "Skin Cache Took:");
 	}
 	
+	public static void offlineInit() 
+	{
+		if(Config.skinCache || !Config.skinCacheOfflineFix)
+			return;
+
+		if(MainJava.proxy.isClient() )
+		{
+			SkinCache of = new SkinCache();
+			of.load();
+			long ms = System.currentTimeMillis();
+			SkinEntry dl = of.getOrDownload(MainJava.proxy.getUsername(), true);
+			if(!dl.isEmpty && SkinCache.isSkinEmpty(SkinCache.getEncode(MainJava.proxy.getProperties())))
+			{
+				JavaUtil.printTime(ms, "Fixing Offline Skin from SkinCache ");
+				SkinCache.setEncode(MainJava.proxy.getProperties(), dl.encode());
+			}
+			of.save();
+			JavaUtil.printTime(ms, "SkinCacheOfflineFix Took:");
+		}
+	}
+
 	public static class EvilProperty extends Property
 	{
 		public EvilProperty(String name, String value)
@@ -571,16 +601,11 @@ public class SkinCache {
 	}
 	
 	/**
-	 * Gets the Encode for the Login Packet. If {@link Config#skinCacheCompat} it uses Minecraft#getProfileProperties else it uses {@link SkinCache#selected}
+	 * Gets the Encode for the Login Packet. If {@link Config#skinCacheOfflineFix} it uses Minecraft#getProfileProperties else it uses {@link SkinCache#selected}
 	 */
 	public static String getEncodeLogin()
 	{
-		if(!Config.skinCache || !LoaderMain.isClient)
-			return "";
-		
-		//TODO: avoid race condition bug make sure that SkinCache has finished downloading all selected SkinEntry before continueing
-		//TODO: avoid race condition when the SkinCache isn't down downloading by the end of pre-init if mod compat is done
-		String encode = Config.skinCacheCompat ? SkinCache.getEncode(MainJava.proxy.getProperties()) : SkinCache.INSTANCE.selected.encode();
+		String encode = Config.skinCacheOfflineFix ? SkinCache.getEncode(MainJava.proxy.getProperties()) : (Config.skinCache ? SkinCache.INSTANCE.selected.encode() : null);
 		return encode != null ? encode : "";
 	}
 
