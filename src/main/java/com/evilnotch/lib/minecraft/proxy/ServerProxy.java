@@ -59,7 +59,7 @@ public class ServerProxy {
 	
 	public int getServerPort(MinecraftServer server	)
 	{
-		return server.getServerPort();
+		return server != null ? server.getServerPort() : 0;
 	}
 	
 	public void bindTexture(ResourceLocation steve) {}

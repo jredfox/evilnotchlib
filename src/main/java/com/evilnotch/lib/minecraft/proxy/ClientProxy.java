@@ -281,7 +281,7 @@ public class ClientProxy extends ServerProxy{
 		try
 		{
 			IntegratedServer is = (IntegratedServer) server;
-			if(is.lanServerPing == null)
+			if(is == null || is.lanServerPing == null)
 				return 0;
 			String address = is.lanServerPing.address;
 			int index = address.lastIndexOf(':');
