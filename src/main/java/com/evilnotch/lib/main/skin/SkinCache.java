@@ -26,6 +26,7 @@ import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.main.loader.LoadingStage;
 import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
@@ -282,13 +283,19 @@ public class SkinCache {
 									this.removeQue(user_org);
 								}
 								
-								if(MainJava.proxy.isClient()) 
+								if(MainJava.proxy.isClient() && selected) 
 								{
-									MainJava.proxy.addScheduledTask(()->
+									if(LoaderMain.getLoadingStage() == LoadingStage.COMPLETE)
 									{
-										if(selected)
+										MainJava.proxy.addScheduledTask(()->
+										{
 											this.refreshSelected(dl2);
-									});
+										});
+									}
+									else
+									{
+										this.refreshSelected(dl2);
+									}
 								}
 							}
 							this.saveSafely();
@@ -310,10 +317,15 @@ public class SkinCache {
 							
 							if(MainJava.proxy.isClient()) 
 							{
-								MainJava.proxy.addScheduledTask(()->
+								if(LoaderMain.getLoadingStage() == LoadingStage.COMPLETE)
 								{
+									MainJava.proxy.addScheduledTask(()->
+									{
+										this.refreshSelected(dl2);
+									});
+								}
+								else
 									this.refreshSelected(dl2);
-								});
 							}
 							
 							i.remove();

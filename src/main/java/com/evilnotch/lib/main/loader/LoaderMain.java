@@ -64,6 +64,7 @@ public class LoaderMain {
 	public static Logger logger;
 	public static World fake_world = null;
 	public static LoadingStage currentLoadingStage = null;
+	public static Object lock = new Object();
 	public static Thread serverThread = null;
 	
 	public static void loadpreinit(FMLPreInitializationEvent e, ClassLoader clforge)
@@ -77,7 +78,7 @@ public class LoaderMain {
 
 	public static void loadInit(FMLInitializationEvent e)
 	{
-		currentLoadingStage = LoadingStage.INIT;
+		setLoadingStage(LoadingStage.INIT);
 		MCPMappings.init();
 		NetWorkHandler.init();
 		MainJava.proxy.initMod();
@@ -85,7 +86,7 @@ public class LoaderMain {
 	
 	public static void loadPostInit(FMLPostInitializationEvent e)
 	{
-		currentLoadingStage = LoadingStage.POSTINIT;
+		setLoadingStage(LoadingStage.POSTINIT);
 		fake_world = new FakeWorld();
 		LoaderItems.loadpostinit();
 		LoaderBlocks.loadpostinit();
@@ -96,13 +97,13 @@ public class LoaderMain {
 	
 	public static void loadComplete(FMLLoadCompleteEvent e, ClassLoader clforge)
 	{
-		currentLoadingStage = LoadingStage.COMPLETE;
+		setLoadingStage(LoadingStage.COMPLETE);
 		LaunchClassLoaderFix.verify(clforge);
 	}
 
 	private static void loaderMainPreInit(FMLPreInitializationEvent e, ClassLoader clforge) 
 	{
-		currentLoadingStage = LoadingStage.PREINIT;
+		setLoadingStage(LoadingStage.PREINIT);
 		isDeObfuscated = !FMLCorePlugin.isObf;
 		logger = e.getModLog();
 		File dir = e.getModConfigurationDirectory();
@@ -120,7 +121,7 @@ public class LoaderMain {
 		LaunchClassLoaderFix.stopMemoryOverflowFoamFix(clforge);
 		CapabilityRegistry.registerRegistry(new CapRegDefaultHandler());
 	}
-	
+
 	/**
 	 * load Debug Blocks/Items
 	 */
@@ -209,7 +210,26 @@ public class LoaderMain {
 
 	public static boolean isLoadingStage(LoadingStage stage) 
 	{
-		return currentLoadingStage == stage;
+		synchronized (lock)
+		{
+			return currentLoadingStage == stage;
+		}
+	}
+	
+	public static LoadingStage getLoadingStage() 
+	{
+		synchronized (lock)
+		{
+			return currentLoadingStage;
+		}
+	}
+	
+	public static void setLoadingStage(LoadingStage stage) 
+	{
+		synchronized (lock)
+		{
+			currentLoadingStage = stage;
+		}
 	}
 
 }
