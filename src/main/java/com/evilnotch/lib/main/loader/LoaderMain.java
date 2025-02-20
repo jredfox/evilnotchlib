@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.asm.FMLCorePlugin;
+import com.evilnotch.lib.asm.transformer.Transformer;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
@@ -113,6 +114,7 @@ public class LoaderMain {
 		MainJava.proxy.proxyStart();
 		Config.loadConfig(dir);
 		MainJava.proxy.preinit(e);
+		Transformer.batchLoadSafe();
 		
 		GeneralRegistry.load();
 		GeneralRegistry.registerGameRule("PlayerLvlDAT", true);

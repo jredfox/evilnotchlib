@@ -27,6 +27,7 @@ public class ConfigCore {
 	public static boolean asm_teams_full = true;
 	public static boolean asm_guiTabOverlay = true;
 	public static boolean asm_batchLoad = true;
+	public static boolean asm_batchLoadSafe;
 	
 	public static boolean dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
 	public static boolean dumpASM = dumpASMJVM;
@@ -40,7 +41,6 @@ public class ConfigCore {
 		config.load();
 		
 		//ASM-DEBUG Disable At your own Risk
-		asm_batchLoad = config.get("asm_debug", "asm_batchLoad", true).getBoolean();
 		asm_furnace = config.get("asm_debug","asm_furnaceFix", true).getBoolean();
 		asm_clientPlaceEvent = config.get("asm_debug","asm_clientBlockPlaceEvent", true).getBoolean();
 		asm_setTileNBTFix = config.get("asm_debug","asm_setTileNBTItemBlockFix", true).getBoolean();
@@ -59,6 +59,8 @@ public class ConfigCore {
 		asm_teams = config.get("asm_safe_cfg", "asm_teams", true).getBoolean();
 		asm_teams_full = config.get("asm_safe_cfg", "asm_teams_full", true).getBoolean();
 		asm_guiTabOverlay = config.get("asm_safe_cfg", "asm_guiTabOverlay", true).getBoolean();
+		asm_batchLoad = config.get("asm_safe_cfg", "asm_batchLoad", true).getBoolean();
+		asm_batchLoadSafe = config.get("asm_safe_cfg", "asm_batchLoadSafe", false).getBoolean();
 		
 		Crashy.GUI = config.get("asm_safe_cfg","asm_gui_crash", true).getBoolean();
 		
