@@ -1424,14 +1424,14 @@ public class JavaUtil {
 	{
 		return false;
 	}
-	public static final JSONParser jsonParser = new JSONParser();
+	public static final ThreadLocal<JSONParser> jsonParser = ThreadLocal.withInitial(()-> new JSONParser());
 	public static JSONObject getJson(File armor) 
 	{
 		FileReader r = null;
 		try 
 		{
 			r = new FileReader(armor);
-			return (JSONObject) jsonParser.parse(r);
+			return (JSONObject) jsonParser.get().parse(r);
 		} 
 		catch (IOException | JSONParseException e) 
 		{
@@ -1450,7 +1450,7 @@ public class JavaUtil {
 		try 
 		{
 			r = new BufferedReader(new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8) );
-			return (JSONArray) jsonParser.parse(r);
+			return (JSONArray) jsonParser.get().parse(r);
 		} 
 		catch (IOException | JSONParseException e) 
 		{
@@ -1483,7 +1483,7 @@ public class JavaUtil {
 		return value != null && value.getClass().isArray();
 	}
 	
-	public static final byte[] buffer = new byte[524288];
+	public static final ThreadLocal<byte[]> buffer = ThreadLocal.withInitial(()-> new byte[524288]);
 	/**
 	 * needed to copy input to output with closing stream safely
 	 */
@@ -1491,10 +1491,11 @@ public class JavaUtil {
 	{
 		try
 		{
+			byte[] buf = buffer.get();
 			int length;
-   	 		while ((length = in.read(buffer)) > 0)
+   	 		while ((length = in.read(buf)) > 0)
    	 		{
-   	 			out.write(buffer, 0, length);
+   	 			out.write(buf, 0, length);
    	 		}
 		}
 		catch(Exception e)
