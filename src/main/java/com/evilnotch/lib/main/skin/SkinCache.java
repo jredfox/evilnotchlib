@@ -555,6 +555,8 @@ public class SkinCache {
 	public static SkinCache INSTANCE;
 	public static void init() 
 	{
+		offlineInit();
+		
 		if(!Config.skinCache)
 			return;
 		long ms = System.currentTimeMillis();
@@ -566,25 +568,38 @@ public class SkinCache {
 		JavaUtil.printTime(ms, "Skin Cache Took:");
 	}
 	
+	private static volatile SkinEntry ofSkin;
 	public static void offlineInit() 
 	{
-		if(Config.skinCache || !Config.skinCacheOfflineFix)
-			return;
+		if(Config.skinCache || !Config.skinCacheOfflineFix || !MainJava.proxy.isClient())
+			return;//SkinCache's OfflineFix is made for when SkinCache is disabled and you still want offline skins when your other skin mod doesn't provide it
 
-		if(MainJava.proxy.isClient() )
+		//Create the Offline SkinCache and download the client's on another thread to prevent lag
+		Thread t = new Thread(()->
 		{
 			SkinCache of = new SkinCache();
 			of.load();
-			long ms = System.currentTimeMillis();
-			SkinEntry dl = of.getOrDownload(MainJava.proxy.getUsername(), true);
-			if(!dl.isEmpty && SkinCache.isSkinEmpty(SkinCache.getEncode(MainJava.proxy.getProperties())))
-			{
-				JavaUtil.printTime(ms, "Fixing Offline Skin from SkinCache ");
-				SkinCache.setEncode(MainJava.proxy.getProperties(), dl.encode());
-			}
+			ofSkin = of.getOrDownload(MainJava.proxy.getUsername(), true);
 			of.save();
-			JavaUtil.printTime(ms, "SkinCacheOfflineFix Took:");
-		}
+		});
+		t.setDaemon(true);
+		t.start();
+		
+		//On Minecraft's First tick fix Minecraft#profileProperties with the cached skin
+		Thread t2 = new Thread(()->
+		{
+			MainJava.proxy.addScheduledTask(()->
+			{
+				long m = System.currentTimeMillis();
+				while(ofSkin == null)
+					JavaUtil.sleep(1L);
+				
+				if(!ofSkin.isEmpty && SkinCache.isSkinEmpty(SkinCache.getEncode(MainJava.proxy.getProperties())))
+					SkinCache.setEncode(MainJava.proxy.getProperties(), ofSkin.encode());
+			});
+		});
+		t2.setDaemon(true);
+		t2.start();
 	}
 
 	public static class EvilProperty extends Property

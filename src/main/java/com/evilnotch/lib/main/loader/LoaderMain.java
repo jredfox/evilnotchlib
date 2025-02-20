@@ -99,7 +99,6 @@ public class LoaderMain {
 	{
 		currentLoadingStage = LoadingStage.COMPLETE;
 		LaunchClassLoaderFix.verify(clforge);
-		SkinCache.offlineInit();
 	}
 
 	private static void loaderMainPreInit(FMLPreInitializationEvent e, ClassLoader clforge) 
