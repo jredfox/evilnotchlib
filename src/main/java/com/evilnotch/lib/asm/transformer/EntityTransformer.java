@@ -70,7 +70,7 @@ public class EntityTransformer implements IClassTransformer{
 	{
 		String name = clazzes.get(index);
 
-    	System.out.println("Transforming: " + name + " index:" + index + " " + classToTransform);
+    	System.out.println("Transforming: " + name + " index:" + index);
     	
         try
         {

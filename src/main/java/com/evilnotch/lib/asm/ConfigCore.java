@@ -1,7 +1,6 @@
 package com.evilnotch.lib.asm;
 
 import java.io.File;
-import java.util.Collection;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.crashy.Crashy;

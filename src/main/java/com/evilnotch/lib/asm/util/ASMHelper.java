@@ -9,10 +9,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -39,7 +35,6 @@ import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.util.JavaUtil;
 
-import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.launchwrapper.Launch;
 
 public class ASMHelper 
@@ -1006,14 +1001,14 @@ public class ASMHelper
 	
 	public static boolean rtrue(boolean b) {return true;}
 
-	public static void batchLoad(String bl, Collection<String>... ars) 
+	public static void batchLoad(String bl, Collection<String>... arrs) 
 	{
 		long ms = System.currentTimeMillis();
 		System.out.println("Batch Loading....");
 		ClassLoader cl = Launch.classLoader;
-		for (Collection<String> arr : ars) 
+		for (Collection<String> arr : arrs)
 		{
-			for (String c : arr) 
+			for (String c : arr)
 			{
 				if (c.equals(bl))
 					continue;
