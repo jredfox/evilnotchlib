@@ -108,9 +108,9 @@ public class LoaderMain {
 		logger = e.getModLog();
 		File dir = e.getModConfigurationDirectory();
 		
+		Transformer.batchLoad();
 		MCPMappings.cacheMCP();
 		LoaderFields.cacheFields();
-		Transformer.batchLoad();
 		
 		MainJava.proxy.proxyStart();
 		Config.loadConfig(dir);
