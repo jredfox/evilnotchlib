@@ -59,15 +59,9 @@ public class Transformer implements IClassTransformer
         return (index == -1 || classToTransform == null) ? classToTransform : transform(index, classToTransform, FMLCorePlugin.isObf);
     }
 	
-    public static volatile boolean init = false;
 	public static byte[] transform(int index, byte[] classToTransform, boolean obfuscated)
     {
     	String name = clazzes.get(index);
-		if(!init)
-		{
-			init = true;
-			batchLoadFast(name);
-		}
     	System.out.println("Transforming: " + name + " index:" + index);
         try
         {
@@ -222,25 +216,6 @@ public class Transformer implements IClassTransformer
         return classToTransform;
     }
 	
-	public static void batchLoadFast(String name) 
-	{
-		if(ConfigCore.asm_batchLoad && !ConfigCore.asm_batchLoadSafe)
-			batchLoad(name);
-	}
-	
-	public static void batchLoadSafe() 
-	{
-		if(ConfigCore.asm_batchLoad && ConfigCore.asm_batchLoadSafe)
-		{
-			batchLoad("");
-		}
-	}
-	
-	private static void batchLoad(String name) 
-	{
-		ASMHelper.batchLoad(name, Transformer.clazzes, EntityTransformer.clazzes);
-	}
-
 	/**
 	 * after config disables transformation and can't continue based on all asm being disabled for said class use this method.
 	 * If you can disable asm via config and still transforms the class for other things not configurable don't call this method
@@ -248,6 +223,12 @@ public class Transformer implements IClassTransformer
 	private static void print(String name) 
 	{
 		System.out.println("Config Disabled Transformation of class:" + name);
+	}
+
+	public static void batchLoad() 
+	{
+		if(ConfigCore.asm_batchLoad)
+			ASMHelper.batchLoad("", Transformer.clazzes, EntityTransformer.clazzes);
 	}
 
 }

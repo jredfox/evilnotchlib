@@ -27,7 +27,6 @@ public class ConfigCore {
 	public static boolean asm_teams_full = true;
 	public static boolean asm_guiTabOverlay = true;
 	public static boolean asm_batchLoad = true;
-	public static boolean asm_batchLoadSafe;
 	
 	public static boolean dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
 	public static boolean dumpASM = dumpASMJVM;
@@ -60,7 +59,6 @@ public class ConfigCore {
 		asm_teams_full = config.get("asm_safe_cfg", "asm_teams_full", true).getBoolean();
 		asm_guiTabOverlay = config.get("asm_safe_cfg", "asm_guiTabOverlay", true).getBoolean();
 		asm_batchLoad = config.get("asm_safe_cfg", "asm_batchLoad", true).getBoolean();
-		asm_batchLoadSafe = config.get("asm_safe_cfg", "asm_batchLoadSafe", false, "Set to True if your Crashing in your Modpack").getBoolean();
 		
 		Crashy.GUI = config.get("asm_safe_cfg","asm_gui_crash", true).getBoolean();
 		
