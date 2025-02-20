@@ -26,6 +26,7 @@ public class ConfigCore {
 	public static boolean asm_teams = true;
 	public static boolean asm_teams_full = true;
 	public static boolean asm_guiTabOverlay = true;
+	public static boolean asm_batchLoad = true;
 	
 	public static boolean dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
 	public static boolean dumpASM = dumpASMJVM;
@@ -39,6 +40,7 @@ public class ConfigCore {
 		config.load();
 		
 		//ASM-DEBUG Disable At your own Risk
+		asm_batchLoad = config.get("asm_debug", "asm_batchLoad", true).getBoolean();
 		asm_furnace = config.get("asm_debug","asm_furnaceFix", true).getBoolean();
 		asm_clientPlaceEvent = config.get("asm_debug","asm_clientBlockPlaceEvent", true).getBoolean();
 		asm_setTileNBTFix = config.get("asm_debug","asm_setTileNBTItemBlockFix", true).getBoolean();

@@ -7,7 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -33,6 +38,9 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.util.JavaUtil;
+
+import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.launchwrapper.Launch;
 
 public class ASMHelper 
 {	
@@ -997,5 +1005,51 @@ public class ASMHelper
 	public static boolean rfalse(boolean b) {return false;}
 	
 	public static boolean rtrue(boolean b) {return true;}
+
+	public static void batchLoad(String bl, Collection<String>... ars) 
+	{
+		System.out.println("Batch Loading....");
+//		int cores = Runtime.getRuntime().availableProcessors();
+//		ExecutorService executor = Executors.newFixedThreadPool(Math.min(10, cores));
+
+		ClassLoader cl = Launch.classLoader;
+		for (Collection<String> arr : ars) 
+		{
+			for (String c : arr) 
+			{
+				if (c.equals(bl))
+					continue;
+//				executor.submit(() -> 
+//				{
+//					try 
+//					{
+//						Class clazz = Class.forName(c, false, cl);
+//					} 
+//					catch (ClassNotFoundException e) 
+//					{
+//						System.err.println("ClassNotFound:" + c);
+//					} 
+//					catch (Throwable t) 
+//					{
+//						t.printStackTrace();
+//					}
+//				});
+				try 
+				{
+					System.out.println("Loading:" + c);
+					Class clazz = Class.forName(c, false, cl);
+				} 
+				catch (ClassNotFoundException e) 
+				{
+					System.err.println("ClassNotFound:" + c);
+				} 
+				catch (Throwable t) 
+				{
+					t.printStackTrace();
+				}
+			}
+		}
+//		executor.shutdown();
+	}
 	
 }

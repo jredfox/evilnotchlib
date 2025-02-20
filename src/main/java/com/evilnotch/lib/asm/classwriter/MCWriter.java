@@ -204,7 +204,7 @@ public class MCWriter extends ClassWriter {
      * this is the non loaded cache file of byte[] of classes that is here temporary till toByteArray() gets called.
      * Also the interfaces here may or may not be adjusted depdending upon if the class is loaded or not
      */
-    public ThreadLocal<Map<String, ClassReader>> infoCache = ThreadLocal.withInitial(()-> new HashMap(15));
+    public static ThreadLocal<Map<String, ClassReader>> infoCache = ThreadLocal.withInitial(()-> new HashMap(15));
     
     /**
      * Returns a ClassReader from the input class. It also deobfuscates it and fetches it when possible from
