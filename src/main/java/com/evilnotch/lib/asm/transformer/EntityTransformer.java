@@ -69,7 +69,7 @@ public class EntityTransformer implements IClassTransformer{
 	private byte[] transform(int index, byte[] classToTransform, boolean isObf) 
 	{
 		String name = clazzes.get(index);
-
+		Transformer.done.add(name);
     	System.out.println("Transforming: " + name + " index:" + index);
     	
         try

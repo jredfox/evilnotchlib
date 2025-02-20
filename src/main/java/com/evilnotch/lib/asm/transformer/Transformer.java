@@ -1,6 +1,9 @@
 package com.evilnotch.lib.asm.transformer;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -14,6 +17,7 @@ import com.evilnotch.lib.util.JavaUtil;
 
 import jredfox.clfix.LaunchClassLoaderFix;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.crashy.Crashy;
 
 public class Transformer implements IClassTransformer
 {
@@ -52,6 +56,8 @@ public class Transformer implements IClassTransformer
     	"net.minecraftforge.common.DimensionManager"//Unload Dimension Patch
     });
     
+    public static Set<String> done = new HashSet();
+    
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {	
@@ -62,6 +68,7 @@ public class Transformer implements IClassTransformer
 	public static byte[] transform(int index, byte[] classToTransform, boolean obfuscated)
     {
     	String name = clazzes.get(index);
+    	done.add(name);
     	System.out.println("Transforming: " + name + " index:" + index);
         try
         {
@@ -227,8 +234,24 @@ public class Transformer implements IClassTransformer
 
 	public static void batchLoad() 
 	{
+		Set<String> cls = new HashSet(Transformer.clazzes);
+		cls.addAll(EntityTransformer.clazzes);
+		cls.removeAll(done);
+		
+		//Remove Client-Only Classes on Dedicated Server Side
+		if(Crashy.ModEntry.CURRENT_SIDE == Crashy.ModEntry.MODSIDE.SERVER)
+		{
+			Iterator<String> i = cls.iterator();
+			while(i.hasNext())
+			{
+				String c = i.next();
+				if(c.startsWith("net.minecraft.client.") || c.endsWith("GuiIngameForge"))
+					i.remove();
+			}
+		}
+		
 		if(ConfigCore.asm_batchLoad)
-			ASMHelper.batchLoad("", Transformer.clazzes, EntityTransformer.clazzes);
+			ASMHelper.batchLoad("", cls);
 	}
 
 }
