@@ -608,13 +608,18 @@ public class SkinCache {
 	 */
 	public static String getEncodeLogin()
 	{
-		String encode = Config.skinCacheOfflineFix ? SkinCache.getEncode(MainJava.proxy.getProperties()) : (Config.skinCache ? SkinCache.INSTANCE.selected.encode() : null);
-		return encode != null ? encode : "";
+		return Config.skinCache ? SkinCache.INSTANCE.selected.encode() : (Config.skinCacheOfflineFix ? SkinCache.getEncodeSafe(MainJava.proxy.getProperties()) : "");
 	}
 
 	public static String getEncode(SkinEntry s)
 	{
 		return s.encode();
+	}
+	
+	public static String getEncodeSafe(PropertyMap map) 
+	{
+		String e = getEncode(map);
+		return e != null ? e : "";
 	}
 
 	public static String getEncode(PropertyMap map) 
