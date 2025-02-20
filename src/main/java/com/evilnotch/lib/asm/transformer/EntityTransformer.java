@@ -47,10 +47,10 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.network.NetworkPlayerInfo$1",
     	"net.minecraft.network.login.client.CPacketLoginStart",//sends skin to server
     	"net.minecraft.client.resources.SkinManager",//redirect $steve and $alex to be localized resource location instead of always steve
+    	"net.minecraft.client.resources.SkinManager$3", //transform all fields into public minus final
     	"net.minecraft.client.resources.SkinManager$3$1",//stopSteve add callback of skin failure
     	"net.minecraft.client.renderer.ThreadDownloadImageData",
     	"net.minecraft.client.renderer.ThreadDownloadImageData$1",//stopSteve add callback of skin failure
-    	"net.minecraft.client.resources.SkinManager$3", //transform all fields into public minus final
     	"net.minecraft.client.renderer.entity.layers.LayerDeadmau5Head", //SkinEvent#Mouse
     	"net.minecraft.client.renderer.entity.RenderLivingBase", //SkinEvent#Dinnerbone
     	"net.minecraftforge.common.util.FakePlayer",//UUIDPatcher V2 FakePlayer Detection
@@ -135,19 +135,19 @@ public class EntityTransformer implements IClassTransformer{
                 break;
                 
                 case 13:
-                	patchSkinManager3M1(classNode);
+                	ASMHelper.pubMinusFinal(classNode, true);
                 break;
                 
                 case 14:
-                	transformSkinDL(classNode);
+                	patchSkinManager3M1(classNode);
                 break;
                 
                 case 15:
-                	patchSkinDL(classNode);
+                	transformSkinDL(classNode);
                 break;
                 
                 case 16:
-                	ASMHelper.pubMinusFinal(classNode, true);
+                	patchSkinDL(classNode);
                 break;
                 
                 case 17:
