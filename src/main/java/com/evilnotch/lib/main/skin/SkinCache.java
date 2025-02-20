@@ -25,7 +25,6 @@ import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
-import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
@@ -37,7 +36,6 @@ import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.crashy.Crashy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -590,7 +588,6 @@ public class SkinCache {
 		{
 			MainJava.proxy.addScheduledTask(()->
 			{
-				long m = System.currentTimeMillis();
 				while(ofSkin == null)
 					JavaUtil.sleep(1L);
 				
