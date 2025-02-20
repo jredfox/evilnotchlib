@@ -1,5 +1,6 @@
 package com.evilnotch.lib.asm.transformer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -234,7 +235,7 @@ public class Transformer implements IClassTransformer
 
 	public static void batchLoad() 
 	{
-		Set<String> cls = new HashSet(Transformer.clazzes);
+		List<String> cls = new ArrayList(Transformer.clazzes);
 		cls.addAll(EntityTransformer.clazzes);
 		cls.removeAll(done);
 		
