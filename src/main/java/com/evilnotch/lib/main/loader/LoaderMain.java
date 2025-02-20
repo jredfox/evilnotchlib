@@ -110,11 +110,11 @@ public class LoaderMain {
 		
 		MCPMappings.cacheMCP();
 		LoaderFields.cacheFields();
+		Transformer.batchLoad();
 		
 		MainJava.proxy.proxyStart();
 		Config.loadConfig(dir);
 		MainJava.proxy.preinit(e);
-		Transformer.batchLoad();
 		
 		GeneralRegistry.load();
 		GeneralRegistry.registerGameRule("PlayerLvlDAT", true);

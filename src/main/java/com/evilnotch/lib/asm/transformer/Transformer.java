@@ -14,11 +14,11 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.util.JavaUtil;
 
 import jredfox.clfix.LaunchClassLoaderFix;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.crashy.Crashy;
 
 public class Transformer implements IClassTransformer
 {
@@ -235,12 +235,15 @@ public class Transformer implements IClassTransformer
 
 	public static void batchLoad() 
 	{
+		if(!ConfigCore.asm_batchLoad)
+			return;
+		
 		List<String> cls = new ArrayList(Transformer.clazzes);
 		cls.addAll(EntityTransformer.clazzes);
 		cls.removeAll(done);
 		
 		//Remove Client-Only Classes on Dedicated Server Side
-		if(Crashy.ModEntry.CURRENT_SIDE == Crashy.ModEntry.MODSIDE.SERVER)
+		if(!MainJava.proxy.isClient())
 		{
 			Iterator<String> i = cls.iterator();
 			while(i.hasNext())
@@ -251,8 +254,7 @@ public class Transformer implements IClassTransformer
 			}
 		}
 		
-		if(ConfigCore.asm_batchLoad)
-			ASMHelper.batchLoad("", cls);
+		ASMHelper.batchLoad("", cls);
 	}
 
 }
