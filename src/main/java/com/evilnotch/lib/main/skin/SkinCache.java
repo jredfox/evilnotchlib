@@ -374,13 +374,8 @@ public class SkinCache {
 		return cached;
 	}
 
-	public volatile boolean playerdb = false;
 	public SkinEntry downloadSkin(String user, SkinEntry current)
-	{
-		//is player db online
-		if(!playerdb)
-			playerdb = JavaUtil.isOnline("playerdb.co");
-		
+	{	
 		String uuid = (current.isEmpty || this.hasExpired(current)) ? getUUID(user) : current.uuid;//grab the cached uuid when possible
 		
 		//Error occured fetching the UUID
@@ -407,15 +402,23 @@ public class SkinCache {
 	 */
 	public String getUUID(String user)
 	{
-		JSONObject dbjson = playerdb ? getPlayerDBJSON(user) : null;
+		JSONObject dbjson = getPlayerDBJSON(user);
 		return dbjson != null && dbjson.containsKey("id") ? dbjson.getString("id").replace("-", "") : getMojangUUID(user);
 	}
 
+	public volatile boolean playerdb = false;
 	/**
 	 * unlike mojang will not return an error code 429 (too many requests) when obtaining the uuid of the player
 	 */
 	public JSONObject getPlayerDBJSON(String username) 
 	{
+		//is player db online
+		if(!this.playerdb)
+			this.playerdb = JavaUtil.isOnline("playerdb.co");
+		
+		if(!this.playerdb)
+			return null;
+		
 		BufferedReader stream = null;
 		URLConnection con = null;
 		try {
