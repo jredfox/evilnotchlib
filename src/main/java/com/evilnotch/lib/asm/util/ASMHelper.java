@@ -1008,10 +1008,8 @@ public class ASMHelper
 
 	public static void batchLoad(String bl, Collection<String>... ars) 
 	{
+		long ms = System.currentTimeMillis();
 		System.out.println("Batch Loading....");
-//		int cores = Runtime.getRuntime().availableProcessors();
-//		ExecutorService executor = Executors.newFixedThreadPool(Math.min(10, cores));
-
 		ClassLoader cl = Launch.classLoader;
 		for (Collection<String> arr : ars) 
 		{
@@ -1019,24 +1017,8 @@ public class ASMHelper
 			{
 				if (c.equals(bl))
 					continue;
-//				executor.submit(() -> 
-//				{
-//					try 
-//					{
-//						Class clazz = Class.forName(c, false, cl);
-//					} 
-//					catch (ClassNotFoundException e) 
-//					{
-//						System.err.println("ClassNotFound:" + c);
-//					} 
-//					catch (Throwable t) 
-//					{
-//						t.printStackTrace();
-//					}
-//				});
-				try 
+				try
 				{
-					System.out.println("Loading:" + c);
 					Class clazz = Class.forName(c, false, cl);
 				} 
 				catch (ClassNotFoundException e) 
@@ -1049,7 +1031,7 @@ public class ASMHelper
 				}
 			}
 		}
-//		executor.shutdown();
+		JavaUtil.printTime(ms, "Batch Loading Took:");
 	}
 	
 }

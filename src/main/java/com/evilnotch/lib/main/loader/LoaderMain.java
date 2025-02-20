@@ -117,7 +117,6 @@ public class LoaderMain {
 		Config.loadConfig(dir);
 		MainJava.proxy.preinit(e);
 		
-//		Transformer.batchLoad();
 		GeneralRegistry.load();
 		GeneralRegistry.registerGameRule("PlayerLvlDAT", true);
 		loadEvents();

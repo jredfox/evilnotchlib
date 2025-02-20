@@ -56,7 +56,7 @@ public class Transformer implements IClassTransformer
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {	
         int index = clazzes.indexOf(transformedName);
-        return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
+        return (index == -1 || classToTransform == null) ? classToTransform : transform(index, classToTransform, FMLCorePlugin.isObf);
     }
 	
     public static volatile boolean init = false;
@@ -66,7 +66,8 @@ public class Transformer implements IClassTransformer
 		if(!init)
 		{
 			init = true;
-			batchLoad(name);
+			if(ConfigCore.asm_batchLoad)
+				ASMHelper.batchLoad(name, Transformer.clazzes, EntityTransformer.clazzes);
 		}
     	System.out.println("Transforming: " + name + " index:" + index);
         try
@@ -229,12 +230,6 @@ public class Transformer implements IClassTransformer
 	private static void print(String name) 
 	{
 		System.out.println("Config Disabled Transformation of class:" + name);
-	}
-
-	public static void batchLoad(String name) 
-	{
-		if(ConfigCore.asm_batchLoad)
-			ASMHelper.batchLoad(name, Transformer.clazzes, EntityTransformer.clazzes);
 	}
 
 }

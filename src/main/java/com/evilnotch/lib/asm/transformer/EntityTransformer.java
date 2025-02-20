@@ -62,15 +62,15 @@ public class EntityTransformer implements IClassTransformer{
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] classToTransform) 
 	{
-		 int index = clazzes.indexOf(transformedName);
-	     return index != -1 ? transform(index, classToTransform, FMLCorePlugin.isObf) : classToTransform;
+        int index = clazzes.indexOf(transformedName);
+        return (index == -1 || classToTransform == null) ? classToTransform : transform(index, classToTransform, FMLCorePlugin.isObf);
 	}
 
 	private byte[] transform(int index, byte[] classToTransform, boolean isObf) 
 	{
 		String name = clazzes.get(index);
 
-    	System.out.println("Transforming: " + name + " index:" + index);
+    	System.out.println("Transforming: " + name + " index:" + index + " " + classToTransform);
     	
         try
         {
