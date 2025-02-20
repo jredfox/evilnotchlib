@@ -60,7 +60,7 @@ public class ConfigCore {
 		asm_teams_full = config.get("asm_safe_cfg", "asm_teams_full", true).getBoolean();
 		asm_guiTabOverlay = config.get("asm_safe_cfg", "asm_guiTabOverlay", true).getBoolean();
 		asm_batchLoad = config.get("asm_safe_cfg", "asm_batchLoad", true).getBoolean();
-		asm_batchLoadSafe = config.get("asm_safe_cfg", "asm_batchLoadSafe", false).getBoolean();
+		asm_batchLoadSafe = config.get("asm_safe_cfg", "asm_batchLoadSafe", false, "Set to True if your Crashing in your Modpack").getBoolean();
 		
 		Crashy.GUI = config.get("asm_safe_cfg","asm_gui_crash", true).getBoolean();
 		
