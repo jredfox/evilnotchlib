@@ -35,8 +35,7 @@ public class ClientEvents {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void r(RenderPlayerEvent.Pre event)
 	{
-		//Fixes Player's Layers(Mouse Ears) from becoming darker when holding an item if a slime is rendering
-		GlStateManager.enableNormalize();
+		GlStateManager.enableNormalize();//Fixes Player's Layers(Mouse Ears) from becoming darker when holding an item if a slime is rendering
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
