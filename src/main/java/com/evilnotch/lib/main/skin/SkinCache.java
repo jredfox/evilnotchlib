@@ -591,8 +591,9 @@ public class SkinCache {
 				while(ofSkin == null)
 					JavaUtil.sleep(1L);
 				
-				if(!ofSkin.isEmpty && SkinCache.isSkinEmpty(SkinCache.getEncode(MainJava.proxy.getProperties())))
-					SkinCache.setEncode(MainJava.proxy.getProperties(), ofSkin.encode());
+				PropertyMap props = MainJava.proxy.getProperties();
+				if(!ofSkin.isEmpty && SkinCache.isSkinEmpty(SkinCache.getEncode(props)))
+					SkinCache.setEncode(props, ofSkin.encode());
 			});
 		});
 		t2.setDaemon(true);
