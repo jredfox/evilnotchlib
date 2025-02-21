@@ -6,7 +6,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -18,7 +17,6 @@ public class StopSteve {
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderPlayerEvent.Pre event)
 	{
-		GlStateManager.enableNormalize();//Fixes Player's Layers from becoming darker when holding an item if a slime is rendering
 		EntityPlayer a = event.getEntityPlayer();
 		Minecraft mc = Minecraft.getMinecraft();
 		if(!(a instanceof AbstractClientPlayer) || mc.world == null || mc.player == null)
@@ -51,7 +49,6 @@ public class StopSteve {
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public void stopSteve(RenderHandEvent event)
 	{
-		GlStateManager.enableNormalize();//Fixes Player's Layers from becoming darker when holding an item if a slime is rendering
 		Minecraft mc = Minecraft.getMinecraft();
 		if(mc.world == null || mc.player == null)
 			return;

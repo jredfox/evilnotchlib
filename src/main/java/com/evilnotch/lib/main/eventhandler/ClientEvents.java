@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -23,12 +24,27 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class ClientEvents {
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void r(RenderPlayerEvent.Pre event)
+	{
+		//Fixes Player's Layers(Mouse Ears) from becoming darker when holding an item if a slime is rendering
+		GlStateManager.enableNormalize();
+	}
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void pr(RenderPlayerEvent.Post event)
+	{
+		GlStateManager.disableNormalize();
+	}
+	
 	/**
 	 * future:Generate models with textures coming from the registry name
 	 */
