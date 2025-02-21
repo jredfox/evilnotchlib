@@ -53,7 +53,7 @@ public class StopSteve {
 	{
 		GlStateManager.enableNormalize();//Fixes Player's Layers from becoming darker when holding an item if a slime is rendering
 		Minecraft mc = Minecraft.getMinecraft();
-		if(mc.getRenderViewEntity() != mc.player || mc.world == null || mc.player == null)
+		if(mc.world == null || mc.player == null)
 			return;
 		
 		NetworkPlayerInfo info = ((AbstractClientPlayer)mc.player).playerInfo;//mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
