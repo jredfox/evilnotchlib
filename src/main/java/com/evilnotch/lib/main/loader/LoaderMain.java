@@ -111,6 +111,7 @@ public class LoaderMain {
 		logger = e.getModLog();
 		File dir = e.getModConfigurationDirectory();
 		
+		LaunchClassLoaderFix.stopMemoryOverflowFoamFix(clforge);
 		Transformer.batchLoad();
 		MCPMappings.cacheMCP();
 		LoaderFields.cacheFields();
@@ -123,7 +124,6 @@ public class LoaderMain {
 		GeneralRegistry.load();
 		GeneralRegistry.registerGameRule("PlayerLvlDAT", true);
 		loadEvents();
-		LaunchClassLoaderFix.stopMemoryOverflowFoamFix(clforge);
 		CapabilityRegistry.registerRegistry(new CapRegDefaultHandler());
 	}
 	
