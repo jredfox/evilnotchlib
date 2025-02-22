@@ -33,7 +33,7 @@ public class SpawnListEntryAdvanced extends SpawnListEntry{
              }
              catch (NoSuchMethodException e)
              {
-            	System.out.print("FAILED To get Entity World Constructor At SpawnListEntry\n");
+            	System.err.print("FAILED To get Entity World Constructor At SpawnListEntry\n");
              }
              this.loc = loc;
              this.NBT = nbt;

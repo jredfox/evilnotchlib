@@ -254,7 +254,7 @@ public class NBTPathApi {
 		{
 			return num.equals(num2);
 		}
-		System.out.println("Invalid Type Comparison \"CompareType#" + type + "\"");
+		System.err.println("Invalid Type Comparison \"CompareType#" + type + "\"");
 		return false;
 	}
 	

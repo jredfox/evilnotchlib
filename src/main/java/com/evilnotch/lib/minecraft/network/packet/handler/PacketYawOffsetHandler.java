@@ -18,7 +18,7 @@ public class PacketYawOffsetHandler extends MessegeBase<PacketYawOffset>{
 			Entity e = Minecraft.getMinecraft().world.getEntityByID(message.id);
 			if(!(e instanceof EntityLivingBase))
 			{
-				System.out.println("invalid packet recieved for player:" + message.id);
+				System.err.println("invalid packet recieved for player:" + message.id);
 				return;
 			}
 			EntityLivingBase living = (EntityLivingBase)e;

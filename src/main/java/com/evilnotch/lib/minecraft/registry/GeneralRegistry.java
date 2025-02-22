@@ -42,7 +42,6 @@ public class GeneralRegistry {
 	
 	public static void load()
 	{
-		System.out.println("loading mats");
 		blockmats.put(new ResourceLocation("AIR"), Material.AIR);
 		blockmats.put(new ResourceLocation("ANVIL"), Material.ANVIL);
 		blockmats.put(new ResourceLocation("BARRIER"), Material.BARRIER);

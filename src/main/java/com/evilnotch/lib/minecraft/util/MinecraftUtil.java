@@ -96,7 +96,7 @@ public class MinecraftUtil {
 		   ModContainer container =  Loader.instance().getIndexedModList().get(modid);
 		   if(container == null)
 		   {
-			   System.out.println("Can't Identify If a mod is compiled when ModConatiner is null:" + modid);
+			   System.err.println("Can't Identify If a mod is compiled when ModConatiner is null:" + modid);
 			   return false;
 		   }
 		   File source = container.getSource();

@@ -56,7 +56,7 @@ public class NBTUtil {
 				} 
 				catch (IOException e) 
 				{
-					System.out.println("unable to close output stream for:" + file);
+					System.err.println("unable to close output stream for:" + file);
 				}
 			}
 		}
@@ -88,7 +88,7 @@ public class NBTUtil {
 				} 
 				catch (IOException e) 
 				{
-					System.out.println("unable to close input stream for:" + file);
+					System.err.println("unable to close input stream for:" + file);
 				}
 			}
 		}

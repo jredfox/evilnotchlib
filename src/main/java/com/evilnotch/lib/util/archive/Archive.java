@@ -174,7 +174,7 @@ public class Archive {
 			
 			Files.move(Paths.get(this.temp.getPath()), Paths.get(this.file.getPath()), StandardCopyOption.REPLACE_EXISTING);
 			long finish = System.currentTimeMillis()/1000;
-			System.out.println("Zipping Took:" + (finish-start) + " Seconds");
+			//System.out.println("Zipping Took:" + (finish-start) + " Seconds");
 		}catch(Exception e){e.printStackTrace();}
 	}
 

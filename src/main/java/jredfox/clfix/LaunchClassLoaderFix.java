@@ -417,7 +417,7 @@ public class LaunchClassLoaderFix {
 					reader.close();
 				} catch (IOException e) 
 				{
-					System.out.println("Unable to Close InputStream this is bad");
+					System.err.println("Unable to Close InputStream this is bad");
 				}
 			}
 		}

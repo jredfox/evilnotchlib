@@ -32,6 +32,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
+import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.util.JavaUtil;
 
@@ -450,7 +451,8 @@ public class ASMHelper
 	{
 		if(containsMethod(classNode, name, desc))
 		{
-			System.out.println("returing class has method already!" + name + "," + desc);
+			if(ConfigCore.dumpASM)
+				System.err.println("returing class has method already!" + name + "," + desc);
 			return;
 		}
 		MethodNode node = new MethodNode(opcode, name, desc, null, null);

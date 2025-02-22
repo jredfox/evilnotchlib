@@ -18,7 +18,7 @@ public class PacketYawHeadHandler extends MessegeBase<PacketYawHead>{
 			Entity e = Minecraft.getMinecraft().world.getEntityByID(message.id);
 			if(!(e instanceof EntityLivingBase))
 			{
-				System.out.println("invalid packet recieved for the yawHead:" + message.id);
+				System.err.println("invalid packet recieved for the yawHead:" + message.id);
 				return;
 			}
 			EntityLivingBase p = (EntityLivingBase)e;
