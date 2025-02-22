@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 
+import com.evilnotch.lib.api.IEvilNotchLibPreInit;
 import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.transformer.Transformer;
@@ -49,6 +50,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -114,6 +117,7 @@ public class LoaderMain {
 		
 		MainJava.proxy.proxyStart();
 		Config.loadConfig(dir);
+		loadEvilNotchLibPreInit(e);
 		MainJava.proxy.preinit(e);
 		
 		GeneralRegistry.load();
@@ -123,6 +127,16 @@ public class LoaderMain {
 		CapabilityRegistry.registerRegistry(new CapRegDefaultHandler());
 	}
 	
+	private static void loadEvilNotchLibPreInit(FMLPreInitializationEvent e)
+	{
+		for(ModContainer mc : Loader.instance().getModList())
+		{
+			Object mod = mc.getMod();
+			if(mod instanceof IEvilNotchLibPreInit)
+				((IEvilNotchLibPreInit) mod).preInitMod(e);
+		}
+	}
+
 	/**
 	 * load Debug Blocks/Items
 	 */
