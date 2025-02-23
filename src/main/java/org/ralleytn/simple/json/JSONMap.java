@@ -32,14 +32,14 @@ public class JSONMap extends LinkedHashMap<Object, Object>{
 	public Object put(Object key, Object value)
 	{
 		value = JSONUtil.getValidJsonValue(value);
-		return super.put(key, value);
+		return super.put((String) key, value);
 	}
 
 	@Override
 	public Object putIfAbsent(Object key, Object value)
 	{
 		value = JSONUtil.getValidJsonValue(value);
-		return super.putIfAbsent(key, value);
+		return super.putIfAbsent((String) key, value);
 	}
 	
 	@Override
@@ -51,57 +51,57 @@ public class JSONMap extends LinkedHashMap<Object, Object>{
 	
 	public Long getLong(Object key)
 	{
-		return JavaUtil.getLong((Number)this.get(key));
+		return JavaUtil.getLong((Number)this.get((String) key));
 	}
 
 	public Integer getInt(Object key)
 	{
-		return JavaUtil.getInt((Number)this.get(key));
+		return JavaUtil.getInt((Number)this.get((String) key));
 	}
 	
 	public Short getShort(Object key)
 	{
-		return JavaUtil.getShort((Number)this.get(key));
+		return JavaUtil.getShort((Number)this.get((String) key));
 	}
 	
 	public Byte getByte(Object key)
 	{
-		return JavaUtil.getByte((Number)this.get(key));
+		return JavaUtil.getByte((Number)this.get((String) key));
 	}
 	
 	public Double getDouble(Object key)
 	{
-		return JavaUtil.getDouble((Number)this.get(key));
+		return JavaUtil.getDouble((Number)this.get((String) key));
 	}
 	
 	public Float getFloat(Object key)
 	{
-		return JavaUtil.getFloat((Number)this.get(key));
+		return JavaUtil.getFloat((Number)this.get((String) key));
 	}
 	
 	public boolean getBoolean(Object key)
 	{
-		return (boolean) this.get(key);
+		return (boolean) this.get((String) key);
 	}
 	
 	public char getChar(Object key)
 	{
-		return this.getString(key).charAt(0);
+		return this.getString((String) key).charAt(0);
 	}
 	
 	public String getString(Object key)
 	{
-		return (String) this.get(key);
+		return (String) this.get((String) key);
 	}
 	
 	public JSONObject getJSONObject(Object key)
 	{
-		return (JSONObject)this.get(key);
+		return (JSONObject)this.get((String) key);
 	}
 	
 	public JSONArray getJSONArray(Object key)
 	{
-		return (JSONArray)this.get(key);
+		return (JSONArray)this.get((String) key);
 	}
 	
 	/**

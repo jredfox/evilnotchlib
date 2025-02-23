@@ -4,3 +4,4 @@ src/main/java/purejava/Main.java
 src.rar
 src/main/java/net/minecraftforge/client/GuiIngameForge.java
 /src/main/java/com/mojang/authlib/yggdrasil
+src/main/java/com/evilnotch/lib/main/PureJava.java

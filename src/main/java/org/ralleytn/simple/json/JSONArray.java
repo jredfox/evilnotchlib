@@ -12,12 +12,14 @@ import java.util.Collection;
 
 import org.ralleytn.simple.json.internal.Util;
 
+import com.evilnotch.lib.util.simple.ICopy;
+
 /**
  * A JSON array. JSONObject supports java.util.List interface.
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
  */
-public class JSONArray extends JSONArrayList {
+public class JSONArray extends JSONArrayList implements ICopy {
 	
 	private static final long serialVersionUID = 3957988303675231981L;
 	
@@ -34,6 +36,11 @@ public class JSONArray extends JSONArrayList {
 	 */
 	public JSONArray(Collection<?> collection){
 		super(collection);
+	}
+	
+	public JSONArray(int capacity)
+	{
+		super(capacity);
 	}
 	
 	/**
@@ -211,6 +218,20 @@ public class JSONArray extends JSONArrayList {
 	public boolean equals(Object object) 
 	{
 		return object instanceof JSONArray && this.size() == ((JSONArray)object).size() && super.equals(object);
+	}
+	
+	@Override
+	public JSONArray copy()
+	{
+		JSONArray arr = new JSONArray(this.size() + 3);
+		for(int i=0;i<this.size();i++)
+		{
+			Object o = this.get(i);
+			if(o instanceof ICopy)
+				o = ((ICopy) o).copy();
+			arr.add(o);
+		}
+		return arr;
 	}
 	
 	/**

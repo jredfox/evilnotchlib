@@ -12,13 +12,15 @@ import java.util.Map;
 
 import org.ralleytn.simple.json.internal.Util;
 
+import com.evilnotch.lib.util.simple.ICopy;
+
 /**
  * A JSON object. Key value pairs are ordered. JSONObject supports java.util.Map interface.
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
  * @author jredfox -fixes<dragonofthelakeabcd@gmail.com>
  */
-public class JSONObject extends JSONMap {
+public class JSONObject extends JSONMap implements ICopy {
 	
 	private static final long serialVersionUID = -503443796854799292L;
 	
@@ -37,6 +39,11 @@ public class JSONObject extends JSONMap {
 	public JSONObject(Map map) 
 	{
 		super(map);
+	}
+	
+	public JSONObject(int capcity)
+	{
+		super(capcity);
 	}
 	
 	/**
@@ -90,6 +97,22 @@ public class JSONObject extends JSONMap {
 		});
 		
 		return object;
+	}
+	
+	@Override
+	public JSONObject copy()
+	{
+		JSONObject json = new JSONObject(this.size() + 3);
+		for(java.util.Map.Entry<Object, Object> entry : this.entrySet())
+		{
+			String key = (String) entry.getKey();
+			Object value = entry.getValue();
+			if(value instanceof ICopy)
+				json.put(key, ((ICopy) value).copy());
+			else
+				json.put(key, value);
+		}
+		return json;
 	}
 	
 	/**
