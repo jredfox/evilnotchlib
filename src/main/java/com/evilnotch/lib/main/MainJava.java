@@ -29,7 +29,7 @@ public class MainJava {
 	}
 	
 	@Mod.EventHandler
-	public void init(FMLInitializationEvent e) throws Exception
+	public void init(FMLInitializationEvent e)
 	{
 		LoaderMain.loadInit(e);
 	}
