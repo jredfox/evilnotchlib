@@ -209,53 +209,9 @@ public class JSONArray extends JSONArrayList {
 	}
 	
 	@Override
-	public boolean equals(Object object) {
-		
-		if(object != null) {
-			
-			if(object instanceof Collection) {
-				
-				Collection<?> collection = (Collection<?>)object;
-				
-				if(collection.size() == this.size()) {
-					
-					int index = 0;
-					
-					for(Object element : collection) {
-						
-						if(!((element == null && this.get(index) == null) || this.get(index).equals(element))) {
-							
-							return false;
-						}
-						
-						index++;
-					}
-					
-					return true;
-				}
-				
-			} else if(object.getClass().isArray()) {
-				
-				int length = Array.getLength(object);
-				
-				if(length == this.size()) {
-					
-					for(int index = 0; index < length; index++) {
-						
-						Object element = Array.get(object, index);
-
-						if(!((element == null && this.get(index) == null) || element.equals(this.get(index)))) {
-							
-							return false;
-						}
-					}
-					
-					return true;
-				}
-			}
-		}
-		
-		return false;
+	public boolean equals(Object object) 
+	{
+		return object instanceof JSONArray && this.size() == ((JSONArray)object).size() && super.equals(object);
 	}
 	
 	/**

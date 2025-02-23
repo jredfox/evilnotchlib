@@ -111,36 +111,6 @@ public class JSONObject extends JSONMap {
 		
 		return null;
 	}
-	
-	@Override
-	public boolean equals(Object object) {
-		
-		// ==== 17.03.2018 | Ralph Niemitz/RalleYTN(ralph.niemitz@gmx.de)
-		// -	Fixed some weird behavior
-		// ====
-		
-		if(object != null && object instanceof Map) {
-			
-			Map<?, ?> map = (Map<?, ?>)object;
-			
-			if(this.size() == map.size()) {
-				
-				for(Map.Entry<Object, Object> thisEntry : this.entrySet()) {
-					
-					Object key = thisEntry.getKey();
-					Object value = thisEntry.getValue();
-					
-					if(!map.containsKey(key) || !value.equals(map.get(key))) {
-						return false;
-					}
-				}
-				
-				return true;
-			}
-		}
-		
-		return false;
-	}
 
 	/**
 	 * @param rootName the name of the root element
