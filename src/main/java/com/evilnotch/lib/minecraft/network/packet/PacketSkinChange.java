@@ -14,7 +14,7 @@ public class PacketSkinChange implements IMessage {
 	public String payload = "";
 	public PacketSkinChange(SkinEntry s)
 	{
-		this.payload = SkinCache.getEncode(s);
+		this.payload = s.encode();
 	}
 
 	@Override

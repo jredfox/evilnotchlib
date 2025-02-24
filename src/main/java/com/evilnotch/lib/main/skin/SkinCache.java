@@ -188,7 +188,7 @@ public class SkinCache {
 		net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
 		//sync selected SkinEntry with the client's profileProperties for mods like bpkrscore that render the player on the GuiMainMenu
 		if(!dl.isEmpty)
-			SkinCache.setEncode(mc.getProfileProperties(), dl.encode());
+			SkinCache.setEncode(mc.getProfileProperties(), dl);
 		
 		//if player is already in the world send a packet
 		if(mc.player != null && mc.player.connection != null && ((CapBoolean) CapabilityRegistry.getCapability(mc.player, CapRegDefaultHandler.addedToWorld)).value)
@@ -595,7 +595,7 @@ public class SkinCache {
 				PropertyMap props = MainJava.proxy.getProperties();
 				if(!ofSkin.isEmpty && SkinCache.isSkinEmpty(SkinCache.getEncode(props)))
 				{
-					SkinCache.setEncode(props, ofSkin.encode());
+					SkinCache.setEncode(props, ofSkin);
 					//Sync Vanilla's Properties to Forge's Could cause incompatibilities however all they would have to do is use Minecraft#profileProperties instead of forge's for compat especially since forge's is an un-reliable cache that uses vanilla profiles
 					VanillaBugFixes.fixMcProfileProperties();
 				}
@@ -628,11 +628,6 @@ public class SkinCache {
 	{
 		return Config.skinCache ? SkinCache.INSTANCE.selected.encode() : (Config.skinCacheOfflineFix ? SkinCache.getEncodeSafe(MainJava.proxy.getProperties()) : "");
 	}
-
-	public static String getEncode(SkinEntry s)
-	{
-		return s.encode();
-	}
 	
 	public static String getEncodeSafe(PropertyMap map) 
 	{
@@ -648,17 +643,19 @@ public class SkinCache {
 		return p == null ? null : p.getValue();
 	}
 	
-	/**
-	 * Safe Method for Setting the SkinData in case the SkinData is null or empty
-	 */
-	public static void setSkin(PropertyMap props, String skindata) 
+	public static void setEncode(PropertyMap props, SkinEntry skin) 
 	{
-		if(!SkinCache.isSkinEmpty(skindata))
-			setEncode(props, skindata);
-	}
-	
-	public static void setEncode(PropertyMap props, String skindata) 
-	{
+		String prev = getEncode(props);
+		String skindata = null;
+		if(prev != null)
+		{
+			JSONObject prevJSON = JavaUtil.toJsonFrom64(prev);
+			JSONObject skinJSON = skin.encodeJSON();
+			prevJSON.merge(skinJSON);
+			skindata = JavaUtil.toBase64(skinJSON.toString());
+		}
+		else
+			skindata = skin.encode();
 		props.removeAll("textures");
 		props.put("textures", new EvilProperty("textures", skindata));
 	}

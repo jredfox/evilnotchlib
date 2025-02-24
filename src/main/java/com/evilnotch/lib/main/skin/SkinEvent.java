@@ -55,7 +55,7 @@ public class SkinEvent extends Event {
 				this.skin.model = isAlex ? "slim" : "";
 			}
 			
-			SkinCache.setEncode(this.profile.getProperties(), this.skin.encode());
+			SkinCache.setEncode(this.profile.getProperties(), this.skin);
 		}
 	}
 	
