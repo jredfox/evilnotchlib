@@ -15,6 +15,7 @@ import com.mojang.util.UUIDTypeAdapter;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.server.network.NetHandlerLoginServer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.SaveHandler;
@@ -23,9 +24,9 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 public class UUIDPatcher {
 	
-	public static final String VERSION = "2.0.0";
+	public static final String VERSION = "2.0.1";
 
-	public static GameProfile patch(GameProfile old, String skindata, boolean login) 
+	public static GameProfile patch(GameProfile old, boolean patchSkin) 
 	{
 		//Handle FakePlayer
 		if(old instanceof FakeGameProfile || old.getName() != null && old.getName().startsWith("["))
@@ -51,13 +52,27 @@ public class UUIDPatcher {
 		}
 		
 		EvilGameProfile profile = new EvilGameProfile(id, old);
-		patchSkin(profile, skindata, login);
+		if(patchSkin)
+			patchSkin(old, null, false);
 		return profile;
 	}
 
 	public static GameProfile patchCheck(GameProfile profile)
 	{
-		return profile instanceof EvilGameProfile ? profile : patch(profile, null, false);
+		return profile instanceof EvilGameProfile ? profile : patch(profile);
+	}
+	
+	public static GameProfile patch(GameProfile old) 
+	{
+		return patch(old, true);
+	}
+	
+	public static GameProfile patch(NetHandlerLoginServer net)
+	{
+		GameProfile profile = patch(net.loginGameProfile, false);
+		patchSkin(profile, net.skindata, true);
+		setLoginHooks(profile, net.evlNBT);
+		return profile;
 	}
 	
 	/**
