@@ -104,28 +104,23 @@ public class JSONObject extends JSONMap implements ICopy {
 		for(java.util.Map.Entry<Object, Object> entry : other.entrySet())
 		{
 			String key = (String) entry.getKey();
-			Object value = entry.getValue();
-			Object thisval = this.get(key);
-			if(value instanceof JSONObject && thisval instanceof JSONObject)
+			Object otherIndex = entry.getValue();
+			Object thisIndex = this.get(key);
+			if(thisIndex instanceof JSONObject && otherIndex instanceof JSONObject)
 			{
-				JSONObject json = (JSONObject) thisval;
-				json.merge((JSONObject) value);
+				JSONObject json = (JSONObject) thisIndex;
+				json.merge((JSONObject) otherIndex);
 			}
-			else if(value instanceof JSONArray && thisval instanceof JSONArray)
+			else if(thisIndex instanceof JSONArray && otherIndex instanceof JSONArray)
 			{
-				JSONArray arr = (JSONArray) thisval;
-				arr.merge((JSONArray) value);
+				JSONArray arr = (JSONArray) thisIndex;
+				arr.merge((JSONArray) otherIndex);
 			}
 			else
 			{
-				this.put(key, value instanceof ICopy ? ((ICopy) value).copy() : value);
+				this.put(key, otherIndex instanceof ICopy ? ((ICopy) otherIndex).copy() : otherIndex);
 			}
 		}
-	}
-	
-	private Object copy(Object value)
-	{
-		return value instanceof ICopy ? ((ICopy) value).copy() : value;
 	}
 
 	@Override
