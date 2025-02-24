@@ -167,7 +167,7 @@ public class JSONArray extends JSONArrayList implements ICopy {
 	 */
 	public JSONArray(String json) throws JSONParseException {
 		
-		super(new JSONParser().parseJSONArray(json));
+		this(new JSONParser().parseJSONArray(json));
 	}
 	
 	/**
@@ -179,7 +179,7 @@ public class JSONArray extends JSONArrayList implements ICopy {
 	 */
 	public JSONArray(Reader reader) throws JSONParseException, IOException {
 		
-		super(new JSONParser().parseJSONArray(reader));
+		this(new JSONParser().parseJSONArray(reader));
 	}
 	
 	/**
@@ -217,7 +217,7 @@ public class JSONArray extends JSONArrayList implements ICopy {
 	public void merge(JSONArray other)
 	{
 		int tsize = this.size();
-		for(int i=0;i<other.size();i++)
+		for(int i=0; i< other.size(); i++)
 		{
 			Object otherIndex = other.get(i);
 			if(i < tsize)
