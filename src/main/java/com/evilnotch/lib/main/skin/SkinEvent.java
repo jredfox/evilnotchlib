@@ -9,6 +9,7 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -23,22 +24,26 @@ public class SkinEvent extends Event {
 	public static class GameProfileEvent extends Event
 	{
 		/**
-		 * Contains the UUID, Username and Textures. The {@link #profile} 's Properties will be out of sync with this SkinEntry
+		 * The Skin We are replacing the GameProfile with if {@link SkinEntry#isEmpty} it will not get applied
 		 */
 		public SkinEntry skin;
 		/**
-		 * The GameProfile's Properties may not even be the same payload as the SkinEntry has depending upon if the Skin Was Changed or if it's a login
+		 * The GameProfile's Properties the {@link #skin} hasn't gotten applied yet
 		 */
 		public GameProfile profile;
 		/**
-		 * Is This GameProfileEvent Likely Triggered by a Login
+		 * The Skin of the GameProfile use {@link GameProfile#getOriginalSkin()} to get it
+		 */
+		private SkinEntry orgSkin;
+		/**
+		 * Is This GameProfileEvent Triggered by a Login
 		 */
 		public boolean login;
 		
-		public GameProfileEvent(GameProfile profile)
+		public GameProfileEvent(GameProfile profile, String payload, boolean login)
 		{
-			this(profile, SkinCache.getEncode(profile.getProperties()) );
-			this.login = true;
+			this(profile, payload);
+			this.login = login;
 		}
 		
 		public GameProfileEvent(GameProfile profile, String payload)
@@ -46,12 +51,30 @@ public class SkinEvent extends Event {
 			this.profile = profile;
 			this.skin = SkinEntry.fromPayload(profile.getId().toString(), profile.getName(), payload);
 		}
+		
+		/**
+		 * Gets the Current Profile's Skin
+		 * NOTE: Editing it won't change the skin use {@link #skin} for this
+		 */
+		public SkinEntry getOriginalSkin()
+		{
+			if(this.orgSkin == null)
+				this.orgSkin = SkinEntry.fromPayload(profile.getId().toString(), profile.getName(), SkinCache.getEncode(profile.getProperties()));
+			return this.orgSkin;
+		}
 
 		/**
 		 * Syncs the SkinEntry with the actual GameProfile's base64 payload in the properties
 		 */
 		public void update()
 		{
+			//Only patch UUID and Username when the skin is empty
+			if(this.skin.isEmpty)
+			{
+				SkinCache.setUUIDEncode(this.profile);
+				return;
+			}
+			
 			//if skin is default or empty assign it to a default skin
 			if(SkinCache.isSkinEmpty(this.skin.skin) || this.skin.skin.equals("http://textures.minecraft.net/texture/$null"))
 			{

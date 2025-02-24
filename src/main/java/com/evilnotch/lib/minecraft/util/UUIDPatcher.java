@@ -7,7 +7,6 @@ import java.util.UUID;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.skin.SkinEvent;
-import com.evilnotch.lib.main.skin.SkinEvent.GameProfileEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.auth.FakeGameProfile;
 import com.mojang.authlib.GameProfile;
@@ -26,7 +25,7 @@ public class UUIDPatcher {
 	
 	public static final String VERSION = "2.0.0";
 
-	public static GameProfile patch(GameProfile old) 
+	public static GameProfile patch(GameProfile old, String skindata, boolean login) 
 	{
 		//Handle FakePlayer
 		if(old instanceof FakeGameProfile || old.getName() != null && old.getName().startsWith("["))
@@ -52,13 +51,13 @@ public class UUIDPatcher {
 		}
 		
 		EvilGameProfile profile = new EvilGameProfile(id, old);
-		patchSkin(profile);
+		patchSkin(profile, skindata, login);
 		return profile;
 	}
 
 	public static GameProfile patchCheck(GameProfile profile)
 	{
-		return profile instanceof EvilGameProfile ? profile : patch(profile);
+		return profile instanceof EvilGameProfile ? profile : patch(profile, null, false);
 	}
 	
 	/**
@@ -167,21 +166,9 @@ public class UUIDPatcher {
 	/**
 	 * Updates a Skin BaseCode64 Texture Payload into the GameProfile
 	 */
-	public static void patchSkin(GameProfile profile, String payload)
+	public static void patchSkin(GameProfile profile, String payload, boolean login)
 	{
-		SkinEvent.GameProfileEvent e = new GameProfileEvent(profile, payload);
-		MinecraftForge.EVENT_BUS.post(e);
-		e.update();
-	}
-	
-	/**
-	 * Simply Posting the Event Patches the UUID and Username for the GameProfile's Properties in Textures
-	 * Then it Calls {@link GameProfileEvent#update()} to Sync any Texture Changes
-	 * Empty, Null Skins or http://textures.minecraft.net/texture/$null will result in the default skin based on your UUID
-	 */
-	public static void patchSkin(GameProfile profile)
-	{
-		SkinEvent.GameProfileEvent e = new GameProfileEvent(profile);
+		SkinEvent.GameProfileEvent e = new SkinEvent.GameProfileEvent(profile, payload, login);
 		MinecraftForge.EVENT_BUS.post(e);
 		e.update();
 	}
