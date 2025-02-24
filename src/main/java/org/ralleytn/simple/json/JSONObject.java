@@ -99,6 +99,41 @@ public class JSONObject extends JSONMap implements ICopy {
 		return object;
 	}
 	
+	public void merge(JSONObject other)
+	{
+		for(java.util.Map.Entry<Object, Object> entry : other.entrySet())
+		{
+			String key = (String) entry.getKey();
+			Object value = entry.getValue();
+			Object thisval = this.get(key);
+			if(value instanceof JSONObject && thisval instanceof JSONObject)
+			{
+				JSONObject json = (JSONObject) thisval;
+				json.merge((JSONObject) value);
+			}
+			else if(value instanceof JSONArray && thisval instanceof JSONArray)
+			{
+				JSONArray arr = (JSONArray) thisval;
+				arr.merge((JSONArray) value);
+			}
+			else
+			{
+				this.put(key, value instanceof ICopy ? ((ICopy) value).copy() : value);
+			}
+		}
+	}
+	
+	private Object copy(Object value)
+	{
+		return value instanceof ICopy ? ((ICopy) value).copy() : value;
+	}
+
+	@Override
+	public boolean equals(Object o) 
+	{
+		return o instanceof JSONObject && this.size() == ((JSONObject)o).size() && super.equals(o);
+	}
+	
 	@Override
 	public JSONObject copy()
 	{

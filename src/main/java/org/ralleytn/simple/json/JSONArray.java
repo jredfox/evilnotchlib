@@ -214,10 +214,29 @@ public class JSONArray extends JSONArrayList implements ICopy {
 		return null;
 	}
 	
-	@Override
-	public boolean equals(Object object) 
+	public void merge(JSONArray other)
 	{
-		return object instanceof JSONArray && this.size() == ((JSONArray)object).size() && super.equals(object);
+		int tsize = this.size();
+		for(int i=0;i<other.size();i++)
+		{
+			Object otherIndex = other.get(i);
+			if(i < tsize)
+			{
+				Object thisIndex = this.get(i);
+				if(thisIndex instanceof JSONArray && otherIndex instanceof JSONArray)
+				{
+					((JSONArray)thisIndex).merge((JSONArray) otherIndex);
+				}
+				else if(thisIndex instanceof JSONObject && otherIndex instanceof JSONObject)
+				{
+					((JSONObject)thisIndex).merge((JSONObject) otherIndex);
+				}
+				else
+					this.set(i, otherIndex instanceof ICopy ? ((ICopy) otherIndex).copy() : otherIndex);
+			}
+			else
+				this.add(otherIndex instanceof ICopy ? ((ICopy) otherIndex).copy() : otherIndex);
+		}
 	}
 	
 	@Override
@@ -232,6 +251,12 @@ public class JSONArray extends JSONArrayList implements ICopy {
 			arr.add(o);
 		}
 		return arr;
+	}
+	
+	@Override
+	public boolean equals(Object object) 
+	{
+		return object instanceof JSONArray && this.size() == ((JSONArray)object).size() && super.equals(object);
 	}
 	
 	/**
