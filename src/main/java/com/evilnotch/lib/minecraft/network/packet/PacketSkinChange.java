@@ -1,6 +1,5 @@
 package com.evilnotch.lib.minecraft.network.packet;
 
-import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.main.skin.SkinEntry;
 
 import io.netty.buffer.ByteBuf;
