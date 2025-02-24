@@ -255,6 +255,7 @@ public class Transformer implements IClassTransformer
 		}
 		
 		ASMHelper.batchLoad("", cls);
+		JavaUtil.toBase64("");//Force Load Base64 Class to prevent 30-90MS Hang
 	}
 
 }
