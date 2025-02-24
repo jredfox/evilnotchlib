@@ -240,6 +240,7 @@ public class Transformer implements IClassTransformer
 		
 		List<String> cls = new ArrayList(Transformer.clazzes);
 		cls.addAll(EntityTransformer.clazzes);
+		cls.add("org.apache.commons.codec.binary.Base64");
 		cls.removeAll(done);
 		
 		//Remove Client-Only Classes on Dedicated Server Side

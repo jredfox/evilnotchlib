@@ -643,6 +643,29 @@ public class SkinCache {
 		return p == null ? null : p.getValue();
 	}
 	
+	/**
+	 * Safe Method for Setting the SkinData in case the SkinData is null or empty
+	 */
+	public static void setSkin(PropertyMap props, String encode) 
+	{
+		if(!SkinCache.isSkinEmpty(encode))
+		{
+			String prev = getEncode(props);
+			String skindata = null;
+			if(prev != null)
+			{
+				JSONObject prevJSON = JavaUtil.toJsonFrom64(prev);
+				JSONObject skinJSON = JavaUtil.toJsonFrom64(encode);
+				prevJSON.merge(skinJSON);
+				skindata = JavaUtil.toBase64(prevJSON.toString());
+			}
+			else
+				skindata = encode;
+			props.removeAll("textures");
+			props.put("textures", new EvilProperty("textures", skindata));
+		}
+	}
+	
 	public static void setEncode(PropertyMap props, SkinEntry skin) 
 	{
 		String prev = getEncode(props);
@@ -652,7 +675,7 @@ public class SkinCache {
 			JSONObject prevJSON = JavaUtil.toJsonFrom64(prev);
 			JSONObject skinJSON = skin.encodeJSON();
 			prevJSON.merge(skinJSON);
-			skindata = JavaUtil.toBase64(skinJSON.toString());
+			skindata = JavaUtil.toBase64(prevJSON.toString());
 		}
 		else
 			skindata = skin.encode();

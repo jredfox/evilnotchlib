@@ -30,10 +30,15 @@ public class SkinEvent extends Event {
 		 * The GameProfile's Properties may not even be the same payload as the SkinEntry has depending upon if the Skin Was Changed or if it's a login
 		 */
 		public GameProfile profile;
+		/**
+		 * Is This GameProfileEvent Likely Triggered by a Login
+		 */
+		public boolean login;
 		
 		public GameProfileEvent(GameProfile profile)
 		{
 			this(profile, SkinCache.getEncode(profile.getProperties()) );
+			this.login = true;
 		}
 		
 		public GameProfileEvent(GameProfile profile, String payload)
