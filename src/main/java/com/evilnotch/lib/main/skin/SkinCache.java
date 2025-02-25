@@ -32,6 +32,7 @@ import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkinChange;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
@@ -644,26 +645,14 @@ public class SkinCache {
 	}
 	
 	/**
-	 * Safe Method for Setting the SkinData in case the SkinData is null or empty
+	 * Only sets the UUID and Username portion of the skin's data
 	 */
-	public static void setSkin(PropertyMap props, String encode) 
+	public static void setUUIDEncode(GameProfile profile)
 	{
-		if(!SkinCache.isSkinEmpty(encode))
-		{
-			String prev = getEncode(props);
-			String skindata = null;
-			if(prev != null)
-			{
-				JSONObject prevJSON = JavaUtil.toJsonFrom64(prev);
-				JSONObject skinJSON = JavaUtil.toJsonFrom64(encode);
-				prevJSON.merge(skinJSON);
-				skindata = JavaUtil.toBase64(prevJSON.toString());
-			}
-			else
-				skindata = encode;
-			props.removeAll("textures");
-			props.put("textures", new EvilProperty("textures", skindata));
-		}
+		PropertyMap props = profile.getProperties();
+		if(getEncode(props) == null)
+			return;
+		setEncode(props, new SkinEntryUUID(profile.getId().toString(), profile.getName()));
 	}
 	
 	public static void setEncode(PropertyMap props, SkinEntry skin) 
@@ -679,6 +668,40 @@ public class SkinCache {
 		}
 		else
 			skindata = skin.encode();
+		props.removeAll("textures");
+		props.put("textures", new EvilProperty("textures", skindata));
+	}
+	
+	/**
+	 * Safe Method for Setting the SkinData in case the SkinData is null or empty
+	 * Use {@link #setEncode(PropertyMap, SkinEntry)} Instead
+	 */
+	@Deprecated
+	public static void setSkin(PropertyMap props, String encode) 
+	{
+		if(!SkinCache.isSkinEmpty(encode))
+		{
+			setEncode(props, encode);
+		}
+	}
+	
+	/**
+	 * Use {@link #setEncode(PropertyMap, SkinEntry)} Instead
+	 */
+	@Deprecated
+	public static void setEncode(PropertyMap props, String encode) 
+	{
+		String prev = getEncode(props);
+		String skindata = null;
+		if(prev != null)
+		{
+			JSONObject prevJSON = JavaUtil.toJsonFrom64(prev);
+			JSONObject skinJSON = JavaUtil.toJsonFrom64(encode);
+			prevJSON.merge(skinJSON);
+			skindata = JavaUtil.toBase64(prevJSON.toString());
+		}
+		else
+			skindata = encode;
 		props.removeAll("textures");
 		props.put("textures", new EvilProperty("textures", skindata));
 	}

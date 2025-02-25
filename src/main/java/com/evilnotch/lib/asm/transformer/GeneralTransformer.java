@@ -10,6 +10,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -485,36 +486,25 @@ public class GeneralTransformer {
 		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "skindata", "Ljava/lang/String;", null, null));
 		//public NBTTagCompound evlNBT;
 		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;", null, null));
+		//AT the class
+		ASMHelper.pubMinusFinal(classNode, true);
 		
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("tryAcceptPlayer", "func_147326_c").toString(), "()V");
 		String loginGameProfile = new MCPSidedString("loginGameProfile", "field_147337_i").toString();
 		
 		InsnList list = new InsnList();
 		
-		//SkinCache.setSkin(this.loginGameProfile.getProperties(), this.skindata);
-		list.add(new VarInsnNode(ALOAD, 0));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
-		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/GameProfile", "getProperties", "()Lcom/mojang/authlib/properties/PropertyMap;", false));
-		list.add(new VarInsnNode(ALOAD, 0));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", "skindata", "Ljava/lang/String;"));
-		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "setSkin", "(Lcom/mojang/authlib/properties/PropertyMap;Ljava/lang/String;)V", false));
-		
-		//this.loginGameProfile = UUIDPatcher.patch(gameprofile)
+		//this.loginGameProfile = UUIDPatcher.patch(this);
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
-		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patch", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;", false));
+		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patch", "(Lnet/minecraft/server/network/NetHandlerLoginServer;)Lcom/mojang/authlib/GameProfile;", false));
 		list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
-	
-		//UUIDPatcher.setLoginHooks(this.loginGameProfile, this.evlNBT);
-		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
-		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/server/network/NetHandlerLoginServer", "evlNBT", "Lnet/minecraft/nbt/NBTTagCompound;"));
-		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "setLoginHooks", "(Lcom/mojang/authlib/GameProfile;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
-				
-		AbstractInsnNode spot = ASMHelper.getTypeInsnNode(m, new TypeInsnNode(Opcodes.NEW, "net/minecraft/network/login/server/SPacketLoginSuccess")).getPrevious().getPrevious();
-		m.instructions.insertBefore(spot, list);
+		list.add(new LabelNode());
+		
+		AbstractInsnNode spot = ASMHelper.prevLineNumberNode(ASMHelper.getTypeInsnNode(m, new TypeInsnNode(Opcodes.NEW, "net/minecraft/network/login/server/SPacketLoginSuccess")));
+		if(spot.getNext() instanceof FrameNode)
+			spot = spot.getNext();
+		m.instructions.insert(spot, list);
 		
 		//this.skindata = packetIn.skindata;
 		MethodNode login = ASMHelper.getMethodNode(classNode, new MCPSidedString("processLoginStart", "func_147316_a").toString(), "(Lnet/minecraft/network/login/client/CPacketLoginStart;)V");

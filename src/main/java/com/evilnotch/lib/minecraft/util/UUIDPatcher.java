@@ -7,7 +7,6 @@ import java.util.UUID;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.skin.SkinEvent;
-import com.evilnotch.lib.main.skin.SkinEvent.GameProfileEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.auth.FakeGameProfile;
 import com.mojang.authlib.GameProfile;
@@ -16,6 +15,7 @@ import com.mojang.util.UUIDTypeAdapter;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.server.network.NetHandlerLoginServer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.SaveHandler;
@@ -24,9 +24,9 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 public class UUIDPatcher {
 	
-	public static final String VERSION = "2.0.0";
+	public static final String VERSION = "2.0.1";
 
-	public static GameProfile patch(GameProfile old) 
+	public static GameProfile patch(GameProfile old, boolean patchSkin) 
 	{
 		//Handle FakePlayer
 		if(old instanceof FakeGameProfile || old.getName() != null && old.getName().startsWith("["))
@@ -52,13 +52,27 @@ public class UUIDPatcher {
 		}
 		
 		EvilGameProfile profile = new EvilGameProfile(id, old);
-		patchSkin(profile);
+		if(patchSkin)
+			patchSkin(old, null, false);
 		return profile;
 	}
 
 	public static GameProfile patchCheck(GameProfile profile)
 	{
-		return profile instanceof EvilGameProfile ? profile : patch(profile);
+		return profile instanceof EvilGameProfile ? profile : patch(profile, true);
+	}
+	
+	public static GameProfile patch(GameProfile old) 
+	{
+		return patch(old, true);
+	}
+	
+	public static GameProfile patch(NetHandlerLoginServer net)
+	{
+		GameProfile profile = patch(net.loginGameProfile, false);
+		patchSkin(profile, net.skindata, true);
+		setLoginHooks(profile, net.evlNBT);
+		return profile;
 	}
 	
 	/**
@@ -169,19 +183,15 @@ public class UUIDPatcher {
 	 */
 	public static void patchSkin(GameProfile profile, String payload)
 	{
-		SkinEvent.GameProfileEvent e = new GameProfileEvent(profile, payload);
-		MinecraftForge.EVENT_BUS.post(e);
-		e.update();
+		patchSkin(profile, payload, false);
 	}
 	
 	/**
-	 * Simply Posting the Event Patches the UUID and Username for the GameProfile's Properties in Textures
-	 * Then it Calls {@link GameProfileEvent#update()} to Sync any Texture Changes
-	 * Empty, Null Skins or http://textures.minecraft.net/texture/$null will result in the default skin based on your UUID
+	 * Updates a Skin BaseCode64 Texture Payload into the GameProfile
 	 */
-	public static void patchSkin(GameProfile profile)
+	public static void patchSkin(GameProfile profile, String payload, boolean login)
 	{
-		SkinEvent.GameProfileEvent e = new GameProfileEvent(profile);
+		SkinEvent.GameProfileEvent e = new SkinEvent.GameProfileEvent(profile, payload, login);
 		MinecraftForge.EVENT_BUS.post(e);
 		e.update();
 	}

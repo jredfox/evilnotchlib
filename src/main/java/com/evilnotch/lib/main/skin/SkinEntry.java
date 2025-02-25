@@ -1,5 +1,8 @@
 package com.evilnotch.lib.main.skin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.util.JavaUtil;
@@ -14,6 +17,7 @@ public class SkinEntry implements ICopy {
 	public String cape;
 	public String model;//1.12.2 and below seems to only support alex empty or default
 	public String elytra;//elytra can have it's own texture separate from the cape texture
+	public Map<String, String> meta;
 	public boolean isEmpty;
 	
 	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String model, String elytra)
@@ -26,6 +30,7 @@ public class SkinEntry implements ICopy {
 		this.cape =   JavaUtil.safeString(cape);
 		this.model =  JavaUtil.safeString(model);
 		this.elytra = JavaUtil.safeString(elytra);
+		this.meta = new HashMap(1);
 	}
 	
 	public SkinEntry(JSONObject json)
@@ -72,7 +77,9 @@ public class SkinEntry implements ICopy {
 	
 	public static SkinEntry emptySkin(String uuid, String user)
 	{
-		return new SkinEntry(uuid, user, System.currentTimeMillis(), "", "", "", "");
+		SkinEntry e = new SkinEntry(uuid, user, System.currentTimeMillis(), "", "", "", "");
+		e.isEmpty = true;
+		return e;
 	}
 	
 	/**
