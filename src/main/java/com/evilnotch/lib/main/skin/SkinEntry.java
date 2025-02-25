@@ -35,9 +35,9 @@ public class SkinEntry implements ICopy {
 		this.cape =   JavaUtil.safeString(cape);
 		this.model =  JavaUtil.safeString(model);
 		this.elytra = JavaUtil.safeString(elytra);
-		this.meta = new HashMap(1);
 		if(jmeta != null)
 		{
+			this.meta = new HashMap(jmeta.size() + 2);
 			for(Object k : jmeta.keySet())
 			{
 				String key = (String) k;
@@ -46,6 +46,8 @@ public class SkinEntry implements ICopy {
 				this.meta.put(key, jmeta.getString(key));
 			}
 		}
+		else
+			this.meta = new HashMap(1);
 	}
 	
 	public SkinEntry(JSONObject json)
