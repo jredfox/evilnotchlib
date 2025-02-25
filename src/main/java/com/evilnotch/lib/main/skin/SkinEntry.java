@@ -22,6 +22,11 @@ public class SkinEntry implements ICopy {
 	
 	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String model, String elytra)
 	{
+		this(uuid, username, cacheTime, skin, cape, model, elytra, null);
+	}
+	
+	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String model, String elytra, JSONObject jmeta)
+	{
 		this.uuid = uuid.replace("-", "");
 		this.user = username.toLowerCase();
 		this.isEmpty = this.uuid.isEmpty() && this.user.isEmpty();
@@ -31,11 +36,21 @@ public class SkinEntry implements ICopy {
 		this.model =  JavaUtil.safeString(model);
 		this.elytra = JavaUtil.safeString(elytra);
 		this.meta = new HashMap(1);
+		if(jmeta != null)
+		{
+			for(Object k : jmeta.keySet())
+			{
+				String key = (String) k;
+				if(key.equals("model"))
+					continue;//Skip default vanilla model
+				this.meta.put(key, jmeta.getString(key));
+			}
+		}
 	}
 	
 	public SkinEntry(JSONObject json)
 	{
-		this(json.getString("uuid"), json.getString("user"), json.getLong("cacheTime"), json.getString("skin"),  json.getString("cape"), json.getString("model"), json.getString("elytra"));
+		this(json.getString("uuid"), json.getString("user"), json.getLong("cacheTime"), json.getString("skin"),  json.getString("cape"), json.getString("model"), json.getString("elytra"), json.getJSONObject("meta"));
 	}
 	
 	public JSONObject serialize()
@@ -48,6 +63,18 @@ public class SkinEntry implements ICopy {
 		json.put("cape", this.cape);
 		json.put("model", this.model);
 		json.put("elytra", this.elytra);
+		if(!this.meta.isEmpty())
+		{
+			JSONObject meta = new JSONObject();
+			for(Map.Entry<String, String> p : this.meta.entrySet())
+			{
+				String key = p.getKey();
+				if(key.equals("model"))
+					continue;//Skip default vanilla model
+				meta.put(key, p.getValue());
+			}
+			json.put("meta", meta);
+		}
 		return json;
 	}
 	
@@ -61,11 +88,12 @@ public class SkinEntry implements ICopy {
 			JSONObject decoded = JavaUtil.toJsonFrom64(base64payload);
 			JSONObject textures = decoded.getJSONObject("textures");
 			JSONObject jskin = textures.getJSONObject("SKIN");
+			JSONObject jmeta = jskin.getJSONObject("metadata");
 			String skin = jskin.getString("url");
-			String model = jskin.containsKey("metadata") ? jskin.getJSONObject("metadata").getString("model") : "";
+			String model = jmeta != null ? jmeta.getString("model") : "";
 			String cape = textures.containsKey("CAPE") ? textures.getJSONObject("CAPE").getString("url") : "";
 			String elytra = textures.containsKey("ELYTRA") ? textures.getJSONObject("ELYTRA").getString("url") : "";
-			SkinEntry entry = new SkinEntry(uuid, user, System.currentTimeMillis(), skin, cape, model, elytra);
+			SkinEntry entry = new SkinEntry(uuid, user, System.currentTimeMillis(), skin, cape, model, elytra, jmeta);
 			return entry;
 		}
 		catch(Exception e)
@@ -90,6 +118,7 @@ public class SkinEntry implements ICopy {
 	{
 		SkinEntry s = new SkinEntry(this.uuid, this.user, this.cacheTime, this.skin, this.cape, this.model, this.elytra);
 		s.isEmpty = this.isEmpty;
+		s.meta.putAll(this.meta);
 		return s;
 	}
 	
@@ -108,6 +137,10 @@ public class SkinEntry implements ICopy {
 		
 		//add the player model seems to only support alex (slim)
 		JSONObject meta = new JSONObject();
+		//add all custom metadata into the payload
+		for(Map.Entry<String, String> entry : this.meta.entrySet())
+			meta.put(entry.getKey(), entry.getValue());
+		//add the model into the payload overriding custom metadata as they are suppose to use the SkinCache API not a metadata system
 		meta.put("model", this.hasModel() ? this.model : "default");
 		jskin.put("metadata", meta);
 		
