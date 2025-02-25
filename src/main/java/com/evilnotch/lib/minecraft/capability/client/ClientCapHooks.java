@@ -177,7 +177,6 @@ public class ClientCapHooks {
 	{
 		Map<ResourceLocation, IClientCap> caps = others.get(uuid);
 		if(caps == null) {
-			System.err.println("Error Invalid Update IClientCaps UUID:" + uuid);
 			caps = new HashMap();
 			others.put(uuid, caps);
 		}

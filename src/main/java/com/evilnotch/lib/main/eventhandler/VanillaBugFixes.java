@@ -7,6 +7,7 @@ import java.util.WeakHashMap;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
+import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.event.PickEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.BlockDataEvent;
 import com.evilnotch.lib.minecraft.event.tileentity.TileDataEvent;
@@ -74,11 +75,15 @@ public class VanillaBugFixes {
 		}
 		
 		//Download You to Others
-		NetWorkHandler.INSTANCE.sendToAll(new PCCapDownload((EntityPlayerMP) e.player));
+		if(!ClientCapHooks.getLoginCap((EntityPlayerMP) e.player).getClientCaps().hasNoTags())
+			NetWorkHandler.INSTANCE.sendToAll(new PCCapDownload((EntityPlayerMP) e.player));
 		
 		//Download Other players to you
 		for(EntityPlayerMP o : e.player.getServer().getPlayerList().getPlayers())
-			NetWorkHandler.INSTANCE.sendTo(new PCCapDownload(o), (EntityPlayerMP) e.player);
+		{
+			if(!ClientCapHooks.getLoginCap(o).getClientCaps().hasNoTags())
+				NetWorkHandler.INSTANCE.sendTo(new PCCapDownload(o), (EntityPlayerMP) e.player);
+		}
 	}
 	
 	/**
