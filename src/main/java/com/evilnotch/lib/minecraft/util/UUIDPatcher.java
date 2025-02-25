@@ -70,8 +70,8 @@ public class UUIDPatcher {
 	public static GameProfile patch(NetHandlerLoginServer net)
 	{
 		GameProfile profile = patch(net.loginGameProfile, false);
-		patchSkin(profile, net.skindata, true);
 		setLoginHooks(profile, net.evlNBT);
+		patchSkin(profile, net.skindata, true);
 		return profile;
 	}
 	
