@@ -59,7 +59,7 @@ public class UUIDPatcher {
 
 	public static GameProfile patchCheck(GameProfile profile)
 	{
-		return profile instanceof EvilGameProfile ? profile : patch(profile);
+		return profile instanceof EvilGameProfile ? profile : patch(profile, true);
 	}
 	
 	public static GameProfile patch(GameProfile old) 
@@ -176,6 +176,14 @@ public class UUIDPatcher {
 		playerIn.readFromNBT(nbt);
 		ForgeEventFactory.firePlayerLoadingEvent(playerIn, list.playerDataManager, playerIn.getCachedUniqueIdString());
 		return nbt;
+	}
+	
+	/**
+	 * Updates a Skin BaseCode64 Texture Payload into the GameProfile
+	 */
+	public static void patchSkin(GameProfile profile, String payload)
+	{
+		patchSkin(profile, payload, false);
 	}
 	
 	/**

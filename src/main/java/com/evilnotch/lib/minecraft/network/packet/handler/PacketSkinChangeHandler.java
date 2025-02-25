@@ -25,7 +25,7 @@ public class PacketSkinChangeHandler extends MessegeBase<PacketSkinChange> {
 		{
 			if(!SkinCache.isSkinEmpty(message.payload))
 			{
-				UUIDPatcher.patchSkin(p.getGameProfile(), message.payload, false);
+				UUIDPatcher.patchSkin(p.getGameProfile(), message.payload);
 				VanillaBugFixes.syncSkin(p);
 			}
 		});

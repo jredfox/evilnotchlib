@@ -672,6 +672,40 @@ public class SkinCache {
 		props.put("textures", new EvilProperty("textures", skindata));
 	}
 	
+	/**
+	 * Safe Method for Setting the SkinData in case the SkinData is null or empty
+	 * Use {@link #setEncode(PropertyMap, SkinEntry)} Instead
+	 */
+	@Deprecated
+	public static void setSkin(PropertyMap props, String encode) 
+	{
+		if(!SkinCache.isSkinEmpty(encode))
+		{
+			setEncode(props, encode);
+		}
+	}
+	
+	/**
+	 * Use {@link #setEncode(PropertyMap, SkinEntry)} Instead
+	 */
+	@Deprecated
+	public static void setEncode(PropertyMap props, String encode) 
+	{
+		String prev = getEncode(props);
+		String skindata = null;
+		if(prev != null)
+		{
+			JSONObject prevJSON = JavaUtil.toJsonFrom64(prev);
+			JSONObject skinJSON = JavaUtil.toJsonFrom64(encode);
+			prevJSON.merge(skinJSON);
+			skindata = JavaUtil.toBase64(prevJSON.toString());
+		}
+		else
+			skindata = encode;
+		props.removeAll("textures");
+		props.put("textures", new EvilProperty("textures", skindata));
+	}
+	
 	public static boolean isSkinEmpty(String payload) 
 	{
 		return payload == null || payload.isEmpty();
