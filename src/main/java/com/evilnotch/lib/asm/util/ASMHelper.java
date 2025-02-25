@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -112,14 +113,15 @@ public class ASMHelper
 	 */
 	public static MethodNode getCachedMethodNode(String inputStream, String obMethod, String method_desc) throws IOException 
 	{
-		if(cacheNodes.get().containsKey(inputStream))
+		Map<String,ClassNode> cache = cacheNodes.get();
+		if(cache.containsKey(inputStream))
 		{
-			ClassNode node = cacheNodes.get().get(inputStream);
+			ClassNode node = cache.get(inputStream);
 			return getMethodNode(node,obMethod,method_desc);
 		}
 		InputStream stream = ASMHelper.class.getClassLoader().getResourceAsStream(inputStream);
 		ClassNode node = getClassNode(stream);
-		cacheNodes.get().put(inputStream, node);
+		cache.put(inputStream, node);
 		return getMethodNode(node,obMethod,method_desc);
 	}
 	

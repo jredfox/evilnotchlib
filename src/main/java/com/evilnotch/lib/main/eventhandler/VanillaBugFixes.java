@@ -74,15 +74,17 @@ public class VanillaBugFixes {
 			}
 		}
 		
+		EntityPlayerMP p = (EntityPlayerMP) e.player;
+		
 		//Download You to Others
 		if(!ClientCapHooks.getLoginCap((EntityPlayerMP) e.player).getClientCaps().hasNoTags())
-			NetWorkHandler.INSTANCE.sendToAll(new PCCapDownload((EntityPlayerMP) e.player));
+			NetWorkHandler.INSTANCE.sendToAll(new PCCapDownload(p));
 		
 		//Download Other players to you
 		for(EntityPlayerMP o : e.player.getServer().getPlayerList().getPlayers())
 		{
 			if(!ClientCapHooks.getLoginCap(o).getClientCaps().hasNoTags())
-				NetWorkHandler.INSTANCE.sendTo(new PCCapDownload(o), (EntityPlayerMP) e.player);
+				NetWorkHandler.INSTANCE.sendTo(new PCCapDownload(o), p);
 		}
 	}
 	
