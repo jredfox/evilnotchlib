@@ -17,7 +17,6 @@ public class SkinEntryUUID extends SkinEntry {
 		JSONObject json = new JSONObject();
 		json.put("profileId", this.uuid);
 		json.put("profileName", this.user);
-		json.put("signatureRequired", false);
 		return json;
 	}
 	
