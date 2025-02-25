@@ -492,18 +492,14 @@ public class GeneralTransformer {
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("tryAcceptPlayer", "func_147326_c").toString(), "()V");
 		String loginGameProfile = new MCPSidedString("loginGameProfile", "field_147337_i").toString();
 		
-		InsnList list = new InsnList();
-		
 		//this.loginGameProfile = UUIDPatcher.patch(this);
+		InsnList list = new InsnList();
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/util/UUIDPatcher", "patch", "(Lnet/minecraft/server/network/NetHandlerLoginServer;)Lcom/mojang/authlib/GameProfile;", false));
 		list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/server/network/NetHandlerLoginServer", loginGameProfile, "Lcom/mojang/authlib/GameProfile;"));
-		list.add(new LabelNode());
 		
 		AbstractInsnNode spot = ASMHelper.prevLineNumberNode(ASMHelper.getTypeInsnNode(m, new TypeInsnNode(Opcodes.NEW, "net/minecraft/network/login/server/SPacketLoginSuccess")));
-		if(spot.getNext() instanceof FrameNode)
-			spot = spot.getNext();
 		m.instructions.insert(spot, list);
 		
 		//this.skindata = packetIn.skindata;
