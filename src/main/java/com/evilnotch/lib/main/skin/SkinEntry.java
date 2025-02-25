@@ -105,13 +105,12 @@ public class SkinEntry implements ICopy {
 		json.put("textures", textures);
 		
 		JSONObject jskin = new JSONObject();
+		
 		//add the player model seems to only support alex (slim)
-		if(this.hasModel())
-		{
-			JSONObject meta = new JSONObject();
-			meta.put("model", this.model);
-			jskin.put("metadata", meta);
-		}
+		JSONObject meta = new JSONObject();
+		meta.put("model", this.hasModel() ? this.model : "default");
+		jskin.put("metadata", meta);
+		
 		jskin.put("url", this.skin);
 		textures.put("SKIN", jskin);
 		
