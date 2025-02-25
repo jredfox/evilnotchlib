@@ -29,6 +29,7 @@ import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
 
 public class EntityTransformer implements IClassTransformer{
 	
@@ -135,7 +136,7 @@ public class EntityTransformer implements IClassTransformer{
                 break;
                 
                 case 13:
-                	ASMHelper.pubMinusFinal(classNode, true);
+                	patchSkinManager3(classNode);
                 break;
                 
                 case 14:
@@ -282,6 +283,13 @@ public class EntityTransformer implements IClassTransformer{
 		run.instructions.insert(spot, li);
 		
 	}
+	
+	private static volatile String skinThisZero;
+	private void patchSkinManager3(ClassNode classNode)
+	{
+    	ASMHelper.pubMinusFinal(classNode, true);
+    	skinThisZero = ASMHelper.getThisParentField(classNode, "Lnet/minecraft/client/resources/SkinManager;", "field_152802_d");
+	}
 
 	public void patchSkinManager3M1(ClassNode classNode)
 	{
@@ -329,6 +337,22 @@ public class EntityTransformer implements IClassTransformer{
 			}
 			else if(ab instanceof LabelNode)
 				break;
+		}
+		if (thiszero == null) 
+		{
+			if (skinThisZero == null) 
+			{
+				try 
+				{
+					System.err.println("SkinManager$3$1 Unable to find this$1.this$0 Hotloading SkinManager$3 to know what this$0 is!");
+					Class.forName("net.minecraft.client.resources.SkinManager$3", false, Launch.classLoader);
+				} 
+				catch (Throwable e) 
+				{
+					e.printStackTrace();
+				}
+			}
+			thiszero = skinThisZero == null ? "this$0" : skinThisZero;
 		}
 		if(ConfigCore.dumpASM)
 		{
