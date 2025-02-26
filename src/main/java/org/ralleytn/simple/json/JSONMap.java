@@ -49,6 +49,12 @@ public class JSONMap extends LinkedHashMap<Object, Object>{
 		super.putAll(map);
 	}
 	
+	@Override
+	public Object get(Object key)
+	{
+		return super.get(String.valueOf(key));
+	}
+	
 	public Long getLong(Object key)
 	{
 		return JavaUtil.getLong((Number)this.get((String) key));
