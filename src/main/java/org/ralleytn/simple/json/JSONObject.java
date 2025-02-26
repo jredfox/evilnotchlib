@@ -19,7 +19,7 @@ import com.evilnotch.lib.util.simple.ICopy;
  * A JSON object. Key value pairs are ordered. JSONObject supports java.util.Map interface.
  * 
  * @author FangYidong<fangyidong@yahoo.com.cn>
- * @author jredfox -fixes<dragonofthelakeabcd@gmail.com>
+ * @author jredfox -fixes https://github.com/jredfox
  */
 public class JSONObject extends JSONMap implements ICopy {
 	
