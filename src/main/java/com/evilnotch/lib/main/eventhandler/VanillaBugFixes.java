@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
-import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
