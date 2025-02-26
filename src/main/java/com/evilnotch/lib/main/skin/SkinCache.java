@@ -555,8 +555,6 @@ public class SkinCache {
 	public static SkinCache INSTANCE;
 	public static void init() 
 	{
-		offlineInit();
-		
 		if(!Config.skinCache)
 			return;
 		long ms = System.currentTimeMillis();
@@ -566,44 +564,6 @@ public class SkinCache {
 		INSTANCE.start();
 		INSTANCE.refreshClientSkin();
 		JavaUtil.printTime(ms, "Skin Cache Took:");
-	}
-	
-	private static volatile SkinEntry ofSkin;
-	public static void offlineInit() 
-	{
-		if(Config.skinCache || !Config.skinCacheOfflineFix || !MainJava.proxy.isClient())
-			return;//SkinCache's OfflineFix is made for when SkinCache is disabled and you still want offline skins when your other skin mod doesn't provide it
-
-		//Create the Offline SkinCache and download the client's on another thread to prevent lag
-		Thread t = new Thread(()->
-		{
-			SkinCache of = new SkinCache();
-			of.load();
-			ofSkin = of.getOrDownload(MainJava.proxy.getUsername(), true);
-			of.save();
-		});
-		t.setDaemon(true);
-		t.start();
-		
-		//On Minecraft's First tick fix Minecraft#profileProperties with the cached skin
-		Thread t2 = new Thread(()->
-		{
-			MainJava.proxy.addScheduledTask(()->
-			{
-				while(ofSkin == null)
-					JavaUtil.sleep(1L);
-				
-				PropertyMap props = MainJava.proxy.getProperties();
-				if(!ofSkin.isEmpty && SkinCache.isSkinEmpty(SkinCache.getEncode(props)))
-				{
-					SkinCache.setEncode(props, ofSkin);
-					//Sync Vanilla's Properties to Forge's Could cause incompatibilities however all they would have to do is use Minecraft#profileProperties instead of forge's for compat especially since forge's is an un-reliable cache that uses vanilla profiles
-					VanillaBugFixes.fixMcProfileProperties();
-				}
-			});
-		});
-		t2.setDaemon(true);
-		t2.start();
 	}
 
 	public static class EvilProperty extends Property
@@ -627,7 +587,7 @@ public class SkinCache {
 	 */
 	public static String getEncodeLogin()
 	{
-		return Config.skinCache ? SkinCache.INSTANCE.selected.encode() : (Config.skinCacheOfflineFix ? SkinCache.getEncodeSafe(MainJava.proxy.getProperties()) : "");
+		return Config.skinCache ? SkinCache.INSTANCE.selected.encode() : "";
 	}
 	
 	public static String getEncodeSafe(PropertyMap map) 
