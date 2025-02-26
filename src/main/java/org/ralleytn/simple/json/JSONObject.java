@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.ralleytn.simple.json.internal.Util;
@@ -83,20 +84,33 @@ public class JSONObject extends JSONMap implements ICopy {
 	/**
 	 * @return a new {@linkplain JSONObject} without any {@code null} values
 	 * @since 1.1.0
+	 * @jredfox made java 7 compliant without changing faulty behavior. It still won't copy JSONObject / JSONArray and be the same actual objects as before. It also won't recurse compact
 	 */
 	public JSONObject compact() {
 		
 		JSONObject object = new JSONObject();
-		
-		this.forEach((key, value) -> {
-			
-			if(value != null) {
-				
-				object.put(key, value);
-			}
-		});
+		for(Map.Entry<Object, Object> e : this.entrySet())
+		{
+			Object value = e.getValue();
+			if(value != null)
+				object.put(e.getKey(), value);
+		}
 		
 		return object;
+	}
+	
+	/**
+	 * Removes any {@code null} values from the current JSONObject without recurse
+	 * @jredfox added method to remove null keys without a need for a new JSONObject. Still no recurse support as interaction between JSONArray JSONObject are not easily explainable on how it should behave
+	 */
+	public void compactValues()
+	{
+		Iterator<Object> it = this.values().iterator();
+		while(it.hasNext())
+		{
+			if(it.next() == null)
+				it.remove();
+		}
 	}
 	
 	public void merge(JSONObject other)
@@ -169,6 +183,7 @@ public class JSONObject extends JSONMap implements ICopy {
 	 * @param rootName the name of the root element
 	 * @return this JSON Object in XML
 	 * @since 1.1.0
+	 * @jredfox made java 7 compliant
 	 */
 	public String toXML(String rootName) {
 		
@@ -178,26 +193,30 @@ public class JSONObject extends JSONMap implements ICopy {
 		builder.append(rootName);
 		builder.append('>');
 		
-		this.forEach((key, value) -> {
-			
-			       if(value instanceof JSONObject) {builder.append(((JSONObject)value).toXML(key.toString()));
-			} else if(value instanceof JSONArray)  {builder.append(((JSONArray)value).toXML(key.toString()));
+		for (Map.Entry<Object, Object> e : this.entrySet()) {
+			Object key = e.getKey();
+			Object value = e.getValue();
+
+			if (value instanceof JSONObject) {
+				builder.append(((JSONObject) value).toXML(key.toString()));
+			} else if (value instanceof JSONArray) {
+				builder.append(((JSONArray) value).toXML(key.toString()));
 			} else {
-				
+
 				builder.append('<');
 				builder.append(key);
 				builder.append('>');
-				
-				if(value != null) {
-					
+
+				if (value != null) {
+
 					builder.append(String.valueOf(value));
 				}
-				
+
 				builder.append("</");
 				builder.append(key);
 				builder.append('>');
 			}
-		});
+		}
 		
 		builder.append("</");
 		builder.append(rootName);
