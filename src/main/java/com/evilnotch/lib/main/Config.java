@@ -32,7 +32,6 @@ public class Config {
 	public static long stopSteveMs = 2800;
 	public static long stopSteveOtherMs = 280;
 	public static boolean skinPacketSmooth = true;
-	public static boolean skinLowBandwidth = false;
 	
 	/**
 	 * list of domains that are not acceptable
@@ -70,7 +69,6 @@ public class Config {
 		stopSteveMs = config.get("skins", "stopSteveMs", (int)stopSteveMs).getInt();
 		stopSteveOtherMs = config.get("skins", "stopSteveOtherMs", (int)stopSteveOtherMs).getInt();
 		skinPacketSmooth = config.get("skins", "skinCachePacketSmooth", skinPacketSmooth).getBoolean();
-		skinLowBandwidth = config.get("skins", "skinCachePacketLowBandwidth", skinLowBandwidth).getBoolean();
 		if(!ConfigCore.asm_stopSteve && skinPacketSmooth)
 			throw new RuntimeException("IStopSteve#skinUnAvailable ASM Hook is Needed for Config#skinPacketSmooth to Work Properly!");
 		

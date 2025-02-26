@@ -93,10 +93,7 @@ public class VanillaBugFixes {
 	 */
 	public static void syncSkin(EntityPlayerMP player)
 	{
-		if(Config.skinLowBandwidth)
-			NetWorkHandler.INSTANCE.sendToTrackingAndPlayer(new PacketSkin(player), player);
-		else
-			NetWorkHandler.INSTANCE.sendToAll(new PacketSkin(player));
+		NetWorkHandler.INSTANCE.sendToAll(new PacketSkin(player));
 	}
 	
 	/**
@@ -146,8 +143,6 @@ public class VanillaBugFixes {
 		EntityPlayerMP targ = (EntityPlayerMP) e.getTarget();
 		NetWorkHandler.INSTANCE.sendTo(new PacketYawHead(targ.getRotationYawHead(),targ.getEntityId()), (EntityPlayerMP)e.getEntityPlayer());
 		NetWorkHandler.INSTANCE.sendTo(new PCCapDownload(targ), (EntityPlayerMP) e.getEntityPlayer());
-		if(Config.skinCache && Config.skinLowBandwidth)
-			NetWorkHandler.INSTANCE.sendTo(new PacketSkin(targ), (EntityPlayerMP) e.getEntityPlayer());
 	}
 	
 	@SubscribeEvent(priority=EventPriority.HIGH)
