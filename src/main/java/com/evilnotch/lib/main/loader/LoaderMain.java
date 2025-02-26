@@ -122,7 +122,7 @@ public class LoaderMain {
 		MainJava.proxy.preinit(e);
 		
 		GeneralRegistry.load();
-		GeneralRegistry.registerGameRule("PlayerLvlDAT", true);
+		GeneralRegistry.registerGameRule("PlayerLvlDAT", Config.playerLvlDat);
 		loadEvents();
 		CapabilityRegistry.registerRegistry(new CapRegDefaultHandler());
 	}

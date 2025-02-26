@@ -21,6 +21,7 @@ public class Config {
 	public static boolean seedDisplay = true;
 	public static boolean unloadDimensions = false;
 	public static boolean unloadDimOverride = true;
+	public static boolean playerLvlDat = true;
 	public static boolean UUIDCrashOnFailure = true;
 	
 	//start skin fixes
@@ -58,6 +59,7 @@ public class Config {
 		seedDisplay = config.get("general", "seedF3", true).getBoolean();
 		unloadDimensions = config.get("general", "unloadDimensions", unloadDimensions).getBoolean();
 		unloadDimOverride = config.get("general", "unloadDimensionsOverride", unloadDimOverride, "This Requires unloadDimensions to be true! Overrides DimensionManager#keepLoaded. Disable this if Issues Occur").getBoolean();
+		playerLvlDat = config.get("general", "playerLvlDat", playerLvlDat, "The Default GameRule Value of PlayerLVLDat When creating a new world. When the gamerule is false The new player won't recieve the old players data from level.dat").getBoolean();
 		UUIDCrashOnFailure = config.get("general", "UUIDPatcherCrashOnFailure", UUIDCrashOnFailure, "Disable This if there are more then Forge's FakePlayer in your Modpack").getBoolean();
 		
 		allowskintrans = config.get("skins", "allowSkinTransparency", allowskintrans).getBoolean();

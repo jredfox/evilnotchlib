@@ -38,8 +38,8 @@ public class UUIDPatcher {
     		String err = "WorldDir is NULL! Cannot Patch UUID:" + old.getId() + " for User:" + old.getName();
     		if(Config.UUIDCrashOnFailure)
     			throw new RuntimeException(err);
-    		else
-    			System.err.println(err);
+    		
+    		System.err.println(err);
     		return old;
     	}
     	
