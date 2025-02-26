@@ -346,9 +346,9 @@ public class EntityTransformer implements IClassTransformer{
 					System.err.println("SkinManager$3$1 Unable to find this$1.this$0 Hotloading SkinManager$3 to know what this$0 is!");
 					Class.forName("net.minecraft.client.resources.SkinManager$3", false, this.getClass().getClassLoader());
 				} 
-				catch (Throwable e) 
+				catch (Throwable t) 
 				{
-					e.printStackTrace();
+					t.printStackTrace();
 				}
 			}
 			thiszero = skinThisZero == null ? "this$0" : skinThisZero;
