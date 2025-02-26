@@ -29,7 +29,6 @@ public class Config {
 	public static boolean skinCacheOfflineFix = true;
 	public static int skinCacheHours = 48;
 	public static int skinCacheFast = 20;
-	public static long skinCacheMs = 1800;
 	public static boolean stopSteve = true;
 	public static long stopSteveMs = 2800;
 	public static long stopSteveOtherMs = 280;
@@ -68,7 +67,6 @@ public class Config {
 		skinCacheOfflineFix = config.get("skins", "skinCacheOfflineFix", skinCacheOfflineFix).getBoolean();
 		skinCacheHours = config.get("skins", "skinCacheMaxHours", skinCacheHours).getInt();
 		skinCacheFast = config.get("skins", "skinCacheFastMinutes", skinCacheFast).getInt();
-		skinCacheMs = config.get("skins", "skinCacheClockMs", (int)skinCacheMs).getInt();
 		skinDomains = config.getStringList("skinDomains", "skins", skinDomains, "Domain files must hash the file name or the clients will always assume the skin is up to date");
 		stopSteve = config.get("skins", "stopSteve", stopSteve).getBoolean();
 		stopSteveMs = config.get("skins", "stopSteveMs", (int)stopSteveMs).getInt();

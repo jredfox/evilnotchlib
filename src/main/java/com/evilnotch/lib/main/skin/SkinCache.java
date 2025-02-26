@@ -324,7 +324,7 @@ public class SkinCache {
 					if(this.running)
 					{
 						this.paused = true;
-						long ms = Config.skinCacheMs;
+						long ms = 1800;
 						while(this.paused && ms > 0L)
 						{
 							long z = Math.min(ms, 200L);
