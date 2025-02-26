@@ -31,19 +31,15 @@ public class JSONMap extends LinkedHashMap<Object, Object>{
 	@Override
 	public Object put(Object key, Object value)
 	{
-		if(key == null)
-			throw new NullPointerException("JSONObject keys cannot be null!");
 		value = JSONUtil.getValidJsonValue(value);
-		return super.put((String) key, value);
+		return super.put(String.valueOf(key), value);
 	}
 
 	@Override
 	public Object putIfAbsent(Object key, Object value)
 	{
-		if(key == null)
-			throw new NullPointerException("JSONObject keys cannot be null!");
 		value = JSONUtil.getValidJsonValue(value);
-		return super.putIfAbsent((String) key, value);
+		return super.putIfAbsent(String.valueOf(key), value);
 	}
 	
 	@Override

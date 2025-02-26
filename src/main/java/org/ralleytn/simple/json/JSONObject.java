@@ -84,7 +84,8 @@ public class JSONObject extends JSONMap implements ICopy {
 	/**
 	 * @return a new {@linkplain JSONObject} without any {@code null} values
 	 * @since 1.1.0
-	 * @jredfox made java 7 compliant without changing faulty behavior. It still won't copy JSONObject / JSONArray and be the same actual objects as before. It also won't recurse compact
+	 * @jredfox made java 7 compliant without recurse option. 
+	 * @jredfox All JSONObject and JSONArray children will be copied to prevent unintended or undefined behavior
 	 */
 	public JSONObject compact() {
 		
@@ -93,7 +94,7 @@ public class JSONObject extends JSONMap implements ICopy {
 		{
 			Object value = e.getValue();
 			if(value != null)
-				object.put(e.getKey(), value);
+				object.put(e.getKey(), value instanceof ICopy ? ((ICopy) value).copy() : value);
 		}
 		
 		return object;
