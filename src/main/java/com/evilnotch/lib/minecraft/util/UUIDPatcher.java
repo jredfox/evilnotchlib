@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
+import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.auth.FakeGameProfile;
@@ -191,6 +192,11 @@ public class UUIDPatcher {
 	 */
 	public static void patchSkin(GameProfile profile, String payload, boolean login)
 	{
+		if(!Config.skinCache)
+		{
+			SkinCache.setUUIDEncode(profile);
+			return;
+		}
 		SkinEvent.GameProfileEvent e = new SkinEvent.GameProfileEvent(profile, payload, login);
 		MinecraftForge.EVENT_BUS.post(e);
 		e.update();
