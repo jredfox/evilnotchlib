@@ -42,7 +42,7 @@ public class Config {
 	 * blacklist of entities that are not allowed even though no exceptions are thrown
 	 */
 	public static List<ResourceLocation> cacheEntNamesDeny = new ArrayList();
-	public static String[] skinDomains = new String[]{".minecraft.net", ".mojang.com", "crafatar.com"};
+	public static String[] skinDomains = new String[]{".minecraft.net", ".mojang.com", "crafatar.com", "www.minecraftskins.com", "minecraft.novaskin.me"};
 	public static List<Class> multiparts = new ArrayList();
 
 	

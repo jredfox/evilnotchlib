@@ -1,5 +1,6 @@
 package com.evilnotch.lib.minecraft.proxy;
 
+import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.UUID;
 
@@ -78,6 +79,7 @@ public class ServerProxy {
 	public void d(float height) {}
 	public boolean isClient(UUID id) {return false;}
 	public PropertyMap getProperties() {return new PropertyMap();}
+	public void dlHook(HttpURLConnection httpurlconnection) {}
 	
 	
 }

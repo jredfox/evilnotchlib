@@ -1,5 +1,7 @@
 package com.evilnotch.lib.minecraft.proxy;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,6 +37,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerLoginClient;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,6 +48,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Session;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.crashy.Crashy;
 
 public class ClientProxy extends ServerProxy{
 	
@@ -349,4 +353,18 @@ public class ClientProxy extends ServerProxy{
 		if(map.containsKey(Type.ELYTRA))
 			((SkinManager)s).loadSkin( ((Map<Type, MinecraftProfileTexture>)map).get(Type.ELYTRA), Type.ELYTRA, (SkinAvailableCallback) callback);
 	}
+	
+	@Override
+	public void dlHook(HttpURLConnection con) 
+	{
+		if(con.getURL() == null) 
+			return;
+		
+		String host = con.getURL().getHost();
+		
+		//only apply User-Agent for non Mojang Skin Domains
+		if(!host.endsWith(".minecraft.net") && !host.endsWith(".mojang.com"))
+			con.setRequestProperty("User-Agent", "Mozilla");
+	}
+	
 }

@@ -242,7 +242,18 @@ public class EntityTransformer implements IClassTransformer{
 		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinTexture", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;"));
 		list.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "noSkin", "(ILjava/lang/Object;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Ljava/lang/Object;)V", false));
 
-		run.instructions.insert(ASMHelper.getFirstMethodInsn(run, Opcodes.INVOKEVIRTUAL, "java/net/HttpURLConnection", "connect", "()V", false), list);
+		AbstractInsnNode connectSpot = ASMHelper.getFirstMethodInsn(run, Opcodes.INVOKEVIRTUAL, "java/net/HttpURLConnection", "connect", "()V", false);
+		run.instructions.insert(connectSpot, list);
+		
+		//MainJava.proxy.dlHook(connection);
+		InsnList la = new InsnList();
+		la.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
+		la.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		la.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "dlHook", "(Ljava/net/HttpURLConnection;)V", false));
+		la.add(new LabelNode());
+		
+		AbstractInsnNode spotAgent = ASMHelper.prevVarInsnNode(connectSpot, new VarInsnNode(Opcodes.ASTORE, 1));
+		run.instructions.insert(spotAgent, la);
 		
 		//inject noSkin call into the exception
 		InsnList li = new InsnList();

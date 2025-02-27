@@ -1032,5 +1032,17 @@ public class ASMHelper
 		}
 		JavaUtil.printTime(ms, "Batch Loading Took:");
 	}
+
+	public static VarInsnNode prevVarInsnNode(AbstractInsnNode start, VarInsnNode var) 
+	{
+		AbstractInsnNode n = start;
+		while(n != null)
+		{
+			n = n.getPrevious();
+			if(n instanceof VarInsnNode && equals((VarInsnNode) n, var))
+				return (VarInsnNode) n;
+		}
+		return null;
+	}
 	
 }
