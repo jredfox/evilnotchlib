@@ -220,15 +220,18 @@ public class EntityTransformer implements IClassTransformer{
 		MethodNode run = ASMHelper.getMethodNode(classNode, "run", "()V");
 		AbstractInsnNode connectSpot = ASMHelper.getFirstMethodInsn(run, Opcodes.INVOKEVIRTUAL, "java/net/HttpURLConnection", "connect", "()V", false);
 		
-		//MainJava.proxy.dlHook(connection);
-		InsnList la = new InsnList();
-		la.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
-		la.add(new VarInsnNode(Opcodes.ALOAD, 1));
-		la.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "dlHook", "(Ljava/net/HttpURLConnection;)V", false));
-		la.add(new LabelNode());
-		
-		AbstractInsnNode spotAgent = ASMHelper.prevVarInsnNode(connectSpot, new VarInsnNode(Opcodes.ASTORE, 1));
-		run.instructions.insert(spotAgent, la);
+		if(ConfigCore.asm_skinURLHook)
+		{
+			//MainJava.proxy.dlHook(connection);
+			InsnList la = new InsnList();
+			la.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
+			la.add(new VarInsnNode(Opcodes.ALOAD, 1));
+			la.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/evilnotch/lib/minecraft/proxy/ServerProxy", "dlHook", "(Ljava/net/HttpURLConnection;)V", false));
+			la.add(new LabelNode());
+			
+			AbstractInsnNode spotAgent = ASMHelper.prevVarInsnNode(connectSpot, new VarInsnNode(Opcodes.ASTORE, 1));
+			run.instructions.insert(spotAgent, la);
+		}
 		
 		if(!ConfigCore.asm_stopSteve)
 			return;

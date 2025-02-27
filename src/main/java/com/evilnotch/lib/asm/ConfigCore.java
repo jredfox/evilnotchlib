@@ -20,6 +20,7 @@ public class ConfigCore {
 	public static boolean asm_FSFix = true;
 	public static boolean asm_patchLanSkins = true;
 	public static boolean asm_patchLanSkins429 = true;
+	public static boolean asm_skinURLHook = true;
 	public static boolean asm_stopSteve = true;
 	public static boolean asm_mouse_ears = true;
 	public static boolean asm_dinnerbone = true;
@@ -45,14 +46,15 @@ public class ConfigCore {
 		asm_setTileNBTFix = config.get("asm_debug","asm_setTileNBTItemBlockFix", true).getBoolean();
 		asm_middleClickEvent = config.get("asm_debug","asm_middleClickEvent", true).getBoolean();
 		asm_playermp = config.get("asm_debug","asm_playermp", true).getBoolean();
+		asm_patchLanSkins = config.get("asm_debug","asm_patchLanSkins", true).getBoolean();
+		asm_patchLanSkins429 = config.get("asm_debug","asm_patchLanSkins429", true).getBoolean();
 		
 		//ASM Config That Can Safely Be Turned Off with few Issues
 		asm_TranslationEvent = config.get("asm_safe_cfg","asm_dynamicTranslationEvent", true).getBoolean();
 		asm_enchantmentNameFix = config.get("asm_safe_cfg","asm_enchantmentNameFix", true).getBoolean();
 		asm_FSFix = config.get("asm_safe_cfg","asm_FSFix", true).getBoolean();
-		asm_patchLanSkins = config.get("asm_safe_cfg","asm_patchLanSkins", true).getBoolean();
-		asm_patchLanSkins429 = config.get("asm_safe_cfg","asm_patchLanSkins429", true).getBoolean();
 		asm_stopSteve = config.get("asm_safe_cfg", "asm_stopSteve", true).getBoolean();
+		asm_skinURLHook = config.get("asm_safe_cfg","asm_skinURLHook", true).getBoolean();
 		asm_mouse_ears = config.get("asm_safe_cfg", "asm_mouse_ears", true).getBoolean();
 		asm_dinnerbone = config.get("asm_safe_cfg", "asm_dinnerbone", true).getBoolean();
 		asm_teams = config.get("asm_safe_cfg", "asm_teams", true).getBoolean();
