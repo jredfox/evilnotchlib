@@ -88,6 +88,11 @@ public class SkinEvent extends Event {
 		}
 	}
 	
+	/**
+	 * Fires when {@link SkinCache#setEncode(com.mojang.authlib.properties.PropertyMap, SkinEntry)} and two skins are about to merge
+	 * Use this to clear tags that are not always expected to be present in the merger
+	 * @author jredfox
+	 */
 	public static class Merge extends Event
 	{
 		public JSONObject org;

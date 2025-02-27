@@ -214,6 +214,10 @@ public class JSONArray extends JSONArrayList implements ICopy {
 		return null;
 	}
 	
+	/**
+	 * Merge Two JSONArray with JSONObject support
+	 * @jredfox added merge
+	 */
 	public void merge(JSONArray other)
 	{
 		int tsize = this.size();
@@ -239,6 +243,9 @@ public class JSONArray extends JSONArrayList implements ICopy {
 		}
 	}
 	
+	/**
+	 * @jredfox copy of JSONArray and all of it's children
+	 */
 	@Override
 	public JSONArray copy()
 	{
@@ -253,6 +260,9 @@ public class JSONArray extends JSONArrayList implements ICopy {
 		return arr;
 	}
 	
+	/**
+	 * @jredfox Fixed equals
+	 */
 	@Override
 	public boolean equals(Object object) 
 	{

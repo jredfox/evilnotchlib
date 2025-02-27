@@ -114,6 +114,10 @@ public class JSONObject extends JSONMap implements ICopy {
 		}
 	}
 	
+	/**
+	 * Merge Two JSONObject with JSONArray support
+	 * @jredfox added merge
+	 */
 	public void merge(JSONObject other)
 	{
 		for(java.util.Map.Entry<Object, Object> entry : other.entrySet())
@@ -137,13 +141,10 @@ public class JSONObject extends JSONMap implements ICopy {
 			}
 		}
 	}
-
-	@Override
-	public boolean equals(Object o) 
-	{
-		return o instanceof JSONObject && this.size() == ((JSONObject)o).size() && super.equals(o);
-	}
 	
+	/**
+	 * @jredfox copy of JSONObject and all of it's children
+	 */
 	@Override
 	public JSONObject copy()
 	{
@@ -158,6 +159,15 @@ public class JSONObject extends JSONMap implements ICopy {
 				json.put(key, value);
 		}
 		return json;
+	}
+	
+	/**
+	 * @jredfox Fixed equals
+	 */
+	@Override
+	public boolean equals(Object o) 
+	{
+		return o instanceof JSONObject && this.size() == ((JSONObject)o).size() && super.equals(o);
 	}
 	
 	/**
