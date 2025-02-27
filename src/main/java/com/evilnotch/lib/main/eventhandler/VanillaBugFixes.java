@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 import com.evilnotch.lib.main.MainJava;
+import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.event.PickEvent;
@@ -14,7 +15,6 @@ import com.evilnotch.lib.minecraft.network.IgnoreTilePacket;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
 import com.evilnotch.lib.minecraft.network.packet.PCCapDownload;
 import com.evilnotch.lib.minecraft.network.packet.PCCapRem;
-import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketUUID;
 import com.evilnotch.lib.minecraft.network.packet.PacketYawHead;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
@@ -85,14 +85,6 @@ public class VanillaBugFixes {
 			if(!ClientCapHooks.getLoginCap(o).getClientCaps().hasNoTags())
 				NetWorkHandler.INSTANCE.sendTo(new PCCapDownload(o), p);
 		}
-	}
-	
-	/**
-	 * Sync your player skin with yourself and all players tracking you.
-	 */
-	public static void syncSkin(EntityPlayerMP player)
-	{
-		NetWorkHandler.INSTANCE.sendToAll(new PacketSkin(player));
 	}
 	
 	/**
@@ -215,6 +207,16 @@ public class VanillaBugFixes {
 			}
 		}
 		return cached;
+	}
+	
+	/**
+	 * WARNGING: this method is a re-direct to {@link SkinCache#syncSkin(EntityPlayerMP)}
+	 * This method may get removed in the near future
+	 */
+	@Deprecated
+	public static void syncSkin(EntityPlayerMP player)
+	{
+		SkinCache.syncSkin(player);
 	}
 
 }

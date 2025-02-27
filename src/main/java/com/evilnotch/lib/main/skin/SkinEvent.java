@@ -2,6 +2,8 @@ package com.evilnotch.lib.main.skin;
 
 import javax.annotation.Nullable;
 
+import org.ralleytn.simple.json.JSONObject;
+
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.mojang.authlib.GameProfile;
 
@@ -83,6 +85,18 @@ public class SkinEvent extends Event {
 			}
 			
 			SkinCache.setEncode(this.profile.getProperties(), this.skin);
+		}
+	}
+	
+	public static class Merge extends Event
+	{
+		public JSONObject org;
+		public JSONObject json;
+		
+		public Merge(JSONObject o, JSONObject j)
+		{
+			this.org =  o.getSafeJSONObject("textures");
+			this.json = j.getSafeJSONObject("textures");
 		}
 	}
 	

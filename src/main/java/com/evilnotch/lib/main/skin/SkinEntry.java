@@ -90,6 +90,12 @@ public class SkinEntry implements ICopy {
 			JSONObject decoded = JavaUtil.toJsonFrom64(base64payload);
 			JSONObject textures = decoded.getJSONObject("textures");
 			JSONObject jskin = textures.getJSONObject("SKIN");
+			if(jskin == null)
+			{
+				jskin = new JSONObject();
+				jskin.put("url", "");
+				textures.put("SKIN", jskin);
+			}
 			JSONObject jmeta = jskin.getJSONObject("metadata");
 			String skin = jskin.getString("url");
 			String model = jmeta != null ? jmeta.getString("model") : "";
@@ -142,9 +148,12 @@ public class SkinEntry implements ICopy {
 		//add all custom metadata into the payload
 		for(Map.Entry<String, String> entry : this.meta.entrySet())
 			meta.put(entry.getKey(), entry.getValue());
-		//add the model into the payload overriding custom metadata as they are suppose to use the SkinCache API not a metadata system
-		meta.put("model", this.hasModel() ? this.model : "default");
-		jskin.put("metadata", meta);
+		//add the player model seems to only support alex (slim)
+		if(this.hasModel())
+			meta.put("model", this.model);
+		//Apply the metadata to the JSON only if it's not empty
+		if(!meta.isEmpty())
+			jskin.put("metadata", meta);
 		
 		jskin.put("url", this.skin);
 		textures.put("SKIN", jskin);

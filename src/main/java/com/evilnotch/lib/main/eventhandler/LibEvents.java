@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.ralleytn.simple.json.JSONObject;
+
+import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.main.world.ListenerSync;
 import com.evilnotch.lib.minecraft.capability.CapContainer;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.event.EventCanceler;
 import com.evilnotch.lib.minecraft.event.client.MessageEvent;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -137,5 +141,31 @@ public class LibEvents {
 	public static void setSoundDisable(boolean disable)
 	{
 		disableSound.set(disable);
+	}
+	
+	/**
+	 * Clears skin data related to SkinEntry before the SkinCache#setEncode(GameProfile, SkinEntry); gets called
+	 */
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void merge(SkinEvent.Merge e)
+	{
+		JSONObject j = e.org;
+		for(MinecraftProfileTexture.Type t : MinecraftProfileTexture.Type.values())
+		{
+			String key = t.name();
+			JSONObject rootSkin = j.getSafeJSONObject(key);
+			rootSkin.remove("url");
+			
+			//Delete model metadata if there are additional tags leave them
+			if(t == MinecraftProfileTexture.Type.SKIN)
+			{
+				JSONObject meta = rootSkin.getSafeJSONObject("metadata");
+				meta.remove("model");
+				if(meta.isEmpty())
+					rootSkin.remove("metadata");
+			}
+			if(rootSkin.isEmpty())
+				j.remove(key);
+		}
 	}
 }

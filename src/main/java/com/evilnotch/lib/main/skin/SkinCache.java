@@ -28,6 +28,7 @@ import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
 import com.evilnotch.lib.minecraft.capability.primitive.CapBoolean;
 import com.evilnotch.lib.minecraft.capability.registry.CapabilityRegistry;
 import com.evilnotch.lib.minecraft.network.NetWorkHandler;
+import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkinChange;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;
@@ -36,7 +37,9 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -622,6 +625,7 @@ public class SkinCache {
 		{
 			JSONObject prevJSON = JavaUtil.toJsonFrom64(prev);
 			JSONObject skinJSON = skin.encodeJSON();
+			MinecraftForge.EVENT_BUS.post(new SkinEvent.Merge(prevJSON, skinJSON));
 			prevJSON.merge(skinJSON);
 			skindata = JavaUtil.toBase64(prevJSON.toString());
 		}
@@ -656,6 +660,7 @@ public class SkinCache {
 		{
 			JSONObject prevJSON = JavaUtil.toJsonFrom64(prev);
 			JSONObject skinJSON = JavaUtil.toJsonFrom64(encode);
+			MinecraftForge.EVENT_BUS.post(new SkinEvent.Merge(prevJSON, skinJSON));
 			prevJSON.merge(skinJSON);
 			skindata = JavaUtil.toBase64(prevJSON.toString());
 		}
@@ -686,6 +691,14 @@ public class SkinCache {
 			return PlayerUtil.ALEX;
 		}
 		return resource;
+	}
+	
+	/**
+	 * Sync your player skin with yourself and all players tracking you.
+	 */
+	public static void syncSkin(EntityPlayerMP player)
+	{
+		NetWorkHandler.INSTANCE.sendToAll(new PacketSkin(player));
 	}
 
 }

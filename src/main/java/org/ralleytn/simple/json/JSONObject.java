@@ -161,6 +161,20 @@ public class JSONObject extends JSONMap implements ICopy {
 	}
 	
 	/**
+	 * @jredfox get key as JSONObject and if it's not a JSONObject put a new JSONObject in it's place and return that
+	 */
+	public JSONObject getSafeJSONObject(String key) 
+	{
+		Object v = this.get(key);
+		if(!(v instanceof JSONObject))
+		{
+			v = new JSONObject();
+			this.put(key, v);
+		}
+		return (JSONObject) v;
+	}
+	
+	/**
 	 * @return a {@linkplain String} representation of this {@linkplain JSONObject}.
 	 * @since 1.0.0
 	 */
