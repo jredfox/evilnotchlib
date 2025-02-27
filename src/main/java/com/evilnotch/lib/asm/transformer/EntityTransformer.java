@@ -556,6 +556,7 @@ public class EntityTransformer implements IClassTransformer{
 
 	public static void patchLanSkins(ClassNode classNode)
 	{
+		ASMHelper.pubMinusFinal(classNode, true);//AT the class so we don't need public minus final
 		MethodNode m = ASMHelper.getMethodNode(classNode, "getTextures", "(Lcom/mojang/authlib/GameProfile;Z)Ljava/util/Map;");
 		JumpInsnNode jump = (JumpInsnNode) ASMHelper.getFirstInstruction(m, Opcodes.ILOAD).getNext();
 		LabelNode label = jump.label;
