@@ -27,7 +27,6 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
-import net.minecraftforge.fml.crashy.Crashy;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class LibEvents {
