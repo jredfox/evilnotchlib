@@ -937,14 +937,37 @@ public class EntityTransformer implements IClassTransformer{
 		if(!ConfigCore.asm_skinURLHook)
 			return;
 		
-		//Wrap getBaseName(this.url); --> getBaseName(SkinEvent.HashURLEvent.fire(this.url));
+		//public this.cachedHash;
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "cachedHash", "Ljava/lang/String;", null, null));
+		
 		MethodNode m = ASMHelper.getMethodNode(classNode, "getHash", "()Ljava/lang/String;");
+		
+		//if(this.cachedHash != null) return this.cachedhash;
+		InsnList li = new InsnList();
+		li.add(new LabelNode());
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "cachedHash", "Ljava/lang/String;"));
+		LabelNode l1 = new LabelNode();
+		li.add(new JumpInsnNode(Opcodes.IFNULL, l1));
+		LabelNode l2 = new LabelNode();
+		li.add(l2);
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "cachedHash", "Ljava/lang/String;"));
+		li.add(new InsnNode(Opcodes.ARETURN));
+		li.add(l1);
+		m.instructions.insert(li);
+		
+		//Wrap getBaseName(this.url); --> getBaseName(SkinEvent.HashURLEvent.fire(this.url));
 		AbstractInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKESTATIC, "org/apache/commons/io/FilenameUtils", "getBaseName", "(Ljava/lang/String;)Ljava/lang/String;", false).getPrevious();
 		
 		if(targ == null)
 			targ = ASMHelper.prevFieldInsnNode(ASMHelper.getLastInstruction(m, Opcodes.ARETURN), new FieldInsnNode(Opcodes.GETFIELD, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "url", "Ljava/lang/String;"));
 		
 		m.instructions.insert(targ, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$HashURLEvent", "fire", "(Ljava/lang/String;)Ljava/lang/String;", false));
+	
+		//Create MinecraftProfileTexture#cacheHash()
+		
+	
 	}
 
 }
