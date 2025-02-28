@@ -33,6 +33,7 @@ public class Config {
 	public static long stopSteveMs = 2800;
 	public static long stopSteveOtherMs = 280;
 	public static boolean skinPacketSmooth = true;
+	public static boolean skinHashDomain = true;
 	
 	/**
 	 * list of domains that are not acceptable
@@ -71,6 +72,7 @@ public class Config {
 		stopSteveMs = config.get("skins", "stopSteveMs", (int)stopSteveMs).getInt();
 		stopSteveOtherMs = config.get("skins", "stopSteveOtherMs", (int)stopSteveOtherMs).getInt();
 		skinPacketSmooth = config.get("skins", "skinCachePacketSmooth", skinPacketSmooth).getBoolean();
+		skinHashDomain = config.get("skins", "skinHashDomain", skinHashDomain, "Store Downloaded Skins with the website's domain name to prevent conflicts between two non mojang skin websites. Example https://skinmc.net/capes/15460 https://<mycustomskinwebsite>/capes/15460").getBoolean();
 		if(!ConfigCore.asm_stopSteve && skinPacketSmooth)
 			throw new RuntimeException("IStopSteve#skinUnAvailable ASM Hook is Needed for Config#skinPacketSmooth to Work Properly!");
 		

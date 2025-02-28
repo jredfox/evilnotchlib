@@ -1,11 +1,13 @@
 package com.evilnotch.lib.main.eventhandler;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.ralleytn.simple.json.JSONObject;
 
+import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.main.world.ListenerSync;
 import com.evilnotch.lib.minecraft.capability.CapContainer;
@@ -25,6 +27,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.crashy.Crashy;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class LibEvents {
@@ -187,6 +190,18 @@ public class LibEvents {
 				}
 			}
 			e.url = e.url.substring(0, surl.length());//preserve original casing
+			
+			//inject skin domain if it's non mojang
+			if(Config.skinHashDomain)
+			{
+				String host = new URL(e.url).getHost();
+				if(!host.endsWith(".minecraft.net") && !host.endsWith(".mojang.com"))
+				{
+					int sep = e.url.lastIndexOf('/');
+					e.url = e.url.substring(0, sep) + "/" + host.replace(".", "_") + "_" + e.url.substring(sep + 1, e.url.length());
+					Crashy.displayCrash(e.orgURL + "\n" + e.url, false);
+				}
+			}
 		}
 		catch (Throwable t)
 		{
