@@ -105,11 +105,11 @@ public class SkinEvent extends Event {
 		}
 	}
 	
-	public static class URLHookEvent extends Event
+	public static class HashURLEvent extends Event
 	{
 		public String orgURL;
 		public String url;
-		public URLHookEvent(String u)
+		public HashURLEvent(String u)
 		{
 			this.orgURL = u;
 			this.url = u;
@@ -117,7 +117,7 @@ public class SkinEvent extends Event {
 		
 		public static String fire(String u)
 		{
-			URLHookEvent event = new URLHookEvent(u);
+			HashURLEvent event = new HashURLEvent(u);
 			MinecraftForge.EVENT_BUS.post(event);
 			return event.url != null ? event.url : event.orgURL;
 		}

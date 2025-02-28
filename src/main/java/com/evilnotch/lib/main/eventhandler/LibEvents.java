@@ -172,7 +172,7 @@ public class LibEvents {
 	private static final String[] dltags = new String[]{ "/", "/download", "/model", "/skin", "/cape", "/elytra"};
 	
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void patchurl(SkinEvent.URLHookEvent e)
+	public void patchurl(SkinEvent.HashURLEvent e)
 	{
 		try
 		{
