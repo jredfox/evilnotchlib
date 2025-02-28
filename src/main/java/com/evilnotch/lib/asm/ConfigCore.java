@@ -13,13 +13,13 @@ public class ConfigCore {
 	public static boolean asm_setTileNBTFix = true;
 	public static boolean asm_middleClickEvent = true;
 	public static boolean asm_playermp = true;
+	public static boolean asm_patchLanSkins = true;
+	public static boolean asm_patchLanSkins429 = true;
 	
 	//asm_safe
 	public static boolean asm_TranslationEvent = true;
 	public static boolean asm_enchantmentNameFix = true;
 	public static boolean asm_FSFix = true;
-	public static boolean asm_patchLanSkins = true;
-	public static boolean asm_patchLanSkins429 = true;
 	public static boolean asm_skinURLHook = true;
 	public static boolean asm_skinAgentMozilla = true;
 	public static boolean asm_stopSteve = true;
