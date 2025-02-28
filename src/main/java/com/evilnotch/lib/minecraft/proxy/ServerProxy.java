@@ -79,7 +79,18 @@ public class ServerProxy {
 	public void d(float height) {}
 	public boolean isClient(UUID id) {return false;}
 	public PropertyMap getProperties() {return new PropertyMap();}
-	public void dlHook(HttpURLConnection httpurlconnection) {}
+	
+	public void dlHook(HttpURLConnection con) 
+	{
+		if(con.getURL() == null) 
+			return;
+		
+		String host = con.getURL().getHost();
+		
+		//only apply User-Agent for non Mojang Skin Domains
+		if(!host.endsWith(".minecraft.net") && !host.endsWith(".mojang.com"))
+			con.setRequestProperty("User-Agent", "Mozilla");
+	}
 	
 	
 }
