@@ -17,6 +17,8 @@ import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
+import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -459,6 +461,15 @@ public class EntityTransformer implements IClassTransformer{
 		//SkinCache#patchSkinResource
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;");
 		m.instructions.insertBefore(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/ResourceLocation;", false));
+		
+		//MinecraftProfileTexture#cacheHash
+		if(ConfigCore.asm_skinURLHook)
+		{
+			InsnList lh = new InsnList();
+			lh.add(new VarInsnNode(Opcodes.ALOAD, 1));
+			lh.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "cacheHash", "()V", false));
+			m.instructions.insert(ASMHelper.getFirstInstruction(m), lh);
+		}
 		
 		if(!ConfigCore.asm_stopSteve)
 			return;
@@ -966,8 +977,41 @@ public class EntityTransformer implements IClassTransformer{
 		m.instructions.insert(targ, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$HashURLEvent", "fire", "(Ljava/lang/String;)Ljava/lang/String;", false));
 	
 		//Create MinecraftProfileTexture#cacheHash()
+		/**
+		 * 	public void cacheHash()
+		    {
+				if(this.cachedHash == null)
+					this.cachedHash = this.getHash();
+		    }
+		 */
+		if(ASMHelper.getMethodNode(classNode, "cacheHash", "()V") != null)
+			return;
 		
-	
+		InsnList lc = new InsnList();
+		LabelNode lc0 = new LabelNode();
+		lc.add(lc0);
+		lc.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		lc.add(new FieldInsnNode(Opcodes.GETFIELD, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "cachedHash", "Ljava/lang/String;"));
+		LabelNode lc1 = new LabelNode();
+		lc.add(new JumpInsnNode(Opcodes.IFNONNULL, lc1));
+		LabelNode lc2 = new LabelNode();
+		lc.add(lc2);
+		lc.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		lc.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		lc.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "getHash", "()Ljava/lang/String;", false));
+		lc.add(new FieldInsnNode(Opcodes.PUTFIELD, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "cachedHash", "Ljava/lang/String;"));
+		lc.add(lc1);
+		lc.add(new InsnNode(Opcodes.RETURN));
+		LabelNode lc3 = new LabelNode();
+		lc.add(lc3);
+		
+		MethodNode cachedHash = new MethodNode(Opcodes.ACC_PUBLIC, "cacheHash", "()V", null, null);
+		cachedHash.instructions = lc;
+		cachedHash.maxStack = 2;
+		cachedHash.maxLocals = 1;
+		cachedHash.localVariables.add(new LocalVariableNode("this", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;", null, lc0, lc3, 0));
+		
+		classNode.methods.add(cachedHash);
 	}
 
 }
