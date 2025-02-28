@@ -952,7 +952,7 @@ public class EntityTransformer implements IClassTransformer{
 		
 		MethodNode m = ASMHelper.getMethodNode(classNode, "getHash", "()Ljava/lang/String;");
 		
-		//if(this.cachedHash != null) return this.cachedhash;
+		//if(this.cachedHash != null) return this.cachedHash;
 		InsnList li = new InsnList();
 		li.add(new LabelNode());
 		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
