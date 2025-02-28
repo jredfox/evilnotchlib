@@ -168,4 +168,45 @@ public class LibEvents {
 				j.remove(key);
 		}
 	}
+	
+	private static final String[] dltags = new String[]{ "/", "/download", "/model", "/skin", "/cape", "/elytra"};
+	
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void patchurl(SkinEvent.URLHookEvent e)
+	{
+		try
+		{
+			String surl = removeJunk(e.url).toLowerCase();
+			for(int i = 0; i < dltags.length; i++)
+			{
+				String tag = dltags[i];
+				if(surl.endsWith(tag))
+				{
+					surl = surl.substring(0, surl.lastIndexOf(tag));
+					i = -1;//Reset the search
+				}
+			}
+			e.url = e.url.substring(0, surl.length());//preserve original casing
+		}
+		catch (Throwable t)
+		{
+			t.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Removes & and ?
+	 */
+	public static String removeJunk(String url)
+	{
+		int app = url.indexOf('&');
+		if(app != -1)
+			url = url.substring(0, app);
+		
+		int que = url.indexOf('?');
+		if(que != -1)
+			url = url.substring(0, que);
+
+		return url;
+	}
 }

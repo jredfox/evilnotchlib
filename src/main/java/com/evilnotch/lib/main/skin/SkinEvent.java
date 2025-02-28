@@ -105,6 +105,24 @@ public class SkinEvent extends Event {
 		}
 	}
 	
+	public static class URLHookEvent extends Event
+	{
+		public String orgURL;
+		public String url;
+		public URLHookEvent(String u)
+		{
+			this.orgURL = u;
+			this.url = u;
+		}
+		
+		public static String fire(String u)
+		{
+			URLHookEvent event = new URLHookEvent(u);
+			MinecraftForge.EVENT_BUS.post(event);
+			return event.url != null ? event.url : event.orgURL;
+		}
+	}
+	
 	/**
 	 * Fires on the SkinCache Downloading Thread right before the SkinCache Downloads a Skin That Gets Selected
 	 */
