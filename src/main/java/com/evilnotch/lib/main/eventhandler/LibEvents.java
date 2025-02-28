@@ -198,8 +198,8 @@ public class LibEvents {
 				if(!host.endsWith(".minecraft.net") && !host.endsWith(".mojang.com"))
 				{
 					int sep = e.url.lastIndexOf('/');
-					e.url = e.url.substring(0, sep) + "/" + host.replace(".", "_") + "_" + e.url.substring(sep + 1, e.url.length());
-					Crashy.displayCrash(e.orgURL + "\n" + e.url, false);
+					if(sep != -1)
+						e.url = e.url.substring(0, sep) + "/" + host.replace(".", "_") + "_" + e.url.substring(sep + 1, e.url.length());
 				}
 			}
 		}
