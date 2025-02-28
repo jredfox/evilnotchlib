@@ -939,8 +939,12 @@ public class EntityTransformer implements IClassTransformer{
 		
 		//Wrap getBaseName(this.url); --> getBaseName(SkinEvent.HashURLEvent.fire(this.url));
 		MethodNode m = ASMHelper.getMethodNode(classNode, "getHash", "()Ljava/lang/String;");
-		MethodInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKESTATIC, "org/apache/commons/io/FilenameUtils", "getBaseName", "(Ljava/lang/String;)Ljava/lang/String;", false);
-		m.instructions.insertBefore(targ, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$HashURLEvent", "fire", "(Ljava/lang/String;)Ljava/lang/String;", false));
+		AbstractInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKESTATIC, "org/apache/commons/io/FilenameUtils", "getBaseName", "(Ljava/lang/String;)Ljava/lang/String;", false).getPrevious();
+		
+		if(targ == null)
+			targ = ASMHelper.prevFieldInsnNode(ASMHelper.getLastInstruction(m, Opcodes.ARETURN), new FieldInsnNode(Opcodes.GETFIELD, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "url", "Ljava/lang/String;"));
+		
+		m.instructions.insert(targ, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$HashURLEvent", "fire", "(Ljava/lang/String;)Ljava/lang/String;", false));
 	}
 
 }

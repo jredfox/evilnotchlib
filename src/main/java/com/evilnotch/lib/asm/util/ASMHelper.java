@@ -1044,5 +1044,17 @@ public class ASMHelper
 		}
 		return null;
 	}
+
+	public static FieldInsnNode prevFieldInsnNode(AbstractInsnNode start, FieldInsnNode insn) 
+	{
+		AbstractInsnNode n = start;
+		while(n != null)
+		{
+			n = n.getPrevious();
+			if(n instanceof FieldInsnNode && equals((FieldInsnNode) n, insn))
+				return (FieldInsnNode) n;
+		}
+		return null;
+	}
 	
 }
