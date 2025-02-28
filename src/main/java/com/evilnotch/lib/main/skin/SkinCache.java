@@ -91,7 +91,7 @@ public class SkinCache {
 		}
 		
 		//Update the White listed domains
-		ReflectionUtil.setObject(null, Config.skinDomains, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
+		ReflectionUtil.setFinalObject(null, Config.skinDomains, YggdrasilMinecraftSessionService.class, "WHITELISTED_DOMAINS");
 		
 		boolean isOnline = this.isMojangOnline();
 		JSONArray arr = skinCacheLoc.exists() ? JavaUtil.getJsonArray(skinCacheLoc) : new JSONArray();
