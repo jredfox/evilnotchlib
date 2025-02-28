@@ -209,17 +209,6 @@ public class EntityTransformer implements IClassTransformer{
 		return classToTransform;
 	}
 
-	public void transformMinecraftProfileTexture(ClassNode classNode)
-	{
-		if(!ConfigCore.asm_skinURLHook)
-			return;
-		
-		//Wrap getBaseName(this.url); --> getBaseName(SkinEvent.HashURLEvent.fire(this.url));
-		MethodNode m = ASMHelper.getMethodNode(classNode, "getHash", "()Ljava/lang/String;");
-		MethodInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKESTATIC, "org/apache/commons/io/FilenameUtils", "getBaseName", "(Ljava/lang/String;)Ljava/lang/String;", false);
-		m.instructions.insertBefore(targ, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$HashURLEvent", "fire", "(Ljava/lang/String;)Ljava/lang/String;", false));
-	}
-
 	public void transformSkinDL(ClassNode classNode) 
 	{
 		if(!ConfigCore.asm_stopSteve)
@@ -236,9 +225,9 @@ public class EntityTransformer implements IClassTransformer{
 		MethodNode run = ASMHelper.getMethodNode(classNode, "run", "()V");
 		AbstractInsnNode connectSpot = ASMHelper.getFirstMethodInsn(run, Opcodes.INVOKEVIRTUAL, "java/net/HttpURLConnection", "connect", "()V", false);
 		
-		if(ConfigCore.asm_skinURLMozilla)
+		//MainJava.proxy.dlHook(connection);
+		if(ConfigCore.asm_skinAgentMozilla)
 		{
-			//MainJava.proxy.dlHook(connection);
 			InsnList la = new InsnList();
 			la.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/MainJava", "proxy", "Lcom/evilnotch/lib/minecraft/proxy/ServerProxy;"));
 			la.add(new VarInsnNode(Opcodes.ALOAD, 1));
@@ -941,6 +930,17 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new VarInsnNode(Opcodes.ISTORE, targ.var));
 		li.add(l1);
 		m.instructions.insert(ASMHelper.nextLabelR(targ), li);
+	}
+	
+	public void transformMinecraftProfileTexture(ClassNode classNode)
+	{
+		if(!ConfigCore.asm_skinURLHook)
+			return;
+		
+		//Wrap getBaseName(this.url); --> getBaseName(SkinEvent.HashURLEvent.fire(this.url));
+		MethodNode m = ASMHelper.getMethodNode(classNode, "getHash", "()Ljava/lang/String;");
+		MethodInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKESTATIC, "org/apache/commons/io/FilenameUtils", "getBaseName", "(Ljava/lang/String;)Ljava/lang/String;", false);
+		m.instructions.insertBefore(targ, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$HashURLEvent", "fire", "(Ljava/lang/String;)Ljava/lang/String;", false));
 	}
 
 }
