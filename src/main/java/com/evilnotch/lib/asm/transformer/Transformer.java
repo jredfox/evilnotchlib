@@ -1,6 +1,7 @@
 package com.evilnotch.lib.asm.transformer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
@@ -19,6 +21,8 @@ import com.evilnotch.lib.util.JavaUtil;
 
 import jredfox.clfix.LaunchClassLoaderFix;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 
 public class Transformer implements IClassTransformer
 {
@@ -26,6 +30,7 @@ public class Transformer implements IClassTransformer
 	public Transformer()
 	{
 		LaunchClassLoaderFix.stopMemoryOverflow(this.getClass().getClassLoader());
+		allowMojangASM();
 	}
 	
     public static final List<String> clazzes = (List<String>)JavaUtil.<String>asArray(new Object[]
@@ -58,10 +63,13 @@ public class Transformer implements IClassTransformer
     });
     
     public static Set<String> done = new HashSet();
+    private static boolean i;
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {	
+    	if(!i)
+    		this.init();
         int index = clazzes.indexOf(transformedName);
         return (index == -1 || classToTransform == null) ? classToTransform : transform(index, classToTransform, FMLCorePlugin.isObf);
     }
@@ -235,6 +243,8 @@ public class Transformer implements IClassTransformer
 
 	public static void batchLoad() 
 	{
+		allowMojangASM();
+		
 		if(!ConfigCore.asm_batchLoad)
 			return;
 		
@@ -256,6 +266,43 @@ public class Transformer implements IClassTransformer
 		
 		ASMHelper.batchLoad("", cls);
 		JavaUtil.toBase64("");//Force Load Base64 Class to prevent 30-90MS Hang
+	}
+	
+    public void init()
+    {
+    	this.i = true;
+    	allowMojangASM();
+    }
+	
+	/**
+	 * Allow Mojang ASM
+	 */
+	public static void allowMojangASM()
+	{
+		Collection<String> transformerExceptions = (Collection<String>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "transformerExceptions");
+		Collection<String> classLoaderExceptions = (Collection<String>) ReflectionUtil.getObject(Launch.classLoader, LaunchClassLoader.class, "classLoaderExceptions");
+		
+		if(transformerExceptions != null)
+		{
+			Iterator<String> it1 = transformerExceptions.iterator();
+			while(it1.hasNext())
+			{
+				String c = it1.next();
+				if(c.startsWith("com.mojang."))
+					it1.remove();
+			}
+		}
+		
+		if(classLoaderExceptions != null)
+		{
+			Iterator<String> it2 = classLoaderExceptions.iterator();
+			while(it2.hasNext())
+			{
+				String c = it2.next();
+				if(c.startsWith("com.mojang."))
+					it2.remove();
+			}
+		}
 	}
 
 }
