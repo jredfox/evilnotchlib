@@ -39,6 +39,8 @@ public class StopSteve {
 					return;
 				}
 			}
+			else
+				p.hasPlayerInfo();
 			event.setCanceled(true);
 			return;
 		}
@@ -53,7 +55,7 @@ public class StopSteve {
 		if(mc.world == null || mc.player == null)
 			return;
 		
-		NetworkPlayerInfo info = ((AbstractClientPlayer)mc.player).playerInfo;//mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
+		NetworkPlayerInfo info = mc.player.playerInfo;//mc.player.connection.getPlayerInfo(mc.player.getUniqueID());
 		if(info == null || !info.canRender)
 		{
 			if(info != null)
@@ -69,6 +71,8 @@ public class StopSteve {
 					return;
 				}
 			}
+			else
+				mc.player.hasPlayerInfo();//simulate vanilla's renderers so it can re-grab the NetworkPlayerInfo if it exists
 			event.setCanceled(true);
 			return;
 		}
