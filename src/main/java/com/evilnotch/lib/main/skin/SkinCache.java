@@ -165,6 +165,7 @@ public class SkinCache {
 		if(select && !this.isMojangOnline()) {
 			this.offlineRefreshQue.put(user, true);
 			this.paused = false;
+			this.busy = true;
 		}
 		this.addQue(user, select);
 		return current;
@@ -206,6 +207,7 @@ public class SkinCache {
 		{
 			this.refreshque.put(user.toLowerCase(), select);
 			this.paused = false;
+			this.busy = true;
 		}
 	}
 	
@@ -225,6 +227,14 @@ public class SkinCache {
 		}
 	}
 	
+	public boolean isEmptyQue()
+	{
+		synchronized (this.refreshque)
+		{
+			return this.refreshque.isEmpty();
+		}
+	}
+	
 	public boolean hasExpired(SkinEntry entry) 
 	{
 		return System.currentTimeMillis() >= (entry.cacheTime + ( ( (Config.skinCacheHours * 60L) * 60L) * 1000L) );
@@ -240,7 +250,9 @@ public class SkinCache {
 	
 	public Thread refreshThread = null;
 	public volatile boolean running;
+	public volatile boolean busy;
 	public volatile boolean paused;
+	public volatile boolean canPause = true;
 	public void start()
 	{
 		if(this.refreshThread == null)
@@ -256,8 +268,10 @@ public class SkinCache {
 					{
 						que.putAll(this.refreshque);
 					}
+					boolean online = this.isMojangOnline();
+					this.busy = online ? this.isQueBusy(que) : !this.offlineRefreshQue.isEmpty();
 					
-					if(this.isMojangOnline())
+					if(online)
 					{
 						if(!this.offlineRefreshQue.isEmpty())
 							this.offlineRefreshQue.clear();
@@ -327,7 +341,7 @@ public class SkinCache {
 					{
 						this.paused = true;
 						long ms = 1800;
-						while(this.paused && ms > 0L)
+						while(this.paused && this.canPause && ms > 0L)
 						{
 							long z = Math.min(ms, 200L);
 							ms -= z;
@@ -341,6 +355,71 @@ public class SkinCache {
 			this.refreshThread.setPriority(4);//set's it below normal thread priority so it doesn't interfere with the game
 			this.refreshThread.start();
 		}
+	}
+	
+	protected boolean isQueBusy(Map<String, Boolean> que)
+	{
+		if(que.isEmpty())
+			return false;
+		for(Boolean sel : que.values())
+			if(sel)
+				return true;
+		return false;
+	}
+	
+	/**
+	 * Waits for the selected que to be empty {@link #refreshque} may be non empty but there will be no more selected skins to download.
+	 * Call this if you have a Gui for the SkinCache and want to avoid race condition bugs
+	 * @param maxMs is the max wait time in MS. Set it to -1 for infinite wait. 
+	 * @throws InterruptedException if the Max Wait Time Exceeds the Desired Wait Time!
+	 */
+	public void waitQue(long maxMS) throws InterruptedException
+	{
+		boolean canPauseOrg = this.canPause;
+		this.paused = false;//if we are currently paused unpause it 200MS max delay
+		this.canPause = false;//don't allow a pause to begin with during wait
+		
+		long start = System.currentTimeMillis();
+		while(this.busy)
+		{
+			if( maxMS != -1 && (System.currentTimeMillis() - start) > maxMS )
+			{
+				this.canPause = canPauseOrg;
+				throw new InterruptedException("SkinCache Max Wait Time Exceeded of:" + maxMS);
+			}
+			
+			JavaUtil.sleep(1L);
+		}
+		
+		this.canPause = canPauseOrg;//restore the original pause threadsafe
+	}
+	
+	/**
+	 * Waits for the entire {@link #refreshque} is done downloading if online if offline it will wait for {@link #offlineRefreshQue} to be done
+	 * WARNING: Use at your own risk mojang servers are not garenteed to return the right error code and the Que may never be empty with selected if this occurs.
+	 * Use this if you want to mass download skins for your SkinCache and want to wait till they are done
+	 * @param maxMs is the max wait time in MS. Set it to -1 for infinite wait. 
+	 * @throws InterruptedException if the Max Wait Time Exceeds the Desired Wait Time!
+	 */
+	public void waitFullQue(long maxMS) throws InterruptedException
+	{
+		boolean canPauseOrg = this.canPause;
+		this.paused = false;//if we are currently paused unpause it 180MS max delay
+		this.canPause = false;//don't allow a pause to begin with during wait
+		long start = System.currentTimeMillis();
+		
+		while(this.isOnline ? !this.isEmptyQue() : !this.offlineRefreshQue.isEmpty())
+		{
+			if( maxMS != -1 && (System.currentTimeMillis() - start) > maxMS )
+			{
+				this.canPause = canPauseOrg;
+				throw new InterruptedException("Max Wait Time Exceeded of:" + maxMS);
+			}
+			
+			JavaUtil.sleep(1L);
+		}
+		
+		this.canPause = canPauseOrg;//restore the original pause threadsafe
 	}
 	
 	/**

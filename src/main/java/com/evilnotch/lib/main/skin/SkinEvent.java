@@ -229,9 +229,16 @@ public class SkinEvent extends Event {
 	 */
 	public static class CapeEnchant extends SkinEvent
 	{
+		/**
+		 * When false uses the Skin's Metadata instead of dynamic events
+		 */
 		public static boolean enabled = true;
 		
+		/**
+		 * When True Renders the Cape as Enchanted regardless of if player is wearing an Enchanted Armor
+		 */
 		public boolean renderEnchant;
+		
 		public RenderPlayer renderer;
 		@SideOnly(Side.CLIENT)
 		public AbstractClientPlayer player;
@@ -240,7 +247,6 @@ public class SkinEvent extends Event {
 		
 		public CapeEnchant(RenderPlayer r, AbstractClientPlayer p, float pt, float s)
 		{
-			this.renderEnchant = p.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted();//TODO: metadata conversion
 			this.renderer = r;
 			this.player = p;
 			this.partialTicks = pt;
