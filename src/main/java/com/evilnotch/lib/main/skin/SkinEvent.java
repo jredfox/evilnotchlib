@@ -224,7 +224,7 @@ public class SkinEvent extends Event {
 		
 		public CapeEnchant(RenderPlayer r, AbstractClientPlayer p, float pt, float s)
 		{
-			this.renderEnchant = p.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted();
+			this.renderEnchant = p.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted();//TODO: metadata conversion
 			this.renderer = r;
 			this.player = p;
 			this.partialTicks = pt;
