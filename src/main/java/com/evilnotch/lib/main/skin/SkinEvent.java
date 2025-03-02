@@ -174,6 +174,10 @@ public class SkinEvent extends Event {
 		}
 	}
 	
+	/**
+	 * @SideOnly(SIDE.CLIENT) Actually using the annotation results in crashes on the class level for some odd reason
+	 * @author jredfox
+	 */
 	public static class Mouse extends SkinEvent
 	{
 		public boolean ears;
@@ -185,6 +189,10 @@ public class SkinEvent extends Event {
 		}
 	}
 	
+	/**
+	 * @SideOnly(SIDE.CLIENT) Actually using the annotation results in crashes on the class level for some odd reason
+	 * @author jredfox
+	 */
 	public static class Dinnerbone extends SkinEvent
 	{
 		public boolean dinnerbone;
@@ -196,12 +204,16 @@ public class SkinEvent extends Event {
 		}
 	}
 	
-	@SideOnly(Side.CLIENT)
+	/**
+	 * @SideOnly(SIDE.CLIENT) Actually using the annotation results in crashes on the class level for some odd reason
+	 * @author jredfox
+	 */
 	public static class DinnerboneTab extends SkinEvent
 	{
 		public boolean dinnerbone;
 		@Nullable
 		public EntityPlayer player;
+		@SideOnly(Side.CLIENT)
 		public NetworkPlayerInfo info;
 		
 		public DinnerboneTab(EntityPlayer p, NetworkPlayerInfo info)
@@ -211,13 +223,17 @@ public class SkinEvent extends Event {
 		}
 	}
 	
-	@SideOnly(Side.CLIENT)
+	/**
+	 * @SideOnly(SIDE.CLIENT) Actually using the annotation results in crashes on the class level for some odd reason even
+	 * @author jredfox
+	 */
 	public static class CapeEnchant extends SkinEvent
 	{
 		public static boolean enabled = true;
 		
 		public boolean renderEnchant;
 		public RenderPlayer renderer;
+		@SideOnly(Side.CLIENT)
 		public AbstractClientPlayer player;
 		public float partialTicks;
 		public float scale;
@@ -271,7 +287,10 @@ public class SkinEvent extends Event {
 		return event.dinnerbone;
 	}
 
-	@SideOnly(Side.CLIENT)
+	/**
+	 * @SideOnly(SIDE.CLIENT) Actually using the annotation results in crashes level for some odd reason
+	 * @author jredfox
+	 */
 	public static boolean fireDinnerbone(@Nullable EntityPlayer p, NetworkPlayerInfo info) 
 	{
 		SkinEvent.DinnerboneTab event = new SkinEvent.DinnerboneTab(p, info);
