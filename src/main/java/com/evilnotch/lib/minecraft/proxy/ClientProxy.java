@@ -357,4 +357,21 @@ public class ClientProxy extends ServerProxy{
 		super.dlHook(con);
 	}
 	
+	@Override
+	public void loadComplete() 
+	{
+		if(Config.skinCache)
+		{
+			try
+			{
+				SkinCache.INSTANCE.waitQue(10000L);
+			} 
+			catch (InterruptedException e)
+			{
+				System.err.println("SkinCache Download Que lasted over the Maximum Expected Value Of:" + 10000L);
+				e.printStackTrace();
+			}
+		}
+	}
+	
 }
