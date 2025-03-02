@@ -253,6 +253,8 @@ public class SkinCache {
 	public volatile boolean busy;
 	public volatile boolean paused;
 	public volatile boolean canPause = true;
+	public volatile long maxPause = 1800L;
+	public volatile long clock = 200L;
 	public void start()
 	{
 		if(this.refreshThread == null)
@@ -340,10 +342,10 @@ public class SkinCache {
 					if(this.running)
 					{
 						this.paused = true;
-						long ms = 1800;
+						long ms = this.maxPause;
 						while(this.paused && this.canPause && ms > 0L)
 						{
-							long z = Math.min(ms, 200L);
+							long z = Math.min(ms, this.clock);
 							ms -= z;
 							JavaUtil.sleep(z);
 						}
@@ -378,8 +380,8 @@ public class SkinCache {
 		boolean canPauseOrg = this.canPause;
 		this.paused = false;//if we are currently paused unpause it 200MS max delay
 		this.canPause = false;//don't allow a pause to begin with during wait
-		
 		long start = System.currentTimeMillis();
+		
 		while(this.busy)
 		{
 			if( maxMS != -1 && (System.currentTimeMillis() - start) > maxMS )

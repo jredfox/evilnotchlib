@@ -13,7 +13,6 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
@@ -232,7 +231,7 @@ public class SkinEvent extends Event {
 		/**
 		 * When false uses the Skin's Metadata instead of dynamic events
 		 */
-		public static boolean enabled = true;
+		public static boolean enabled = false;
 		
 		/**
 		 * When True Renders the Cape as Enchanted regardless of if player is wearing an Enchanted Armor

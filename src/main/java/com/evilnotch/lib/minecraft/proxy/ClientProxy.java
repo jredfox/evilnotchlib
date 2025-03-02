@@ -362,13 +362,14 @@ public class ClientProxy extends ServerProxy{
 	{
 		if(Config.skinCache)
 		{
+			long maxWeight = 10000L;
 			try
 			{
-				SkinCache.INSTANCE.waitQue(10000L);
-			} 
+				SkinCache.INSTANCE.waitQue(maxWeight);
+			}
 			catch (InterruptedException e)
 			{
-				System.err.println("SkinCache Download Que lasted over the Maximum Expected Value Of:" + 10000L);
+				System.err.println("SkinCache Download Que lasted over the Maximum Expected Value Of:" + maxWeight);
 				e.printStackTrace();
 			}
 		}
