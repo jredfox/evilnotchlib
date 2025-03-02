@@ -398,7 +398,7 @@ public class SkinCache {
 	
 	/**
 	 * Waits for the entire {@link #refreshque} is done downloading if online if offline it will wait for {@link #offlineRefreshQue} to be done
-	 * WARNING: Use at your own risk mojang servers are not garenteed to return the right error code and the Que may never be empty with selected if this occurs.
+	 * WARNING: Use at your own risk mojang servers are not guaranteed to return the right error code and the Que may never be empty with selected if this occurs.
 	 * Use this if you want to mass download skins for your SkinCache and want to wait till they are done
 	 * @param maxMs is the max wait time in MS. Set it to -1 for infinite wait. 
 	 * @throws InterruptedException if the Max Wait Time Exceeds the Desired Wait Time!
