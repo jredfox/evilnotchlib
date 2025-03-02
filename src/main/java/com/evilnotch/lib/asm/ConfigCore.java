@@ -25,6 +25,7 @@ public class ConfigCore {
 	public static boolean asm_stopSteve = true;
 	public static boolean asm_mouse_ears = true;
 	public static boolean asm_dinnerbone = true;
+	public static boolean asm_skinEnchantedCapes = true;
 	public static boolean asm_teams = true;
 	public static boolean asm_teams_full = true;
 	public static boolean asm_guiTabOverlay = true;
@@ -59,6 +60,7 @@ public class ConfigCore {
 		asm_skinAgentMozilla = config.get("asm_safe_cfg","asm_skinAgentMozilla", true).getBoolean();
 		asm_mouse_ears = config.get("asm_safe_cfg", "asm_mouse_ears", true).getBoolean();
 		asm_dinnerbone = config.get("asm_safe_cfg", "asm_dinnerbone", true).getBoolean();
+		asm_skinEnchantedCapes = config.get("asm_safe_cfg", "asm_skinEnchantedCapes", true).getBoolean();
 		asm_teams = config.get("asm_safe_cfg", "asm_teams", true).getBoolean();
 		asm_teams_full = config.get("asm_safe_cfg", "asm_teams_full", true).getBoolean();
 		asm_guiTabOverlay = config.get("asm_safe_cfg", "asm_guiTabOverlay", true).getBoolean();

@@ -58,7 +58,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.scoreboard.ScorePlayerTeam",//Fix Team Colors for nicknames on LanEssentials
     	"net.minecraftforge.client.GuiIngameForge",//Override when GuiTabOverlay can be rendered
     	"net.minecraft.client.gui.GuiPlayerTabOverlay",//SkinEvent#fireDinnerbone(player, info);
-    	"com.mojang.authlib.minecraft.MinecraftProfileTexture"//SkinEvent#HashURLEvent
+    	"com.mojang.authlib.minecraft.MinecraftProfileTexture",//SkinEvent#HashURLEvent
+    	"net.minecraft.client.renderer.entity.layers.LayerCape"//SkinEvent#CapeEnchant
     });
 
 	@Override
@@ -178,6 +179,10 @@ public class EntityTransformer implements IClassTransformer{
                 
                 case 23:
                 	transformMinecraftProfileTexture(classNode);
+                break;
+                
+                case 24:
+                	transformLayerCape(classNode);
                 break;
                 
             }
@@ -1011,6 +1016,31 @@ public class EntityTransformer implements IClassTransformer{
 		cachedHash.localVariables.add(new LocalVariableNode("this", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;", null, lc0, lc3, 0));
 		
 		classNode.methods.add(cachedHash);
+	}
+	
+	public void transformLayerCape(ClassNode classNode) 
+	{
+		if(!ConfigCore.asm_skinEnchantedCapes)
+			return;
+		
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString(), "(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V");
+		AbstractInsnNode spot = ASMHelper.getFirstMethodInsn(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/model/ModelPlayer", new MCPSidedString("renderCape", "func_178728_c").toString(), "(F)V", false);
+		Float scale = new Float("0.0625");
+		//Attempt to dynamically get the scale in case of another mod's ASM
+		if(spot.getPrevious() instanceof LdcInsnNode)
+			scale = (Float) ((LdcInsnNode) spot.getPrevious()).cst;
+		
+		//SkinEvent.CapeEnchant.render(this.playerRenderer, entitylivingbaseIn, partialTicks, 0.0625F);
+		InsnList li = new InsnList();
+		li.add(new LabelNode());
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/entity/layers/LayerCape",  new MCPSidedString("playerRenderer", "field_177167_a").toString(), "Lnet/minecraft/client/renderer/entity/RenderPlayer;"));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		li.add(new VarInsnNode(Opcodes.FLOAD, 4));
+		li.add(new LdcInsnNode(scale));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$CapeEnchant", "render", "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/client/entity/AbstractClientPlayer;FF)V", false));
+
+		m.instructions.insert(spot, li);
 	}
 
 }

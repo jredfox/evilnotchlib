@@ -4,12 +4,16 @@ import javax.annotation.Nullable;
 
 import org.ralleytn.simple.json.JSONObject;
 
+import com.evilnotch.lib.minecraft.client.CapeRenderer;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
@@ -204,6 +208,43 @@ public class SkinEvent extends Event {
 		{
 			this.player = p;
 			this.info = info;
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public static class CapeEnchant extends SkinEvent
+	{
+		public static boolean enabled = true;
+		
+		public boolean renderEnchant;
+		public RenderPlayer renderer;
+		public AbstractClientPlayer player;
+		public float partialTicks;
+		public float scale;
+		
+		public CapeEnchant(RenderPlayer r, AbstractClientPlayer p, float pt, float s)
+		{
+			this.renderEnchant = p.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted();
+			this.renderer = r;
+			this.player = p;
+			this.partialTicks = pt;
+			this.scale = s;
+		}
+		
+		public static boolean fire(RenderPlayer r, AbstractClientPlayer p, float pt, float s)
+		{
+			if(!CapeEnchant.enabled)
+				return false;
+			
+			CapeEnchant e = new CapeEnchant(r, p, pt, s);
+			MinecraftForge.EVENT_BUS.post(e);
+			return e.renderEnchant;
+		}
+		
+		public static void render(RenderPlayer r, AbstractClientPlayer p, float pt, float s)
+		{
+			if(fire(r, p, pt, s))
+				CapeRenderer.renderEnchantedCape(r, p, r.getMainModel(), pt, s);
 		}
 	}
 	
