@@ -29,6 +29,7 @@ public class ConfigCore {
 	public static boolean asm_teams = true;
 	public static boolean asm_teams_full = true;
 	public static boolean asm_guiTabOverlay = true;
+	public static boolean asm_MPMCompat = true;
 	public static boolean asm_batchLoad = true;
 	
 	public static boolean dumpASMJVM = Boolean.parseBoolean(System.getProperty("asm.dump", "false"));
@@ -50,6 +51,7 @@ public class ConfigCore {
 		asm_playermp = config.get("asm_debug","asm_playermp", true).getBoolean();
 		asm_patchLanSkins = config.get("asm_debug","asm_patchLanSkins", true).getBoolean();
 		asm_patchLanSkins429 = config.get("asm_debug","asm_patchLanSkins429", true).getBoolean();
+		asm_MPMCompat = config.get("asm_debug", "asm_MorePlayerModelsCompat", true).getBoolean();
 		
 		//ASM Config That Can Safely Be Turned Off with few Issues
 		asm_TranslationEvent = config.get("asm_safe_cfg","asm_dynamicTranslationEvent", true).getBoolean();

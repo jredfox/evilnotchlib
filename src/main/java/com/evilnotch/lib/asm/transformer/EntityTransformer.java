@@ -20,6 +20,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.api.mcp.MCPSidedString;
@@ -59,7 +60,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraftforge.client.GuiIngameForge",//Override when GuiTabOverlay can be rendered
     	"net.minecraft.client.gui.GuiPlayerTabOverlay",//SkinEvent#fireDinnerbone(player, info);
     	"com.mojang.authlib.minecraft.MinecraftProfileTexture",//SkinEvent#HashURLEvent
-    	"net.minecraft.client.renderer.entity.layers.LayerCape"//SkinEvent#CapeEnchant
+    	"net.minecraft.client.renderer.entity.layers.LayerCape",//SkinEvent#CapeEnchant
+    	"noppes.mpm.client.RenderEvent"//Fix DERPs of MorePlayerModels Mod making IStopSteve not work and getting the wrong skin info at times
     });
 
 	@Override
@@ -181,6 +183,10 @@ public class EntityTransformer implements IClassTransformer{
                 
                 case 24:
                 	transformLayerCape(classNode);
+                break;
+                
+                case 25:
+                	fixMorePlayerModels(classNode);
                 break;
                 
             }
@@ -1051,6 +1057,35 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$CapeEnchant", "render", "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/client/entity/AbstractClientPlayer;FF)V", false));
 
 		m.instructions.insert(spot, li);
+	}
+	
+	public void fixMorePlayerModels(ClassNode classNode)
+	{
+		if(!ConfigCore.asm_MPMCompat)
+			return;
+		
+		MethodNode method = null;
+		for(MethodNode m : classNode.methods)
+		{
+			if(m.name.equals("loadPlayerResource"))
+			{
+				method = m;
+				break;
+			}
+		}
+		
+		//if( !((AbstractClientPlayer) pl).hasPlayerInfo() ) return;
+		InsnList li = new InsnList();
+		li.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		li.add(new TypeInsnNode(Opcodes.CHECKCAST, "net/minecraft/client/entity/AbstractClientPlayer"));
+		li.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "net/minecraft/client/entity/AbstractClientPlayer", new MCPSidedString("hasPlayerInfo", "func_152122_n").toString(), "()Z", false));
+		LabelNode l1 = new LabelNode();
+		li.add(new JumpInsnNode(Opcodes.IFNE, l1));
+		LabelNode l2 = new LabelNode();
+		li.add(l2);
+		li.add(new InsnNode(Opcodes.RETURN));
+		li.add(l1);
+		method.instructions.insert(ASMHelper.getFirstInstruction(method), li);
 	}
 
 }

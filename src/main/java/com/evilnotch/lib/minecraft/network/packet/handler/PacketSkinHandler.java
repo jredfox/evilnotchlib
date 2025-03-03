@@ -3,7 +3,6 @@ package com.evilnotch.lib.minecraft.network.packet.handler;
 import java.util.UUID;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;

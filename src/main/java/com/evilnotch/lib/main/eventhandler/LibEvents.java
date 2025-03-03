@@ -223,4 +223,15 @@ public class LibEvents {
 
 		return url;
 	}
+	
+//	static
+//	{
+//		SkinEvent.CapeEnchant.enabled = true;
+//	}
+//	
+//	@SubscribeEvent(priority=EventPriority.HIGHEST)
+//	public void renderCape(SkinEvent.CapeEnchant e)
+//	{
+//		e.renderEnchant = e.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted();
+//	}
 }
