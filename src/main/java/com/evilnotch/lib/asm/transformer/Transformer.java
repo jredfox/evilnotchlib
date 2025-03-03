@@ -311,6 +311,9 @@ public class Transformer implements IClassTransformer
 					it2.remove();
 			}
 		}
+		
+		//Without this the Dedicated Server's UI won't show any Console output
+		classLoaderExceptions.add("com.mojang.util.QueueLogAppender");
 	}
 
 }
