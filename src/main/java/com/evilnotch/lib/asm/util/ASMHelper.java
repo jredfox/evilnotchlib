@@ -1080,12 +1080,9 @@ public class ASMHelper
 			{
 				if(f.name.equals(expectedName))
 					return f.name;
-				else if(f.name.equalsIgnoreCase(expectedName))
-				{
-					if(almostMatch == null)
+				else if(almostMatch == null && f.name.equalsIgnoreCase(expectedName))
 						almostMatch = f.name;
-				}
-				else
+				else if(uncommonMatch == null)
 					uncommonMatch = f.name;
 			}
 		}
