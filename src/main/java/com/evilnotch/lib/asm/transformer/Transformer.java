@@ -309,13 +309,10 @@ public class Transformer implements IClassTransformer
 			while(it2.hasNext())
 			{
 				String c = it2.next();
-				if(c.startsWith("com.mojang."))
+				if(c.startsWith("com.mojang.") && !c.equals("com.mojang.util.QueueLogAppender"))
 					it2.remove();
 			}
 		}
-		
-		//Without this the Dedicated Server's UI won't show any Console output
-		classLoaderExceptions.add("com.mojang.util.QueueLogAppender");
 	}
 
 }
