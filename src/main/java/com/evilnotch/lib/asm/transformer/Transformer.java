@@ -64,13 +64,15 @@ public class Transformer implements IClassTransformer
     });
     
     public static Set<String> done = new HashSet();
-    private static boolean i;
+    private static boolean i = false;
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {	
-    	if(!i)
-    		this.init();
+    	if(!i && classToTransform != null && transformedName != null && !transformedName.startsWith("$"))
+    	{
+			this.init();
+    	}
         int index = clazzes.indexOf(transformedName);
         return (index == -1 || classToTransform == null) ? classToTransform : transform(index, classToTransform, FMLCorePlugin.isObf);
     }
