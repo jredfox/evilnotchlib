@@ -7,6 +7,7 @@ import java.util.List;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -23,13 +24,16 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.minecraft.client.CapeRenderer;
 import com.evilnotch.lib.util.JavaUtil;
 
+import goblinbob.mobends.standard.client.renderer.entity.BendsCapeRenderer;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class EntityTransformer implements IClassTransformer{
@@ -61,7 +65,8 @@ public class EntityTransformer implements IClassTransformer{
     	"net.minecraft.client.gui.GuiPlayerTabOverlay",//SkinEvent#fireDinnerbone(player, info);
     	"com.mojang.authlib.minecraft.MinecraftProfileTexture",//SkinEvent#HashURLEvent
     	"net.minecraft.client.renderer.entity.layers.LayerCape",//SkinEvent#CapeEnchant
-    	"noppes.mpm.client.RenderEvent"//Fix DERPs of MorePlayerModels Mod making IStopSteve not work and getting the wrong skin info at times
+    	"noppes.mpm.client.RenderEvent",//Fix DERPs of MorePlayerModels Mod making IStopSteve not work and getting the wrong skin info at times
+    	"goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomCape"//Mo' Bends Support! Make Enchanted Capes Work
     });
 
 	@Override
@@ -187,6 +192,10 @@ public class EntityTransformer implements IClassTransformer{
                 
                 case 25:
                 	fixMorePlayerModels(classNode);
+                break;
+                
+                case 26:
+                	transformMoBends(classNode);
                 break;
                 
             }
@@ -1064,17 +1073,8 @@ public class EntityTransformer implements IClassTransformer{
 		if(!ConfigCore.asm_MPMCompat)
 			return;
 		
-		MethodNode method = null;
-		for(MethodNode m : classNode.methods)
-		{
-			if(m.name.equals("loadPlayerResource"))
-			{
-				method = m;
-				break;
-			}
-		}
-		
 		//if( !((AbstractClientPlayer) pl).hasPlayerInfo() ) return;
+		MethodNode method = ASMHelper.getMethodNodeByName(classNode, "loadPlayerResource");
 		InsnList li = new InsnList();
 		li.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		li.add(new TypeInsnNode(Opcodes.CHECKCAST, "net/minecraft/client/entity/AbstractClientPlayer"));
@@ -1086,6 +1086,50 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new InsnNode(Opcodes.RETURN));
 		li.add(l1);
 		method.instructions.insert(ASMHelper.getFirstInstruction(method), li);
+	}
+	
+	public void transformMoBends(ClassNode classNode) 
+	{
+		//public static Method evlMethod;
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "evlMethod", "Ljava/lang/reflect/Method;", null, null));
+	
+		//Since <clinit> may not exist add it to every constructor
+		for(MethodNode m : classNode.methods)
+		{
+			if(m.name.equals("<init>"))
+			{
+				//evlMethod = ReflectionUtil.getMethod(BendsCapeRenderer.class, "render", float.class);
+				InsnList list = new InsnList();
+				list.add(new LdcInsnNode(Type.getType("Lgoblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer;")));
+				list.add(new LdcInsnNode("render"));
+				list.add(new InsnNode(Opcodes.ICONST_1));
+				list.add(new TypeInsnNode(Opcodes.ANEWARRAY, "java/lang/Class"));
+				list.add(new InsnNode(Opcodes.DUP));
+				list.add(new InsnNode(Opcodes.ICONST_0));
+				list.add(new FieldInsnNode(Opcodes.GETSTATIC, "java/lang/Float", "TYPE", "Ljava/lang/Class;"));
+				list.add(new InsnNode(Opcodes.AASTORE));
+				list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/api/ReflectionUtil", "getMethod", "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false));
+				list.add(new FieldInsnNode(Opcodes.PUTSTATIC, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", "evlMethod", "Ljava/lang/reflect/Method;"));
+				m.instructions.insert(ASMHelper.getLastPutField(m), list);
+			}
+		}
+		
+		MethodNode m = ASMHelper.getMethodNodeByName(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString());
+		AbstractInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "goblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer", "render", "(F)V", false);
+		
+		//CapeRenderer.render(this.playerRenderer, player, evlMethod, this.capeRenderer, partialTicks, 0.0625F);
+		InsnList li = new InsnList();
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", "playerRenderer", "Lnet/minecraft/client/renderer/entity/RenderPlayer;"));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", "evlMethod", "Ljava/lang/reflect/Method;"));
+		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", "capeRenderer", "Lgoblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer;"));
+		li.add(new VarInsnNode(Opcodes.FLOAD, 4));
+		li.add(new LdcInsnNode(new Float("0.0625")));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/client/CapeRenderer", "render", "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/entity/EntityLivingBase;Ljava/lang/reflect/Method;Ljava/lang/Object;FF)V", false));
+		
+		m.instructions.insert(targ, li);
 	}
 
 }

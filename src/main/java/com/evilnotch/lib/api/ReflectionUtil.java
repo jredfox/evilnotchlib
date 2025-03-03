@@ -53,18 +53,22 @@ public class ReflectionUtil {
 		}
 	}
 
+	/**
+	 * Use {@link #invoke(Method, Object, Object...)} instead get the method by using {@link #getMethod(Class, String, Class...)}
+	 */
+	@Deprecated
 	public static void invokeMethod(Object instance, Class clazz, String mName,Object[] parameterobjs,Class[] param) 
 	{
 		try
 		{
-			Method m = clazz.getMethod(mName, param);
+			Method m = clazz.getDeclaredMethod(mName, param);
+			m.setAccessible(true);
 			m.invoke(instance, parameterobjs);
 		}
 		catch(Throwable t)
 		{
 			t.printStackTrace();
 		}
-		
 	}
 	/**
 	 * get a method safley from a class
@@ -78,11 +82,23 @@ public class ReflectionUtil {
 			m.setAccessible(true);
 			return m;
 		} 
-		catch (Exception e) 
+		catch (Throwable e) 
 		{
 		}
 		return null;
 	}
+    public static <T> T invoke(Method method, Object instance, Object... params)
+    {
+    	try
+    	{
+    		return (T) method.invoke(instance, params);
+    	}
+    	catch(Throwable t)
+    	{
+    		t.printStackTrace();
+    	}
+    	return null;
+    }
 	/**
 	 * get a class from string safley
 	 */

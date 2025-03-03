@@ -259,7 +259,7 @@ public class Transformer implements IClassTransformer
 			while(i.hasNext())
 			{
 				String c = i.next();
-				if(c.startsWith("net.minecraft.client.") || c.endsWith("GuiIngameForge"))
+				if(c.startsWith("net.minecraft.client.") || c.endsWith("GuiIngameForge") || c.startsWith("noppes.") || c.startsWith("goblinbob."))
 					i.remove();
 			}
 		}

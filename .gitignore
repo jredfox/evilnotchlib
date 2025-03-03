@@ -6,3 +6,5 @@ src/main/java/net/minecraftforge/client/GuiIngameForge.java
 /src/main/java/com/mojang/authlib/yggdrasil
 src/main/java/com/evilnotch/lib/main/PureJava.java
 src/main/java/com/mojang/authlib/minecraft/MinecraftProfileTexture.java
+src/main/java/goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape.java
+src/main/java/com/evilnotch/lib/main/Test.java

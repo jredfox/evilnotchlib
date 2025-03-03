@@ -1056,5 +1056,17 @@ public class ASMHelper
 		}
 		return null;
 	}
+
+	public static MethodNode getMethodNodeByName(ClassNode classNode, String name) 
+	{
+		for(MethodNode m : classNode.methods)
+		{
+			if(m.name.equals(name))
+			{
+				return m;
+			}
+		}
+		return null;
+	}
 	
 }

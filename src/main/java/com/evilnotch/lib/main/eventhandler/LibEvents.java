@@ -18,6 +18,7 @@ import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -224,14 +225,14 @@ public class LibEvents {
 		return url;
 	}
 	
-//	static
-//	{
-//		SkinEvent.CapeEnchant.enabled = true;
-//	}
-//	
-//	@SubscribeEvent(priority=EventPriority.HIGHEST)
-//	public void renderCape(SkinEvent.CapeEnchant e)
-//	{
-//		e.renderEnchant = e.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted();
-//	}
+	static
+	{
+		SkinEvent.CapeEnchant.enabled = true;
+	}
+	
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void renderCape(SkinEvent.CapeEnchant e)
+	{
+		e.renderEnchant = e.player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted();
+	}
 }
