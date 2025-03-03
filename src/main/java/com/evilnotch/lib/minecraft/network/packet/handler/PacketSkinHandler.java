@@ -29,7 +29,6 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 				if(prev != null)
 				{
 					prev.gameProfile = message.profile;
-					prev.playerTexturesLoaded = false;
 					
 					//Ensure the other player's info is synced with the live map
 					EntityPlayer other = mc.world.getPlayerEntityByUUID(uuid);
@@ -39,6 +38,8 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 						ClientProxy.removeSkinCache(mc, ap);
 						ap.playerInfo = prev;
 					}
+					
+					prev.playerTexturesLoaded = false;
 					
 					return;
 				}
