@@ -1047,7 +1047,7 @@ public class EntityTransformer implements IClassTransformer{
 		
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString(), "(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V");
 		AbstractInsnNode spot = ASMHelper.getFirstMethodInsn(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/model/ModelPlayer", new MCPSidedString("renderCape", "func_178728_c").toString(), "(F)V", false);
-		Float scale = ConfigCore.asm_capeScale;
+		Float scale = new Float("0.0625");
 		//Attempt to dynamically get the scale in case of another mod's ASM
 		if(spot.getPrevious() instanceof LdcInsnNode)
 			scale = (Float) ((LdcInsnNode) spot.getPrevious()).cst;
@@ -1113,7 +1113,7 @@ public class EntityTransformer implements IClassTransformer{
 		
 		MethodNode m = ASMHelper.getMethodNodeByName(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString());
 		AbstractInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "goblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer", "render", "(F)V", false);
-		Float scale = ConfigCore.asm_capeMoBendsScale;
+		Float scale = new Float("0.0625");
 		//Attempt to dynamically get the scale in case of another mod's ASM or Mo' Bends mod changes the scaling
 		if(targ.getPrevious() instanceof LdcInsnNode)
 			scale = (Float) ((LdcInsnNode) targ.getPrevious()).cst;
