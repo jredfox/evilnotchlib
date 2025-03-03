@@ -69,9 +69,10 @@ public class Transformer implements IClassTransformer
     @Override
     public byte[] transform(String name, String transformedName, byte[] classToTransform)
     {	
-    	if(!i && classToTransform != null && transformedName != null && !transformedName.startsWith("$"))
+    	if(!i && classToTransform != null && (transformedName.equals("net.minecraft.client.main.Main") || transformedName.equals("net.minecraft.server.MinecraftServer")) )
     	{
-			this.init();
+        	System.out.println("Main Class:\t" + transformedName);
+			init();
     	}
         int index = clazzes.indexOf(transformedName);
         return (index == -1 || classToTransform == null) ? classToTransform : transform(index, classToTransform, FMLCorePlugin.isObf);
@@ -81,6 +82,11 @@ public class Transformer implements IClassTransformer
     {
     	String name = clazzes.get(index);
     	done.add(name);
+		if(!i)
+		{
+			System.err.println("Error Unable to Find Main Class! Please report to: https://github.com/jredfox/evilnotchlib/issues");
+			init();
+		}
     	System.out.println("Transforming: " + name + " index:" + index);
         try
         {
@@ -278,9 +284,9 @@ public class Transformer implements IClassTransformer
 		JavaUtil.toBase64("");//Force Load Base64 Class to prevent 30-90MS Hang
 	}
 	
-    public void init()
+    public static void init()
     {
-    	this.i = true;
+    	i = true;
     	allowMojangASM();
     }
 	
