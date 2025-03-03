@@ -1111,7 +1111,9 @@ public class EntityTransformer implements IClassTransformer{
 			}
 		}
 		
-		MethodNode m = ASMHelper.getMethodNodeByName(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString());
+		MethodNode m = ASMHelper.getMethodNodeByName(classNode, "doRenderLayer");
+		if(m == null)
+			m = ASMHelper.getMethodNodeByName(classNode, "func_177141_a");
 		AbstractInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "goblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer", "render", "(F)V", false);
 		Float scale = new Float("0.0625");
 		//Attempt to dynamically get the scale in case of another mod's ASM or Mo' Bends mod changes the scaling
