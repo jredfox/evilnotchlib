@@ -1087,6 +1087,9 @@ public class EntityTransformer implements IClassTransformer{
 	
 	public void transformMoBends(ClassNode classNode) 
 	{
+		if(!ConfigCore.asm_skinMoEnchantedCapes)
+			return;
+		
 		//public static Method evlMethod;
 		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "evlMethod", "Ljava/lang/reflect/Method;", null, null));
 	
