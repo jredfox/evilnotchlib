@@ -23,6 +23,7 @@ import jredfox.clfix.LaunchClassLoaderFix;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.fml.common.Loader;
 
 public class Transformer implements IClassTransformer
 {
@@ -262,6 +263,13 @@ public class Transformer implements IClassTransformer
 				if(c.startsWith("net.minecraft.client.") || c.endsWith("GuiIngameForge") || c.startsWith("noppes.") || c.startsWith("goblinbob."))
 					i.remove();
 			}
+		}
+		else
+		{
+			if(!Loader.isModLoaded("moreplayermodels"))
+				cls.remove("noppes.mpm.client.RenderEvent");
+			if(!Loader.isModLoaded("mobends"))
+				cls.remove("goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomCape");
 		}
 		
 		ASMHelper.batchLoad("", cls);
