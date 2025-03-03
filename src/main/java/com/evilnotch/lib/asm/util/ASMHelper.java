@@ -1068,5 +1068,28 @@ public class ASMHelper
 		}
 		return null;
 	}
+
+	public static String getFieldName(ClassNode classNode, String expectedName, String desc) 
+	{
+		String almostMatch = null;
+		String uncommonMatch = null;
+		
+		for(FieldNode f : classNode.fields)
+		{
+			if(f.desc.equals(desc))
+			{
+				if(f.name.equals(expectedName))
+					return f.name;
+				else if(f.name.equalsIgnoreCase(expectedName))
+				{
+					if(almostMatch == null)
+						almostMatch = f.name;
+				}
+				else
+					uncommonMatch = f.name;
+			}
+		}
+		return almostMatch != null ? almostMatch : uncommonMatch;
+	}
 	
 }

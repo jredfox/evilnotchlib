@@ -1047,7 +1047,7 @@ public class EntityTransformer implements IClassTransformer{
 		
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString(), "(Lnet/minecraft/client/entity/AbstractClientPlayer;FFFFFFF)V");
 		AbstractInsnNode spot = ASMHelper.getFirstMethodInsn(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/model/ModelPlayer", new MCPSidedString("renderCape", "func_178728_c").toString(), "(F)V", false);
-		Float scale = new Float("0.0625");
+		Float scale = ConfigCore.asm_capeScale;
 		//Attempt to dynamically get the scale in case of another mod's ASM
 		if(spot.getPrevious() instanceof LdcInsnNode)
 			scale = (Float) ((LdcInsnNode) spot.getPrevious()).cst;
@@ -1113,17 +1113,21 @@ public class EntityTransformer implements IClassTransformer{
 		
 		MethodNode m = ASMHelper.getMethodNodeByName(classNode, new MCPSidedString("doRenderLayer", "func_177141_a").toString());
 		AbstractInsnNode targ = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "goblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer", "render", "(F)V", false);
+		Float scale = ConfigCore.asm_capeMoBendsScale;
+		//Attempt to dynamically get the scale in case of another mod's ASM or Mo' Bends mod changes the scaling
+		if(targ.getPrevious() instanceof LdcInsnNode)
+			scale = (Float) ((LdcInsnNode) targ.getPrevious()).cst;
 		
 		//CapeRenderer.render(this.playerRenderer, player, evlMethod, this.capeRenderer, partialTicks, 0.0625F);
 		InsnList li = new InsnList();
 		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		li.add(new FieldInsnNode(Opcodes.GETFIELD, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", "playerRenderer", "Lnet/minecraft/client/renderer/entity/RenderPlayer;"));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", ASMHelper.getFieldName(classNode, "playerRenderer", "Lnet/minecraft/client/renderer/entity/RenderPlayer;"), "Lnet/minecraft/client/renderer/entity/RenderPlayer;"));
 		li.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", "evlMethod", "Ljava/lang/reflect/Method;"));
 		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		li.add(new FieldInsnNode(Opcodes.GETFIELD, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", "capeRenderer", "Lgoblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer;"));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", ASMHelper.getFieldName(classNode, "capeRenderer", "Lgoblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer;"), "Lgoblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer;"));
 		li.add(new VarInsnNode(Opcodes.FLOAD, 4));
-		li.add(new LdcInsnNode(new Float("0.0625")));
+		li.add(new LdcInsnNode(scale));
 		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/client/CapeRenderer", "render", "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/entity/EntityLivingBase;Ljava/lang/reflect/Method;Ljava/lang/Object;FF)V", false));
 		
 		m.instructions.insert(targ, li);
