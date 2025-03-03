@@ -8,3 +8,4 @@ src/main/java/com/evilnotch/lib/main/PureJava.java
 src/main/java/com/mojang/authlib/minecraft/MinecraftProfileTexture.java
 src/main/java/goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape.java
 src/main/java/com/evilnotch/lib/main/Test.java
+libs/MoBends_1.12.2-1.1.0-28.09.21-deobf.jar
