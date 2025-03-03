@@ -3,8 +3,10 @@ package com.evilnotch.lib.minecraft.network.packet.handler;
 import java.util.UUID;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.minecraft.network.MessegeBase;
 import com.evilnotch.lib.minecraft.network.packet.PacketSkin;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -33,7 +35,11 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 					//Ensure the other player's info is synced with the live map
 					EntityPlayer other = mc.world.getPlayerEntityByUUID(uuid);
 					if(other instanceof AbstractClientPlayer)
-						((AbstractClientPlayer) other).playerInfo = prev;
+					{
+						AbstractClientPlayer ap = (AbstractClientPlayer) other;
+						ClientProxy.removeSkinCache(mc, ap);
+						ap.playerInfo = prev;
+					}
 					
 					return;
 				}
@@ -57,6 +63,7 @@ public class PacketSkinHandler extends MessegeBase<PacketSkin>{
 			if(other instanceof AbstractClientPlayer)
 			{
 				AbstractClientPlayer ap = ((AbstractClientPlayer) other);
+				ClientProxy.removeSkinCache(mc, ap);
 				ap.playerInfo = null;
 				ap.hasPlayerInfo();
 			}

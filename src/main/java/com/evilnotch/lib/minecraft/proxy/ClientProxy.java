@@ -29,9 +29,12 @@ import com.evilnotch.lib.minecraft.util.UUIDPatcher;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerLoginClient;
@@ -373,6 +376,26 @@ public class ClientProxy extends ServerProxy{
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Removes a Player's GameProfile from the Vanilla SkinCache.
+	 * @removes Skin from {@link SkinManager#skinCacheLoader}
+	 * @removes Skin from {@link YggdrasilMinecraftSessionService#insecureProfiles}
+	 */
+	public static void removeSkinCache(Minecraft mc, AbstractClientPlayer ap)
+	{
+		GameProfile profile = ap.getGameProfile();
+		
+		//Remove Skin From SkinManager
+		mc.getSkinManager().skinCacheLoader.invalidate(profile);//MorePlayerModels support
+		
+		//Remove Skin From YggdrasilMinecraftSessionService in case mods always expect the cached profile to be their mojang's profile always and uses the session service cache
+		MinecraftSessionService ss = mc.getSessionService();
+		if(ss instanceof YggdrasilMinecraftSessionService)
+			((YggdrasilMinecraftSessionService)ss).insecureProfiles.invalidate(profile);
+		else if(ss != null)
+			System.err.println("Unsupported MinecraftSessionService:" + ss.getClass().getName());
 	}
 	
 }

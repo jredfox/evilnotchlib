@@ -112,13 +112,11 @@ public class EntityTransformer implements IClassTransformer{
                 break;
                 
                 case 7:
-                	if(ConfigCore.asm_patchLanSkins)
-                		patchLanSkins(classNode);
+                	patchLanSkins(classNode);
                 break;
                 
                 case 8:
-                	if(ConfigCore.asm_patchLanSkins)
-                		patchLanSkinsCache(classNode);
+                	patchLanSkinsCache(classNode);
                 break;
                 
                 case 9:
@@ -568,6 +566,12 @@ public class EntityTransformer implements IClassTransformer{
 
 	private void patchLanSkinsCache(ClassNode classNode) 
 	{
+		//AT the class even if patchLanSkins is false to prevent crashing
+		ASMHelper.pubMinusFinal(classNode, true);
+		
+    	if(!ConfigCore.asm_patchLanSkins)
+    		return;
+    	
 		//fillGameProfile(profile, true); --> fillGameProfile(profile, ASMHelper.rfalse(true));
 		MethodNode m = ASMHelper.getMethodNode(classNode, "load", "(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;");
 		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/yggdrasil/YggdrasilMinecraftSessionService", "fillGameProfile", "(Lcom/mojang/authlib/GameProfile;Z)Lcom/mojang/authlib/GameProfile;", false);
@@ -576,6 +580,12 @@ public class EntityTransformer implements IClassTransformer{
 
 	public static void patchLanSkins(ClassNode classNode)
 	{
+		//AT the class even if patchLanSkins is false to prevent crashing
+		ASMHelper.pubMinusFinal(classNode, true);
+		
+    	if(!ConfigCore.asm_patchLanSkins)
+    		return;
+    	
 		MethodNode m = ASMHelper.getMethodNode(classNode, "getTextures", "(Lcom/mojang/authlib/GameProfile;Z)Ljava/util/Map;");
 		JumpInsnNode jump = (JumpInsnNode) ASMHelper.getFirstInstruction(m, Opcodes.ILOAD).getNext();
 		LabelNode label = jump.label;
