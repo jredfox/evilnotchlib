@@ -72,7 +72,7 @@ Future:
 Font Renderer
 ```
 
-Instalation This as a Dependancy:
+Using This as a Dependancy:
 ```
 Install forge mdk mc version
 Place a compiled or deobfuscated evil notch lib jar into the libs folder
