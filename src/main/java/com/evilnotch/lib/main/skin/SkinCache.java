@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ralleytn.simple.json.JSONArray;
 import org.ralleytn.simple.json.JSONObject;
 import org.ralleytn.simple.json.JSONParser;
@@ -38,7 +36,6 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
-import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -768,9 +765,10 @@ public class SkinCache {
 		{
 			String model = JavaUtil.safeString(texture.getMetadata("model"));
 			resource = (model.isEmpty() || model.equals("default")) ? fileSteve : fileAlex;
+			MainJava.proxy.bindTexture(resource);
+			return resource;
 		}
-		
-		if(resource.equals(fileSteve))
+		else if(resource.equals(fileSteve))
 		{
 			MainJava.proxy.bindTexture(PlayerUtil.STEVE);//enforce steve is loaded so SkinManager doesn't try and download the skin
 			return PlayerUtil.STEVE;
