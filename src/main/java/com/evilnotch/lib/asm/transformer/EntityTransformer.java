@@ -494,15 +494,27 @@ public class EntityTransformer implements IClassTransformer{
 			m.instructions.insert(ASMHelper.getFirstInstruction(m), lh);
 		}
 		
-		if(!ConfigCore.asm_stopSteve)
-			return;
-		
-		InsnList li = new InsnList();
 //		dynamically get the ThreadDownloadImageData variable
 		int i9 = ASMHelper.getLocalVarIndexFromOwner(m, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;");
 		if(i9 == -1)
 			i9 = 9;
+//		dynamically get the IImageBuffer variable
+		int i8 = ASMHelper.getLocalVarIndexFromOwner(m, "Lnet/minecraft/client/renderer/IImageBuffer;");
+		if(i8 == -1)
+			i8 = 8;
 		
+//		ClientProxy.setImageBufferTexture(textureType, profileTexture, iimagebuffer);
+		InsnList il = new InsnList();
+		il.add(new VarInsnNode(Opcodes.ALOAD, 2));
+		il.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		il.add(new VarInsnNode(Opcodes.ALOAD, i8));
+		il.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/proxy/ClientProxy", "setImageBufferTexture", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lnet/minecraft/client/renderer/IImageBuffer;)V", false));
+		m.instructions.insert(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, i8)), il);
+		
+		if(!ConfigCore.asm_stopSteve)
+			return;
+		
+		InsnList li = new InsnList();
 //	  	threaddownloadimagedata.skinCallBack = skinAvailableCallback;
 		li.add(new VarInsnNode(Opcodes.ALOAD, i9));
 		li.add(new VarInsnNode(Opcodes.ALOAD, 3));

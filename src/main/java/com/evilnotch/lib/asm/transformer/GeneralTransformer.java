@@ -23,7 +23,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 public class GeneralTransformer {
 	
@@ -452,6 +451,8 @@ public class GeneralTransformer {
 
 	public static void transformSkinTrans(ClassNode classNode)
 	{
+		//AT the class's fields
+		ASMHelper.pubMinusFinal(classNode, false);
 		//public boolean allowTrans;
 		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "allowTrans", "Z", null, null));
 		//public MinecraftProfileTexture.Type evlType;
