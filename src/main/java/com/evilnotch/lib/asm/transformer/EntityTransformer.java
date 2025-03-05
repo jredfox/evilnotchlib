@@ -472,10 +472,11 @@ public class EntityTransformer implements IClassTransformer{
 	 */
 	public void transformSkinManager(ClassNode classNode)
 	{
-		//relies on the java runtime hack where final isn't enforced for local variables and or parameters
 		//resourcelocation = SkinCache.patchSkinResource(resourcelocation, textureType, profileTexture);
+		//NOTE: relies on the java runtime hack where final isn't enforced for local variables and or parameters
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;");
 		InsnList l = new InsnList();
+		l.add(new LabelNode());
 		l.add(new VarInsnNode(Opcodes.ALOAD, 4));
 		l.add(new VarInsnNode(Opcodes.ALOAD, 2));
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
@@ -497,27 +498,32 @@ public class EntityTransformer implements IClassTransformer{
 			return;
 		
 		InsnList li = new InsnList();
+//		dynamically get the ThreadDownloadImageData variable
+		int i9 = ASMHelper.getLocalVarIndexFromOwner(m, "Lnet/minecraft/client/renderer/ThreadDownloadImageData;");
+		if(i9 == -1)
+			i9 = 9;
+		
 //	  	threaddownloadimagedata.skinCallBack = skinAvailableCallback;
-		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
+		li.add(new VarInsnNode(Opcodes.ALOAD, i9));
 		li.add(new VarInsnNode(Opcodes.ALOAD, 3));
 		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinCallBack", "Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;"));
 
 //		threaddownloadimagedata.skinType = textureType;
-		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
+		li.add(new VarInsnNode(Opcodes.ALOAD, i9));
 		li.add(new VarInsnNode(Opcodes.ALOAD, 2));
 		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinType", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;"));
 	
 //	  	threaddownloadimagedata.skinLoc = resourcelocation;
-		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
+		li.add(new VarInsnNode(Opcodes.ALOAD, i9));
 		li.add(new VarInsnNode(Opcodes.ALOAD, 4));
 		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinLoc", "Lnet/minecraft/util/ResourceLocation;"));
 	
 //	  	threaddownloadimagedata.skinTexture = profileTexture;
-		li.add(new VarInsnNode(Opcodes.ALOAD, 9));
+		li.add(new VarInsnNode(Opcodes.ALOAD, i9));
 		li.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		li.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ThreadDownloadImageData", "skinTexture", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;"));
 		
-		m.instructions.insert(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 9)), li);
+		m.instructions.insert(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, i9)), li);
 	}
 
 	public void patchCPacketLoginStart(ClassNode classNode)
