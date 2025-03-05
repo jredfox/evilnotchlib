@@ -29,6 +29,7 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.main.skin.SkinCache;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -472,14 +473,21 @@ public class EntityTransformer implements IClassTransformer{
 	 */
 	public void transformSkinManager(ClassNode classNode)
 	{
-		//SkinCache#patchSkinResource
+		//relies on the java runtime hack where final isn't enforced for local variables and or parameters
+		//resourcelocation = SkinCache.patchSkinResource(resourcelocation, profileTexture);
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;");
-		m.instructions.insertBefore(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;)Lnet/minecraft/util/ResourceLocation;", false));
+		InsnList l = new InsnList();
+		l.add(new VarInsnNode(Opcodes.ALOAD, 4));
+		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)Lnet/minecraft/util/ResourceLocation;", false));
+		l.add(new VarInsnNode(Opcodes.ASTORE, 4));
+		m.instructions.insert(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), l);
 		
 		//profileTexture.cacheHash();
 		if(ConfigCore.asm_skinURLHook)
 		{
 			InsnList lh = new InsnList();
+			lh.add(new LabelNode());
 			lh.add(new VarInsnNode(Opcodes.ALOAD, 1));
 			lh.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "cacheHash", "()V", false));
 			m.instructions.insert(ASMHelper.getFirstInstruction(m), lh);

@@ -6,6 +6,7 @@ import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.minecraft.client.CapeRenderer;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
+import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -114,6 +115,7 @@ public class SkinEvent extends Event {
 		public String url;
 		public HashURLEvent(String u)
 		{
+			u = JavaUtil.safeString(u);
 			this.orgURL = u;
 			this.url = u;
 		}

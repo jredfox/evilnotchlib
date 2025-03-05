@@ -33,10 +33,12 @@ import com.evilnotch.lib.minecraft.network.packet.PacketSkinChange;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 
+import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -756,11 +758,20 @@ public class SkinCache {
 		return payload == null || payload.isEmpty();
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger();
 	private static final ResourceLocation fileSteve = new ResourceLocation("minecraft:skins/$steve");
 	private static final ResourceLocation fileAlex = new ResourceLocation("minecraft:skins/$alex");
-	public static ResourceLocation patchSkinResource(ResourceLocation resource) 
+	private static final ResourceLocation empty = new ResourceLocation("skins/");
+	public static ResourceLocation patchSkinResource(ResourceLocation resource, MinecraftProfileTexture texture) 
 	{
+		resource = new ResourceLocation("skins/" + "");//TODO: REMOVE DEBUG
+		
+		//Handle Empty URLs
+		if(resource.equals(empty))
+		{
+			String model = texture.getMetadata("model");
+			resource = (model == null || model.trim().isEmpty()) ? fileSteve : fileAlex;
+		}
+		
 		if(resource.equals(fileSteve))
 		{
 			MainJava.proxy.bindTexture(PlayerUtil.STEVE);//enforce steve is loaded so SkinManager doesn't try and download the skin
