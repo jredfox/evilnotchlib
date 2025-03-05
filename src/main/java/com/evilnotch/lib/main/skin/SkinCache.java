@@ -761,15 +761,13 @@ public class SkinCache {
 	private static final ResourceLocation fileSteve = new ResourceLocation("minecraft:skins/$steve");
 	private static final ResourceLocation fileAlex = new ResourceLocation("minecraft:skins/$alex");
 	private static final ResourceLocation empty = new ResourceLocation("skins/");
-	public static ResourceLocation patchSkinResource(ResourceLocation resource, MinecraftProfileTexture texture) 
+	public static ResourceLocation patchSkinResource(ResourceLocation resource, MinecraftProfileTexture.Type type, MinecraftProfileTexture texture) 
 	{
-		resource = new ResourceLocation("skins/" + "");//TODO: REMOVE DEBUG
-		
 		//Handle Empty URLs
-		if(resource.equals(empty))
+		if(type == MinecraftProfileTexture.Type.SKIN && resource.equals(empty))
 		{
-			String model = texture.getMetadata("model");
-			resource = (model == null || model.trim().isEmpty()) ? fileSteve : fileAlex;
+			String model = JavaUtil.safeString(texture.getMetadata("model"));
+			resource = (model.isEmpty() || model.equals("default")) ? fileSteve : fileAlex;
 		}
 		
 		if(resource.equals(fileSteve))

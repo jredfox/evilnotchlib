@@ -474,12 +474,13 @@ public class EntityTransformer implements IClassTransformer{
 	public void transformSkinManager(ClassNode classNode)
 	{
 		//relies on the java runtime hack where final isn't enforced for local variables and or parameters
-		//resourcelocation = SkinCache.patchSkinResource(resourcelocation, profileTexture);
+		//resourcelocation = SkinCache.patchSkinResource(resourcelocation, textureType, profileTexture);
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("loadSkin", "func_152789_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/client/resources/SkinManager$SkinAvailableCallback;)Lnet/minecraft/util/ResourceLocation;");
 		InsnList l = new InsnList();
 		l.add(new VarInsnNode(Opcodes.ALOAD, 4));
+		l.add(new VarInsnNode(Opcodes.ALOAD, 2));
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
-		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)Lnet/minecraft/util/ResourceLocation;", false));
+		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinCache", "patchSkinResource", "(Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)Lnet/minecraft/util/ResourceLocation;", false));
 		l.add(new VarInsnNode(Opcodes.ASTORE, 4));
 		m.instructions.insert(ASMHelper.getVarInsnNode(m, new VarInsnNode(Opcodes.ASTORE, 4)), l);
 		
