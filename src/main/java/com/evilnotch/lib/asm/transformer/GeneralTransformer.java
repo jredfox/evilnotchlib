@@ -23,6 +23,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import com.evilnotch.lib.api.mcp.MCPSidedString;
 import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 public class GeneralTransformer {
 	
@@ -451,25 +452,29 @@ public class GeneralTransformer {
 
 	public static void transformSkinTrans(ClassNode classNode)
 	{
-		//add the allowtrans field to the class
-		ASMHelper.addFeild(classNode, "allowtrans", "Z");
+		//public boolean allowTrans;
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "allowTrans", "Z", null, null));
+		//public MinecraftProfileTexture.Type evlType;
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "evlType", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;", null, null));
+		//public MinecraftProfileTexture evlTexture;
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "evlTexture", "Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;", null, null));
 		
-		//this.allowtrans = SkinTransparencyEvent.allow(this.imageData);
+		//this.allowTrans = SkinTransparencyEvent.allow(this);
 		MethodNode node = ASMHelper.getMethodNode(classNode, new MCPSidedString("parseUserSkin", "func_78432_a").toString(), "(Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;");
 		AbstractInsnNode spot = ASMHelper.getFieldNode(node, Opcodes.PUTFIELD, "net/minecraft/client/renderer/ImageBufferDownload", new MCPSidedString("imageData", "field_78438_a").toString(), "[I");
 		InsnList toInsert = new InsnList();
 		toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		toInsert.add(new VarInsnNode(Opcodes.ALOAD, 0));
-		toInsert.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ImageBufferDownload", new MCPSidedString("imageData", "field_78438_a").toString(), "[I"));
-		toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/event/client/SkinTransparencyEvent", "allow", "([I)Z", false));
-		toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ImageBufferDownload", "allowtrans", "Z"));
+		toInsert.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/event/client/SkinTransparencyEvent", "allow", "(Lnet/minecraft/client/renderer/ImageBufferDownload;)Z", false));
+		toInsert.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/renderer/ImageBufferDownload", "allowTrans", "Z"));
+		
 		node.instructions.insert(spot, toInsert);
 		
-		//if(this.allowtrans) return;
+		//if(this.allowTrans) return;
 		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("setAreaOpaque", "func_78433_b").toString(), "(IIII)V");
 		InsnList li = new InsnList();
 		li.add(new VarInsnNode(ALOAD, 0));
-		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ImageBufferDownload", "allowtrans", "Z"));
+		li.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/renderer/ImageBufferDownload", "allowTrans", "Z"));
 		LabelNode l1 = new LabelNode();
 		li.add(new JumpInsnNode(Opcodes.IFEQ, l1));
 		LabelNode l2 = new LabelNode();

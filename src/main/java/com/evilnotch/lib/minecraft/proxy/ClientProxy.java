@@ -39,6 +39,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.network.NetHandlerLoginClient;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.IImageBuffer;
+import net.minecraft.client.renderer.ImageBufferDownload;
 import net.minecraft.client.resources.SkinManager;
 import net.minecraft.client.resources.SkinManager.SkinAvailableCallback;
 import net.minecraft.entity.player.EntityPlayer;
@@ -396,6 +398,16 @@ public class ClientProxy extends ServerProxy{
 			((YggdrasilMinecraftSessionService)ss).insecureProfiles.invalidate(profile);
 		else if(ss != null)
 			System.err.println("Unsupported MinecraftSessionService:" + ss.getClass().getName());
+	}
+
+	public static void setImageBufferTexture(Type type, MinecraftProfileTexture texture, IImageBuffer ib) 
+	{
+		if(ib instanceof ImageBufferDownload)
+		{
+			ImageBufferDownload buf = (ImageBufferDownload) ib;
+			buf.evlTexture = texture;
+			buf.evlType = type;
+		}
 	}
 	
 }
