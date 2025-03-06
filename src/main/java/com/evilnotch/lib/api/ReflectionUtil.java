@@ -3,10 +3,14 @@ package com.evilnotch.lib.api;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ReflectionUtil {
+	public static Map<Class, Map<String, Field>> map = new ConcurrentHashMap();
 	
 	public static Object getObject(Object instance,Class clazz,String str)
 	{

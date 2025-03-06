@@ -757,18 +757,9 @@ public class SkinCache {
 
 	private static final ResourceLocation fileSteve = new ResourceLocation("minecraft:skins/$steve");
 	private static final ResourceLocation fileAlex = new ResourceLocation("minecraft:skins/$alex");
-	private static final ResourceLocation empty = new ResourceLocation("skins/");
 	public static ResourceLocation patchSkinResource(ResourceLocation resource, MinecraftProfileTexture.Type type, MinecraftProfileTexture texture) 
 	{
-		//Handle Empty URLs
-		if(type == MinecraftProfileTexture.Type.SKIN && resource.equals(empty))
-		{
-			String model = JavaUtil.safeString(texture.getMetadata("model"));
-			resource = model.equals("slim") ? fileAlex : fileSteve;
-			MainJava.proxy.bindTexture(resource);
-			return resource;
-		}
-		else if(resource.equals(fileSteve))
+		if(resource.equals(fileSteve))
 		{
 			MainJava.proxy.bindTexture(PlayerUtil.STEVE);//enforce steve is loaded so SkinManager doesn't try and download the skin
 			return PlayerUtil.STEVE;
