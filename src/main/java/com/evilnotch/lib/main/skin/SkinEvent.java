@@ -85,7 +85,7 @@ public class SkinEvent extends Event {
 			{
 				boolean isAlex = this.skin.model.equals("slim") || this.skin.model.isEmpty() && PlayerUtil.isAlex(profile.getId());
 				this.skin.skin = "http://textures.minecraft.net/texture/" + (isAlex ? "$alex" : "$steve");
-				this.skin.model = isAlex ? "slim" : "";
+				this.skin.model = isAlex ? "slim" : this.skin.model;
 			}
 			
 			SkinCache.setEncode(this.profile.getProperties(), this.skin);
