@@ -635,7 +635,7 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new JumpInsnNode(Opcodes.IFEQ, label));
 		m.instructions.insert(jump, li);
 		
-		//if(url == null || url.trim().isEmpty) return false;
+		//if(url == null || url.trim().isEmpty) return true;
 		MethodNode wlist = ASMHelper.getMethodNode(classNode, "isWhitelistedDomain", "(Ljava/lang/String;)Z");
 		InsnList list = new InsnList();
 		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -647,7 +647,7 @@ public class EntityTransformer implements IClassTransformer{
 		LabelNode l2 = new LabelNode();
 		list.add(new JumpInsnNode(Opcodes.IFEQ, l2));
 		list.add(l1);
-		list.add(new InsnNode(Opcodes.ICONST_0));
+		list.add(new InsnNode(Opcodes.ICONST_1));
 		list.add(new InsnNode(Opcodes.IRETURN));
 		list.add(l2);
 		wlist.instructions.insert(ASMHelper.getFirstInstruction(wlist), list);
