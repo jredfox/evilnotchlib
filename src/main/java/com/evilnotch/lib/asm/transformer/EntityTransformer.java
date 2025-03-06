@@ -3,6 +3,7 @@ package com.evilnotch.lib.asm.transformer;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -426,7 +427,7 @@ public class EntityTransformer implements IClassTransformer{
 	}
 
 	public void patchStopSteve1(ClassNode classNode) throws IOException
-	{
+	{	
 		if(!ConfigCore.asm_stopSteve)
 			return;
 		
@@ -597,10 +598,31 @@ public class EntityTransformer implements IClassTransformer{
 
 	public void patchStopSteve(ClassNode classNode) 
 	{
+		//AT the class
+		ASMHelper.pubMinusFinal(classNode, true);
 		//to prevent crashes always add the field even when ConfigCore#asm_stopSteve is disabled
 		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "canRender", "Z", null, null));
 		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "ssms", "J", null, null));
-		ASMHelper.pubMinusFinal(classNode, true);
+		
+		//public Map<String, String> skinmeta;
+		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "skinmeta", "Ljava/util/Map;", "Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;", null));
+		
+		//this.skinmeta = new HashMap(0);
+		for(MethodNode m : classNode.methods)
+		{
+			if(m.name.equals("<init>"))
+			{
+				InsnList lctr = new InsnList();
+				lctr.add(new VarInsnNode(Opcodes.ALOAD, 0));
+				lctr.add(new TypeInsnNode(Opcodes.NEW, "java/util/HashMap"));
+				lctr.add(new InsnNode(Opcodes.DUP));
+				lctr.add(new InsnNode(Opcodes.ICONST_0));
+				lctr.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "java/util/HashMap", "<init>", "(I)V", false));
+				lctr.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/minecraft/client/network/NetworkPlayerInfo", "skinmeta", "Ljava/util/Map;"));
+				lctr.add(new LabelNode());
+				m.instructions.insert(ASMHelper.getLastLabelNode(m, false), lctr);
+			}
+		}
 	}
 
 	private void patchLanSkinsCache(ClassNode classNode) 
