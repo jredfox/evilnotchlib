@@ -764,7 +764,7 @@ public class SkinCache {
 		if(type == MinecraftProfileTexture.Type.SKIN && resource.equals(empty))
 		{
 			String model = JavaUtil.safeString(texture.getMetadata("model"));
-			resource = (model.isEmpty() || model.equals("default")) ? fileSteve : fileAlex;
+			resource = model.equals("slim") ? fileAlex : fileSteve;
 			MainJava.proxy.bindTexture(resource);
 			return resource;
 		}
