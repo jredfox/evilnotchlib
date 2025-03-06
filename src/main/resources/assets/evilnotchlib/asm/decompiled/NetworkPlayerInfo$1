@@ -14,8 +14,7 @@
      						   model = model == null || model.trim().isEmpty() ? "default" : model;
      						   NetworkPlayerInfo.this.playerTextures.put(Type.SKIN, model.equals("slim") ? PlayerUtil.ALEX : PlayerUtil.STEVE);
      						   NetworkPlayerInfo.this.skinType = model;
-     						   if(profileTexture.metadata != null)
-     							   NetworkPlayerInfo.this.evlmeta = new HashMap(profileTexture.metadata);
+     						   NetworkPlayerInfo.this.skinmeta = profileTexture.metadata != null ? new HashMap(profileTexture.metadata) : new HashMap(0);
      						   MainJava.proxy.deleteTexture(location);
      					   }
      					   
