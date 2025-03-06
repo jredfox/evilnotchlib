@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ReflectionUtil {
+	
 	public static Map<Class, Map<String, Field>> f = new ConcurrentHashMap();
 	
 	public static Object getObject(Object instance,Class clazz,String str)
