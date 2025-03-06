@@ -405,8 +405,8 @@ public class ClientProxy extends ServerProxy{
 		if(ib instanceof ImageBufferDownload)
 		{
 			ImageBufferDownload buf = (ImageBufferDownload) ib;
-			buf.evlTexture = texture;
 			buf.evlType = type;
+			buf.evlTexture = texture;
 		}
 	}
 	
