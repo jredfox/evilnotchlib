@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.evilnotch.lib.api.ReflectionUtil;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.minecraft.tick.ITick;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
@@ -20,7 +21,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class TickServerEvent implements ITick {
 
@@ -39,19 +39,11 @@ public class TickServerEvent implements ITick {
 	
 	public static void init()
 	{
-		try
-		{
-			keepLoaded = (Collection) ReflectionHelper.findField(DimensionManager.class, "keepLoaded").get(null);
-			unloadQueue = (Collection) ReflectionHelper.findField(DimensionManager.class, "unloadQueue").get(null);
-			worlds = (Map) ReflectionHelper.findField(DimensionManager.class, "worlds").get(null);
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-		}
+		keepLoaded =  (Collection) ReflectionUtil.getObject(null, DimensionManager.class, "keepLoaded");
+		unloadQueue = (Collection) ReflectionUtil.getObject(null, DimensionManager.class, "unloadQueue");
+		worlds = (Map) ReflectionUtil.getObject(null, DimensionManager.class, "worlds");
 		init = true;
 	}
-
 	
 	@Override
 	public void tick() 
@@ -132,6 +124,7 @@ public class TickServerEvent implements ITick {
 	{
 		msgs.clear();
 		kicker.clear();
+		init = false;
 	}
 
 	@Override

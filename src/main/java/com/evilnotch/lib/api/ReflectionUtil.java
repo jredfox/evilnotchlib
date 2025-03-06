@@ -16,6 +16,10 @@ public class ReflectionUtil {
 		{
 			return getField(clazz, str).get(instance);
 		}
+		catch(NullPointerException p)
+		{
+			return null;
+		}
 		catch(Exception e)
 		{
 			e.printStackTrace(); 
@@ -28,6 +32,10 @@ public class ReflectionUtil {
 		try
 		{
 			getField(clazz, str).set(instance,toset);
+		}
+		catch(NullPointerException p)
+		{
+			
 		}
 		catch(Exception e)
 		{
@@ -57,6 +65,9 @@ public class ReflectionUtil {
 	
 	public static Field getField(Class clazz, String field)
 	{
+		if(clazz == null)
+			return null;
+		
 		Map<String, Field> fields = f.get(clazz);
 		if(fields == null)
 		{
@@ -71,12 +82,16 @@ public class ReflectionUtil {
 			{
 				f = clazz.getDeclaredField(field);
 				f.setAccessible(true);
-				fields.put(field, f);
+			}
+			catch(NoSuchFieldException e)
+			{
+				
 			}
 			catch(Throwable t)
 			{
 				t.printStackTrace();
 			}
+			fields.put(field, f);//put field into cache even if it doesn't exist to prevent lag calls on tick
 		}
 		return f;
 	}
