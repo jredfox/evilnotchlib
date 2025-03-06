@@ -488,9 +488,9 @@ public class EntityTransformer implements IClassTransformer{
 		if(ConfigCore.asm_skinURLHook)
 		{
 			InsnList lh = new InsnList();
-			lh.add(new LabelNode());
 			lh.add(new VarInsnNode(Opcodes.ALOAD, 1));
 			lh.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/mojang/authlib/minecraft/MinecraftProfileTexture", "cacheHash", "()V", false));
+			lh.add(new LabelNode());
 			m.instructions.insert(ASMHelper.getFirstInstruction(m), lh);
 		}
 		
@@ -505,6 +505,7 @@ public class EntityTransformer implements IClassTransformer{
 		
 //		ClientProxy.setImageBufferTexture(textureType, profileTexture, iimagebuffer);
 		InsnList il = new InsnList();
+		il.add(new LabelNode());
 		il.add(new VarInsnNode(Opcodes.ALOAD, 2));
 		il.add(new VarInsnNode(Opcodes.ALOAD, 1));
 		il.add(new VarInsnNode(Opcodes.ALOAD, i8));
@@ -1002,6 +1003,8 @@ public class EntityTransformer implements IClassTransformer{
 		
 		//public this.cachedHash;
 		ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "cachedHash", "Ljava/lang/String;", null, null));
+		//AT the class
+		ASMHelper.pubMinusFinal(classNode, true);
 		
 		MethodNode m = ASMHelper.getMethodNode(classNode, "getHash", "()Ljava/lang/String;");
 		
