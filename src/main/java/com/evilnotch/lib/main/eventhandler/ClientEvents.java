@@ -3,6 +3,7 @@ package com.evilnotch.lib.main.eventhandler;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.lib.minecraft.client.Seeds;
@@ -127,6 +128,13 @@ public class ClientEvents {
 	public void coolskins(SkinTransparencyEvent event)
 	{
 		event.allowTrans = Config.allowskintrans;
+	}
+	
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void coolskins(SkinEvent.Capability event)
+	{
+		event.skin.meta.put("SkinTRANSTEST", "true");
+		event.skin.meta.put("AEEEY A SPA C E", "I AM A STRING");
 	}
 	
 	/**
