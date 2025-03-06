@@ -130,13 +130,13 @@ public class ClientEvents {
 		event.allowTrans = Config.allowskintrans;//&& event.texture.getMetadata("SkinAlpha").startsWith("t");
 	}
 	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void coolskins(SkinEvent.Capability event)
-	{
-		event.skin.meta.put("alpha", "true");
-//		event.skin.meta.put("SkinTRANSTEST", "true");
-//		event.skin.meta.put("AEEEY A SPA C E", "I AM A STRING");//TODO: remove
-	}
+//	@SubscribeEvent(priority=EventPriority.HIGHEST)
+//	public void coolskins(SkinEvent.Capability event)
+//	{
+////		event.skin.meta.put("alpha", "true");
+////		event.skin.meta.put("SkinTRANSTEST", "true");
+////		event.skin.meta.put("AEEEY A SPA C E", "I AM A STRING");//TODO: remove
+//	}
 	
 	/**
 	 * Vanilla Bug Fix Prevents Crashing When Rendering Entities Sooner then expected with nametags

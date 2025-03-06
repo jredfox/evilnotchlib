@@ -418,4 +418,35 @@ public class ClientProxy extends ServerProxy{
 			info.skinmeta = texture.metadata != null ? new HashMap(texture.metadata) : new HashMap(0);
 	}
 	
+	public static void setMeta(NetworkPlayerInfo info, String key, String value)
+	{
+		info.skinmeta.put(key, value);
+	}
+	
+	public static void setMeta(NetworkPlayerInfo info, String key, boolean value)
+	{
+		info.skinmeta.put(key, String.valueOf(value));
+	}
+	
+	public static boolean getMetaBoolean(NetworkPlayerInfo info, String key)
+	{
+		String v = info.skinmeta.get(key);
+		return v != null && v.startsWith("t");
+	}
+	
+	public static boolean getMetaBoolean(NetworkPlayerInfo info, String key, boolean def)
+	{
+		String v = info.skinmeta.get(key);
+		return v != null ? v.startsWith("t") : def;
+	}
+	
+	/**
+	 * @return Non-Null String
+	 */
+	public static String getMeta(NetworkPlayerInfo info, String key)
+	{
+		String v = info.skinmeta.get(key);
+		return v != null ? v : "";
+	}
+	
 }
