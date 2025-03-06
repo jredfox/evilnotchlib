@@ -32,8 +32,10 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.util.JavaUtil;
 
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class EntityTransformer implements IClassTransformer{
@@ -429,14 +431,26 @@ public class EntityTransformer implements IClassTransformer{
 	}
 
 	public void patchStopSteve1(ClassNode classNode) throws IOException
-	{	
+	{
+		String thiszero = ASMHelper.getThisParentField(classNode, "Lnet/minecraft/client/network/NetworkPlayerInfo;", "field_177224_a");
+		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("skinAvailable", "func_180521_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
+		
+		//ClientProxy.setSkinMeta(NetworkPlayerInfo.this, typeIn, profileTexture);
+		InsnList list = new InsnList();
+		list.add(new LabelNode());
+		list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+		list.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/network/NetworkPlayerInfo$1", thiszero, "Lnet/minecraft/client/network/NetworkPlayerInfo;"));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 1));
+		list.add(new VarInsnNode(Opcodes.ALOAD, 3));
+		list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/proxy/ClientProxy", "setSkinMeta", "(Lnet/minecraft/client/network/NetworkPlayerInfo;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V", false));
+		m.instructions.insert(list);
+		
 		if(!ConfigCore.asm_stopSteve)
 			return;
 		
 		//add IMPL of stopSteve
 		String inputBase = "assets/evilnotchlib/asm/" + (FMLCorePlugin.isObf ? "srg/" : "deob/");
 		ASMHelper.addIfMethod(classNode, inputBase + "NetworkPlayerInfo$1", "skinUnAvailable", "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
-		String thiszero = ASMHelper.getThisParentField(classNode, "Lnet/minecraft/client/network/NetworkPlayerInfo;", "field_177224_a");
 		//patch method for compiled as this$0 doesn't exist
 		if(!thiszero.equals("this$0"))
 		{
@@ -460,7 +474,6 @@ public class EntityTransformer implements IClassTransformer{
 		ASMHelper.addInterface(classNode, "com/evilnotch/lib/main/skin/IStopSteve");
 		
 		//StopSteve.stopSteve(NetWorkPlayerInfo.this, typeIn);
-		MethodNode m = ASMHelper.getMethodNode(classNode, new MCPSidedString("skinAvailable", "func_180521_a").toString(), "(Lcom/mojang/authlib/minecraft/MinecraftProfileTexture$Type;Lnet/minecraft/util/ResourceLocation;Lcom/mojang/authlib/minecraft/MinecraftProfileTexture;)V");
 		InsnList l = new InsnList();
 		l.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		l.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/network/NetworkPlayerInfo$1", thiszero, "Lnet/minecraft/client/network/NetworkPlayerInfo;"));

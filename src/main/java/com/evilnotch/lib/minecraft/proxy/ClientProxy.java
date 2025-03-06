@@ -1,6 +1,7 @@
 package com.evilnotch.lib.minecraft.proxy;
 
 import java.net.HttpURLConnection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -409,6 +410,12 @@ public class ClientProxy extends ServerProxy{
 			buf.evlType = type;
 			buf.evlTexture = texture;
 		}
+	}
+
+	public static void setSkinMeta(NetworkPlayerInfo info, MinecraftProfileTexture.Type typeIn, MinecraftProfileTexture texture) 
+	{
+		if(typeIn == MinecraftProfileTexture.Type.SKIN)
+			info.skinmeta = texture.metadata != null ? new HashMap(texture.metadata) : new HashMap(0);
 	}
 	
 }
