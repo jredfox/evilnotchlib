@@ -1,11 +1,8 @@
 package com.evilnotch.lib.asm.transformer;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -32,10 +29,8 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.util.JavaUtil;
 
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class EntityTransformer implements IClassTransformer{

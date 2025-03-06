@@ -3,19 +3,18 @@ package com.evilnotch.lib.api;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
 public class ReflectionUtil {
-	public static Map<Class, Map<String, Field>> map = new ConcurrentHashMap();
+	public static Map<Class, Map<String, Field>> f = new ConcurrentHashMap();
 	
 	public static Object getObject(Object instance,Class clazz,String str)
 	{
 		try
 		{
-			return ReflectionHelper.findField(clazz, str).get(instance);
+			return getField(clazz, str).get(instance);
 		}
 		catch(Exception e)
 		{
@@ -23,12 +22,12 @@ public class ReflectionUtil {
 			return null;
 		}
 	}
-	
+
 	public static void setObject(Object instance,Object toset,Class clazz,String str)
 	{
 		try
 		{
-			ReflectionHelper.findField(clazz, str).set(instance,toset);
+			getField(clazz, str).set(instance,toset);
 		}
 		catch(Exception e)
 		{
@@ -42,7 +41,7 @@ public class ReflectionUtil {
 	{
 		try
 		{
-			Field field = ReflectionHelper.findField(clazz,strfeild);
+			Field field = getField(clazz,strfeild);
 			field.setAccessible(true);
 		
 			Field modifiersField = Field.class.getDeclaredField("modifiers");
@@ -54,6 +53,32 @@ public class ReflectionUtil {
 		{
 			t.printStackTrace();
 		}
+	}
+	
+	public static Field getField(Class clazz, String field)
+	{
+		Map<String, Field> fields = f.get(clazz);
+		if(fields == null)
+		{
+			fields = new HashMap();
+			f.put(clazz, fields);
+		}
+		
+		Field f = fields.get(field);
+		if(f == null)
+		{
+			try
+			{
+				f = clazz.getDeclaredField(field);
+				f.setAccessible(true);
+				fields.put(field, f);
+			}
+			catch(Throwable t)
+			{
+				t.printStackTrace();
+			}
+		}
+		return f;
 	}
 
 	/**

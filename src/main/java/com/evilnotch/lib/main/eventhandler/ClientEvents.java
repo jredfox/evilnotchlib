@@ -3,7 +3,6 @@ package com.evilnotch.lib.main.eventhandler;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.lib.minecraft.client.Seeds;
