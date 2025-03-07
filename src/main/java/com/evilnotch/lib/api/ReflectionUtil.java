@@ -57,9 +57,26 @@ public class ReflectionUtil {
 		}
 	}
 	
-	public static void setFinalObject(Object instance,Object toset,Class clazz,String strfeild)
+	/**
+	 * Warning use at your own risk this is getting dangerous make sure you know what you are doing
+	 */
+	public static void setFinalObject(Object instance, Object toset, Class clazz, String strfeild)
 	{
-		setObject(instance, toset, clazz, strfeild);
+		try
+		{
+			Field field = getField(clazz, strfeild);
+			field.setAccessible(true);
+			modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+			field.set(instance, toset);
+		}
+		catch(NullPointerException p)
+		{
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static Field getField(Class clazz, String field)
