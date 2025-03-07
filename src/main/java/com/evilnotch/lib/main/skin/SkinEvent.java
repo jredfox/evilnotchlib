@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import org.ralleytn.simple.json.JSONObject;
 
 import com.evilnotch.lib.minecraft.client.CapeRenderer;
+import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
@@ -14,6 +15,7 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
@@ -187,6 +189,11 @@ public class SkinEvent extends Event {
 	 */
 	public static class Mouse extends SkinEvent
 	{
+		/**
+		 * Set this to true to Enable Dynamic Events rather then just metadata
+		 */
+		public static boolean enabled;
+		
 		public boolean ears;
 		public EntityPlayer player;
 		
@@ -200,12 +207,18 @@ public class SkinEvent extends Event {
 		 */
 		public static boolean fire(EntityPlayer player)
 		{
-			if(player.isInvisible())
+			if(!(player instanceof AbstractClientPlayer) || player.isInvisible())
 				return false;
 			
-			SkinEvent.Mouse event = new SkinEvent.Mouse(player);
-			MinecraftForge.EVENT_BUS.post(event);
-			return event.ears;
+			if(enabled)
+			{
+				SkinEvent.Mouse event = new SkinEvent.Mouse(player);
+				MinecraftForge.EVENT_BUS.post(event);
+				return event.ears;
+			}
+			
+			NetworkPlayerInfo info = ((AbstractClientPlayer) player).playerInfo;
+			return info != null && ClientProxy.getMetaBoolean(info, "e");
 		}
 	}
 	
@@ -215,6 +228,11 @@ public class SkinEvent extends Event {
 	 */
 	public static class Dinnerbone extends SkinEvent
 	{
+		/**
+		 * Set this to true to Enable Dynamic Events rather then just metadata
+		 */
+		public static boolean enabled;
+		
 		public boolean dinnerbone;
 		public EntityPlayer player;
 		
@@ -225,12 +243,18 @@ public class SkinEvent extends Event {
 		
 		public static boolean fire(Entity e)
 		{
-			if(!(e instanceof EntityPlayer))
+			if(!(e instanceof AbstractClientPlayer))
 				return false;
 			
-			SkinEvent.Dinnerbone event = new SkinEvent.Dinnerbone((EntityPlayer) e);
-			MinecraftForge.EVENT_BUS.post(event);
-			return event.dinnerbone;
+			if(enabled)
+			{
+				SkinEvent.Dinnerbone event = new SkinEvent.Dinnerbone((EntityPlayer) e);
+				MinecraftForge.EVENT_BUS.post(event);
+				return event.dinnerbone;
+			}
+			
+			NetworkPlayerInfo info = ((AbstractClientPlayer) e).playerInfo;
+			return info != null && ClientProxy.getMetaBoolean(info, "d");
 		}
 	}
 	
@@ -240,6 +264,11 @@ public class SkinEvent extends Event {
 	 */
 	public static class DinnerboneTab extends SkinEvent
 	{
+		/**
+		 * Set this to true to Enable Dynamic Events rather then just metadata
+		 */
+		public static boolean enabled;
+		
 		public boolean dinnerbone;
 		@Nullable
 		public EntityPlayer player;
@@ -258,9 +287,14 @@ public class SkinEvent extends Event {
 		 */
 		public static boolean fire(@Nullable EntityPlayer p, NetworkPlayerInfo info) 
 		{
-			SkinEvent.DinnerboneTab event = new SkinEvent.DinnerboneTab(p, info);
-			MinecraftForge.EVENT_BUS.post(event);
-			return event.dinnerbone;
+			if(enabled)
+			{
+				SkinEvent.DinnerboneTab event = new SkinEvent.DinnerboneTab(p, info);
+				MinecraftForge.EVENT_BUS.post(event);
+				return event.dinnerbone;
+			}
+			
+			return info != null && ClientProxy.getMetaBoolean(info, "d");
 		}
 	}
 	
@@ -273,7 +307,7 @@ public class SkinEvent extends Event {
 		/**
 		 * When false uses the Skin's Metadata instead of dynamic events
 		 */
-		public static boolean enabled = false;
+		public static boolean enabled;
 		
 		/**
 		 * When True Renders the Cape as Enchanted regardless of if player is wearing an Enchanted Armor
@@ -296,12 +330,15 @@ public class SkinEvent extends Event {
 		
 		public static boolean fire(RenderPlayer r, AbstractClientPlayer p, float pt, float s)
 		{
-			if(!CapeEnchant.enabled)
-				return false;
+			if(enabled)
+			{
+				CapeEnchant e = new CapeEnchant(r, p, pt, s);
+				MinecraftForge.EVENT_BUS.post(e);
+				return e.renderEnchant;
+			}
 			
-			CapeEnchant e = new CapeEnchant(r, p, pt, s);
-			MinecraftForge.EVENT_BUS.post(e);
-			return e.renderEnchant;
+			NetworkPlayerInfo info = p.playerInfo;
+			return info != null && (ClientProxy.getMetaBoolean(info, "cg", true) && p.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted() || ClientProxy.getMetaBoolean(info, "cga"));
 		}
 		
 		public static void render(RenderPlayer r, AbstractClientPlayer p, float pt, float s)
