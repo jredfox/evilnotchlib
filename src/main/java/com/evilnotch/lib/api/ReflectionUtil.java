@@ -24,7 +24,7 @@ public class ReflectionUtil {
 		}
 	}
 	
-	public static Object getObject(Object instance,Class clazz,String str)
+	public static Object getObject(Object instance, Class clazz, String str)
 	{
 		try
 		{
@@ -41,11 +41,11 @@ public class ReflectionUtil {
 		}
 	}
 
-	public static void setObject(Object instance,Object toset,Class clazz,String str)
+	public static void setObject(Object instance, Object toset, Class clazz, String str)
 	{
 		try
 		{
-			getField(clazz, str).set(instance,toset);
+			getField(clazz, str).set(instance, toset);
 		}
 		catch(NullPointerException p)
 		{
@@ -66,6 +66,7 @@ public class ReflectionUtil {
 		{
 			Field field = getField(clazz, strfeild);
 			field.setAccessible(true);
+			modifiersField.setAccessible(true);
 			modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 			field.set(instance, toset);
 		}
@@ -117,7 +118,7 @@ public class ReflectionUtil {
 	 * Use {@link #invoke(Method, Object, Object...)} instead get the method by using {@link #getMethod(Class, String, Class...)}
 	 */
 	@Deprecated
-	public static void invokeMethod(Object instance, Class clazz, String mName,Object[] parameterobjs,Class[] param) 
+	public static void invokeMethod(Object instance, Class clazz, String mName, Object[] parameterobjs, Class[] param) 
 	{
 		try
 		{
@@ -134,7 +135,7 @@ public class ReflectionUtil {
 	 * get a method safley from a class
 	 * @return
 	 */
-	public static Method getMethod(Class clazz,String name, Class...params) 
+	public static Method getMethod(Class clazz, String name, Class...params) 
 	{
 		try 
 		{
