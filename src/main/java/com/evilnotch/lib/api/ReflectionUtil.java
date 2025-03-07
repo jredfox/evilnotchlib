@@ -10,6 +10,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ReflectionUtil {
 	
 	public static Map<Class, Map<String, Field>> f = new ConcurrentHashMap();
+	public static Field modifiersField;
+	static
+	{
+		try
+		{
+			modifiersField = Field.class.getDeclaredField("modifiers");
+			modifiersField.setAccessible(true);
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace();
+		}
+	}
 	
 	public static Object getObject(Object instance,Class clazz,String str)
 	{
@@ -48,20 +61,7 @@ public class ReflectionUtil {
 	 */
 	public static void setFinalObject(Object instance,Object toset,Class clazz,String strfeild)
 	{
-		try
-		{
-			Field field = getField(clazz,strfeild);
-			field.setAccessible(true);
-		
-			Field modifiersField = Field.class.getDeclaredField("modifiers");
-	    	modifiersField.setAccessible(true);
-	    	modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-	    	field.set(instance, toset);
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-		}
+		setObject(instance, toset, clazz, strfeild);
 	}
 	
 	public static Field getField(Class clazz, String field)
@@ -83,6 +83,7 @@ public class ReflectionUtil {
 			{
 				f = clazz.getDeclaredField(field);
 				f.setAccessible(true);
+				modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
 			}
 			catch(NoSuchFieldException e)
 			{
