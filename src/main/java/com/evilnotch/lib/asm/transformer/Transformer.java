@@ -31,7 +31,6 @@ public class Transformer implements IClassTransformer
 	public Transformer()
 	{
 		LaunchClassLoaderFix.stopMemoryOverflow(this.getClass().getClassLoader());
-		ReflectionUtil.modifiersField.toString();
 		allowMojangASM();
 	}
 	
