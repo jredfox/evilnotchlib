@@ -1,7 +1,5 @@
 package com.evilnotch.lib.asm.transformer;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -932,7 +930,7 @@ public class EntityTransformer implements IClassTransformer{
 		InsnList l = new InsnList();
 		l.add(new LabelNode());
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
-		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireMouse", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", false));
+		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$Mouse", "fire", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", false));
 		l.add(new JumpInsnNode(Opcodes.IFNE, label));
 		m.instructions.insert(l);
 	}
@@ -951,7 +949,7 @@ public class EntityTransformer implements IClassTransformer{
 		//prepend if(SkinEvent#fireDinnerbone(entityliving) ||
 		InsnList l = new InsnList();
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
-		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireDinnerbone", "(Lnet/minecraft/entity/Entity;)Z", false));
+		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$Dinnerbone", "fire", "(Lnet/minecraft/entity/Entity;)Z", false));
 		l.add(new JumpInsnNode(Opcodes.IFNE, label));
 		l.add(new LabelNode());
 		m.instructions.insert(ASMHelper.prevLineNumberNode(db), l);
@@ -1026,7 +1024,7 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new LabelNode());
 		li.add(new VarInsnNode(Opcodes.ALOAD, indexPlayer));
 		li.add(new VarInsnNode(Opcodes.ALOAD, indexInfo));
-		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent", "fireDinnerbone", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/client/network/NetworkPlayerInfo;)Z", false));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$DinnerboneTab", "fire", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/client/network/NetworkPlayerInfo;)Z", false));
 		li.add(new VarInsnNode(Opcodes.ISTORE, targ.var));
 		li.add(l1);
 		m.instructions.insert(ASMHelper.nextLabelR(targ), li);

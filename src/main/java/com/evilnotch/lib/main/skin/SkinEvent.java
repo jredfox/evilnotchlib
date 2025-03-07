@@ -107,12 +107,18 @@ public class SkinEvent extends Event {
 			this.org =  o.getSafeJSONObject("textures");
 			this.json = j.getSafeJSONObject("textures");
 		}
+		
+		public static void fire(JSONObject prevJSON, JSONObject skinJSON)
+		{
+			MinecraftForge.EVENT_BUS.post(new SkinEvent.Merge(prevJSON, skinJSON));
+		}
 	}
 	
 	public static class HashURLEvent extends Event
 	{
 		public String orgURL;
 		public String url;
+		
 		public HashURLEvent(String u)
 		{
 			u = JavaUtil.safeString(u);
@@ -188,6 +194,19 @@ public class SkinEvent extends Event {
 		{
 			this.player = p;
 		}
+		
+		/**
+		 * Fires the Mouse Ears and Respects the Player's Invisibility
+		 */
+		public static boolean fire(EntityPlayer player)
+		{
+			if(player.isInvisible())
+				return false;
+			
+			SkinEvent.Mouse event = new SkinEvent.Mouse(player);
+			MinecraftForge.EVENT_BUS.post(event);
+			return event.ears;
+		}
 	}
 	
 	/**
@@ -202,6 +221,16 @@ public class SkinEvent extends Event {
 		public Dinnerbone(EntityPlayer p)
 		{
 			this.player = p;
+		}
+		
+		public static boolean fire(Entity e)
+		{
+			if(!(e instanceof EntityPlayer))
+				return false;
+			
+			SkinEvent.Dinnerbone event = new SkinEvent.Dinnerbone((EntityPlayer) e);
+			MinecraftForge.EVENT_BUS.post(event);
+			return event.dinnerbone;
 		}
 	}
 	
@@ -221,6 +250,17 @@ public class SkinEvent extends Event {
 		{
 			this.player = p;
 			this.info = info;
+		}
+		
+		/**
+		 * @SideOnly(SIDE.CLIENT) Actually using the annotation results in crashes level for some odd reason
+		 * @author jredfox
+		 */
+		public static boolean fire(@Nullable EntityPlayer p, NetworkPlayerInfo info) 
+		{
+			SkinEvent.DinnerboneTab event = new SkinEvent.DinnerboneTab(p, info);
+			MinecraftForge.EVENT_BUS.post(event);
+			return event.dinnerbone;
 		}
 	}
 	
@@ -269,40 +309,6 @@ public class SkinEvent extends Event {
 			if(fire(r, p, pt, s))
 				CapeRenderer.renderEnchantedCape(r, p, r.getMainModel(), pt, s);
 		}
-	}
-	
-	/**
-	 * Fires the Mouse Ears and Respects the Player's Invisibility
-	 */
-	public static boolean fireMouse(EntityPlayer player)
-	{
-		if(player.isInvisible())
-			return false;
-		
-		SkinEvent.Mouse event = new SkinEvent.Mouse(player);
-		MinecraftForge.EVENT_BUS.post(event);
-		return event.ears;
-	}
-
-	public static boolean fireDinnerbone(Entity e)
-	{
-		if(!(e instanceof EntityPlayer))
-			return false;
-		
-		SkinEvent.Dinnerbone event = new SkinEvent.Dinnerbone((EntityPlayer) e);
-		MinecraftForge.EVENT_BUS.post(event);
-		return event.dinnerbone;
-	}
-
-	/**
-	 * @SideOnly(SIDE.CLIENT) Actually using the annotation results in crashes level for some odd reason
-	 * @author jredfox
-	 */
-	public static boolean fireDinnerbone(@Nullable EntityPlayer p, NetworkPlayerInfo info) 
-	{
-		SkinEvent.DinnerboneTab event = new SkinEvent.DinnerboneTab(p, info);
-		MinecraftForge.EVENT_BUS.post(event);
-		return event.dinnerbone;
 	}
 
 }
