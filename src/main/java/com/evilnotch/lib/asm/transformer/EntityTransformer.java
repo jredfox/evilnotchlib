@@ -1,5 +1,7 @@
 package com.evilnotch.lib.asm.transformer;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -478,7 +480,7 @@ public class EntityTransformer implements IClassTransformer{
 		
 //		ASMHelper.exportMethods(classNode, "Exports/NetworkPlayerInfo", ASMHelper.getMethodNodeByName(classNode, "skinUnAvailable"));
 //		ClassNode srg = ASMHelper.getClassNode(new FileInputStream(new File("C:/Users/jredfox/Desktop/NetworkPlayerInfo$1.class")));
-//		ASMHelper.exportMethods(srg, "Exports/NetworkPlayerInfo_SRG", ASMHelper.getMethodNodeByName(srg, "func_180521_a"));
+//		ASMHelper.exportMethods(srg, "Exports/NetworkPlayerInfo_SRG", ASMHelper.getMethodNodeByName(srg, "skinUnAvailable"));
 	}
 
 	/**
