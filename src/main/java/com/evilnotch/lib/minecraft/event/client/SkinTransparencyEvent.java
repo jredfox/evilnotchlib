@@ -1,5 +1,7 @@
 package com.evilnotch.lib.minecraft.event.client;
 
+import javax.annotation.Nullable;
+
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import net.minecraft.client.renderer.ImageBufferDownload;
@@ -8,7 +10,9 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class SkinTransparencyEvent extends Event {
 	
+	@Nullable
 	public MinecraftProfileTexture.Type type;
+	@Nullable
 	public MinecraftProfileTexture texture;
 	public int[] imageData;
 	public boolean allowTrans;
