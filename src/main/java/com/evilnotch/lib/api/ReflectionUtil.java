@@ -56,9 +56,7 @@ public class ReflectionUtil {
 			e.printStackTrace();
 		}
 	}
-	/**
-	 * Warning use at your own risk this is getting dangerous make sure you know what you are doing
-	 */
+	
 	public static void setFinalObject(Object instance,Object toset,Class clazz,String strfeild)
 	{
 		setObject(instance, toset, clazz, strfeild);
