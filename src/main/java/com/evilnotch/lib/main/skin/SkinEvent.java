@@ -1,5 +1,7 @@
 package com.evilnotch.lib.main.skin;
 
+import java.lang.reflect.Method;
+
 import javax.annotation.Nullable;
 
 import org.ralleytn.simple.json.JSONObject;
@@ -14,6 +16,7 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.MinecraftForge;
@@ -346,6 +349,15 @@ public class SkinEvent extends Event {
 			if(fire(r, p, pt, s))
 				CapeRenderer.renderEnchantedCape(r, p, r.getMainModel(), pt, s);
 		}
+		
+		/**
+		 * Mo' Bends Support and Custom Mod Support!
+		 */
+		public static void render(RenderPlayer r, AbstractClientPlayer p, Method render, Object model, float pt, float s)
+	    {
+			if(fire(r, p, pt, s))
+				CapeRenderer.renderEnchant(r, p, render, model, pt, s);
+	    }
 	}
 
 }

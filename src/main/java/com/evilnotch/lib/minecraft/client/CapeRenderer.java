@@ -3,8 +3,10 @@ package com.evilnotch.lib.minecraft.client;
 import java.lang.reflect.Method;
 
 import com.evilnotch.lib.api.ReflectionUtil;
+import com.evilnotch.lib.main.skin.SkinEvent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -15,12 +17,6 @@ import net.minecraft.util.ResourceLocation;
 public class CapeRenderer {
 	
 	public static final ResourceLocation ENCHANTED_ITEM_GLINT_RES = new ResourceLocation("textures/misc/enchanted_item_glint.png");
-   
-	public static void render(RenderPlayer renderer, EntityLivingBase e, float partialTicks, float scale)
-    {
-		if(e.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted())
-			renderEnchantedCape(renderer, e, renderer.getMainModel(), partialTicks, scale);
-    }
 	
 	/**
 	 * A direct call to render an enchanted cape without checks. Use this for special logic
@@ -62,12 +58,6 @@ public class CapeRenderer {
         GlStateManager.depthFunc(515);
         GlStateManager.disableBlend();
         Minecraft.getMinecraft().entityRenderer.setupFogColor(false);
-    }
-	
-	public static void render(RenderPlayer renderer, EntityLivingBase e, Method render, Object model, float partialTicks, float scale)
-    {
-		if(e.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted())
-			renderEnchant(renderer, e, render, model, partialTicks, scale);
     }
 	
 	/**
