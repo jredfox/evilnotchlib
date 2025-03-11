@@ -29,9 +29,18 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
+import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.util.JavaUtil;
 
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.profiler.Profiler;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.GameType;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldSettings;
+import net.minecraft.world.WorldType;
 
 public class EntityTransformer implements IClassTransformer{
 	
@@ -63,7 +72,8 @@ public class EntityTransformer implements IClassTransformer{
     	"com.mojang.authlib.minecraft.MinecraftProfileTexture",//SkinEvent#HashURLEvent
     	"net.minecraft.client.renderer.entity.layers.LayerCape",//SkinEvent#CapeEnchant
     	"noppes.mpm.client.RenderEvent",//Fix DERPs of MorePlayerModels Mod making IStopSteve not work and getting the wrong skin info at times
-    	"goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomCape"//Mo' Bends Support! Make Enchanted Capes Work
+    	"goblinbob.mobends.standard.client.renderer.entity.layers.LayerCustomCape",//Mo' Bends Support! Make Enchanted Capes Work
+    	"com.ocelot.vehicle.jei.plugin.workstation.VehicleRecipeMaker"//JEV fix
     });
 
 	@Override
@@ -193,6 +203,10 @@ public class EntityTransformer implements IClassTransformer{
                 
                 case 26:
                 	transformMoBends(classNode);
+                break;
+                
+                case 27:
+                	fixJEV(classNode);
                 break;
                 
             }
@@ -1199,6 +1213,26 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/client/CapeRenderer", "render", "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/entity/EntityLivingBase;Ljava/lang/reflect/Method;Ljava/lang/Object;FF)V", false));
 		
 		m.instructions.insert(targ, li);
+	}
+	
+	/**
+	 * Fixes JEV Mod for a fan who beta tested some skin features and reported bugs during the 1.2.3.09 - 1.2.4 update
+	 */
+	public void fixJEV(ClassNode classNode)
+	{
+		MethodNode m = ASMHelper.getMethodNodeByName(classNode, "getRecipes");
+		AbstractInsnNode spot = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKESPECIAL, "net/minecraft/client/multiplayer/WorldClient", "<init>", "(Lnet/minecraft/client/network/NetHandlerPlayClient;Lnet/minecraft/world/WorldSettings;ILnet/minecraft/world/EnumDifficulty;Lnet/minecraft/profiler/Profiler;)V", false);
+		VarInsnNode varInsn = (VarInsnNode) ASMHelper.nextInsn(spot, Opcodes.ASTORE);
+		InsnList li = new InsnList();
+		
+		//fakeWorld = LoaderMain.fake_world;
+		li.add(new LabelNode());
+		li.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/evilnotch/lib/main/loader/LoaderMain", "fake_world", "Lnet/minecraft/world/World;"));
+		li.add(new VarInsnNode(Opcodes.ASTORE, varInsn.var));
+		m.instructions.insert(varInsn, li);
+		
+		//Deletes previous line of the fakeWorld Object thus preventing the crash
+		ASMHelper.deleteLine(m, varInsn);
 	}
 
 }

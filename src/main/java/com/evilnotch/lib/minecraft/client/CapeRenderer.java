@@ -3,15 +3,12 @@ package com.evilnotch.lib.minecraft.client;
 import java.lang.reflect.Method;
 
 import com.evilnotch.lib.api.ReflectionUtil;
-import com.evilnotch.lib.main.skin.SkinEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
 
 public class CapeRenderer {

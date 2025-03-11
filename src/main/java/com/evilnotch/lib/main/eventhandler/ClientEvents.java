@@ -133,8 +133,8 @@ public class ClientEvents {
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void coolskins(SkinEvent.Capability event)
 	{
-		event.skin.meta.put("e", String.valueOf(true));
-		event.skin.meta.put("d", String.valueOf(true));
+//		event.skin.meta.put("e", String.valueOf(true));
+//		event.skin.meta.put("d", String.valueOf(true));
 //		event.skin.meta.put("cg", "f");
 //		event.skin.meta.put("cga", "false");
 //		event.skin.meta.put("SkinTRANSTEST", "true");

@@ -20,7 +20,9 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InnerClassNode;
+import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -1088,5 +1090,33 @@ public class ASMHelper
 		}
 		return almostMatch != null ? almostMatch : uncommonMatch;
 	}
+	
+	/**
+	 * Deletes an Entire Line not recommended USE WITH EXTREME CAUTION!
+	 * Won't work with if statements, for loops try / catches always
+	 * @return the previous LabelNode normally at the start of the line
+	 */
+	public static LabelNode deleteLine(MethodNode m, AbstractInsnNode spot) 
+	{
+		AbstractInsnNode index = spot;
+		LabelNode label = prevLabelR(spot);
+		FrameNode frame = null;
+		while(index != label)
+		{
+			AbstractInsnNode prev = index.getPrevious();
+			m.instructions.remove(index);
+			index = prev;
+			if(index instanceof FrameNode)
+				frame = (FrameNode) index;
+		}
+		InsnList li = new InsnList();
+		if(frame != null)
+			li.add(frame);
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/asm/util/ASMHelper", "disabled", "()V", false));
+		m.instructions.insert(label, li);
+		return label;
+	}
+	
+	public static void disabled(){}
 	
 }
