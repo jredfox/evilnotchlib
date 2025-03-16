@@ -20,6 +20,7 @@ import com.google.common.io.Files;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.Language;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.Locale;
 import net.minecraft.creativetab.CreativeTabs;
@@ -141,7 +142,8 @@ public class LangRegistry {
 
 	public static String getCurrentLang() 
 	{
-		 return Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
+		Language lang = Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage();
+		return lang != null ? lang.getLanguageCode() : "en_us";
 	}
 
 	/**
