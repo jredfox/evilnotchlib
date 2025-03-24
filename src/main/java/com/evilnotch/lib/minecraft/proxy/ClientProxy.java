@@ -16,6 +16,7 @@ import com.evilnotch.lib.main.eventhandler.VanillaBugFixes;
 import com.evilnotch.lib.main.loader.LoaderMain;
 import com.evilnotch.lib.main.skin.IStopSteve;
 import com.evilnotch.lib.main.skin.SkinCache;
+import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.minecraft.auth.EvilGameProfile;
 import com.evilnotch.lib.minecraft.capability.client.ClientCapHooks;
 import com.evilnotch.lib.minecraft.client.Seeds;
@@ -70,6 +71,7 @@ public class ClientProxy extends ServerProxy{
 		this.cacheUUID();
 		//load the skin cache
 		SkinCache.init();
+		SkinEvent.init();
 	}
 	
 	@Override

@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -182,6 +183,24 @@ public class SkinEvent extends Event {
 			Capability cap = new Capability(s.copy());
 			MinecraftForge.EVENT_BUS.post(cap);
 			return cap.skin;
+		}
+	}
+	
+	/**
+	 * Makes EvilNotchLib 1.2.4 or higher backwards compatible with SkinCapabilities 0.13.0 or lower
+	 */
+	public static void init()
+	{
+		if(Loader.isModLoaded("skincapabilities"))
+		{
+			String ver = Loader.instance().getIndexedModList().get("skincapabilities").getVersion();
+			if(ver.startsWith("0.") && Integer.parseInt(ver.split("\\.")[1]) < 14)
+			{
+				System.out.println("Adding Support for legacy Skin Capabilities Mod 0.13.0 or below");
+				SkinEvent.Mouse.enabled = true;
+				SkinEvent.Dinnerbone.enabled = true;
+				SkinEvent.DinnerboneTab.enabled = true;
+			}
 		}
 	}
 	
