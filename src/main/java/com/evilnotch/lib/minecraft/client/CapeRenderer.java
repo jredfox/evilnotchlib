@@ -53,6 +53,7 @@ public class CapeRenderer {
         GlStateManager.enableLighting();
         GlStateManager.depthMask(true);
         GlStateManager.depthFunc(515);
+        GlStateManager.color(1.0F, 1.0F, 1.0F);
         GlStateManager.disableBlend();
         Minecraft.getMinecraft().entityRenderer.setupFogColor(false);
     }
@@ -95,6 +96,7 @@ public class CapeRenderer {
         GlStateManager.enableLighting();
         GlStateManager.depthMask(true);
         GlStateManager.depthFunc(515);
+        GlStateManager.color(1.0F, 1.0F, 1.0F);
         GlStateManager.disableBlend();
         Minecraft.getMinecraft().entityRenderer.setupFogColor(false);
     }
