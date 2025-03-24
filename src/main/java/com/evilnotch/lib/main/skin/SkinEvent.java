@@ -316,6 +316,7 @@ public class SkinEvent extends Event {
 		 */
 		public boolean renderEnchant;
 		
+		@SideOnly(Side.CLIENT)
 		public RenderPlayer renderer;
 		@SideOnly(Side.CLIENT)
 		public AbstractClientPlayer player;

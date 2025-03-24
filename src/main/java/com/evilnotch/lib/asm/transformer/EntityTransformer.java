@@ -1,6 +1,7 @@
 package com.evilnotch.lib.asm.transformer;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
 import com.evilnotch.lib.main.loader.LoaderMain;
+import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.util.JavaUtil;
 
 import net.minecraft.client.multiplayer.WorldClient;
@@ -1200,7 +1202,7 @@ public class EntityTransformer implements IClassTransformer{
 		if(targ.getPrevious() instanceof LdcInsnNode)
 			scale = (Float) ((LdcInsnNode) targ.getPrevious()).cst;
 		
-		//CapeRenderer.render(this.playerRenderer, player, evlMethod, this.capeRenderer, partialTicks, 0.0625F);
+		//SkinEvent.CapeEnchant.render(this.playerRenderer, player, evlMethod, this.capeRenderer, partialTicks, 0.0625F);
 		InsnList li = new InsnList();
 		li.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		li.add(new FieldInsnNode(Opcodes.GETFIELD, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", ASMHelper.getFieldName(classNode, "playerRenderer", "Lnet/minecraft/client/renderer/entity/RenderPlayer;"), "Lnet/minecraft/client/renderer/entity/RenderPlayer;"));
@@ -1210,7 +1212,7 @@ public class EntityTransformer implements IClassTransformer{
 		li.add(new FieldInsnNode(Opcodes.GETFIELD, "goblinbob/mobends/standard/client/renderer/entity/layers/LayerCustomCape", ASMHelper.getFieldName(classNode, "capeRenderer", "Lgoblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer;"), "Lgoblinbob/mobends/standard/client/renderer/entity/BendsCapeRenderer;"));
 		li.add(new VarInsnNode(Opcodes.FLOAD, 4));
 		li.add(new LdcInsnNode(scale));
-		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/minecraft/client/CapeRenderer", "render", "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/entity/EntityLivingBase;Ljava/lang/reflect/Method;Ljava/lang/Object;FF)V", false));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$CapeEnchant", "render", "(Lnet/minecraft/client/renderer/entity/RenderPlayer;Lnet/minecraft/client/entity/AbstractClientPlayer;Ljava/lang/reflect/Method;Ljava/lang/Object;FF)V", false));
 		
 		m.instructions.insert(targ, li);
 	}
