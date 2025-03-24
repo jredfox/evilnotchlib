@@ -1,7 +1,6 @@
 package com.evilnotch.lib.asm.transformer;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,19 +29,9 @@ import com.evilnotch.lib.asm.ConfigCore;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.classwriter.MCWriter;
 import com.evilnotch.lib.asm.util.ASMHelper;
-import com.evilnotch.lib.main.loader.LoaderMain;
-import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.util.JavaUtil;
 
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.profiler.Profiler;
-import net.minecraft.world.EnumDifficulty;
-import net.minecraft.world.GameType;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldSettings;
-import net.minecraft.world.WorldType;
 
 public class EntityTransformer implements IClassTransformer{
 	
@@ -949,6 +938,15 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/evilnotch/lib/main/skin/SkinEvent$Mouse", "fire", "(Lnet/minecraft/entity/player/EntityPlayer;)Z", false));
 		l.add(new JumpInsnNode(Opcodes.IFNE, label));
 		m.instructions.insert(l);
+		
+		//GlStateManager.color(1.0F, 1.0F, 1.0F);
+		InsnList li = new InsnList();
+		li.add(new InsnNode(Opcodes.FCONST_1));
+		li.add(new InsnNode(Opcodes.FCONST_1));
+		li.add(new InsnNode(Opcodes.FCONST_1));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", new MCPSidedString("color", "func_179124_c").toString(), "(FFF)V", false));
+		li.add(new LabelNode());
+		m.instructions.insert(label, li);
 	}
 	
 	public void transformDinnerbone(ClassNode classNode) 
