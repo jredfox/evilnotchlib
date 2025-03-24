@@ -939,12 +939,13 @@ public class EntityTransformer implements IClassTransformer{
 		l.add(new JumpInsnNode(Opcodes.IFNE, label));
 		m.instructions.insert(l);
 		
-		//GlStateManager.color(1.0F, 1.0F, 1.0F);
+		//GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		InsnList li = new InsnList();
 		li.add(new InsnNode(Opcodes.FCONST_1));
 		li.add(new InsnNode(Opcodes.FCONST_1));
 		li.add(new InsnNode(Opcodes.FCONST_1));
-		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", new MCPSidedString("color", "func_179124_c").toString(), "(FFF)V", false));
+		li.add(new InsnNode(Opcodes.FCONST_1));
+		li.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "net/minecraft/client/renderer/GlStateManager", new MCPSidedString("color", "func_179131_c").toString(), "(FFFF)V", false));
 		li.add(new LabelNode());
 		m.instructions.insert(label, li);
 	}
