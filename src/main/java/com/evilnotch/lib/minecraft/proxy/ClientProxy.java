@@ -420,22 +420,34 @@ public class ClientProxy extends ServerProxy{
 	
 	public static void setMeta(NetworkPlayerInfo info, String key, String value)
 	{
+		if(info == null)
+			return;
+		
 		info.skinmeta.put(key, value);
 	}
 	
 	public static void setMeta(NetworkPlayerInfo info, String key, boolean value)
 	{
+		if(info == null)
+			return;
+		
 		info.skinmeta.put(key, String.valueOf(value));
 	}
 	
 	public static boolean getMetaBoolean(NetworkPlayerInfo info, String key)
 	{
+		if(info == null)
+			return false;
+		
 		String v = info.skinmeta.get(key);
 		return v != null && v.startsWith("t");
 	}
 	
 	public static boolean getMetaBoolean(NetworkPlayerInfo info, String key, boolean def)
 	{
+		if(info == null)
+			return false;
+		
 		String v = info.skinmeta.get(key);
 		return v != null ? v.startsWith("t") : def;
 	}
@@ -445,6 +457,9 @@ public class ClientProxy extends ServerProxy{
 	 */
 	public static String getMeta(NetworkPlayerInfo info, String key)
 	{
+		if(info == null)
+			return "";
+		
 		String v = info.skinmeta.get(key);
 		return v != null ? v : "";
 	}

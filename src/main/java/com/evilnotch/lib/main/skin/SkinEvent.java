@@ -220,7 +220,7 @@ public class SkinEvent extends Event {
 			}
 			
 			NetworkPlayerInfo info = ((AbstractClientPlayer) player).playerInfo;
-			return info != null && ClientProxy.getMetaBoolean(info, "e");
+			return ClientProxy.getMetaBoolean(info, "e");
 		}
 	}
 	
@@ -256,7 +256,7 @@ public class SkinEvent extends Event {
 			}
 			
 			NetworkPlayerInfo info = ((AbstractClientPlayer) e).playerInfo;
-			return info != null && ClientProxy.getMetaBoolean(info, "d");
+			return ClientProxy.getMetaBoolean(info, "d");
 		}
 	}
 	
@@ -296,7 +296,7 @@ public class SkinEvent extends Event {
 				return event.dinnerbone;
 			}
 			
-			return info != null && ClientProxy.getMetaBoolean(info, "d");
+			return ClientProxy.getMetaBoolean(info, "d");
 		}
 	}
 	
@@ -340,7 +340,7 @@ public class SkinEvent extends Event {
 			}
 			
 			NetworkPlayerInfo info = p.playerInfo;
-			return info != null && (ClientProxy.getMetaBoolean(info, "cg", true) && p.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted() || ClientProxy.getMetaBoolean(info, "cga"));
+			return ClientProxy.getMetaBoolean(info, "cg", true) && p.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isItemEnchanted() || ClientProxy.getMetaBoolean(info, "cga");
 		}
 		
 		public static void render(RenderPlayer r, AbstractClientPlayer p, float pt, float s)

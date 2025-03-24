@@ -940,7 +940,7 @@ public class EntityTransformer implements IClassTransformer{
 		MethodInsnNode inif = ASMHelper.getMethodInsnNode(m, Opcodes.INVOKEVIRTUAL, "net/minecraft/client/renderer/entity/RenderPlayer", new MCPSidedString("bindTexture", "func_110776_a").toString(), "(Lnet/minecraft/util/ResourceLocation;)V", false);
 		LabelNode label = ASMHelper.prevLabelR(inif);
 		
-		//prepend if(SkinEvent.fireMouse ||
+		//prepend if(SkinEvent.Mouse.fire ||
 		InsnList l = new InsnList();
 		l.add(new LabelNode());
 		l.add(new VarInsnNode(Opcodes.ALOAD, 1));
@@ -1030,7 +1030,7 @@ public class EntityTransformer implements IClassTransformer{
 		int indexPlayer = ASMHelper.prevLocalVarIndex(m, ab, Opcodes.ASTORE, "Lnet/minecraft/entity/player/EntityPlayer;");
 		int indexInfo =   ASMHelper.prevLocalVarIndex(m, ab, Opcodes.ASTORE, "Lnet/minecraft/client/network/NetworkPlayerInfo;");
 		
-		//if(!dinnerbone) dinnerbone = SkinEvent.fireDinnerbone(player, info);
+		//if(!dinnerbone) dinnerbone = SkinEvent.DinnerboneTab.fire(player, info);
 		InsnList li = new InsnList();
 		LabelNode l1 = new LabelNode();
 		li.add(new VarInsnNode(Opcodes.ILOAD, targ.var));
