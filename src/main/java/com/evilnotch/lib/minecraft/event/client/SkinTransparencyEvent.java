@@ -2,6 +2,8 @@ package com.evilnotch.lib.minecraft.event.client;
 
 import javax.annotation.Nullable;
 
+import com.evilnotch.lib.main.Config;
+import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import net.minecraft.client.renderer.ImageBufferDownload;
@@ -22,7 +24,7 @@ public class SkinTransparencyEvent extends Event {
 		this.type = type;
 		this.texture = texture;
 		this.imageData = imageData;
-		this.allowTrans = false;
+		this.allowTrans = Config.allowskintrans && !JavaUtil.safeString(texture.getMetadata("a")).startsWith("f");
 	}
 
 	public static boolean allow(ImageBufferDownload img)

@@ -3,12 +3,10 @@ package com.evilnotch.lib.main.eventhandler;
 import java.util.List;
 
 import com.evilnotch.lib.main.Config;
-import com.evilnotch.lib.main.skin.SkinEvent;
 import com.evilnotch.lib.minecraft.basicmc.auto.json.JsonGen;
 import com.evilnotch.lib.minecraft.basicmc.client.gui.GuiBasicButton;
 import com.evilnotch.lib.minecraft.client.Seeds;
 import com.evilnotch.lib.minecraft.event.client.ClientDisconnectEvent;
-import com.evilnotch.lib.minecraft.event.client.SkinTransparencyEvent;
 import com.evilnotch.lib.minecraft.proxy.ClientProxy;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.util.PlayerUtil;
@@ -124,23 +122,6 @@ public class ClientEvents {
 			event.setResultSound(null);
 	}
 	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void coolskins(SkinTransparencyEvent event)
-	{
-		event.allowTrans = Config.allowskintrans;//&& event.texture.getMetadata("SkinAlpha").startsWith("t");
-	}
-	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void coolskins(SkinEvent.Capability event)
-	{
-//		event.skin.meta.put("e", String.valueOf(true));
-//		event.skin.meta.put("d", String.valueOf(true));
-//		event.skin.meta.put("cg", "f");
-//		event.skin.meta.put("cga", "false");
-//		event.skin.meta.put("SkinTRANSTEST", "true");
-//		event.skin.meta.put("AEEEY A SPA C E", "I AM A STRING");//TODO: remove
-	}
-	
 	/**
 	 * Vanilla Bug Fix Prevents Crashing When Rendering Entities Sooner then expected with nametags
 	 */
@@ -150,5 +131,11 @@ public class ClientEvents {
 		if(event.getRenderer().getRenderManager().renderViewEntity == null)
 			event.setCanceled(true);
 	}
+	
+//	@SubscribeEvent(priority=EventPriority.HIGHEST)
+//	public void coolskins(SkinEvent.Capability event)
+//	{
+//		event.skin.meta.put("a", String.valueOf(true));
+//	}
 	
 }

@@ -32,6 +32,7 @@ import com.evilnotch.lib.minecraft.util.PlayerUtil;
 import com.evilnotch.lib.util.JavaUtil;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
@@ -759,7 +760,11 @@ public class SkinCache {
 	private static final ResourceLocation fileAlex = new ResourceLocation("minecraft:skins/$alex");
 	public static ResourceLocation patchSkinResource(ResourceLocation resource, MinecraftProfileTexture.Type type, MinecraftProfileTexture texture) 
 	{
-		if(resource.equals(fileSteve))
+		if(type == Type.SKIN && JavaUtil.safeString(texture.getMetadata("a")).startsWith("f"))
+		{
+			return new ResourceLocation(resource + "_s");
+		}
+		else if(resource.equals(fileSteve))
 		{
 			MainJava.proxy.bindTexture(PlayerUtil.STEVE);//enforce steve is loaded so SkinManager doesn't try and download the skin
 			return PlayerUtil.STEVE;
