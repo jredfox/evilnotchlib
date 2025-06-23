@@ -151,26 +151,51 @@ public class CapTransformer {
 		String stackCompound = new MCPSidedString("stackTagCompound","field_77990_d").toString();
 		implementICapProvider(classNode,name,"Lnet/minecraft/item/ItemStack;");
 		
-		MethodNode capNode = ASMHelper.getMethodNode(classNode, "forgeInit", "()V");
-		
-		InsnList toInsert0 = new InsnList();
-		//inject CapRegUtil.registerCapsToObject(this);
-		toInsert0.add(new VarInsnNode(ALOAD,0));
-		toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
-		capNode.instructions.insertBefore(ASMHelper.getFirstInstruction(capNode, Opcodes.ALOAD),toInsert0);
-		
-		InsnList toInsert1 = new InsnList();
-
-		//inject this.capContainer.readFromNBT(this,this.stackCompound);
-		toInsert1.add(new VarInsnNode(ALOAD,0));
-		toInsert1.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "capContainer", "Lcom/evilnotch/lib/minecraft/capability/CapContainer;"));
-		toInsert1.add(new VarInsnNode(ALOAD,0));
-		toInsert1.add(new VarInsnNode(ALOAD,0));
-		toInsert1.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/item/ItemStack", stackCompound, "Lnet/minecraft/nbt/NBTTagCompound;"));
-		toInsert1.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/evilnotch/lib/minecraft/capability/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
-		//inject all instructions
-		AbstractInsnNode spotNode = ASMHelper.getLastInstruction(capNode, Opcodes.RETURN);
-		capNode.instructions.insertBefore(spotNode, toInsert1);
+		//Inject these lines into all Constructors: 
+		//CapabilityRegistry.registerCapsToObject(this);
+		//this.capContainer.readFromNBT(this,this.stackCompound);
+		for(MethodNode capNode : classNode.methods)
+		{
+			//Skip Overloaded Constructors to prevent duplicate registration and reading when creating an ItemStack
+			boolean skip = false;
+			if(capNode.name.equals("<init>"))
+			{
+				for(AbstractInsnNode ab : capNode.instructions.toArray())
+				{
+					if(ab instanceof MethodInsnNode)
+					{
+						MethodInsnNode in = (MethodInsnNode) ab;
+						AbstractInsnNode nxt = in.getNext();
+						if((nxt instanceof LabelNode || ASMHelper.isReturnOpcode(nxt.getOpcode()) ) && in.getOpcode() == Opcodes.INVOKESPECIAL && "<init>".equals(in.name))
+						{
+							skip = in.owner.equals("net/minecraft/item/ItemStack");
+							break;
+						}
+					}
+				}
+				if(skip)
+					continue;
+				
+				AbstractInsnNode spotNode = ASMHelper.getLastInstruction(capNode, Opcodes.RETURN);
+				
+				InsnList toInsert0 = new InsnList();
+				//inject CapRegUtil.registerCapsToObject(this);
+				toInsert0.add(new VarInsnNode(ALOAD,0));
+				toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
+				capNode.instructions.insertBefore(spotNode, toInsert0);
+			
+//				//inject this.capContainer.readFromNBT(this,this.stackCompound);
+				InsnList toInsert1 = new InsnList();
+				toInsert1.add(new VarInsnNode(ALOAD,0));
+				toInsert1.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "capContainer", "Lcom/evilnotch/lib/minecraft/capability/CapContainer;"));
+				toInsert1.add(new VarInsnNode(ALOAD,0));
+				toInsert1.add(new VarInsnNode(ALOAD,0));
+				toInsert1.add(new FieldInsnNode(Opcodes.GETFIELD,"net/minecraft/item/ItemStack", stackCompound, "Lnet/minecraft/nbt/NBTTagCompound;"));
+				toInsert1.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,"com/evilnotch/lib/minecraft/capability/CapContainer", "readFromNBT", "(Ljava/lang/Object;Lnet/minecraft/nbt/NBTTagCompound;)V", false));
+				
+				capNode.instructions.insertBefore(spotNode, toInsert1);
+			}
+		}
 		
 		//writeToNBT inject this.capContainer.writeToNBT(this,nbt);
 		InsnList toInsert2 = new InsnList();
