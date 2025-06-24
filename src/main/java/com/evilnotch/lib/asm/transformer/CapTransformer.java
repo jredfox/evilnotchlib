@@ -157,21 +157,23 @@ public class CapTransformer {
 		for(MethodNode capNode : classNode.methods)
 		{
 			//Skip Overloaded Constructors to prevent duplicate registration and reading when creating an ItemStack
-			boolean skip = false;
 			if(capNode.name.equals("<init>"))
 			{
-				for(AbstractInsnNode ab : capNode.instructions.toArray())
+				boolean skip = false;
+				AbstractInsnNode ab = capNode.instructions.getFirst();
+				while(ab != null)
 				{
 					if(ab instanceof MethodInsnNode)
 					{
 						MethodInsnNode in = (MethodInsnNode) ab;
 						AbstractInsnNode nxt = in.getNext();
-						if((nxt instanceof LabelNode || ASMHelper.isReturnOpcode(nxt.getOpcode()) ) && in.getOpcode() == Opcodes.INVOKESPECIAL && "<init>".equals(in.name))
+						if( (nxt instanceof LabelNode || ASMHelper.isReturnOpcode(nxt.getOpcode())) && in.getOpcode() == Opcodes.INVOKESPECIAL && "<init>".equals(in.name))
 						{
 							skip = in.owner.equals("net/minecraft/item/ItemStack");
 							break;
 						}
 					}
+					ab = ab.getNext();//iterate index by one
 				}
 				if(skip)
 					continue;
