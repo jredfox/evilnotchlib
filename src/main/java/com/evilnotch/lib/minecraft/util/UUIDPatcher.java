@@ -25,7 +25,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 public class UUIDPatcher {
 	
-	public static final String VERSION = "2.0.1";
+	public static final String VERSION = "2.0.2";
 
 	public static GameProfile patch(GameProfile old, boolean patchSkin) 
 	{
@@ -81,6 +81,9 @@ public class UUIDPatcher {
 	 */
     public static UUID getCachedUUID(UUID id, String user)
     {	
+    	if(user == null || user.isEmpty())
+    		return id;//Assume UUID is correct when username is null or empty
+    	
 		File u = new File(VanillaBugFixes.playerDataNames, user.toLowerCase() + ".dat");
 		if(!u.exists())
 		{
