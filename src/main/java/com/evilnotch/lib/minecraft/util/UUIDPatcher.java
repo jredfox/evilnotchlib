@@ -29,8 +29,10 @@ public class UUIDPatcher {
 
 	public static GameProfile patch(GameProfile old, boolean patchSkin) 
 	{
+		String user = old.getName();
+		
 		//Handle FakePlayer
-		if(old instanceof FakeGameProfile || old.getName() != null && old.getName().startsWith("["))
+		if(old instanceof FakeGameProfile || user != null && user.startsWith("["))
 			return old;
 		
     	if(VanillaBugFixes.playerDataNames == null)
@@ -43,7 +45,6 @@ public class UUIDPatcher {
     		return old;
     	}
     	
-		String user = old.getName();
 		UUID id = getUUID(old);
 		UUID cached = getCachedUUID(id, user);
 		if(cached != null && !id.equals(cached))
