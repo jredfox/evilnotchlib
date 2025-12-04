@@ -54,7 +54,7 @@ public class UUIDPatcher {
 		
 		EvilGameProfile profile = new EvilGameProfile(id, old);
 		if(patchSkin)
-			patchSkin(old, null, false);
+			patchSkin(profile, null, false);
 		return profile;
 	}
 

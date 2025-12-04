@@ -28,7 +28,7 @@ public class SkinEntry implements ICopy {
 	public SkinEntry(String uuid, String username, long cacheTime, String skin, String cape, String model, String elytra, JSONObject jmeta)
 	{
 		this.uuid = uuid.replace("-", "");
-		this.user = username.toLowerCase();
+		this.user = username != null ? username.toLowerCase() : "";
 		this.isEmpty = this.uuid.isEmpty() && this.user.isEmpty();
 		this.cacheTime = cacheTime;
 		this.skin =   JavaUtil.safeString(skin);
