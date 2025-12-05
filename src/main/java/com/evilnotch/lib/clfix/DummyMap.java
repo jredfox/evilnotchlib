@@ -1,4 +1,4 @@
-package jredfox.clfix;
+package com.evilnotch.lib.clfix;
 
 import java.util.HashMap;
 import java.util.Map;
