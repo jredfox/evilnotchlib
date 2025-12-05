@@ -29,7 +29,7 @@ public class LaunchClassLoaderFix {
 	
 	/**
 	 * EvilNotchLib's Changes
-	 *  - Changed {@link #patchCachedClasses} to true by default unless it gets overriden in the config
+	 *  - Changed {@link #patchCachedClasses} to true by default unless it gets overriden in dpi-fix's config
 	 *  - Removed LaunchWrapperTransformer.class as it's not used for EvilNotchLib(still inside dpi-fix)
 	 *  - Removed FindClass.class as it's not used for EvilnotchLib(still in dpi-fix)
 	 *  
