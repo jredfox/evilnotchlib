@@ -1185,4 +1185,11 @@ public class ASMHelper
 		return a;
 	}
 	
+	public static FieldNode getFieldnode(ClassNode classNode, String name)
+	{
+		for(FieldNode f : classNode.fields)
+			if(f.name.equals(name))
+				return f;
+		return null;
+	}
 }

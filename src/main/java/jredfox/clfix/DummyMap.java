@@ -15,6 +15,11 @@ public class DummyMap<K,V> extends HashMap<K,V> {
 		super(0);
 	}
 	
+	public static DummyMap get()
+	{
+		return new DummyMap();
+	}
+	
 	@Override
 	public int size()
 	{

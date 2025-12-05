@@ -24,6 +24,11 @@ public class DummySet<T> extends HashSet<T> {
     {
         super(0);
     }
+    
+	public static DummySet get()
+	{
+		return new DummySet();
+	}
 	
 	@Override
 	public int size()

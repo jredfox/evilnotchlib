@@ -14,7 +14,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +27,51 @@ import java.util.Set;
  */
 public class LaunchClassLoaderFix {
 	
-	public static final String VERSION = "2.0.0";
+	/**
+	 * EvilNotchLib's Changes
+	 *  - Changed {@link #patchCachedClasses} to true by default
+	 *  - Changed {@link LaunchWrapperTransformer} so it compiles
+	 *  - Changed {@link LaunchWrapperTransformer#pcc} to be equal to {@link #patchCachedClasses}
+	 *  - TODO: Refactored Package to com.evilnotchlib.clfix to avoid class collisions
+	 *  
+	 * ChangeLog 2.1.0:
+	 * - Fixed {@link System#identityHashCode(Object)} collisions resulted in not setting class loader. object hashcode no longer represents the address and is no longer guaranteed since java 8 to be even unique per object instance
+	 * - Fixed Technic's resources and pngMap memory leak in LaunchWrapperTransformer only.
+	 * - Fixed Verify not working for non instances of LaunchClassLoader
+	 * - Fixed Not Supporting Parent ClassLoaders on {@link #stopMemoryOverflow(ClassLoader)} and {@link #verify(ClassLoader)}
+	 * - Fixed ClassLoader weirdness causing unintended behavior for {@link #stopMemoryOverflow(ClassLoader)} and {@link #verify(ClassLoader)}
+	 * - Fixed Patching LaunchClassLoader#cachedClasses when it wasn't safe to do so MC < 1.12.2! This resulted in ClassNotFoundException caused by a duplicate class exception
+	 * - Added Support for more Library ClassLoaders to stop the while loop from
+	 * - Added -Dclfix.strictMode {@link #strictMode} when true we only apply the patches to LaunchClassLoader If your using it with DPI-FIX mod you can simply use the config
+	 * - Added -Dclfix.patchCachedClasses when true patches LaunchClassLoader or a Custom Class Loader's Field of cachedClasses. It's disabled by default but will get turned on by DPI-Fix or EvilNotchLib in MC 1.12.2
+	 */
+	public static final String VERSION = "2.1.0";
+	
+	/**
+	 * When true only allows patching of LaunchClassLoader instances regardless of memory leaks of the other custom class loaders that are not libraries nor blacklisted
+	 */
+	public static boolean strictMode = Boolean.parseBoolean(System.getProperty("clfix.strictMode", "false"));
+	/**
+	 * When true allows patching of cachedClasses for LaunchClassLoader or any class loader if strict mode isn't on
+	 */
+	public static boolean patchCachedClasses = Boolean.parseBoolean(System.getProperty("clfix.patchCachedClasses", "true"));
+	
+	private static String[] libLoaders = new String[]
+	{
+		"java.",
+		"sun.",
+		"com.sun.",
+		"jdk.",
+		"javax."
+	};
+	
+	public static boolean isLibClassLoader(String[] libs, String name) 
+	{
+		for(String lib : libs)
+			if(name.startsWith(lib))
+				return true;
+		return false;
+	}
 	
 	/**
 	 * can be called at any time
@@ -36,34 +81,32 @@ public class LaunchClassLoaderFix {
 		try
 		{
 			Class launch = forName("net.minecraft.launchwrapper.Launch");
-			if(launch == null)
+			if(strictMode && launch == null)
 			{
 				System.err.println("LaunchWrapper is Missing!");
 				return;
 			}
 			
-			String clazzLoaderName = "net.minecraft.launchwrapper.LaunchClassLoader";
-			Class clazzLoaderClazz = forName(clazzLoaderName);
-			Map<String, ClassLoader> loaders = getClassLoaders(launch, clforge);
-			for(ClassLoader cl : loaders.values())
+			boolean cache = patchCachedClasses;
+			Set<ClassLoader> allLoaders = getAllClassLoaders(launch, clforge);
+			for(ClassLoader cl : allLoaders)
 			{
-				if(cl == null)
-					continue;
 				System.out.println("Fixing RAM Leak of:" + cl);
+				
 				//Support Shadow Variables for Dumb Mods Replacing Launch#classLoader
 				Class actualClassLoader = cl.getClass();
-				boolean flag = instanceOf(clazzLoaderClazz, actualClassLoader);
 				do
 				{
-					setDummyMap(cl, actualClassLoader, "cachedClasses");
+					if(cache)
+						setDummyMap(cl, actualClassLoader, "cachedClasses");
 					setDummyMap(cl, actualClassLoader, "resourceCache");
 					setDummyMap(cl, actualClassLoader, "packageManifests");
 					setDummySet(cl, actualClassLoader, "negativeResourceCache");
-					if(flag && actualClassLoader.getName().equals(clazzLoaderName))
+					if(actualClassLoader.getName().equals("net.minecraft.launchwrapper.LaunchClassLoader"))
 						break;//Regardless of what LaunchClassLoader extends break after as we are done
 					actualClassLoader = actualClassLoader.getSuperclass();
 				}
-				while(flag ? true : !actualClassLoader.getName().startsWith("java.") );
+				while(actualClassLoader != null && !isLibClassLoader(libLoaders, actualClassLoader.getName()) );
 			}
 		}
 		catch(Throwable t)
@@ -150,35 +193,48 @@ public class LaunchClassLoaderFix {
 	}
 	
 	/**
-	 * Verifies that LaunchClassLoader Map / Set are instances of the Dummy Version. Only Checks LaunchClassLoader.class values
+	 * Verifies that LaunchClassLoader Map / Set are instances of the Dummy Version.
 	 */
 	public static void verify(ClassLoader clforge)
 	{
 		try
 		{
 			Class launch = forName("net.minecraft.launchwrapper.Launch");
-			if(launch == null)
+			if(strictMode && launch == null)
 				return;
-			Class clazzLoaderClazz = forName("net.minecraft.launchwrapper.LaunchClassLoader");
-			Map<String, ClassLoader> cls = getClassLoaders(launch, clforge);
-			for(ClassLoader classLoader : cls.values())
+			boolean cache = patchCachedClasses;
+			Set<ClassLoader> allLoaders = getAllClassLoaders(launch, clforge);
+			for(ClassLoader classLoader : allLoaders)
 			{
-				if(classLoader == null)
-					continue;
 				System.out.println("Verifying ClassLoader:" + classLoader);
-				Map cachedClasses = (Map) getPrivate(classLoader, clazzLoaderClazz, "cachedClasses");
-				Map resourceCache = (Map) getPrivate(classLoader, clazzLoaderClazz, "resourceCache");
-				Map packageManifests = (Map) getPrivate(classLoader, clazzLoaderClazz, "packageManifests");
-				Set negativeResourceCache = (Set) getPrivate(classLoader, clazzLoaderClazz, "negativeResourceCache");
 				
-				if(cachedClasses != null && !(cachedClasses instanceof DummyMap))
-					System.err.println("LaunchClassLoader#cachedClasses is Unoptimized! size:" + cachedClasses.size() + " Class:" + cachedClasses.getClass());
-				if(resourceCache != null && !(resourceCache instanceof DummyMap))
-					System.err.println("LaunchClassLoader#resourceCache is Unoptimized! size:" + resourceCache.size() + " Class:" + resourceCache.getClass());
-				if(packageManifests != null && !(packageManifests instanceof DummyMap))
-					System.err.println("LaunchClassLoader#packageManifests is Unoptimized! size:" + packageManifests.size() + " Class:" + packageManifests.getClass());
-				if(negativeResourceCache != null && !(negativeResourceCache instanceof DummySet))
-					System.err.println("LaunchClassLoader#negativeResourceCache is Unoptimized! size:" + negativeResourceCache.size() + " Class:" + negativeResourceCache.getClass());
+				Class actualClazz = classLoader.getClass();
+				String actualName = actualClazz.getName();
+				
+				do
+				{
+					Map cachedClasses = cache ? ((Map) getPrivate(classLoader, actualClazz, "cachedClasses")) : null;
+					Map resourceCache = (Map) getPrivate(classLoader, actualClazz, "resourceCache");
+					Map packageManifests = (Map) getPrivate(classLoader, actualClazz, "packageManifests");
+					Set negativeResourceCache = (Set) getPrivate(classLoader, actualClazz, "negativeResourceCache");
+					boolean flag = actualName.equals("net.minecraft.launchwrapper.LaunchClassLoader");
+					
+					if(cachedClasses != null && !(cachedClasses instanceof DummyMap))
+						System.err.println((flag ? "LaunchClassLoader" : actualName) + "#cachedClasses is Unoptimized! size:" + cachedClasses.size() + " Class:" + cachedClasses.getClass());
+					if(resourceCache != null && !(resourceCache instanceof DummyMap))
+						System.err.println((flag ? "LaunchClassLoader" : actualName) + "#resourceCache is Unoptimized! size:" + resourceCache.size() + " Class:" + resourceCache.getClass());
+					if(packageManifests != null && !(packageManifests instanceof DummyMap))
+						System.err.println((flag ? "LaunchClassLoader" : actualName) + "#packageManifests is Unoptimized! size:" + packageManifests.size() + " Class:" + packageManifests.getClass());
+					if(negativeResourceCache != null && !(negativeResourceCache instanceof DummySet))
+						System.err.println((flag ? "LaunchClassLoader" : actualName) + "#negativeResourceCache is Unoptimized! size:" + negativeResourceCache.size() + " Class:" + negativeResourceCache.getClass());
+					
+					if(flag)
+						break;
+					actualClazz = actualClazz.getSuperclass();
+					if(actualClazz != null)
+						actualName = actualClazz.getName();
+				}
+				while(actualClazz != null && !isLibClassLoader(libLoaders, actualName));
 			}
 		}
 		catch(Throwable t)
@@ -186,6 +242,57 @@ public class LaunchClassLoaderFix {
 			System.err.println("FATAL ERROR HAS OCCURED VERIFYING THE LaunchClassLoader Memory Leaks Was Fixed!");
 			t.printStackTrace();
 		}
+	}
+
+	public static Set<ClassLoader> getAllClassLoaders(Class launch, ClassLoader clforge) 
+	{
+		Set<ClassLoader> l = getClassLoaders(launch, clforge);
+		Set<ClassLoader> allLoaders = Collections.newSetFromMap(new IdentityHashMap(16));
+		for(ClassLoader root : l)
+			allLoaders.addAll(getParents(root));
+		return allLoaders;
+	}
+
+	/**
+	 * Gets a 1D array of Parent ClassLoaders & Itself Excluding RelaunchClassLoader and Technic's MinecraftClassLoader or Libraries
+	 * Unless {@link #strictMode} is true then it must be an instanceof LaunchClassLoader and checks it with string names to ensure it doesn't return false when it's true
+	 */
+	public static Set<ClassLoader> getParents(ClassLoader root) 
+	{
+		Set<ClassLoader> loaders = Collections.newSetFromMap(new IdentityHashMap(8));
+		ClassLoader cl = root;
+		String[] strict = new String[]{"net.minecraft.launchwrapper.LaunchClassLoader"};
+		boolean strictMode = LaunchClassLoaderFix.strictMode;
+		boolean first = true;
+		do
+		{
+			Class clClazz = cl.getClass();
+			if(strictMode && instanceOf(strict, clClazz) || !strictMode && (first || !isLibClassLoader(libLoaders, clClazz.getName())))
+				loaders.add(cl);
+			first = false;
+			ClassLoader parent = (ClassLoader) getPrivate(cl, clClazz, "parent");
+			cl = (parent != null && !loaders.contains(parent)) ? parent : cl.getParent();
+		}
+		while(cl != null && !loaders.contains(cl));
+		
+		return loaders;
+	}
+	
+	/**
+	 * @return true when the compared class is the base class or extends it
+	 * @WARNING: doesn't support interfaces
+	 */
+	public static boolean instanceOf(String[] clazzes, Class c) 
+	{
+		while(c != null)
+		{
+			String name = c.getName();
+			for(String base : clazzes)
+				if(base.equals(name))
+					return true;
+			c = c.getSuperclass();
+		}
+		return false;
 	}
 
 	private static void setDummyMap(Object classLoader, Class clazzLoaderClazz, String mapName)
@@ -212,21 +319,25 @@ public class LaunchClassLoaderFix {
 		setPrivate(classLoader, new DummySet(), clazzLoaderClazz, setName);
 	}
 	
-	public static Map<String, ClassLoader> getClassLoaders(Class launch, ClassLoader clforge) 
+	public static Set<ClassLoader> getClassLoaders(Class launch, ClassLoader clforge) 
 	{
-		Map<String, ClassLoader> loaders = new HashMap(5);
-		ClassLoader classLoader = (ClassLoader) getPrivate(null, launch, "classLoader", false);
+		Set<ClassLoader> loaders = Collections.newSetFromMap(new IdentityHashMap(5));
+		ClassLoader classLoader = launch != null ? ((ClassLoader) getPrivate(null, launch, "classLoader", false)) : null;
 		ClassLoader currentLoader = LaunchClassLoaderFix.class.getClassLoader();
 		ClassLoader contextLoader = getContextClassLoader();
 		
-		loaders.put(toNString(classLoader), classLoader);
-		loaders.put(toNString(clforge), clforge);
-		loaders.put(toNString(currentLoader), currentLoader);
-		loaders.put(toNString(contextLoader), contextLoader);
+		if(classLoader != null)
+			loaders.add(classLoader);
+		if(clforge != null)
+			loaders.add(clforge);
+		if(currentLoader != null)
+			loaders.add(currentLoader);
+		if(contextLoader != null)
+			loaders.add(contextLoader);
 		
 		return loaders;
 	}
-
+	
 	public static ClassLoader getContextClassLoader() 
 	{
 		try
@@ -239,10 +350,6 @@ public class LaunchClassLoaderFix {
 		}
 		return null;
 	}
-	
-    public static String toNString(Object o) {
-        return o == null ? "0" : (o.getClass().getName() + "@" + System.identityHashCode(o));
-    }
 	
 	public static Field modifiersField;
 	static

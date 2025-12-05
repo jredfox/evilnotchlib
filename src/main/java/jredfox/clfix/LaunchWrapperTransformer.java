@@ -28,21 +28,27 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import com.evilnotch.lib.asm.util.ASMHelper;
 
+
 public class LaunchWrapperTransformer implements ClassFileTransformer {
 	
 	public static File lcl = new File(System.getProperty("user.dir"), "asm/cache/dpi-fix/net/minecraft/launchwrapper/LaunchClassLoader.class").getAbsoluteFile();
 	public static File dm = new File(System.getProperty("user.dir"), "asm/cache/dpi-fix/jredfox/clfix/DummyMap.class").getAbsoluteFile();
 	public static File ds = new File(System.getProperty("user.dir"), "asm/cache/dpi-fix/jredfox/clfix/DummySet.class").getAbsoluteFile();
+	public static File mcl = new File(System.getProperty("user.dir"), "asm/cache/dpi-fix/net/technicpack/legacywrapper/MinecraftClassLoader.class").getAbsoluteFile();
+	public static boolean pcc; //= Boolean.parseBoolean(System.getProperty("clfixtransformer.cc", "false"));
 	
 	public static void init(Instrumentation inst)
 	{
 		lcl.delete();
 		dm.delete();
 		ds.delete();
+		mcl.delete();
+		pcc = LaunchClassLoaderFix.patchCachedClasses;
 		inst.addTransformer(new LaunchWrapperTransformer());
 		LaunchClassLoaderFix.forName("net.minecraft.launchwrapper.LaunchClassLoader");//Force Load LaunchClassLoader Class
 		LaunchClassLoaderFix.forName("jredfox.clfix.DummyMap");//Force Load DummyMap
 		LaunchClassLoaderFix.forName("jredfox.clfix.DummySet");//Force Load DummySet
+		LaunchClassLoaderFix.forName("net.technicpack.legacywrapper.MinecraftClassLoader");//Force Load Technic's MinecraftClassLoader Class
 	}
 	
 	@Override
@@ -80,6 +86,7 @@ public class LaunchWrapperTransformer implements ClassFileTransformer {
 				ClassNode classNode = ASMHelper.getClassNode(bytes);
 				ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "dm", "Ljava/util/Map;", null, null));
 				ASMHelper.addFieldNodeIf(classNode, new FieldNode(Opcodes.ACC_PUBLIC, "ds", "Ljava/util/Set;", null, null));
+				boolean pcc = LaunchWrapperTransformer.pcc;
 				
 				MethodNode m = ASMHelper.getMethodNode(classNode, "<init>", "([Ljava/net/URL;)V");
 				
@@ -102,7 +109,7 @@ public class LaunchWrapperTransformer implements ClassFileTransformer {
 		        //resourceCache = new DummyMap();
 		        //packageManifests = new DummyMap();
 		        //negativeResourceCache = new DummySet();
-				if(ASMHelper.hasFieldNode(classNode, "cachedClasses"))
+				if(pcc && ASMHelper.hasFieldNode(classNode, "cachedClasses"))
 				{
 					l.add(new LabelNode());
 					l.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -166,7 +173,7 @@ public class LaunchWrapperTransformer implements ClassFileTransformer {
 							}
 							
 							FieldInsnNode insn = (FieldInsnNode) ab;
-							if(ASMHelper.equals(cachedClassesInsn, insn) || ASMHelper.equals(packageManifestsInsn, insn) || ASMHelper.equals(resourceCache, insn))
+							if(pcc && ASMHelper.equals(cachedClassesInsn, insn) || ASMHelper.equals(packageManifestsInsn, insn) || ASMHelper.equals(resourceCache, insn))
 								insn.name = "dm";
 							else if(ASMHelper.equals(negativeResourceCache, insn))
 								insn.name = "ds";
@@ -188,6 +195,65 @@ public class LaunchWrapperTransformer implements ClassFileTransformer {
 				
 				byte[] clazzBytes = ASMHelper.toByteArray(ASMHelper.getClassWriter(classNode, ClassWriter.COMPUTE_MAXS), className);
 				ASMHelper.toFile(clazzBytes, lcl);
+				return clazzBytes;
+			}
+			catch(Throwable t)
+			{
+				t.printStackTrace();
+			}
+		}
+		else if(className.equals("net/technicpack/legacywrapper/MinecraftClassLoader"))
+		{
+			try
+			{
+				System.out.println("Transforming " + className.replace("/", ".") + " to fix resources memory leak");
+				
+				if(mcl.exists())
+					return toByteArray(mcl);
+				
+				ClassNode classNode = ASMHelper.getClassNode(bytes);
+				for(MethodNode m : classNode.methods)
+				{
+					if(m.name.equals("<init>"))
+					{
+						//get the last put field before the first return
+						AbstractInsnNode spot = null;
+						for(AbstractInsnNode a : m.instructions.toArray())
+						{
+							if(a == null)
+								continue;
+							
+							int op = a.getOpcode();
+							if(op == Opcodes.PUTFIELD && a instanceof FieldInsnNode)
+								spot = a;
+							else if(ASMHelper.isReturnOpcode(op))
+								break;
+						}
+						
+						InsnList list = new InsnList();
+						//resources = DummyMap.get();
+						FieldNode resources = ASMHelper.getFieldnode(classNode, "resources");
+						if(resources != null)
+						{
+							list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+							list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "jredfox/clfix/DummyMap", "get", "()Ljredfox/clfix/DummyMap;", false));
+							list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/technicpack/legacywrapper/MinecraftClassLoader", "resources", resources.desc));
+						}
+						//pngResource = DummyMap.get();
+						FieldNode pngResource = ASMHelper.getFieldnode(classNode, "pngResource");
+						if(pngResource != null)
+						{
+							list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+							list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "jredfox/clfix/DummyMap", "get", "()Ljredfox/clfix/DummyMap;", false));
+							list.add(new FieldInsnNode(Opcodes.PUTFIELD, "net/technicpack/legacywrapper/MinecraftClassLoader", "pngResource", pngResource.desc));
+						}
+						if(list.getFirst() != null)
+							m.instructions.insert(spot, list);
+					}
+				}
+				
+				byte[] clazzBytes = ASMHelper.toByteArray(ASMHelper.getClassWriter(classNode, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES), className);
+				ASMHelper.toFile(clazzBytes, mcl);
 				return clazzBytes;
 			}
 			catch(Throwable t)
@@ -221,7 +287,7 @@ public class LaunchWrapperTransformer implements ClassFileTransformer {
         return output.toByteArray();
     }
     
-	public static void copy(InputStream in, OutputStream out) throws IOException
+    public static void copy(InputStream in, OutputStream out) throws IOException
 	{
 		byte[] buffer = new byte[1048576/2];
 		int length;
@@ -231,7 +297,7 @@ public class LaunchWrapperTransformer implements ClassFileTransformer {
 		}
 	}
 	
-	public static void closeQuietly(Closeable clos)
+    public static void closeQuietly(Closeable clos)
 	{
 		try 
 		{
