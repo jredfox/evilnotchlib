@@ -147,6 +147,7 @@ public class ASMHelper
 		String classAsPath = className.replaceAll("\\.", "/") + ".class";
 		InputStream stream = ourClass.getClassLoader().getResourceAsStream(classAsPath);
 		ClassNode node = getClassNode(stream);
+		JavaUtil.close(stream);
 		return getMethodNode(node,method_name,method_desc);
 	}
 	
