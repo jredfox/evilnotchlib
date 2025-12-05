@@ -156,27 +156,16 @@ public class CapTransformer {
 		//this.capContainer.readFromNBT(this,this.stackCompound);
 		for(MethodNode capNode : classNode.methods)
 		{
-			//Skip Overloaded Constructors to prevent duplicate registration and reading when creating an ItemStack
 			if(capNode.name.equals("<init>"))
 			{
-				boolean skip = false;
-				AbstractInsnNode ab = capNode.instructions.getFirst();
-				while(ab != null)
+				AbstractInsnNode init = ASMHelper.getFirstCtrInsn(classNode, capNode);
+				
+				//Skip Overloaded Constructors to prevent duplicate registration and reading when creating an ItemStack
+				if(init == null || ((MethodInsnNode)init).owner.equals("net/minecraft/item/ItemStack"))
 				{
-					if(ab instanceof MethodInsnNode)
-					{
-						MethodInsnNode in = (MethodInsnNode) ab;
-						AbstractInsnNode nxt = in.getNext();
-						if( (nxt instanceof LabelNode || ASMHelper.isReturnOpcode(nxt.getOpcode())) && in.getOpcode() == Opcodes.INVOKESPECIAL && "<init>".equals(in.name))
-						{
-							skip = in.owner.equals("net/minecraft/item/ItemStack");
-							break;
-						}
-					}
-					ab = ab.getNext();//iterate index by one
-				}
-				if(skip)
+					System.out.println("Skipping ItemStack Constructor of: " + capNode.name + " " + capNode.desc);
 					continue;
+				}
 				
 				AbstractInsnNode spotNode = ASMHelper.getLastInstruction(capNode, Opcodes.RETURN);
 				

@@ -9,7 +9,9 @@ import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -44,6 +46,18 @@ import net.minecraft.launchwrapper.Launch;
 public class ASMHelper 
 {	
 	public static ThreadLocal<HashMap<String, ClassNode>> cacheNodes = ThreadLocal.withInitial(()-> new HashMap());
+	public static final Set<Integer> BAD_CTR_OPCODES = new HashSet<Integer>(10, 0.9F);
+	static
+	{
+		BAD_CTR_OPCODES.add(Opcodes.NEW);
+		BAD_CTR_OPCODES.add(Opcodes.DUP);
+		BAD_CTR_OPCODES.add(Opcodes.DUP_X1);
+		BAD_CTR_OPCODES.add(Opcodes.DUP_X2);
+		BAD_CTR_OPCODES.add(Opcodes.DUP2);
+		BAD_CTR_OPCODES.add(Opcodes.DUP2_X1);
+		BAD_CTR_OPCODES.add(Opcodes.DUP2_X2);
+		BAD_CTR_OPCODES.add(Opcodes.SWAP);
+	}
 	
 	/**
 	 * srg support doesn't patch local vars nor instructions
@@ -1118,5 +1132,53 @@ public class ASMHelper
 	}
 	
 	public static void disabled(){}
+	
+	public static MethodInsnNode getFirstCtrInsn(ClassNode cn, MethodNode m) 
+	{
+		AbstractInsnNode a = m.instructions.getFirst();
+		while(a != null)
+		{
+			if(a.getOpcode() == Opcodes.INVOKESPECIAL && a instanceof MethodInsnNode)
+			{
+				MethodInsnNode am = (MethodInsnNode) a;
+				if(am.name.equals("<init>") && (am.owner.equals(cn.name) || am.owner.equals(cn.superName)))
+				{
+					AbstractInsnNode nxt = nextRealInsn(am);
+					
+					//if the return instruction appears right after init in rare cases assume this is the last injection point
+					if(nxt == null || isReturnOpcode(nxt.getOpcode()))
+						return am;
+					
+					AbstractInsnNode prev = prevRealInsn(am);
+					if(prev != null && !BAD_CTR_OPCODES.contains(prev.getOpcode()))
+						return am;
+				}
+			}
+			a = a.getNext();//increment the index
+		}
+		return null;
+	}
+	
+	public static AbstractInsnNode nextRealInsn(AbstractInsnNode a) 
+	{
+		do
+		{
+			a = a.getNext();
+		}
+		while (a != null && a.getOpcode() == -1);
+		
+		return a;
+	}
+	
+	public static AbstractInsnNode prevRealInsn(AbstractInsnNode a) 
+	{
+		do
+		{
+			a = a.getPrevious();
+		}
+		while (a != null && a.getOpcode() == -1);
+		
+		return a;
+	}
 	
 }
