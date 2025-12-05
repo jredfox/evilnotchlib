@@ -176,6 +176,10 @@ public class ClientProxy extends ServerProxy{
 			//Set UUID of the Session
 			ReflectionUtil.setFinalObject(session, uuid.toString().replace("-", ""), Session.class, new MCPSidedString("playerID", "field_148257_b").toString());//sets uuid of the session
 			
+			//After Changing the Sessions UUID cache it for further use
+			GameProfile profile = session.getProfile();
+			ReflectionUtil.setFinalObject(profile, uuid, GameProfile.class, "id");
+			
 			//Sync GameProfile with Player's
 			if(mc.myNetworkManager != null && mc.myNetworkManager.getNetHandler() instanceof NetHandlerLoginClient)
 			{
