@@ -147,7 +147,6 @@ public class ASMHelper
 		String classAsPath = className.replaceAll("\\.", "/") + ".class";
 		InputStream stream = ourClass.getClassLoader().getResourceAsStream(classAsPath);
 		ClassNode node = getClassNode(stream);
-		JavaUtil.close(stream);
 		return getMethodNode(node,method_name,method_desc);
 	}
 	
@@ -170,7 +169,9 @@ public class ASMHelper
 	public static ClassNode getClassNode(InputStream stream) throws IOException 
 	{
 		byte[] newbyte = IOUtils.toByteArray(stream);
-		return getClassNode(newbyte);
+		ClassNode c = getClassNode(newbyte);
+		IOUtils.closeQuietly(stream);
+		return c;
 	}
 	
 	/**
@@ -264,7 +265,9 @@ public class ASMHelper
 	public static byte[] replaceClass(String inputStream) throws IOException 
 	{
 		InputStream initialStream = ASMHelper.class.getClassLoader().getResourceAsStream(inputStream);
-		return IOUtils.toByteArray(initialStream);
+		byte[] b = IOUtils.toByteArray(initialStream);
+		IOUtils.closeQuietly(initialStream);
+		return b;
 	}
 	
 	/**
