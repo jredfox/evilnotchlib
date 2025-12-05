@@ -162,10 +162,7 @@ public class CapTransformer {
 				
 				//Skip Overloaded Constructors to prevent duplicate registration and reading when creating an ItemStack
 				if(init == null || ((MethodInsnNode)init).owner.equals("net/minecraft/item/ItemStack"))
-				{
-					System.out.println("Skipping ItemStack Constructor of: " + capNode.name + " " + capNode.desc);
 					continue;
-				}
 				
 				AbstractInsnNode spotNode = ASMHelper.getLastInstruction(capNode, Opcodes.RETURN);
 				
@@ -175,7 +172,7 @@ public class CapTransformer {
 				toInsert0.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/evilnotch/lib/minecraft/capability/registry/CapabilityRegistry", "registerCapsToObj", "(Ljava/lang/Object;)V", false));
 				capNode.instructions.insertBefore(spotNode, toInsert0);
 			
-//				//inject this.capContainer.readFromNBT(this,this.stackCompound);
+				//inject this.capContainer.readFromNBT(this,this.stackCompound);
 				InsnList toInsert1 = new InsnList();
 				toInsert1.add(new VarInsnNode(ALOAD,0));
 				toInsert1.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/item/ItemStack", "capContainer", "Lcom/evilnotch/lib/minecraft/capability/CapContainer;"));
