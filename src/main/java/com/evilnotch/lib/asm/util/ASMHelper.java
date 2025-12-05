@@ -168,19 +168,10 @@ public class ASMHelper
 	 */
 	public static ClassNode getClassNode(InputStream stream) throws IOException 
 	{
-		try
-		{
-			byte[] newbyte = IOUtils.toByteArray(stream);
-			ClassNode c = getClassNode(newbyte);
-			IOUtils.closeQuietly(stream);
-			return c;
-		}
-		catch(Throwable t)
-		{
-			t.printStackTrace();
-			IOUtils.closeQuietly(stream);
-		}
-		return null;
+		byte[] newbyte = IOUtils.toByteArray(stream);
+		ClassNode c = getClassNode(newbyte);
+		IOUtils.closeQuietly(stream);
+		return c;
 	}
 	
 	/**
