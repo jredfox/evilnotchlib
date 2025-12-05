@@ -194,6 +194,8 @@ public class ClientProxy extends ServerProxy{
 				ReflectionUtil.setFinalObject(player.getGameProfile(), uuid, GameProfile.class, "id");
 				//Set UUID of the Player
 				player.setUniqueId(uuid);
+				player.entityUniqueID = uuid;
+				player.cachedUniqueIdString = uuid.toString();
 				//Set UUID of the EntityPlayerSP#connection#gameProfile
 				if(player.connection != null)
 					ReflectionUtil.setFinalObject(player.connection.getGameProfile(), uuid, GameProfile.class, "id");
