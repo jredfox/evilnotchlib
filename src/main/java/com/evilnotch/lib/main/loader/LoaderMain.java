@@ -8,7 +8,6 @@ import com.evilnotch.lib.api.IEvilNotchLibPreInit;
 import com.evilnotch.lib.api.mcp.MCPMappings;
 import com.evilnotch.lib.asm.FMLCorePlugin;
 import com.evilnotch.lib.asm.transformer.Transformer;
-import com.evilnotch.lib.clfix.LaunchClassLoaderFix;
 import com.evilnotch.lib.main.Config;
 import com.evilnotch.lib.main.MainJava;
 import com.evilnotch.lib.main.capability.CapRegDefaultHandler;
@@ -35,6 +34,7 @@ import com.evilnotch.lib.minecraft.registry.GeneralRegistry;
 import com.evilnotch.lib.minecraft.tick.TickRegistry;
 import com.evilnotch.lib.minecraft.world.FakeWorld;
 
+import jredfox.clfix.LaunchClassLoaderFix;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;

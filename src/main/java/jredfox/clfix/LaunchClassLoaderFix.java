@@ -1,4 +1,4 @@
-package com.evilnotch.lib.clfix;
+package jredfox.clfix;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,10 +29,10 @@ public class LaunchClassLoaderFix {
 	
 	/**
 	 * EvilNotchLib's Changes
-	 *  - Changed {@link #patchCachedClasses} to true by default unless the command line arguments override it
-	 *  - Removed LaunchWrapperTransformer.class
-	 *  - Removed FindClass.class
-	 *  - Refactored Package to com.evilnotchlib.clfix to avoid class collisions
+	 *  - Changed {@link #patchCachedClasses} to true by default
+	 *  - Changed {@link LaunchWrapperTransformer} so it compiles
+	 *  - Changed {@link LaunchWrapperTransformer#pcc} to be equal to {@link #patchCachedClasses}
+	 *  - TODO: Refactored Package to com.evilnotchlib.clfix to avoid class collisions
 	 *  
 	 * ChangeLog 2.1.0:
 	 * - Fixed {@link System#identityHashCode(Object)} collisions resulted in not setting class loader. object hashcode no longer represents the address and is no longer guaranteed since java 8 to be even unique per object instance
